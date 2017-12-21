@@ -1,0 +1,8 @@
+james.pdf
+*.aux
+*.log
+*.bbl
+*.blg
+*synctex*
+*DS_Store
+*~
