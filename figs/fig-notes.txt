@@ -1,0 +1,13 @@
+
+figure 1: a typical day
+  - purpose: situate reader in the model, show vwp
+  - absolute values about correct
+       . comes from p50
+  - sequenced, but very small pressure drop stem-to-leaf
+  - no capacitance, clear from the sharp corners at sunrise/set
+  - tfe causes lower water potentials
+       (1) predawn potentials lower
+       (2) root drop much bigger
+       (3) stem drop bigger, but not as big as roots
+  - evidence of regulation
+       . flatter curve at midday
