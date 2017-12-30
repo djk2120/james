@@ -65,6 +65,7 @@ if ff(1)>0
     xlabel('Hour')
     ylabel('Water Potential (MPa)')
     title('AMB')
+    text(1.5,-2.3,'(a)','FontSize',14,'FontWeight','bold')
     set(gca,'xtick',0:6:24)
     subplot('position',[0.54, 0.12, 0.43, 0.83])
     plot(x,xf*vegwp(5:8,day==dd&month==mm&year==yy)')
@@ -82,8 +83,9 @@ if ff(1)>0
     l.Position(1) = 0.45;
     l.Position(2) = 0.22;
     set(gca,'xtick',0:6:24)
+    text(21,-2.3,'(b)','FontSize',14,'FontWeight','bold')
     if ff(1)>1
-        print(xdk,'fig1','-dpdf')
+        print(xdk,'../figs/fig2','-dpdf')
     end
     
     
