@@ -48,9 +48,68 @@ zr=[1.40e-2,2.73e-2,3.96e-2,5.02e-2,7.02e-2,...
 %************************************************************************
 %------------------------------------------------------------------------
 
-ff = [2];
+ff = [0,2];
+
+
+if ff(2)>0
+    
+    k2 = nan*smp(41:60,:);
+    for i=41:60
+        
+        ix1       = fsds>1&smp(i,:)<=-255000;
+        k2(i-40,ix1) = 0;
+        
+        ix          = fsds>1;
+        k2(i-40,ix) = qrootsink(i,ix)./min(189000,(smp(i,ix)+255000));
+    end
+    
+    xdk = figure;
+    ix = fsds>1;
+    subplot('position',[0.54, 0.12, 0.43, 0.83])
+    
+    out  = median(ksr(1:20,ix),2);
+    hold on
+    bar(out,'FaceColor',[0.6,0.6,0.8],'EdgeColor',[0.55,0.55,0.8])
+    x = quantile(ksr(1:20,ix)',[0.25,0.75])';
+    x = abs(x-[out,out]);
+    errorbar(1:20,out,x(1:20,1),x(1:20,2),'x','Color',[0.7 0.1 0.1],'Marker','none')
+    xlim([0,21])
+    title('PHS on')
+    xlabel('Soil Layer')
+    text(18,6.5e-9,'(b)','FontSize',14,'FontWeight','bold')
+    
+    subplot('position',[0.08, 0.12, 0.43, 0.83])
+    bar(nanmedian(k2,2))
+    out  = nanmedian(k2,2);
+    hold on
+    bar(out,'FaceColor',[0.6,0.6,0.8],'EdgeColor',[0.55,0.55,0.8])
+    x = quantile(k2',[0.25,0.75])';
+    x = abs(x-[out,out]);
+    errorbar(1:20,out,x(1:20,1),x(1:20,2),'x','Color',[0.7 0.1 0.1],'Marker','none')
+    xlim([0,21])
+    text(1.5,6.5e-11,'(a)','FontSize',14,'FontWeight','bold')
+    
+    box off
+    title('PHS off')
+    xlabel('Soil Layer')
+    ylabel('Soil-to-root conductance (1/s)')
+    
+    xdk.Units = 'inches';
+    xdk.Position = [2,2,7,4];
+    xdk.PaperSize = [7,4];
+    xdk.PaperPosition = [0,0,7,4];
+    
+    if ff(2)>1
+        print(xdk,'../figs/fig3','-dpdf')
+    end
+    
+    
+end
+
+
 
 if ff(1)>0
+    %figure 2, water potential from a dry day
     dd=2;
     mm=11;
     yy=2002;
