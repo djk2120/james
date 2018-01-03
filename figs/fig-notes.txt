@@ -1,5 +1,5 @@
 
-figure 1: a typical day
+figure 2: a typical day
   - purpose: situate reader in the model, show vwp
   - absolute values about correct
        . comes from p50
@@ -11,3 +11,10 @@ figure 1: a typical day
        (3) stem drop bigger, but not as big as roots
   - evidence of regulation
        . flatter curve at midday
+
+
+figure 3: conductance curves
+  - purpose: demonstrate gradient extraction
+  - phs off has higher variance relative to median
+  - phs off has more conductance in lower layers
+  - phs on has layer 1 nuked
