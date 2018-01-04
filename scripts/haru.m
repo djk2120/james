@@ -48,7 +48,145 @@ zr=[1.40e-2,2.73e-2,3.96e-2,5.02e-2,7.02e-2,...
 %************************************************************************
 %------------------------------------------------------------------------
 
-ff = [0,0,0,0,2];
+ff = [0,0,0,0,0,0,2];
+
+
+if ff(7)>0
+
+    out = zeros(80,4);
+   
+    ix = (mcsec<diurn(13)|mcsec>diurn(36))&month==9;  %night time
+    ll = 1:20;
+    oo = 1:20;
+    out(oo,1) =     mean(qrootsink(ll,ix),2);
+    out(oo,2) =   median(qrootsink(ll,ix),2);
+    out(oo,3) = quantile(qrootsink(ll,ix)',0.25)-out(oo,2)';
+    out(oo,4) = quantile(qrootsink(ll,ix)',0.75)-out(oo,2)';
+    
+    ix = (mcsec<diurn(13)|mcsec>diurn(36))&month==12;  %night time
+    oo = 21:40;
+    out(oo,1) =     mean(qrootsink(ll,ix),2);
+    out(oo,2) =   median(qrootsink(ll,ix),2);
+    out(oo,3) = quantile(qrootsink(ll,ix)',0.25)-out(oo,2)';
+    out(oo,4) = quantile(qrootsink(ll,ix)',0.75)-out(oo,2)';
+    
+    ix = (mcsec<diurn(13)|mcsec>diurn(36))&month==9&year>2001;  %night time
+    ll = 21:40;
+    oo = 41:60;
+    out(oo,1) =     mean(qrootsink(ll,ix),2);
+    out(oo,2) =   median(qrootsink(ll,ix),2);
+    out(oo,3) = quantile(qrootsink(ll,ix)',0.25)-out(oo,2)';
+    out(oo,4) = quantile(qrootsink(ll,ix)',0.75)-out(oo,2)';
+    
+    ix = (mcsec<diurn(13)|mcsec>diurn(36))&month==12&year>2001;  %night time
+    ll = 21:40;
+    oo = 61:80;
+    out(oo,1) =     mean(qrootsink(ll,ix),2);
+    out(oo,2) =   median(qrootsink(ll,ix),2);
+    out(oo,3) = quantile(qrootsink(ll,ix)',0.25)-out(oo,2)';
+    out(oo,4) = quantile(qrootsink(ll,ix)',0.75)-out(oo,2)';
+    
+    xdk = figure;
+
+    subplot('position',[0.07, 0.55, 0.43, 0.39])
+    ll = 1:20;
+    hold on
+    bar(out(ll,1),'FaceColor',[0.6,0.6,0.8],'EdgeColor',[0.55,0.55,0.8])
+    errorbar(1:20,out(ll,2),out(ll,3),out(ll,4),'x','Color',[0.7 0.1 0.1])
+    xlim([0 21])
+    set(gca,'xticklabel',[])
+    ylabel('Soil sink (mm/s)')
+    ylim([-8e-6,11e-6])
+    
+    subplot('position',[0.54, 0.55, 0.43, 0.39])
+    ll = 21:40;
+    hold on
+    bar(out(ll,1),'FaceColor',[0.6,0.6,0.8],'EdgeColor',[0.55,0.55,0.8])
+    errorbar(1:20,out(ll,2),out(ll,3),out(ll,4),'x','Color',[0.7 0.1 0.1])
+    xlim([0 21])
+    set(gca,'xticklabel',[])
+    ylim([-8e-6,11e-6])
+    
+    subplot('position',[0.07, 0.11, 0.43, 0.39])
+    ll = 41:60;
+    hold on
+    bar(out(ll,1),'FaceColor',[0.6,0.6,0.8],'EdgeColor',[0.55,0.55,0.8])
+    errorbar(1:20,out(ll,2),out(ll,3),out(ll,4),'x','Color',[0.7 0.1 0.1])
+    xlim([0 21])
+    ylim([-5e-6 1e-5])
+    xlabel('Soil Layer')
+    ylabel('Soil sink (mm/s)')
+    
+    subplot('position',[0.54, 0.11, 0.43, 0.39])
+    ll = 61:80;
+    hold on
+    bar(out(ll,1),'FaceColor',[0.6,0.6,0.8],'EdgeColor',[0.55,0.55,0.8])
+    errorbar(1:20,out(ll,2),out(ll,3),out(ll,4),'x','Color',[0.7 0.1 0.1])
+    xlim([0 21])
+    ylim([-5e-6 1e-5])
+    xlabel('Soil Layer')
+    
+
+    
+    xdk.Units = 'inches';
+    xdk.Position = [2,2,7,4];
+    xdk.PaperSize = [7,4];
+    xdk.PaperPosition = [0,0,7,4];
+    
+    if ff(7)>1
+        print(xdk,'../figs/fig6','-dpdf')
+    end
+end
+
+
+
+
+
+
+if ff(6)>0
+    
+    hr = qrootsink(1:40,:);
+    for ss=1:40
+        hr(ss,:) = -qrootsink(ss,:).*(qrootsink(ss,:)<0);
+    end
+    
+    hr1 = 1800*splitapply(@sum,sum(hr(1:20,year>2001)),month(year>2001));
+    hr2 = 1800*splitapply(@sum,sum(hr(21:40,year>2001)),month(year>2001));
+    %hr1 = 1800*splitapply(@sum,sum(hr(1:20,year>2001)),month(year>2001)+12*(year(year>2001)-2002));
+    %hr2 = 1800*splitapply(@sum,sum(hr(21:40,year>2001)),month(year>2001)+12*(year(year>2001)-2002));
+    
+    xdk = figure;
+    
+    subplot('Position',[0.08,0.11,0.45,0.84])
+    bar(hr1,'FaceColor',[0.6,0.6,0.8],'EdgeColor',[0.55,0.55,0.8])
+    xlabel('Month')
+    ylabel('Total HR (mm)')
+    title('AMB')
+    xlim([0 13])
+    ylim([0 120])
+    text(1,100,'(a)','FontSize',14,'FontWeight','bold')
+    
+    subplot('Position',[0.54,0.11,0.45,0.84])
+    bar(hr2,'FaceColor',[0.6,0.6,0.8],'EdgeColor',[0.55,0.55,0.8])
+    xlabel('Month')
+    xlim([0 13])
+    ylim([0 120])
+    title('TFE')
+    set(gca,'yticklabel',[])
+    text(11,100,'(b)','FontSize',14,'FontWeight','bold')
+    
+    xdk.Units = 'inches';
+    xdk.Position = [2,2,7,4];
+    xdk.PaperSize = [7,4];
+    xdk.PaperPosition = [0,0,7,4];
+    
+    if ff(6)>1
+        print(xdk,'../figs/fig5','-dpdf')
+    end
+    
+    
+    
+end
 
 
 if ff(5) >0
@@ -63,7 +201,7 @@ if ff(5) >0
         kon(ss,ix) = qrootsink(ss,ix)./(smp(ss,ix)-vegwp(8,ix));
     end
     
-    for ss = 41:80    
+    for ss = 41:80
         if ss>60
             ix          = year>2001&fsds>1;
         else
@@ -78,7 +216,7 @@ if ff(5) >0
     out(1:80,1) = nanmedian(kon,2);
     out(1:80,3) = quantile(kon',0.75)-out(:,1)';
     out(1:80,2) = quantile(kon',0.25)-out(:,1)';
-   
+    
     subplot('position',[0.07, 0.56, 0.43, 0.39])
     hold on
     plot(1:20,out(1:20,1),'x')
@@ -117,7 +255,7 @@ if ff(5) >0
     ylim([0 8e-11])
     text(17,6/7*8e-11,'(d)','FontSize',14,'FontWeight','bold')
     
-
+    
     
     xdk.Units = 'inches';
     xdk.Position = [2,2,7,4];
@@ -156,7 +294,7 @@ if ff(3)>0
     end
     
     subplot('position',[0.54, 0.12, 0.43, 0.8])
-
+    
     out = nanmedian(kon,2);
     plot(out,'o','Color',[0.6,0.6,0.8])
     x = quantile(kon',[0.25,0.75])';
@@ -178,7 +316,7 @@ if ff(3)>0
         ix1       = year>2001&fsds>1&smp(i,:)<=-255000;
         k2(i-60,ix1) = 0;
         
-
+        
     end
     
     subplot('position',[0.08, 0.12, 0.43, 0.8])
@@ -196,7 +334,7 @@ if ff(3)>0
     xlabel('Soil Layer')
     ylabel('Soil-to-root conductance (1/s)')
     
-
+    
 end
 
 
@@ -215,7 +353,7 @@ if ff(4)>0
         ix1       = fsds>1&smp(i,:)<=-255000;
         k2(i-40,ix1) = 0;
         
-   
+        
     end
     
     xdk = figure;
@@ -235,14 +373,14 @@ if ff(4)>0
     
     subplot('position',[0.08, 0.12, 0.43, 0.8])
     h = boxplot(k2');
-        set(h(1:4,:),'Visible','off')
+    set(h(1:4,:),'Visible','off')
     set(h(7,:),'Visible','off')
     ylim([0, 7e-11])
-
+    
     xlim([0,21])
     text(1.5,6.5e-11,'(a)','FontSize',14,'FontWeight','bold')
     
-        text(18,6.5e-9,'(b)','FontSize',14,'FontWeight','bold')
+    text(18,6.5e-9,'(b)','FontSize',14,'FontWeight','bold')
     set(gca,'xtick',0:5:20)
     set(gca,'xticklabel',0:5:20)
     xlim([0 21])
@@ -277,7 +415,7 @@ if ff(2)>0
         ix1       = fsds>1&smp(i,:)<=-255000;
         k2(i-40,ix1) = 0;
         
-   
+        
     end
     
     xdk = figure;

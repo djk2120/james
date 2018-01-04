@@ -8,13 +8,22 @@ figure 2: a typical day
   - tfe causes lower water potentials
        (1) predawn potentials lower
        (2) root drop much bigger
-       (3) stem drop bigger, but not as big as roots
+       (3) stem drop bigger, but change smaller than root change
   - evidence of regulation
        . flatter curve at midday
 
 
 figure 3: conductance curves
   - purpose: demonstrate gradient extraction
+  AMB
   - phs off has higher variance relative to median
-  - phs off has more conductance in lower layers
+  - phs off has relatively more conductance in lower layers
   - phs on has layer 1 nuked
+  TFE
+  - phs on variance increases
+  - phs off still has much more conductance in lower layers
+
+
+figure 5: seasonal redistribution
+
+figure 6: nighttime redistribution
