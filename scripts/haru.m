@@ -48,7 +48,200 @@ zr=[1.40e-2,2.73e-2,3.96e-2,5.02e-2,7.02e-2,...
 %************************************************************************
 %------------------------------------------------------------------------
 
-ff = [0,0,0,0,0,0,2];
+ff = [0,0,0,0,0,0,2,2,2];
+
+
+if ff(9)>0
+
+    out = zeros(80,4);
+    ix = (mcsec>diurn(12)&mcsec<diurn(37))&month==9;  %day time
+    ll = 41:60;
+    oo = 1:20;
+    
+    out(oo,1) =     mean(qrootsink(ll,ix),2);
+    out(oo,2) =   median(qrootsink(ll,ix),2);
+    out(oo,3) = quantile(qrootsink(ll,ix)',0.25)-out(oo,2)';
+    out(oo,4) = quantile(qrootsink(ll,ix)',0.75)-out(oo,2)';
+    
+    ix = (mcsec>diurn(12)&mcsec<diurn(37))&month==12;  %day time
+    ll = 41:60;
+    oo = 21:40;
+    
+    out(oo,1) =     mean(qrootsink(ll,ix),2);
+    out(oo,2) =   median(qrootsink(ll,ix),2);
+    out(oo,3) = quantile(qrootsink(ll,ix)',0.25)-out(oo,2)';
+    out(oo,4) = quantile(qrootsink(ll,ix)',0.75)-out(oo,2)';
+    
+    ix = (mcsec>diurn(12)&mcsec<diurn(37))&month==9&year>2001;  %day time
+    ll = 61:80;
+    oo = 41:60;
+    
+    out(oo,1) =     mean(qrootsink(ll,ix),2);
+    out(oo,2) =   median(qrootsink(ll,ix),2);
+    out(oo,3) = quantile(qrootsink(ll,ix)',0.25)-out(oo,2)';
+    out(oo,4) = quantile(qrootsink(ll,ix)',0.75)-out(oo,2)';
+    
+    ix = (mcsec>diurn(12)&mcsec<diurn(37))&month==12&year>2001;  %day time
+    ll = 61:80;
+    oo = 61:80;
+    
+    out(oo,1) =     mean(qrootsink(ll,ix),2);
+    out(oo,2) =   median(qrootsink(ll,ix),2);
+    out(oo,3) = quantile(qrootsink(ll,ix)',0.25)-out(oo,2)';
+    out(oo,4) = quantile(qrootsink(ll,ix)',0.75)-out(oo,2)';
+    
+
+     xdk = figure;
+
+    subplot('position',[0.05, 0.55, 0.46, 0.39])
+    ll = 1:20;
+    hold on
+    bar(out(ll,1),'FaceColor',[0.6,0.6,0.8],'EdgeColor',[0.55,0.55,0.8])
+    errorbar(1:20,out(ll,2),out(ll,3),out(ll,4),'x','Color',[0.7 0.1 0.1],'Marker','none')
+    xlim([0 21])
+    set(gca,'xticklabel',[])
+    ylabel('Soil sink (mm/s)')
+    ylim([-5e-6,25e-6])
+    text(18.5,20e-6,'(a)','FontSize',14,'FontWeight','bold')
+    
+    subplot('position',[0.525, 0.55, 0.46, 0.39])
+    ll = 21:40;
+    hold on
+    bar(out(ll,1),'FaceColor',[0.6,0.6,0.8],'EdgeColor',[0.55,0.55,0.8])
+    errorbar(1:20,out(ll,2),out(ll,3),out(ll,4),'x','Color',[0.7 0.1 0.1],'Marker','none')
+    xlim([0 21])
+    set(gca,'xticklabel',[])
+    set(gca,'yticklabel',[])
+    ylim([-5e-6,25e-6])
+    text(18.5,20e-6,'(b)','FontSize',14,'FontWeight','bold')
+    
+    subplot('position',[0.05, 0.11, 0.46, 0.39])
+    ll = 41:60;
+    hold on
+    bar(out(ll,1),'FaceColor',[0.6,0.6,0.8],'EdgeColor',[0.55,0.55,0.8])
+    errorbar(1:20,out(ll,2),out(ll,3),out(ll,4),'x','Color',[0.7 0.1 0.1],'Marker','none')
+    xlim([0 21])
+    ylim([-5e-6,25e-6])
+    xlabel('Soil Layer')
+    ylabel('Soil sink (mm/s)')
+    text(18.5,20e-6,'(c)','FontSize',14,'FontWeight','bold')
+    
+    subplot('position',[0.525, 0.11, 0.46, 0.39])
+    ll = 61:80;
+    hold on
+    bar(out(ll,1),'FaceColor',[0.6,0.6,0.8],'EdgeColor',[0.55,0.55,0.8])
+    errorbar(1:20,out(ll,2),out(ll,3),out(ll,4),'x','Color',[0.7 0.1 0.1],'Marker','none')
+    xlim([0 21])
+    ylim([-5e-6,25e-6])
+    xlabel('Soil Layer')
+    set(gca,'yticklabel',[])
+    text(18.5,20e-6,'(d)','FontSize',14,'FontWeight','bold')
+    
+    xdk.Units = 'inches';
+    xdk.Position = [2,2,7,4];
+    xdk.PaperSize = [7,4];
+    xdk.PaperPosition = [0,0,7,4];
+    
+    if ff(9)>1
+        print(xdk,'../figs/fig8','-dpdf')
+    end
+    
+end
+
+
+if ff(8)>0
+
+    out = zeros(80,4);
+   
+    ix = (mcsec>diurn(12)&mcsec<diurn(37))&month==9;  %day time
+    ll = 1:20;
+    oo = 1:20;
+    out(oo,1) =     mean(qrootsink(ll,ix),2);
+    out(oo,2) =   median(qrootsink(ll,ix),2);
+    out(oo,3) = quantile(qrootsink(ll,ix)',0.25)-out(oo,2)';
+    out(oo,4) = quantile(qrootsink(ll,ix)',0.75)-out(oo,2)';
+    
+    ix = (mcsec>diurn(12)&mcsec<diurn(37))&month==12;  %day time
+    oo = 21:40;
+    out(oo,1) =     mean(qrootsink(ll,ix),2);
+    out(oo,2) =   median(qrootsink(ll,ix),2);
+    out(oo,3) = quantile(qrootsink(ll,ix)',0.25)-out(oo,2)';
+    out(oo,4) = quantile(qrootsink(ll,ix)',0.75)-out(oo,2)';
+    
+    ix = (mcsec>diurn(12)&mcsec<diurn(37))&month==9&year>2001;  %day time
+    ll = 21:40;
+    oo = 41:60;
+    out(oo,1) =     mean(qrootsink(ll,ix),2);
+    out(oo,2) =   median(qrootsink(ll,ix),2);
+    out(oo,3) = quantile(qrootsink(ll,ix)',0.25)-out(oo,2)';
+    out(oo,4) = quantile(qrootsink(ll,ix)',0.75)-out(oo,2)';
+    
+    ix = (mcsec>diurn(12)&mcsec<diurn(37))&month==12&year>2001;  %day time
+    ll = 21:40;
+    oo = 61:80;
+    out(oo,1) =     mean(qrootsink(ll,ix),2);
+    out(oo,2) =   median(qrootsink(ll,ix),2);
+    out(oo,3) = quantile(qrootsink(ll,ix)',0.25)-out(oo,2)';
+    out(oo,4) = quantile(qrootsink(ll,ix)',0.75)-out(oo,2)';
+    
+    xdk = figure;
+
+    subplot('position',[0.05, 0.55, 0.46, 0.39])
+    ll = 1:20;
+    hold on
+    bar(out(ll,1),'FaceColor',[0.6,0.6,0.8],'EdgeColor',[0.55,0.55,0.8])
+    errorbar(1:20,out(ll,2),out(ll,3),out(ll,4),'x','Color',[0.7 0.1 0.1],'Marker','none')
+    xlim([0 21])
+    set(gca,'xticklabel',[])
+    ylabel('Soil sink (mm/s)')
+    ylim([-5e-6,25e-6])
+    text(18.5,20e-6,'(a)','FontSize',14,'FontWeight','bold')
+    
+    subplot('position',[0.525, 0.55, 0.46, 0.39])
+    ll = 21:40;
+    hold on
+    bar(out(ll,1),'FaceColor',[0.6,0.6,0.8],'EdgeColor',[0.55,0.55,0.8])
+    errorbar(1:20,out(ll,2),out(ll,3),out(ll,4),'x','Color',[0.7 0.1 0.1],'Marker','none')
+    xlim([0 21])
+    set(gca,'xticklabel',[])
+    set(gca,'yticklabel',[])
+    ylim([-5e-6,25e-6])
+    text(18.5,20e-6,'(b)','FontSize',14,'FontWeight','bold')
+    
+    subplot('position',[0.05, 0.11, 0.46, 0.39])
+    ll = 41:60;
+    hold on
+    bar(out(ll,1),'FaceColor',[0.6,0.6,0.8],'EdgeColor',[0.55,0.55,0.8])
+    errorbar(1:20,out(ll,2),out(ll,3),out(ll,4),'x','Color',[0.7 0.1 0.1],'Marker','none')
+    xlim([0 21])
+    ylim([-5e-6,25e-6])
+    xlabel('Soil Layer')
+    ylabel('Soil sink (mm/s)')
+    text(18.5,20e-6,'(c)','FontSize',14,'FontWeight','bold')
+    
+    subplot('position',[0.525, 0.11, 0.46, 0.39])
+    ll = 61:80;
+    hold on
+    bar(out(ll,1),'FaceColor',[0.6,0.6,0.8],'EdgeColor',[0.55,0.55,0.8])
+    errorbar(1:20,out(ll,2),out(ll,3),out(ll,4),'x','Color',[0.7 0.1 0.1],'Marker','none')
+    xlim([0 21])
+    ylim([-5e-6,25e-6])
+    xlabel('Soil Layer')
+    set(gca,'yticklabel',[])
+    text(18.5,20e-6,'(d)','FontSize',14,'FontWeight','bold')
+    
+
+    
+    xdk.Units = 'inches';
+    xdk.Position = [2,2,7,4];
+    xdk.PaperSize = [7,4];
+    xdk.PaperPosition = [0,0,7,4];
+    
+    if ff(8)>1
+        print(xdk,'../figs/fig7','-dpdf')
+    end
+end
+
 
 
 if ff(7)>0
@@ -87,44 +280,50 @@ if ff(7)>0
     out(oo,4) = quantile(qrootsink(ll,ix)',0.75)-out(oo,2)';
     
     xdk = figure;
-
-    subplot('position',[0.07, 0.55, 0.43, 0.39])
+    
+    subplot('position',[0.06, 0.55, 0.45, 0.39])
     ll = 1:20;
     hold on
     bar(out(ll,1),'FaceColor',[0.6,0.6,0.8],'EdgeColor',[0.55,0.55,0.8])
-    errorbar(1:20,out(ll,2),out(ll,3),out(ll,4),'x','Color',[0.7 0.1 0.1])
+    errorbar(1:20,out(ll,2),out(ll,3),out(ll,4),'x','Color',[0.7 0.1 0.1],'Marker','none')
     xlim([0 21])
     set(gca,'xticklabel',[])
     ylabel('Soil sink (mm/s)')
-    ylim([-8e-6,11e-6])
+    ylim([-8e-6,12e-6])
+    text(1,9e-6,'(a)','FontSize',14,'FontWeight','bold')
     
-    subplot('position',[0.54, 0.55, 0.43, 0.39])
+    subplot('position',[0.53, 0.55, 0.45, 0.39])
     ll = 21:40;
     hold on
     bar(out(ll,1),'FaceColor',[0.6,0.6,0.8],'EdgeColor',[0.55,0.55,0.8])
-    errorbar(1:20,out(ll,2),out(ll,3),out(ll,4),'x','Color',[0.7 0.1 0.1])
+    errorbar(1:20,out(ll,2),out(ll,3),out(ll,4),'x','Color',[0.7 0.1 0.1],'Marker','none')
     xlim([0 21])
     set(gca,'xticklabel',[])
-    ylim([-8e-6,11e-6])
+    set(gca,'yticklabel',[])
+    ylim([-8e-6,12e-6])
+    text(18.5,9e-6,'(b)','FontSize',14,'FontWeight','bold')
     
-    subplot('position',[0.07, 0.11, 0.43, 0.39])
+    subplot('position',[0.06, 0.11, 0.45, 0.39])
     ll = 41:60;
     hold on
     bar(out(ll,1),'FaceColor',[0.6,0.6,0.8],'EdgeColor',[0.55,0.55,0.8])
-    errorbar(1:20,out(ll,2),out(ll,3),out(ll,4),'x','Color',[0.7 0.1 0.1])
+    errorbar(1:20,out(ll,2),out(ll,3),out(ll,4),'x','Color',[0.7 0.1 0.1],'Marker','none')
     xlim([0 21])
-    ylim([-5e-6 1e-5])
+    ylim([-5e-6,10e-6])
     xlabel('Soil Layer')
     ylabel('Soil sink (mm/s)')
+    text(1,9e-6,'(c)','FontSize',14,'FontWeight','bold')
     
-    subplot('position',[0.54, 0.11, 0.43, 0.39])
+    subplot('position',[0.53, 0.11, 0.45, 0.39])
     ll = 61:80;
     hold on
     bar(out(ll,1),'FaceColor',[0.6,0.6,0.8],'EdgeColor',[0.55,0.55,0.8])
-    errorbar(1:20,out(ll,2),out(ll,3),out(ll,4),'x','Color',[0.7 0.1 0.1])
+    errorbar(1:20,out(ll,2),out(ll,3),out(ll,4),'x','Color',[0.7 0.1 0.1],'Marker','none')
     xlim([0 21])
-    ylim([-5e-6 1e-5])
+    ylim([-5e-6,10e-6])
     xlabel('Soil Layer')
+    set(gca,'yticklabel',[])
+    text(18.5,9e-6,'(d)','FontSize',14,'FontWeight','bold')
     
 
     
@@ -132,6 +331,9 @@ if ff(7)>0
     xdk.Position = [2,2,7,4];
     xdk.PaperSize = [7,4];
     xdk.PaperPosition = [0,0,7,4];
+    
+    
+    
     
     if ff(7)>1
         print(xdk,'../figs/fig6','-dpdf')
