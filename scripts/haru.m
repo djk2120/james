@@ -48,7 +48,145 @@ zr=[1.40e-2,2.73e-2,3.96e-2,5.02e-2,7.02e-2,...
 %************************************************************************
 %------------------------------------------------------------------------
 
-ff = [0,0,0,0,0,0,2,2,2];
+ff = [0,0,0,0,0,...
+    0,0,0,0,2];
+
+
+if ff(10)>0
+    
+    ix1 = smp(1:4,:)==1;
+    ix2 = smp(1:4,:)==1;
+    ix3 = smp(1:4,:)==1;
+    
+    x    = vpd;
+    y    = 0*smp(1:4,:);
+    ffix = fsds>400&fsds<425;
+    
+    %phs-on, amb
+    ee      = 1;
+    y(ee,:) = 2.^-((vegwp(1,:)/-250000).^3.95);
+    tmp     = repmat(vegwp(4,mcsec==diurn(10)),48,1);
+    z       = tmp(1:length(fsds));
+    q       = quantile(z(ffix),[1/3,2/3]);
+    
+    ix1(ee,:) = z<q(1)&ffix;
+    ix2(ee,:) = z>=q(1)&z<q(2)&ffix;
+    ix3(ee,:) = z>=q(2)&ffix;
+    
+    %phs-on, tfe
+    ee      = 2;
+    y(ee,:) = 2.^-((vegwp(5,:)/-250000).^3.95);
+    tmp     = repmat(vegwp(8,mcsec==diurn(10)),48,1);
+    z       = tmp(1:length(fsds));
+    ix      = ffix&year>2001;
+    q       = quantile(z(ix),[1/3,2/3]);
+    
+    ix1(ee,:) = z<q(1)&ix;
+    ix2(ee,:) = z>=q(1)&z<q(2)&ix;
+    ix3(ee,:) = z>=q(2)&ix;
+    
+    %phs-off, amb
+    ll = 41:60;ee=3;
+    y(ee,:) = btran(1,:);
+    z = zr*smp(ll,:);
+    q = quantile(z(ffix),[1/3,2/3]);
+
+    ix1(ee,:) = z<q(1)&ffix;
+    ix2(ee,:) = z>=q(1)&z<q(2)&ffix;
+    ix3(ee,:) = z>=q(2)&ffix;
+    
+    %phs-off, amb
+    ll = 61:80;ee=4;
+    y(ee,:) = btran(2,:);
+    z = zr*smp(ll,:);
+    ix = ffix&year>2001;
+    q = quantile(z(ix),[1/3,2/3]);
+
+    ix1(ee,:) = z<q(1)&ix;
+    ix2(ee,:) = z>=q(1)&z<q(2)&ix;
+    ix3(ee,:) = z>=q(2)&ix;
+    
+    
+    
+    %plotting
+    xdk = figure;
+    
+    
+    subplot('position',[0.08, 0.56, 0.43, 0.39])
+    ee  = 1;
+    hold on
+    plot(x(ix3(ee,:)),y(ee,ix3(ee,:)),'.','MarkerSize',9)
+    plot(x(ix1(ee,:)),y(ee,ix1(ee,:)),'.','MarkerSize',9)
+    plot(x(ix2(ee,:)),y(ee,ix2(ee,:)),'.','MarkerSize',9) 
+    xlim([0 3.25])
+    ylim([0 1])
+    set(gca,'xticklabel',[])
+    set(gca,'ytick',0:0.25:1)
+    ylabel('Stress function')
+    text(0.1,0.15,'(a)','FontSize',14,'FontWeight','bold')
+    
+    
+    subplot('position',[0.54, 0.56, 0.43, 0.39])
+    ee  = 2;
+    hold on
+    plot(x(ix3(ee,:)),y(ee,ix3(ee,:)),'.','MarkerSize',9)
+    plot(x(ix1(ee,:)),y(ee,ix1(ee,:)),'.','MarkerSize',9)
+    plot(x(ix2(ee,:)),y(ee,ix2(ee,:)),'.','MarkerSize',9) 
+    xlim([0 3.25])
+    ylim([0 1])
+    set(gca,'ytick',0:0.25:1)
+    set(gca,'yticklabel',[])
+    set(gca,'xticklabel',[])
+    text(2.9,0.15,'(b)','FontSize',14,'FontWeight','bold')
+    
+    
+    subplot('position',[0.08, 0.12, 0.43, 0.39])
+    ee  = 3;
+    hold on
+    plot(x(ix3(ee,:)),y(ee,ix3(ee,:)),'.','MarkerSize',9)
+    plot(x(ix1(ee,:)),y(ee,ix1(ee,:)),'.','MarkerSize',9)
+    plot(x(ix2(ee,:)),y(ee,ix2(ee,:)),'.','MarkerSize',9) 
+    xlim([0 3.25])
+    ylim([0 1])
+    set(gca,'ytick',0:0.25:1)
+    ylabel('Stress function')
+    xlabel('VPD (kPa)')
+    text(0.1,0.15,'(c)','FontSize',14,'FontWeight','bold')
+
+    subplot('position',[0.54, 0.12, 0.43, 0.39])
+    ee  = 4;
+    hold on
+    plot(x(ix3(ee,:)),y(ee,ix3(ee,:)),'.','MarkerSize',9)
+    plot(x(ix1(ee,:)),y(ee,ix1(ee,:)),'.','MarkerSize',9)
+    plot(x(ix2(ee,:)),y(ee,ix2(ee,:)),'.','MarkerSize',9) 
+    xlim([0 3.25])
+    ylim([0 1])
+    set(gca,'ytick',0:0.25:1)
+    set(gca,'yticklabel',[])
+    xlabel('VPD (kPa)')
+    text(2.9,0.15,'(d)','FontSize',14,'FontWeight','bold')
+    
+    
+
+    
+
+    
+
+    
+    xdk.Units = 'inches';
+    xdk.Position = [2,2,7,4];
+    xdk.PaperSize = [7,4];
+    xdk.PaperPosition = [0,0,7,4];
+    
+
+    
+    if ff(10)>1
+        print(xdk,'../figs/fig9','-dpdf')
+    end
+
+    
+end
+
 
 
 if ff(9)>0
@@ -724,23 +862,24 @@ end
 if ff(5) >100
     xdk = figure;
     
-    subplot('position',[0.07, 0.12, 0.43, 0.39])
-    plot(1:20,(1:20)*10^-9)
-    xlabel('Soil Layer')
-    ylabel('Soil-root conductance')
-    
     subplot('position',[0.07, 0.56, 0.43, 0.39])
     plot(1:20,(1:20)*10^-9)
     set(gca,'xticklabel',[])
     ylabel('Soil-root conductance')
     
+    subplot('position',[0.54, 0.56, 0.43, 0.39])
+    plot(1:20,(1:20)*10^-9)
+    set(gca,'xticklabel',[])
+    
+    subplot('position',[0.07, 0.12, 0.43, 0.39])
+    plot(1:20,(1:20)*10^-9)
+    xlabel('Soil Layer')
+    ylabel('Soil-root conductance')
+
     subplot('position',[0.54, 0.12, 0.43, 0.39])
     plot(1:20,(1:20)*10^-9)
     xlabel('Soil Layer')
     
-    subplot('position',[0.54, 0.56, 0.43, 0.39])
-    plot(1:20,(1:20)*10^-9)
-    set(gca,'xticklabel',[])
     
     xdk.Units = 'inches';
     xdk.Position = [2,2,7,4];
