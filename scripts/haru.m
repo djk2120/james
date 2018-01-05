@@ -49,8 +49,65 @@ zr=[1.40e-2,2.73e-2,3.96e-2,5.02e-2,7.02e-2,...
 %------------------------------------------------------------------------
 
 ff = [0,0,0,0,0,...
-    0,0,0,0,2];
+    0,0,0,0,0,...
+    2];
 
+if ff(11)>0
+    
+   out = zeros(48,4);
+   
+   targ = 0*smp(1:4,:);
+   targ(1,:) = 2.^-((vegwp(1,:)/-250000).^3.95);
+   targ(2,:) = 2.^-((vegwp(5,:)/-250000).^3.95);
+   targ(3,:) = btran(1,:);
+   targ(4,:) = btran(2,:);
+    
+   g = findgroups(mcsec);
+   for ee=1:4
+       if ee==2||ee==4
+           ix = month==9 & year>2001;
+       else
+           ix = month==9;
+       end
+       out(:,ee) = splitapply(@mean,targ(ee,ix),g(ix));
+   end
+   
+   xdk = figure;
+   
+   subplot('Position',[0.08,0.11,0.45,0.84])
+   hold on
+   plot(0.25:0.5:24,out(:,1),'k-','LineWidth',2)
+   plot(0.25:0.5:24,out(:,2),'k:','LineWidth',2)
+   set(gca,'ytick',0:0.25:1)
+   set(gca,'xtick',0:6:24)
+   xlabel('Hour')
+   ylabel('Stress function')
+   legend('AMB','TFE','Location','SouthEast')
+   text(21,0.9,'(a)','FontSize',14,'FontWeight','bold')
+   ylim([0 1])
+   
+   subplot('Position',[0.54,0.11,0.45,0.84])
+   hold on
+   plot(0.25:0.5:24,out(:,3),'k-','LineWidth',2)
+   plot(0.25:0.5:24,out(:,4),'k:','LineWidth',2)
+   set(gca,'xtick',0:6:24)
+   set(gca,'ytick',0:0.25:1)
+   set(gca,'yticklabel',[])
+   xlabel('Hour')
+   text(2,0.9,'(b)','FontSize',14,'FontWeight','bold')
+   ylim([0 1])
+
+   xdk.Units = 'inches';
+   xdk.Position = [2,2,7,4];
+   xdk.PaperSize = [7,4];
+   xdk.PaperPosition = [0,0,7,4];
+   
+   
+   if ff(11)>1
+       print(xdk,'../figs/fig10','-dpdf')
+   end
+ 
+end
 
 if ff(10)>0
     
@@ -105,8 +162,6 @@ if ff(10)>0
     ix1(ee,:) = z<q(1)&ix;
     ix2(ee,:) = z>=q(1)&z<q(2)&ix;
     ix3(ee,:) = z>=q(2)&ix;
-    
-    
     
     %plotting
     xdk = figure;
@@ -166,27 +221,16 @@ if ff(10)>0
     xlabel('VPD (kPa)')
     text(2.9,0.15,'(d)','FontSize',14,'FontWeight','bold')
     
-    
-
-    
-
-    
-
-    
     xdk.Units = 'inches';
     xdk.Position = [2,2,7,4];
     xdk.PaperSize = [7,4];
     xdk.PaperPosition = [0,0,7,4];
     
-
-    
     if ff(10)>1
         print(xdk,'../figs/fig9','-dpdf')
     end
 
-    
 end
-
 
 
 if ff(9)>0
