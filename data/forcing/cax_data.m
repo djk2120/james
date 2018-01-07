@@ -27,48 +27,19 @@ end
 tt = repmat(1:48,1,1095);
 
 
-%check the variables
-
+%the variables
 varlist = {'TBOT','RH','WIND','FLDS','FSDS','PRECTmms'};
 
-if 1==2
-    for i=1:6
-        
-        tmp = ncread(file,varlist{i});
-        targ = zeros(1,length(tmp));
-        targ(:) = tmp(1,1,:);
-        
-        ix  = month==10&year==3;
-        out = splitapply(@mean,targ(ix),tt(ix));
-        
-        subplot(2,3,i)
-        plot(out)
-        xlim([0 49])
-        title(varlist{i})
-    end
-end
-
-
-if 1==2
-    i=5;
-    tmp = ncread(file,varlist{i});
-    targ = zeros(1,length(tmp));
-    targ(:) = tmp(1,1,:);
+    %bad days
+    %tbot = [954,1095]
+    %rh   = [954,1095]
+    %wind = [all bad]
+    %flds = no obvious issues
+    %fsds = [979]
+    %prec = no obvious issues
     
-    d1 = 274;
-    
-    for i=1:4
-        subplot(3,4,i)
-        plot(targ(year==1&day==(d1+10*i)))
-        subplot(3,4,i+4)
-        plot(targ(year==2&day==(d1+10*i)))
-        subplot(3,4,i+8)
-        plot(targ(year==3&day==(d1+10*i)))
-    end
-end
 
 
-%starts day 979, persists through end of record
 
 ix = [];
 a = 1:2:48;
@@ -77,27 +48,62 @@ for i=1:24
     ix = [ix;b(i);a(i)];
 end
 
+t2     = 0*month;
+dvals = [954,954,1,0,979,0];
+for i=1:6
+    if dvals(i)>0
+        tmp     = ncread(file,varlist{i});
+        targ    = zeros(1,length(tmp));
+        targ2   = tmp;
+        targ(:) = tmp(1,1,:);
+        for dd=dvals(i):1095
+            ii = (1:48)+(dd-1)*48;
+            x  = targ(ii);
+            targ2(ii) = x(ix);
+        end
+        ncwrite(newf,varlist{i},targ2)
 
-%starts being bad
-%tbot = 954
-%rh   = 954
-%wind = the whole time?
-%fsds = 979
-
+    if 1==1
+        figure;
+        ixm  = year==3&month==11;
+        
+        t2(:) = targ2(1,1,:);
+        
+        out = splitapply(@mean,targ(ixm),tt(ixm));
+        subplot(1,2,1)
+        plot(out)
+        ylabel(varlist{i})
+        title('old')
+        out = splitapply(@mean,t2(ixm),tt(ixm));
+        subplot(1,2,2)
+        plot(out)
+        title('new')
+    end
+    
+    end
+    
+end
 
 if 1==2
-    i=3;
+    
+    %bad days
+    %tbot = [954,1095]
+    %rh   = [954,1095]
+    %wind = [all]
+    %fsds = [979]
+    
+    i=5;
     tmp = ncread(file,varlist{i});
     targ = zeros(1,length(tmp));
     targ(:) = tmp(1,1,:);
     targ2 = targ;
     
-    %for dd=979:1095
+    
     xdk = figure;
     xdk.Units = 'inches';
     xdk.Position = [.2639  , 2.1528 , 16.1389  ,  7.6250];
     ct = 0;
-    for dd=900:970
+    for dd=979:1095
         ii = (1:48)+(dd-1)*48;
         x  = targ(ii);
         %fsds2(ii) = x(ix);
@@ -112,14 +118,14 @@ if 1==2
         title(num2str(dd))
         subplot(2,6,ct+6)
         plot(x(ix))
-        pause(0.5)
+        pause(0.1)
         
     end
 end
 
 
 
-if 1==1
+if 1==2
     xdk = figure;
     xdk.Units = 'inches';
     xdk.Position = [.2639  , 2.1528 , 16.1389  ,  7.6250];
@@ -136,8 +142,8 @@ if 1==1
     end
       
     ct = 0;
-    for yy=1
-        for mm=1:12
+    for yy=3
+        for mm=6:12
             ct = ct+1;
             if ct==7
                 ct=1;
@@ -153,7 +159,21 @@ if 1==1
             pause(0.5)
         end
     end
-    
-    
-    
+end
+
+if 1==2
+    for i=1:6
+        
+        tmp = ncread(file,varlist{i});
+        targ = zeros(1,length(tmp));
+        targ(:) = tmp(1,1,:);
+        
+        ix  = month==10&year==3;
+        out = splitapply(@mean,targ(ix),tt(ix));
+        
+        subplot(2,3,i)
+        plot(out)
+        xlim([0 49])
+        title(varlist{i})
+    end
 end
