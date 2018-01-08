@@ -1,7 +1,7 @@
 clear
 close all
 
-file = 'BR-CAX_I1PTCLM50_r270.clm2.h1.2001-01-01-00000.nc';
+file = 'BR-CAX_I1PTCLM50_r270_on_tfe.clm2.h1.2001-01-01-00000.nc';
 
 
 t = ncread(file,'mdcur');
@@ -24,9 +24,9 @@ end
 tt = repmat(1:48,1,1095);
 
 
-tmp = ncread(file,'FCTR');
+tmp = ncread(file,'KSR');
 targ = 0*month;
-targ(:) = tmp(2:end);
+targ(:) = tmp(1,3,2:end);
 
 ix = year==3&month==10;
 sum(ix)
@@ -34,3 +34,4 @@ sum(ix)
 out = splitapply(@mean,targ(ix),tt(ix));
 
 plot(out)
+ylim([0,1.1*max(out)])
