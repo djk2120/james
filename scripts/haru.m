@@ -1,11 +1,23 @@
 close all
 
-dir = '../data/aug25/';
+dir = '../data/jan7/';
+
 files = {...
-    [dir,'BR-CAX_I1PTCLM50_r251_k5g7.clm2.h1.2001-01-01-00000.nc'];...
-    [dir,'BR-CAX_I1PTCLM50_r251tfe_k5g7.clm2.h1.2001-01-01-00000.nc'];...
-    [dir,'BR-CAX_I1PTCLM50_r251off_k5g7.clm2.h1.2001-01-01-00000.nc'];...
-    [dir,'BR-CAX_I1PTCLM50_r251offtfe_k5g7.clm2.h1.2001-01-01-00000.nc']};
+    [dir,'BR-CAX_I1PTCLM50_r270.clm2.h1.2001-01-01-00000.nc'];...
+    [dir,'BR-CAX_I1PTCLM50_r270_on_tfe.clm2.h1.2001-01-01-00000.nc'];...
+    [dir,'BR-CAX_I1PTCLM50_r270_off_amb.clm2.h1.2001-01-01-00000.nc'];...
+    [dir,'BR-CAX_I1PTCLM50_r270_off_tfe.clm2.h1.2001-01-01-00000.nc']};
+    
+
+
+
+
+%dir = '../data/aug25/';
+%files = {...
+%    [dir,'BR-CAX_I1PTCLM50_r251_k5g7.clm2.h1.2001-01-01-00000.nc'];...
+%    [dir,'BR-CAX_I1PTCLM50_r251tfe_k5g7.clm2.h1.2001-01-01-00000.nc'];...
+%    [dir,'BR-CAX_I1PTCLM50_r251off_k5g7.clm2.h1.2001-01-01-00000.nc'];...
+%    [dir,'BR-CAX_I1PTCLM50_r251offtfe_k5g7.clm2.h1.2001-01-01-00000.nc']};
 
 a=ncinfo(files{1});
 
@@ -50,7 +62,32 @@ zr=[1.40e-2,2.73e-2,3.96e-2,5.02e-2,7.02e-2,...
 
 ff = [0,0,0,0,0,...
     0,0,0,0,0,...
-    2];
+    2,0];
+
+%1  = water potential
+%5  = conductances
+%6  = seasonal HR
+%7  = phs, nighttime, soil sink
+%8  = phs, daytime, soil sink
+%9  = phs-off, daytime, soil sink
+%10 = stress vs. vpd
+%11 = diurnal stress function
+
+
+if ff(12)>0
+    
+   out = zeros(36,4);
+
+   for ee = 1:4
+       out(:,ee) = splitapply(@mean,fctr(ee,:),month+(year-2001)*12);
+   end
+   
+   plot(out)
+   ylim([0 150])
+   legend('onAMB','onTFE','offAMB','offTFE') 
+    
+    
+end
 
 if ff(11)>0
     
@@ -65,9 +102,9 @@ if ff(11)>0
    g = findgroups(mcsec);
    for ee=1:4
        if ee==2||ee==4
-           ix = month==9 & year>2001;
+           ix = (month==9|month==10|month==11) & year>2001;
        else
-           ix = month==9;
+           ix = (month==9|month==10|month==11);
        end
        out(:,ee) = splitapply(@mean,targ(ee,ix),g(ix));
    end
@@ -83,7 +120,7 @@ if ff(11)>0
    xlabel('Hour')
    ylabel('Stress function')
    legend('AMB','TFE','Location','SouthEast')
-   text(21,0.9,'(a)','FontSize',14,'FontWeight','bold')
+   text(1.2,0.1,'(a)','FontSize',14,'FontWeight','bold')
    ylim([0 1])
    
    subplot('Position',[0.54,0.11,0.45,0.84])
@@ -94,7 +131,7 @@ if ff(11)>0
    set(gca,'ytick',0:0.25:1)
    set(gca,'yticklabel',[])
    xlabel('Hour')
-   text(2,0.9,'(b)','FontSize',14,'FontWeight','bold')
+   text(22,0.1,'(b)','FontSize',14,'FontWeight','bold')
    ylim([0 1])
 
    xdk.Units = 'inches';
@@ -273,7 +310,7 @@ if ff(9)>0
     out(oo,4) = quantile(qrootsink(ll,ix)',0.75)-out(oo,2)';
     
 
-     xdk = figure;
+    xdk = figure;
 
     subplot('position',[0.05, 0.55, 0.46, 0.39])
     ll = 1:20;
@@ -282,9 +319,12 @@ if ff(9)>0
     errorbar(1:20,out(ll,2),out(ll,3),out(ll,4),'x','Color',[0.7 0.1 0.1],'Marker','none')
     xlim([0 21])
     set(gca,'xticklabel',[])
+    set(gca,'ytick',0:1e-5:2e-5)
+    ax = gca;
+    ax.YAxis.Exponent = -5;
     ylabel('Soil sink (mm/s)')
-    ylim([-5e-6,25e-6])
-    text(18.5,20e-6,'(a)','FontSize',14,'FontWeight','bold')
+    ylim([-.5e-5,2e-5])
+    text(18.5,17e-6,'(a)','FontSize',14,'FontWeight','bold')
     
     subplot('position',[0.525, 0.55, 0.46, 0.39])
     ll = 21:40;
@@ -292,10 +332,11 @@ if ff(9)>0
     bar(out(ll,1),'FaceColor',[0.6,0.6,0.8],'EdgeColor',[0.55,0.55,0.8])
     errorbar(1:20,out(ll,2),out(ll,3),out(ll,4),'x','Color',[0.7 0.1 0.1],'Marker','none')
     xlim([0 21])
+    set(gca,'ytick',0:1e-5:2e-5)
     set(gca,'xticklabel',[])
     set(gca,'yticklabel',[])
-    ylim([-5e-6,25e-6])
-    text(18.5,20e-6,'(b)','FontSize',14,'FontWeight','bold')
+    ylim([-.5e-5,2e-5])
+    text(18.5,17e-6,'(b)','FontSize',14,'FontWeight','bold')
     
     subplot('position',[0.05, 0.11, 0.46, 0.39])
     ll = 41:60;
@@ -303,10 +344,13 @@ if ff(9)>0
     bar(out(ll,1),'FaceColor',[0.6,0.6,0.8],'EdgeColor',[0.55,0.55,0.8])
     errorbar(1:20,out(ll,2),out(ll,3),out(ll,4),'x','Color',[0.7 0.1 0.1],'Marker','none')
     xlim([0 21])
-    ylim([-5e-6,25e-6])
+    ylim([-.5e-5,2e-5])
+    set(gca,'ytick',0:1e-5:2e-5)
+    ax = gca;
+    ax.YAxis.Exponent = -5;
     xlabel('Soil Layer')
     ylabel('Soil sink (mm/s)')
-    text(18.5,20e-6,'(c)','FontSize',14,'FontWeight','bold')
+    text(18.5,17e-6,'(c)','FontSize',14,'FontWeight','bold')
     
     subplot('position',[0.525, 0.11, 0.46, 0.39])
     ll = 61:80;
@@ -314,10 +358,11 @@ if ff(9)>0
     bar(out(ll,1),'FaceColor',[0.6,0.6,0.8],'EdgeColor',[0.55,0.55,0.8])
     errorbar(1:20,out(ll,2),out(ll,3),out(ll,4),'x','Color',[0.7 0.1 0.1],'Marker','none')
     xlim([0 21])
-    ylim([-5e-6,25e-6])
+    ylim([-.5e-5,2e-5])
     xlabel('Soil Layer')
+    set(gca,'ytick',0:1e-5:2e-5)
     set(gca,'yticklabel',[])
-    text(18.5,20e-6,'(d)','FontSize',14,'FontWeight','bold')
+    text(18.5,17e-6,'(d)','FontSize',14,'FontWeight','bold')
     
     xdk.Units = 'inches';
     xdk.Position = [2,2,7,4];
@@ -376,8 +421,8 @@ if ff(8)>0
     xlim([0 21])
     set(gca,'xticklabel',[])
     ylabel('Soil sink (mm/s)')
-    ylim([-5e-6,25e-6])
-    text(18.5,20e-6,'(a)','FontSize',14,'FontWeight','bold')
+    ylim([-5e-6,35e-6])
+    text(18.5,30e-6,'(a)','FontSize',14,'FontWeight','bold')
     
     subplot('position',[0.525, 0.55, 0.46, 0.39])
     ll = 21:40;
@@ -387,8 +432,8 @@ if ff(8)>0
     xlim([0 21])
     set(gca,'xticklabel',[])
     set(gca,'yticklabel',[])
-    ylim([-5e-6,25e-6])
-    text(18.5,20e-6,'(b)','FontSize',14,'FontWeight','bold')
+    ylim([-5e-6,35e-6])
+    text(18.5,30e-6,'(b)','FontSize',14,'FontWeight','bold')
     
     subplot('position',[0.05, 0.11, 0.46, 0.39])
     ll = 41:60;
@@ -396,10 +441,10 @@ if ff(8)>0
     bar(out(ll,1),'FaceColor',[0.6,0.6,0.8],'EdgeColor',[0.55,0.55,0.8])
     errorbar(1:20,out(ll,2),out(ll,3),out(ll,4),'x','Color',[0.7 0.1 0.1],'Marker','none')
     xlim([0 21])
-    ylim([-5e-6,25e-6])
+    ylim([-5e-6,35e-6])
     xlabel('Soil Layer')
     ylabel('Soil sink (mm/s)')
-    text(18.5,20e-6,'(c)','FontSize',14,'FontWeight','bold')
+    text(18.5,30e-6,'(c)','FontSize',14,'FontWeight','bold')
     
     subplot('position',[0.525, 0.11, 0.46, 0.39])
     ll = 61:80;
@@ -407,10 +452,10 @@ if ff(8)>0
     bar(out(ll,1),'FaceColor',[0.6,0.6,0.8],'EdgeColor',[0.55,0.55,0.8])
     errorbar(1:20,out(ll,2),out(ll,3),out(ll,4),'x','Color',[0.7 0.1 0.1],'Marker','none')
     xlim([0 21])
-    ylim([-5e-6,25e-6])
+    ylim([-5e-6,35e-6])
     xlabel('Soil Layer')
     set(gca,'yticklabel',[])
-    text(18.5,20e-6,'(d)','FontSize',14,'FontWeight','bold')
+    text(18.5,30e-6,'(d)','FontSize',14,'FontWeight','bold')
     
 
     
@@ -470,9 +515,10 @@ if ff(7)>0
     errorbar(1:20,out(ll,2),out(ll,3),out(ll,4),'x','Color',[0.7 0.1 0.1],'Marker','none')
     xlim([0 21])
     set(gca,'xticklabel',[])
+    set(gca,'ytick',0:1e-5:2e-5)
     ylabel('Soil sink (mm/s)')
-    ylim([-8e-6,12e-6])
-    text(1,9e-6,'(a)','FontSize',14,'FontWeight','bold')
+    ylim([-8e-6,2.5e-5])
+    text(1,21e-6,'(a)','FontSize',14,'FontWeight','bold')
     
     subplot('position',[0.53, 0.55, 0.45, 0.39])
     ll = 21:40;
@@ -482,8 +528,8 @@ if ff(7)>0
     xlim([0 21])
     set(gca,'xticklabel',[])
     set(gca,'yticklabel',[])
-    ylim([-8e-6,12e-6])
-    text(18.5,9e-6,'(b)','FontSize',14,'FontWeight','bold')
+    ylim([-8e-6,2.5e-5])
+    text(18.5,21e-6,'(b)','FontSize',14,'FontWeight','bold')
     
     subplot('position',[0.06, 0.11, 0.45, 0.39])
     ll = 41:60;
@@ -491,10 +537,10 @@ if ff(7)>0
     bar(out(ll,1),'FaceColor',[0.6,0.6,0.8],'EdgeColor',[0.55,0.55,0.8])
     errorbar(1:20,out(ll,2),out(ll,3),out(ll,4),'x','Color',[0.7 0.1 0.1],'Marker','none')
     xlim([0 21])
-    ylim([-5e-6,10e-6])
+    ylim([-5e-6,2.5e-5])
     xlabel('Soil Layer')
     ylabel('Soil sink (mm/s)')
-    text(1,9e-6,'(c)','FontSize',14,'FontWeight','bold')
+    text(1,21e-6,'(c)','FontSize',14,'FontWeight','bold')
     
     subplot('position',[0.53, 0.11, 0.45, 0.39])
     ll = 61:80;
@@ -502,10 +548,10 @@ if ff(7)>0
     bar(out(ll,1),'FaceColor',[0.6,0.6,0.8],'EdgeColor',[0.55,0.55,0.8])
     errorbar(1:20,out(ll,2),out(ll,3),out(ll,4),'x','Color',[0.7 0.1 0.1],'Marker','none')
     xlim([0 21])
-    ylim([-5e-6,10e-6])
+    ylim([-5e-6,2.5e-5])
     xlabel('Soil Layer')
     set(gca,'yticklabel',[])
-    text(18.5,9e-6,'(d)','FontSize',14,'FontWeight','bold')
+    text(18.5,21e-6,'(d)','FontSize',14,'FontWeight','bold')
     
 
     
@@ -521,10 +567,6 @@ if ff(7)>0
         print(xdk,'../figs/fig6','-dpdf')
     end
 end
-
-
-
-
 
 
 if ff(6)>0
@@ -547,17 +589,17 @@ if ff(6)>0
     ylabel('Total HR (mm)')
     title('AMB')
     xlim([0 13])
-    ylim([0 120])
-    text(1,100,'(a)','FontSize',14,'FontWeight','bold')
+    ylim([0 180])
+    text(1,170,'(a)','FontSize',14,'FontWeight','bold')
     
     subplot('Position',[0.54,0.11,0.45,0.84])
     bar(hr2,'FaceColor',[0.6,0.6,0.8],'EdgeColor',[0.55,0.55,0.8])
     xlabel('Month')
     xlim([0 13])
-    ylim([0 120])
+    ylim([0 180])
     title('TFE')
     set(gca,'yticklabel',[])
-    text(11,100,'(b)','FontSize',14,'FontWeight','bold')
+    text(11,170,'(b)','FontSize',14,'FontWeight','bold')
     
     xdk.Units = 'inches';
     xdk.Position = [2,2,7,4];
@@ -627,7 +669,7 @@ if ff(5) >0
     errorbar(1:20,out(ll,1),out(ll,2),out(ll,3),'x','Color',[0.7 0.1 0.1],'Marker','none')
     xlabel('Soil Layer')
     ylabel('Conductance (s-1)')
-    ylim([0 8e-11])
+    ylim([0 9e-11])
     text(17,6/7*8e-11,'(c)','FontSize',14,'FontWeight','bold')
     
     subplot('position',[0.54, 0.12, 0.43, 0.39])
@@ -636,7 +678,7 @@ if ff(5) >0
     plot(1:20,out(ll,1),'x')
     errorbar(1:20,out(ll,1),out(ll,2),out(ll,3),'x','Color',[0.7 0.1 0.1],'Marker','none')
     xlabel('Soil Layer')
-    ylim([0 8e-11])
+    ylim([0 9e-11])
     text(17,6/7*8e-11,'(d)','FontSize',14,'FontWeight','bold')
     
     
