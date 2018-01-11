@@ -36,8 +36,52 @@ Pierre Gentine\affil{1}
 
 \section{Introduction}
 
-droughts are increasing \citep{cook2015}
-along with stress from increasing vapor pressure deficit 
+
+
+ - droughts are increasing 
+      . \citep{cook2015}
+      . \citep{dai2013}
+      . amazon \citep{fu2013}
+
+ - vapor pressure deficit 
+      . \citep{mcdowell2015}
+      . \citep{novick2016b}
+      . \citep{williams2013}
+
+ - with lingering uncertainty in veg response
+      . \citep{dekauwe2017}
+      . \citep{friedlingstein2014}
+      . \citep{anderegg2015b}
+
+
+SPAC representation is important, defines:
+  - vegetation water status
+  - atmospheric carbon sink
+  - hydrologic transpiration sink
+  - magnitude and timing of transpiration
+
+Representation in CLM is bad
+  - also in other models
+      . \citep{ukkola2016}
+
+
+Adds complexity, is it worth it, tractable?
+       . hydraulic traits too hard \citep{drake2017}  
+
+
+  - Model structural information
+  - Model parameter information
+  - Water status information
+
+Our goal:
+  - parsimonious plant hydraulic implementation
+  - setting a framework to represent vegetation water status
+       . adds functionality
+       . opens an interface to trait data, satellite VOD
+
+
+  - VOD
+       . \citep{momen2017}
 
 %====================
 %  MODEL DESCRIPTION
@@ -159,7 +203,7 @@ along with stress from increasing vapor pressure deficit
      These parameters can be estimated from field experiments \citep{sack2002}, 
      and $p_{50}$ is available in the TRY trait database \citep{kattge2011}.
      Parameterization based on $p_{50}$ is especially attractive in light of the call for transition to
-     a trait-based model paradigm \citep{anderegg2015}.
+     a trait-based model paradigm \citep{anderegg2015a}.
      The loss of xylem conductivity is based on lower terminus water potential ($\psi_1$)
      as is typical in other models \citep{xu2016}, but 
      may underestimate the integrated loss of conductivity \citep{sperry2015}. 
