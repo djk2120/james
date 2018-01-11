@@ -24,6 +24,21 @@ figure 3: conductance curves
   - phs off still has much more conductance in lower layers
 
 
-figure 5: seasonal redistribution
+figure 4: seasonal redistribution
 
-figure 6: nighttime redistribution
+figure 5: phs nighttime sink
+
+figure 6: phs daytime sink
+  - look at layers 15-20
+       . roots below 3.26 meters
+       . 9.9% of root fraction
+
+
+figure 7: old daytime sink
+  - dry season taproot functionality limited
+       . "conductance" is capped
+       . increasing sink is via Tmax
+
+
+  
+

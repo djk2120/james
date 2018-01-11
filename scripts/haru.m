@@ -29,7 +29,7 @@ if ~exist('fctr','var')
     a          = getvars( files{1} , offset, ns, 1);
     varlist    = {'FCTR','FPSN','BTRAN','VEGWP','SMP','QROOTSINK',...
         ...              1      2      3       4        5     6
-        'FCEV','FSH','KSR'};
+        'FCEV','FSH','KSR','GSSUN','GSSHA','ELAI'};
     %     7      8      9     10
     vard       = ones(length(varlist),length(files));
     vard(3,:)  = [0,0,1,1];
@@ -62,7 +62,7 @@ zr=[1.40e-2,2.73e-2,3.96e-2,5.02e-2,7.02e-2,...
 
 ff = [0,0,0,0,0,...
     0,0,0,0,0,...
-    2,0];
+    0,0,1];
 
 %1  = water potential
 %5  = conductances
@@ -73,6 +73,51 @@ ff = [0,0,0,0,0,...
 %10 = stress vs. vpd
 %11 = diurnal stress function
 
+
+
+if ff(13)>0
+    ix  = year==2003;
+    
+    g   = month(ix);
+    
+    subplot('Position',[0.08 0.56 0.9 0.42])
+    out = splitapply(@sum,1800*sum(qrootsink(15:20,ix)),g);
+    plot(out,'k-','LineWidth',2)
+    hold on
+    out = splitapply(@sum,1800*sum(qrootsink(35:40,ix)),g);
+    plot(out,'k:','LineWidth',2)
+    xlim([0 13])
+    ylim([-10 60])
+    ylabel('Soil sink (mm)')
+    set(gca,'xtick',1:12)
+    set(gca,'xticklabel',[])
+    
+    subplot('Position',[0.08 0.11 0.9 0.42])
+    out = splitapply(@sum,1800*sum(qrootsink(55:60,ix)),g);
+    plot(out,'k-','LineWidth',2)
+    hold on
+    out = splitapply(@sum,1800*sum(qrootsink(75:80,ix)),g);
+    plot(out,'k:','LineWidth',2)
+    xlim([0 13])
+    ylim([-10 60])
+    xlabel('Month')
+    ylabel('Soil sink (mm)')
+    set(gca,'xtick',1:12)
+
+    close all
+    out = zeros(4,2);
+    for i=1:4
+        for yy=1:2
+        out(i,yy) = 1800*sum(sum(qrootsink((15:20)+(i-1)*20,year==(yy+2001))));
+        end
+    end
+    
+    figure
+    bar(out)
+    
+end
+    
+    
 
 if ff(12)>0
     
@@ -273,7 +318,7 @@ end
 if ff(9)>0
 
     out = zeros(80,4);
-    ix = (mcsec>diurn(12)&mcsec<diurn(37))&month==9;  %day time
+    ix = (mcsec>diurn(12)&mcsec<diurn(37))&month==9&year>2001;  %day time
     ll = 41:60;
     oo = 1:20;
     
@@ -282,7 +327,7 @@ if ff(9)>0
     out(oo,3) = quantile(qrootsink(ll,ix)',0.25)-out(oo,2)';
     out(oo,4) = quantile(qrootsink(ll,ix)',0.75)-out(oo,2)';
     
-    ix = (mcsec>diurn(12)&mcsec<diurn(37))&month==12;  %day time
+    ix = (mcsec>diurn(12)&mcsec<diurn(37))&month==12&year>2001;  %day time
     ll = 41:60;
     oo = 21:40;
     
