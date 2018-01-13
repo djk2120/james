@@ -9,9 +9,6 @@ files = {...
     [dir,'BR-CAX_I1PTCLM50_r270_off_tfe.clm2.h1.2001-01-01-00000.nc']};
     
 
-
-
-
 %dir = '../data/aug25/';
 %files = {...
 %    [dir,'BR-CAX_I1PTCLM50_r251_k5g7.clm2.h1.2001-01-01-00000.nc'];...
@@ -60,9 +57,9 @@ zr=[1.40e-2,2.73e-2,3.96e-2,5.02e-2,7.02e-2,...
 %************************************************************************
 %------------------------------------------------------------------------
 
-ff = [0,0,0,0,0,...
+ff = [1,0,0,0,0,...
     0,0,0,0,0,...
-    0,0,1];
+    0,0,0];
 
 %1  = water potential
 %5  = conductances
@@ -936,15 +933,21 @@ end
 
 if ff(1)>0
     %figure 2, water potential from a dry day
-    dd=2;
-    mm=11;
-    yy=2002;
+
+    % calculate SON-2003 diurnal mean
+    ix  = year==2003&month>8&month<12;
+    g   = findgroups(mcsec);
+    out = zeros(8,48);
+    for i=1:8
+    out(i,:) = splitapply(@mean,vegwp(i,ix),g(ix));
+    end
     
+    %plotting
     xdk = figure;
     x = 0.25:0.5:24;
-    xf = 1/101972;
+    xf = 1/101972;  %converts mm to MPa
     subplot('position',[0.08, 0.12, 0.43, 0.83])
-    plot(x,xf*vegwp(1:4,day==dd&month==mm&year==yy)')
+    plot(x,xf*out(1:4,:)')
     xlim([0 24])
     ylim([-2.5 0])
     xlabel('Hour')
@@ -953,7 +956,7 @@ if ff(1)>0
     text(1.5,-2.3,'(a)','FontSize',14,'FontWeight','bold')
     set(gca,'xtick',0:6:24)
     subplot('position',[0.54, 0.12, 0.43, 0.83])
-    plot(x,xf*vegwp(5:8,day==dd&month==mm&year==yy)')
+    plot(x,xf*out(5:8,:)')
     set(gca,'xtick',0:6:24)
     ylim([-2.5 0])
     xlim([0 24])
@@ -973,18 +976,14 @@ if ff(1)>0
         print(xdk,'../figs/fig2','-dpdf')
     end
     
-    
-    % tfe pressure drop is about 2x larger soil-to-root as compared to
-    % root-to-leaf
-    if 1==2
-        figure
-        plot(vegwp(1,day==dd&month==mm&year==yy)-vegwp(4,day==dd&month==mm&year==yy)...
-            -(vegwp(5,day==dd&month==mm&year==yy)-vegwp(8,day==dd&month==mm&year==yy)))
-        hold on
-        x1 = vegwp(4,day==dd&month==mm&year==yy);
-        x2 = vegwp(8,day==dd&month==mm&year==yy);
-        plot(x2-max(x2)-(x1-max(x1)))
-    end
+    %predawn water potentials?
+    out         = xf*out;
+    psi_predawn = [out(4,11),out(8,11),out(4,11)-out(8,11)]
+    psi_midday  = [out(1:4,27),out(5:8,27)]
+    psi_drops   = [out(4,11),out(8,11)];
+    psi_drops   = [psi_drops;out(4,27)-out(4,11),out(8,27)-out(8,11)];
+    psi_drops   = [psi_drops;out(1,27)-out(4,27),out(5,27)-out(8,27)];
+    psi_drops   = [psi_drops,psi_drops(:,1)-psi_drops(:,2)]
     
 end
 

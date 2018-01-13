@@ -127,9 +127,6 @@ Our goal:
     
     What did \citet{zhou2014} show? What did \citet{manzoni2011} show? Can we cite changge?
 
-
-
-
 % Plant Hydaulics
 \subsection{Plant Hydraulic Stress (PHS)}
   We implemented a simplified plant hydraulic framework in CLM. 
@@ -336,6 +333,10 @@ Our goal:
     Plant tissue water storage (capacitance) is not represented, whereby the solution does not
     depend on the previous timestep and has no time derivatives.
 
+%====================
+%  EXP DESCRIPTION
+%====================
+\section{Experiment Description}
     
     
     
@@ -427,6 +428,35 @@ Our goal:
     5) Would like to represent reverse flows \\
     
 \section{Results and Discussion}
+\subsection{Modeling vegetation water potential}
+
+Results:
+
+Both cases: stem, sunlit, shaded basically indistinguishable, 3 lines overlap. \\
+Ambient Midday (1pm): -1.95, -1.94, -1.93 \\
+TFE Midday (1pm): -2.29, -2.28, -2.27 \\
+
+Ambient: Predawn (5am) root water potential = -0.07MPa \\
+TFE: Predawn (5am) root water potential = -0.28MPa \\
+delta = -0.22 MPa
+
+Ambient: Midday (1pm) root water potential = -0.10 MPa, for a drop of 0.03 MPa relative to predawn \\
+TFE: Midday (1pm) root water potential = -0.60 MPa, for a drop of 0.32 MPa relative to predawn \\
+delta = -0.28 MPa
+
+Ambient: Midday (1pm) sun leaf water potential = -1.95 MPa, for a drop of 1.85 MPa relative to midday roots \\
+TFE: Midday (1pm) sun leaf water potential = -2.29 MPa, for a drop of 1.69 MPa relative to midday roots \\
+delta = +0.16 MPa
+
+Discussion:
+Overlapping lines tips hand on naive approach, likewise instant refilling.
+Water potential values are in range (cite).
+LWP drop due to TFE is -0.34MPa, probably small.
+Due in equal measure to drop in predawn water potential and soil-to-root drop, stem drop actually reversed.
+Stem drop smaller because though PLC increases, transpiration decreases to larger effect.
+Consistent with findings that root resistance is most important in Amazonia (rosie).
+
+\subsection{Extraction via hydraulic gradient}
 deep roots \citep{nepstad1994}
     
 \clearpage    
@@ -435,7 +465,7 @@ deep roots \citep{nepstad1994}
   \begin{figure}[h]
      \centering
      \includegraphics[width=30pc]{../figs/fig2.pdf}
-     \caption{Root, stem, shaded leaf, and sunlit leaf water potentials for November 2, 2002, Caxiuan\~a national forest, Brazil.
+     \caption{Diurnal mean root, stem, shaded leaf, and sunlit leaf water potentials for 2003 dry season (SON), Caxiuan\~a national forest, Brazil.
      (a) Ambient throughfall conditions (b) 50\% throughfall excluded
      }
      \label{fig2}
