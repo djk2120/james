@@ -41,7 +41,7 @@ Pierre Gentine\affil{1}
  - droughts are increasing 
       . \citep{cook2015}
       . \citep{dai2013}
-      . amazon \citep{fu2013}
+      . amazon dry season lengthening \citep{fu2013}
 
  - vapor pressure deficit 
       . \citep{mcdowell2015}
@@ -62,26 +62,21 @@ SPAC representation is important, defines:
 
 Representation in CLM is bad
   - also in other models
-      . \citep{ukkola2016}
+      . \citep{powell2013,ukkola2016}
 
 
 Adds complexity, is it worth it, tractable?
-       . hydraulic traits too hard \citep{drake2017}  
+       . hydraulic traits too hard \citep{drake2017}?, but people are doing it \citep{xu2016,christoffersen2016}
 
-
+  - Trait information is available \citep{kattge2011,anderegg2015a} and valuable \citep{choat2012}
+  - Water status information available \citep{konings2016,grant2016} and valuable \citep{momen2017,konings2017b}
   - Model structural information
-  - Model parameter information
-  - Water status information
-
+  
 Our goal:
   - parsimonious plant hydraulic implementation
   - setting a framework to represent vegetation water status
-       . adds functionality
-       . opens an interface to trait data, satellite VOD
-
-
-  - VOD
-       . \citep{momen2017}
+       . opening an interface to trait data, satellite VOD \citep{momen2017}
+       . improving functionality
 
 %====================
 %  MODEL DESCRIPTION
@@ -430,6 +425,9 @@ Our goal:
     3) No dependence on absolute root biomass \\
     4) Constant pulling $\psi$ \\
     5) Would like to represent reverse flows \\
+    
+\section{Results and Discussion}
+deep roots \citep{nepstad1994}
     
 \clearpage    
 
