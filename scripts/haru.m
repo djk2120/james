@@ -26,7 +26,7 @@ if ~exist('fctr','var')
     a          = getvars( files{1} , offset, ns, 1);
     varlist    = {'FCTR','FPSN','BTRAN','VEGWP','SMP','QROOTSINK',...
         ...              1      2      3       4        5     6
-        'FCEV','FSH','KSR','GSSUN','GSSHA','ELAI'};
+        'FCEV','FSH','KSR','GSSUN','GSSHA','ELAI','FGEV'};
     %     7      8      9     10
     vard       = ones(length(varlist),length(files));
     vard(3,:)  = [0,0,1,1];
@@ -54,12 +54,23 @@ zr=[1.40e-2,2.73e-2,3.96e-2,5.02e-2,7.02e-2,...
     7.68e-2,6.54e-2,5.36e-2,4.67e-2,3.67e-2,...
     2.62e-2,1.71e-2,1.03e-2,5.70e-3,2.92e-3];
 
+
+f = '../data/daily_sapflow_control.txt';
+a=csvread(f,1,0);
+p = a(:,2);
+d = a(:,1);
+f = '../data/daily_sapflow_drought.txt';
+a=csvread(f,1,0);
+p = [p,a(:,2)];
+
+
+
 %************************************************************************
 %------------------------------------------------------------------------
 
-ff = [1,0,0,0,0,...
+ff = [0,0,0,0,0,...
     0,0,0,0,0,...
-    0,0,0];
+    0,0,0,0,1];
 
 %1  = water potential
 %5  = conductances
@@ -69,7 +80,121 @@ ff = [1,0,0,0,0,...
 %9  = phs-off, daytime, soil sink
 %10 = stress vs. vpd
 %11 = diurnal stress function
+%14 = timeseries
+%15 = sapflow
 
+if ff(15)>0
+    oneto = (1:730)';
+    ix    = p(:,1)>0;
+    plot(oneto(ix),p(ix,1),'.')
+    hold on
+    ix    = p(:,2)>0;
+    plot(oneto(ix),p(ix,2),'.')
+    set(gca,'xtick',cumsum(repmat(eomday(2001,1:12),1,2)))
+    grid on
+    set(gca,'xticklabel',1:24)
+    
+    x = nan*p(:,1);
+    ix = p(:,1)>0;
+    x(ix) = p(ix,1);
+    mvals = [0,cumsum(repmat(eomday(2001,1:12),1,2))];
+    
+    out = zeros(24,1);
+    for mm=1:24
+        ix = oneto>mvals(mm)&oneto<mvals(mm+1);
+        out(mm) = nanmean(x(ix));
+    end
+    
+    mx = 0.5*(mvals(1:end-1)+mvals(2:end));
+    
+    ax = gca;
+    ax.ColorOrderIndex = 1;
+    plot(mx,out)
+    
+    x = nan*p(:,1);
+    ix = p(:,2)>0;
+    x(ix) = p(ix,2);
+    
+    out = zeros(24,1);
+    for mm=1:24
+        ix = oneto>mvals(mm)&oneto<mvals(mm+1);
+        out(mm) = nanmean(x(ix));
+    end
+    plot(mx,out)
+    
+end
+
+if ff(14)>0
+   targ = fctr+fcev+fgev;
+   
+   out = zeros(4,36);
+   for i=1:4
+       out(i,:) = splitapply(@mean,targ(i,:),month+(year-2001)*12);
+   end
+       
+   xdk = figure;
+   
+   subplot('position',[0.08, 0.56, 0.43, 0.39])
+   hold on
+   plot(out(1,:),'k-','Linewidth',1.5)
+   plot(out(2,:),'k:','Linewidth',1.5)
+   set(gca,'xtick',3:3:36)
+   set(gca,'xticklabel',[])
+   grid on
+   xlim([0 37])
+   ylim([0 170])
+   ylabel('ET (W/m2)')
+   
+   subplot('position',[0.54, 0.56, 0.43, 0.39])
+   hold on
+   plot(out(3,:),'k-','Linewidth',1.5)
+   plot(out(4,:),'k:','Linewidth',1.5)
+   xlim([0 37])
+   ylim([0 170])
+   set(gca,'xtick',3:3:36)
+   set(gca,'xticklabel',[])
+   set(gca,'yticklabel',[])
+   grid on
+   
+   out = zeros(4,36);
+   for i=1:4
+       out(i,:) = splitapply(@mean,fpsn(i,:),month+(year-2001)*12);
+   end
+   
+   subplot('position',[0.08, 0.12, 0.43, 0.39])
+   hold on
+   plot(out(1,:),'k-','Linewidth',1.5)
+   plot(out(2,:),'k:','Linewidth',1.5)
+   set(gca,'xtick',3:3:36)
+   set(gca,'xticklabel',repmat(3:3:12,1,3))
+   grid on
+   xlim([0 37])
+   ylim([0 10])
+   ylabel('GPP (umol/m2/s)')
+   
+   
+   subplot('position',[0.54, 0.12, 0.43, 0.39])
+   hold on
+   plot(out(3,:),'k-','Linewidth',1.5)
+   plot(out(4,:),'k:','Linewidth',1.5)
+   xlim([0 37])
+   ylim([0 10])
+   set(gca,'xtick',3:3:36)
+   set(gca,'xticklabel',repmat(3:3:12,1,3))
+   set(gca,'yticklabel',[])
+   grid on
+  
+   
+   xdk.Units = 'inches';
+   xdk.Position = [2,2,7,4];
+   xdk.PaperSize = [7,4];
+   xdk.PaperPosition = [0,0,7,4];
+   
+   if ff(14)>1
+       print(xdk,'../figs/fig11','-dpdf')
+   end
+    
+end
 
 
 if ff(13)>0
@@ -872,61 +997,17 @@ end
 
 
 if ff(2)>0
-    %alternate conductance plot with bars instead of boxes
+    % look at cumulative ET
+    targ = fctr+fcev+fgev;
+    out  = 1800*4e-7*sum(targ,2);
     
-    k2 = nan*smp(41:60,:);
-    for i=41:60
+    for i=[2,4]
         
-        ix          = fsds>1;
-        k2(i-40,ix) = qrootsink(i,ix)./min(189000,(smp(i,ix)+255000));
-        
-        ix1       = fsds>1&smp(i,:)<=-255000;
-        k2(i-40,ix1) = 0;
-        
-        
+        out  = mean(smp((1:20)+(i-1)*20,year==2003&month>8&month<12),2);
+        plot(out,-zs(2:end))
+        hold on
+        xlim([-0.5e5,0])
     end
-    
-    xdk = figure;
-    ix = fsds>1;
-    subplot('position',[0.54, 0.12, 0.43, 0.83])
-    
-    out  = median(ksr(1:20,ix),2);
-    hold on
-    bar(out,'FaceColor',[0.6,0.6,0.8],'EdgeColor',[0.55,0.55,0.8])
-    x = quantile(ksr(1:20,ix)',[0.25,0.75])';
-    x = abs(x-[out,out]);
-    errorbar(1:20,out,x(1:20,1),x(1:20,2),'x','Color',[0.7 0.1 0.1],'Marker','none')
-    xlim([0,21])
-    title('PHS on')
-    xlabel('Soil Layer')
-    text(18,6.5e-9,'(b)','FontSize',14,'FontWeight','bold')
-    
-    subplot('position',[0.08, 0.12, 0.43, 0.83])
-    bar(nanmedian(k2,2))
-    out  = nanmedian(k2,2);
-    hold on
-    bar(out,'FaceColor',[0.6,0.6,0.8],'EdgeColor',[0.55,0.55,0.8])
-    x = quantile(k2',[0.25,0.75])';
-    x = abs(x-[out,out]);
-    errorbar(1:20,out,x(1:20,1),x(1:20,2),'x','Color',[0.7 0.1 0.1],'Marker','none')
-    xlim([0,21])
-    text(1.5,6.5e-11,'(a)','FontSize',14,'FontWeight','bold')
-    
-    box off
-    title('PHS off')
-    xlabel('Soil Layer')
-    ylabel('Soil-to-root conductance (1/s)')
-    
-    xdk.Units = 'inches';
-    xdk.Position = [2,2,7,4];
-    xdk.PaperSize = [7,4];
-    xdk.PaperPosition = [0,0,7,4];
-    
-    if ff(2)>1
-        print(xdk,'../figs/fig3','-dpdf')
-    end
-    
-    
 end
 
 
@@ -978,12 +1059,34 @@ if ff(1)>0
     
     %predawn water potentials?
     out         = xf*out;
-    psi_predawn = [out(4,11),out(8,11),out(4,11)-out(8,11)]
-    psi_midday  = [out(1:4,27),out(5:8,27)]
+    psi_predawn = [out(4,11),out(8,11),out(4,11)-out(8,11)];
+    psi_midday  = [out(1:4,27),out(5:8,27)];
     psi_drops   = [out(4,11),out(8,11)];
     psi_drops   = [psi_drops;out(4,27)-out(4,11),out(8,27)-out(8,11)];
     psi_drops   = [psi_drops;out(1,27)-out(4,27),out(5,27)-out(8,27)];
     psi_drops   = [psi_drops,psi_drops(:,1)-psi_drops(:,2)]
+    
+    %what about effect of TFE on phs-off?
+    % calculate root-area average smp
+    % lopping off lower than -255000mm (full stomatal closure)
+    % this is not the stress functional input
+    % because you also would need to lop off > -60000mm
+    x = zeros(2,1);
+    for i=1:2
+        if i==1
+            ll=41:60;
+        else
+            ll=61:80;
+        end
+        ix  = year==2003&month>8&month<12;
+        tmp = smp(ll,ix);
+        tmp = tmp+(-255000-tmp).*(tmp<-255000);
+        
+        x(i) = xf*mean(zr*tmp);
+    end
+    
+    
+    
     
 end
 
