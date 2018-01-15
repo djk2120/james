@@ -70,8 +70,8 @@ p = [p,a(:,2)];
 
 ff = [0,0,0,0,0,...
     0,0,0,0,0,...
-    0,0,0,2,0,...
-    0];
+    0,0,0,0,0,...
+    1];
 
 %1  = water potential
 %5  = conductances
@@ -108,6 +108,7 @@ if ff(16)>0
     subplot(1,2,2)
     out = splitapply(@mean,btran(1,:),month+(year-2001)*12);
     plot(out)
+    hold on
     out = splitapply(@mean,btran(2,:),month+(year-2001)*12);
     plot(out)
         xlim([0 36])
@@ -189,9 +190,10 @@ if ff(14)>0
     set(gca,'xtick',3:3:36)
     set(gca,'xticklabel',[])
     grid on
-    xlim([0 37])
+    xlim([0 36])
     ylim([0 150])
     ylabel('T (W/m2)')
+    text(2,25,'(a)','FontSize',14,'FontWeight','bold')
     
     subplot('position',[0.54, 0.56, 0.43, 0.39])
     hold on
@@ -199,17 +201,21 @@ if ff(14)>0
     plot(out(4,:),'k:','Linewidth',1.5)
     plot(13:36,out2(:,1),'r-','Linewidth',1.5)
     plot(13:36,out2(:,2),'r:','Linewidth',1.5)
-    xlim([0 37])
+    xlim([0 36])
     ylim([0 150])
     set(gca,'xtick',3:3:36)
     set(gca,'xticklabel',[])
     set(gca,'yticklabel',[])
     grid on
+    text(2,25,'(b)','FontSize',14,'FontWeight','bold')
     
     out = zeros(4,36);
     for i=1:4
         out(i,:) = splitapply(@mean,fpsn(i,:),month+(year-2001)*12);
     end
+    gppxf = 86400*12*1e-6; %umol/m2/s -> g/m2/day
+    out   = out*gppxf;
+    
     
     subplot('position',[0.08, 0.12, 0.43, 0.39])
     hold on
@@ -218,21 +224,23 @@ if ff(14)>0
     set(gca,'xtick',3:3:36)
     set(gca,'xticklabel',repmat(3:3:12,1,3))
     grid on
-    xlim([0 37])
+    xlim([0 36])
     ylim([0 10])
-    ylabel('GPP (umol/m2/s)')
+    ylabel('GPP (g/m2/d)')
+    text(2,1.67,'(c)','FontSize',14,'FontWeight','bold')
     
     
     subplot('position',[0.54, 0.12, 0.43, 0.39])
     hold on
     plot(out(3,:),'k-','Linewidth',1.5)
     plot(out(4,:),'k:','Linewidth',1.5)
-    xlim([0 37])
+    xlim([0 36])
     ylim([0 10])
     set(gca,'xtick',3:3:36)
     set(gca,'xticklabel',repmat(3:3:12,1,3))
     set(gca,'yticklabel',[])
     grid on
+    text(2,1.67,'(d)','FontSize',14,'FontWeight','bold')
     
     
     xdk.Units = 'inches';
@@ -318,11 +326,12 @@ if ff(11)>0
     
    g = findgroups(mcsec);
    for ee=1:4
-       if ee==2||ee==4
-           ix = (month==9|month==10|month==11) & year>2001;
-       else
-           ix = (month==9|month==10|month==11);
-       end
+          ix = (month==9|month==10|month==11) & year==2003;       
+%       if ee==2||ee==4
+%           ix = (month==9|month==10|month==11) & year>2001;
+%       else
+%           ix = (month==9|month==10|month==11);
+%       end
        out(:,ee) = splitapply(@mean,targ(ee,ix),g(ix));
    end
    
