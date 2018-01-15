@@ -71,7 +71,7 @@ p = [p,a(:,2)];
 ff = [0,0,0,0,0,...
     0,0,0,0,0,...
     0,0,0,0,0,...
-    1];
+    2];
 
 %1  = water potential
 %5  = conductances
@@ -83,39 +83,144 @@ ff = [0,0,0,0,0,...
 %11 = diurnal stress function
 %14 = timeseries
 %15 = sapflow
+%16 = timeseries with btran
 
 if ff(16)>0
+    out = nan(14,36);
+    
     % look at timeseries of btran
-   
     % for vegwp, average 12-2 (i.e. 5 timesteps)
-    subplot(1,2,1)
     ix  = mcsec>=diurn(25)&mcsec<diurn(29);
     targ = 2.^-((vegwp(1,:)/-250000).^3.95);
-    out = splitapply(@mean,targ(ix),month(ix)+(year(ix)-2001)*12);
-    plot(out)
-    hold on
+    out(1,:) = splitapply(@mean,targ(ix),month(ix)+(year(ix)-2001)*12);
     ix  = mcsec>=diurn(25)&mcsec<diurn(29);
     targ = 2.^-((vegwp(5,:)/-250000).^3.95);
-    out = splitapply(@mean,targ(ix),month(ix)+(year(ix)-2001)*12);
-    plot(out)
-    xlim([0 36])
+    out(2,:) = splitapply(@mean,targ(ix),month(ix)+(year(ix)-2001)*12);
+
+    % for btran, straight average
+    out(3,:) = splitapply(@mean,btran(1,:),month+(year-2001)*12);
+    out(4,:) = splitapply(@mean,btran(2,:),month+(year-2001)*12);
+
+    % GPP
+    gppxf = 86400*12/1e6; %umol/m2/s->g/m2/d
+    for i=1:4
+        out(i+4,:) = gppxf*splitapply(@mean,fpsn(i,:),month+(year-2001)*12);
+    end
+    
+    % transpiration
+    for i=1:4
+        out(i+8,:) = splitapply(@mean,fctr(i,:),month+(year-2001)*12);
+    end
+    
+    %sapflux
+    oneto = (1:730)';
+    mvals = [0,cumsum(repmat(eomday(2001,1:12),1,2))];
+    out2 = nan(2,24);
+    for i=1:2
+        x = nan*p(:,1);
+        ix = p(:,i)>0;
+        x(ix) = p(ix,i);
+        for mm=1:24
+            ix = oneto>mvals(mm)&oneto<mvals(mm+1);
+            if sum(~isnan(x(ix)))>4
+                out2(i,mm) = nanmean(x(ix));
+            end
+        end
+    end
+    out2 = out2/86400/4e-7; %convert mm/d to W/m2
+    out(13:14,13:36) = out2;
+    
+    
+    %plotting
+    xdk = figure;
+
+    subplot('Position',[0.07,0.69,0.44,0.285])
+    hold on
+    plot(out(1,:),'k-','LineWidth',1.5)
+    plot(out(2,:),'k:','LineWidth',1.5)
     ylim([0 1])
+    xlim([0 36])
+    grid on
+    ylabel('Stress')
+    set(gca,'xtick',3:3:36)
+    set(gca,'xticklabel',[])
+    text(2,0.167,'(a)','FontSize',14,'FontWeight','bold')
+    
+    subplot('Position',[0.535,0.69,0.44,0.285])
+    hold on
+    plot(out(3,:),'k-','LineWidth',1.5)
+    plot(out(4,:),'k:','LineWidth',1.5)
+    set(gca,'xtick',3:3:36)
+    set(gca,'xticklabel',[])
+    set(gca,'yticklabel',[])
+    ylim([0 1])
+    xlim([0 36])
+    grid on
+    text(2,0.167,'(b)','FontSize',14,'FontWeight','bold')
+    
+    
+    subplot('Position',[0.07,0.38,0.44,0.285])
+    hold on
+    plot(out(5,:),'k-','LineWidth',1.5)
+    plot(out(6,:),'k:','LineWidth',1.5)
+    set(gca,'xtick',3:3:36)
+    set(gca,'xticklabel',[])
+    ylim([0 10])
+    xlim([0 36])
+    grid on
+    ylabel('GPP (g/m2/d)')
+    text(2,1.67,'(c)','FontSize',14,'FontWeight','bold')
+    
+    subplot('Position',[0.535,0.38,0.44,0.285])
+        hold on
+    plot(out(7,:),'k-','LineWidth',1.5)
+    plot(out(8,:),'k:','LineWidth',1.5)
+    set(gca,'xtick',3:3:36)
+    set(gca,'xticklabel',[])
+    set(gca,'yticklabel',[])
+    ylim([0 10])
+    xlim([0 36])
+    grid on
+    text(2,1.67,'(d)','FontSize',14,'FontWeight','bold')
+    
+    subplot('Position',[0.07,0.07,0.44,0.285])
+            hold on
+    plot(out(9,:),'k-','LineWidth',1.5)
+    plot(out(10,:),'k:','LineWidth',1.5)
+    plot(out(13,:),'r-','LineWidth',1.5)
+    plot(out(14,:),'r:','LineWidth',1.5)
     set(gca,'xtick',3:3:36)
     set(gca,'xticklabel',repmat(3:3:12,1,3))
+    ylim([0 150])
+    xlim([0 36])
     grid on
+    ylabel('T (W/m2)')
+    xlabel('Month')
+    text(2,25,'(e)','FontSize',14,'FontWeight','bold')
     
-    % for btran, straight average
-    subplot(1,2,2)
-    out = splitapply(@mean,btran(1,:),month+(year-2001)*12);
-    plot(out)
-    hold on
-    out = splitapply(@mean,btran(2,:),month+(year-2001)*12);
-    plot(out)
-        xlim([0 36])
-    ylim([0 1])
-        set(gca,'xtick',3:3:36)
+    subplot('Position',[0.535,0.07,0.44,0.285])
+            hold on
+    plot(out(11,:),'k-','LineWidth',1.5)
+    plot(out(12,:),'k:','LineWidth',1.5)
+    plot(out(13,:),'r-','LineWidth',1.5)
+    plot(out(14,:),'r:','LineWidth',1.5)
+    set(gca,'xtick',3:3:36)
     set(gca,'xticklabel',repmat(3:3:12,1,3))
+    set(gca,'yticklabel',[])
+    ylim([0 150])
+    xlim([0 36])
     grid on
+    xlabel('Month')
+    text(2,25,'(f)','FontSize',14,'FontWeight','bold')
+    
+    xdk.Units = 'inches';
+    xdk.Position = [2,2,7,6];
+    xdk.PaperSize = [7,6];
+    xdk.PaperPosition = [0,0,7,6];
+    
+    if ff(16)>1
+        print(xdk,'../figs/fig12','-dpdf')
+    end
 end
 
 
