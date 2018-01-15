@@ -1,4 +1,4 @@
-day from 01/01/2002,sapflow mm,sd,negative sd happen only where there is no dataÉ
+day from 01/01/2002,sapflow mm,sd,negative sd happen only where there is no dataï¿½
 1,-1,0,
 2,-1,0,
 3,-1,0,
