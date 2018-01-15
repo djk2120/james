@@ -70,7 +70,8 @@ p = [p,a(:,2)];
 
 ff = [0,0,0,0,0,...
     0,0,0,0,0,...
-    0,0,0,0,1];
+    0,0,0,2,0,...
+    0];
 
 %1  = water potential
 %5  = conductances
@@ -83,8 +84,58 @@ ff = [0,0,0,0,0,...
 %14 = timeseries
 %15 = sapflow
 
+if ff(16)>0
+    % look at timeseries of btran
+   
+    % for vegwp, average 12-2 (i.e. 5 timesteps)
+    subplot(1,2,1)
+    ix  = mcsec>=diurn(25)&mcsec<diurn(29);
+    targ = 2.^-((vegwp(1,:)/-250000).^3.95);
+    out = splitapply(@mean,targ(ix),month(ix)+(year(ix)-2001)*12);
+    plot(out)
+    hold on
+    ix  = mcsec>=diurn(25)&mcsec<diurn(29);
+    targ = 2.^-((vegwp(5,:)/-250000).^3.95);
+    out = splitapply(@mean,targ(ix),month(ix)+(year(ix)-2001)*12);
+    plot(out)
+    xlim([0 36])
+    ylim([0 1])
+    set(gca,'xtick',3:3:36)
+    set(gca,'xticklabel',repmat(3:3:12,1,3))
+    grid on
+    
+    % for btran, straight average
+    subplot(1,2,2)
+    out = splitapply(@mean,btran(1,:),month+(year-2001)*12);
+    plot(out)
+    out = splitapply(@mean,btran(2,:),month+(year-2001)*12);
+    plot(out)
+        xlim([0 36])
+    ylim([0 1])
+        set(gca,'xtick',3:3:36)
+    set(gca,'xticklabel',repmat(3:3:12,1,3))
+    grid on
+end
+
+
 if ff(15)>0
     oneto = (1:730)';
+    mvals = [0,cumsum(repmat(eomday(2001,1:12),1,2))];
+    out = nan(24,2);
+    
+    for i=1:2
+        x = nan*p(:,1);
+        ix = p(:,i)>0;
+        x(ix) = p(ix,i);
+        
+        for mm=1:24
+            ix = oneto>mvals(mm)&oneto<mvals(mm+1);
+            if sum(~isnan(x(ix)))>4
+                out(mm,i) = nanmean(x(ix));
+            end
+        end
+    end
+    
     ix    = p(:,1)>0;
     plot(oneto(ix),p(ix,1),'.')
     hold on
@@ -94,105 +145,104 @@ if ff(15)>0
     grid on
     set(gca,'xticklabel',1:24)
     
-    x = nan*p(:,1);
-    ix = p(:,1)>0;
-    x(ix) = p(ix,1);
-    mvals = [0,cumsum(repmat(eomday(2001,1:12),1,2))];
-    
-    out = zeros(24,1);
-    for mm=1:24
-        ix = oneto>mvals(mm)&oneto<mvals(mm+1);
-        out(mm) = nanmean(x(ix));
-    end
     
     mx = 0.5*(mvals(1:end-1)+mvals(2:end));
-    
     ax = gca;
     ax.ColorOrderIndex = 1;
-    plot(mx,out)
-    
-    x = nan*p(:,1);
-    ix = p(:,2)>0;
-    x(ix) = p(ix,2);
-    
-    out = zeros(24,1);
-    for mm=1:24
-        ix = oneto>mvals(mm)&oneto<mvals(mm+1);
-        out(mm) = nanmean(x(ix));
-    end
     plot(mx,out)
     
 end
 
 if ff(14)>0
-   targ = fctr+fcev+fgev;
-   
-   out = zeros(4,36);
-   for i=1:4
-       out(i,:) = splitapply(@mean,targ(i,:),month+(year-2001)*12);
-   end
-       
-   xdk = figure;
-   
-   subplot('position',[0.08, 0.56, 0.43, 0.39])
-   hold on
-   plot(out(1,:),'k-','Linewidth',1.5)
-   plot(out(2,:),'k:','Linewidth',1.5)
-   set(gca,'xtick',3:3:36)
-   set(gca,'xticklabel',[])
-   grid on
-   xlim([0 37])
-   ylim([0 170])
-   ylabel('ET (W/m2)')
-   
-   subplot('position',[0.54, 0.56, 0.43, 0.39])
-   hold on
-   plot(out(3,:),'k-','Linewidth',1.5)
-   plot(out(4,:),'k:','Linewidth',1.5)
-   xlim([0 37])
-   ylim([0 170])
-   set(gca,'xtick',3:3:36)
-   set(gca,'xticklabel',[])
-   set(gca,'yticklabel',[])
-   grid on
-   
-   out = zeros(4,36);
-   for i=1:4
-       out(i,:) = splitapply(@mean,fpsn(i,:),month+(year-2001)*12);
-   end
-   
-   subplot('position',[0.08, 0.12, 0.43, 0.39])
-   hold on
-   plot(out(1,:),'k-','Linewidth',1.5)
-   plot(out(2,:),'k:','Linewidth',1.5)
-   set(gca,'xtick',3:3:36)
-   set(gca,'xticklabel',repmat(3:3:12,1,3))
-   grid on
-   xlim([0 37])
-   ylim([0 10])
-   ylabel('GPP (umol/m2/s)')
-   
-   
-   subplot('position',[0.54, 0.12, 0.43, 0.39])
-   hold on
-   plot(out(3,:),'k-','Linewidth',1.5)
-   plot(out(4,:),'k:','Linewidth',1.5)
-   xlim([0 37])
-   ylim([0 10])
-   set(gca,'xtick',3:3:36)
-   set(gca,'xticklabel',repmat(3:3:12,1,3))
-   set(gca,'yticklabel',[])
-   grid on
-  
-   
-   xdk.Units = 'inches';
-   xdk.Position = [2,2,7,4];
-   xdk.PaperSize = [7,4];
-   xdk.PaperPosition = [0,0,7,4];
-   
-   if ff(14)>1
-       print(xdk,'../figs/fig11','-dpdf')
-   end
+    
+    %calc monthly mean T
+    out = zeros(4,36);
+    for i=1:4
+        out(i,:) = splitapply(@mean,fctr(i,:),month+(year-2001)*12);
+    end
+    
+    %calc monthly mean sapflow
+    oneto = (1:730)';
+    mvals = [0,cumsum(repmat(eomday(2001,1:12),1,2))];
+    out2 = nan(24,2);
+    for i=1:2
+        x = nan*p(:,1);
+        ix = p(:,i)>0;
+        x(ix) = p(ix,i);
+        for mm=1:24
+            ix = oneto>mvals(mm)&oneto<mvals(mm+1);
+            if sum(~isnan(x(ix)))>4
+                out2(mm,i) = nanmean(x(ix));
+            end
+        end
+    end
+    out2 = out2/86400/4e-7; %convert mm/d to W/m2
+
+    xdk = figure;
+    
+    subplot('position',[0.08, 0.56, 0.43, 0.39])
+    hold on
+    plot(out(1,:),'k-','Linewidth',1.5)
+    plot(out(2,:),'k:','Linewidth',1.5)
+    plot(13:36,out2(:,1),'r-','Linewidth',1.5)
+    plot(13:36,out2(:,2),'r:','Linewidth',1.5)
+    set(gca,'xtick',3:3:36)
+    set(gca,'xticklabel',[])
+    grid on
+    xlim([0 37])
+    ylim([0 150])
+    ylabel('T (W/m2)')
+    
+    subplot('position',[0.54, 0.56, 0.43, 0.39])
+    hold on
+    plot(out(3,:),'k-','Linewidth',1.5)
+    plot(out(4,:),'k:','Linewidth',1.5)
+    plot(13:36,out2(:,1),'r-','Linewidth',1.5)
+    plot(13:36,out2(:,2),'r:','Linewidth',1.5)
+    xlim([0 37])
+    ylim([0 150])
+    set(gca,'xtick',3:3:36)
+    set(gca,'xticklabel',[])
+    set(gca,'yticklabel',[])
+    grid on
+    
+    out = zeros(4,36);
+    for i=1:4
+        out(i,:) = splitapply(@mean,fpsn(i,:),month+(year-2001)*12);
+    end
+    
+    subplot('position',[0.08, 0.12, 0.43, 0.39])
+    hold on
+    plot(out(1,:),'k-','Linewidth',1.5)
+    plot(out(2,:),'k:','Linewidth',1.5)
+    set(gca,'xtick',3:3:36)
+    set(gca,'xticklabel',repmat(3:3:12,1,3))
+    grid on
+    xlim([0 37])
+    ylim([0 10])
+    ylabel('GPP (umol/m2/s)')
+    
+    
+    subplot('position',[0.54, 0.12, 0.43, 0.39])
+    hold on
+    plot(out(3,:),'k-','Linewidth',1.5)
+    plot(out(4,:),'k:','Linewidth',1.5)
+    xlim([0 37])
+    ylim([0 10])
+    set(gca,'xtick',3:3:36)
+    set(gca,'xticklabel',repmat(3:3:12,1,3))
+    set(gca,'yticklabel',[])
+    grid on
+    
+    
+    xdk.Units = 'inches';
+    xdk.Position = [2,2,7,4];
+    xdk.PaperSize = [7,4];
+    xdk.PaperPosition = [0,0,7,4];
+    
+    if ff(14)>1
+        print(xdk,'../figs/fig11','-dpdf')
+    end
     
 end
 
