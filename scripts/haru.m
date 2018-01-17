@@ -33,7 +33,7 @@ if ~exist('fctr','var')
     vard(4,:)  = [4,4,0,0];
     vard(5,:)  = ns;
     vard(6,:)  = ns;
-    vard(9,:) = [ns,0,0,0];
+    vard(9,:) = [ns,ns,0,0];
     x          = getmore( files,offset,n,varlist,vard );
 end
 
@@ -69,9 +69,9 @@ p = [p,a(:,2)];
 %------------------------------------------------------------------------
 
 ff = [0,0,0,0,0,...
+    0,0,0,0,1,...
     0,0,0,0,0,...
-    0,0,0,0,0,...
-    0,1];
+    0,0];
 
 %1  = water potential
 %5  = conductances
@@ -505,6 +505,17 @@ if ff(11)>0
    if ff(11)>1
        print(xdk,'../figs/fig10','-dpdf')
    end
+   
+   % don't time average!
+   ix = (month==9|month==10|month==11) & year==2003; 
+    x = mean(targ(:,ix),2);
+    gppxf = 86400*12*1e-6; %umol/m2/s -> g/m2/day
+    y = gppxf*mean(fpsn(:,ix),2);
+    
+    z = targ(:,ix)*fpsn(3,ix)'/sum(fpsn(3,ix));
+    
+    
+
  
 end
 
@@ -529,6 +540,9 @@ if ff(10)>0
     ix2(ee,:) = z>=q(1)&z<q(2)&ffix;
     ix3(ee,:) = z>=q(2)&ffix;
     
+    subplot(1,2,1)
+    plot(z(ffix),y(1,ffix),'.')
+    
     %phs-on, tfe
     ee      = 2;
     y(ee,:) = 2.^-((vegwp(5,:)/-250000).^3.95);
@@ -541,12 +555,17 @@ if ff(10)>0
     ix2(ee,:) = z>=q(1)&z<q(2)&ix;
     ix3(ee,:) = z>=q(2)&ix;
     
+        subplot(1,2,2)
+    plot(z(ffix),y(2,ffix),'.')
+    
+    
     %phs-off, amb
     ll = 41:60;ee=3;
     y(ee,:) = btran(1,:);
     z = zr*smp(ll,:);
     q = quantile(z(ffix),[1/3,2/3]);
-
+    
+    
     ix1(ee,:) = z<q(1)&ffix;
     ix2(ee,:) = z>=q(1)&z<q(2)&ffix;
     ix3(ee,:) = z>=q(2)&ffix;
