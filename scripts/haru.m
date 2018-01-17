@@ -71,7 +71,7 @@ p = [p,a(:,2)];
 ff = [0,0,0,0,0,...
     0,0,0,0,0,...
     0,0,0,0,0,...
-    2];
+    0,1];
 
 %1  = water potential
 %5  = conductances
@@ -84,6 +84,35 @@ ff = [0,0,0,0,0,...
 %14 = timeseries
 %15 = sapflow
 %16 = timeseries with btran
+
+if ff(17)>0
+    ix  = mcsec==diurn(10);
+    out = splitapply(@mean,vegwp(4,ix),month(ix)+(year(ix)-2001)*12);
+
+        out2 = splitapply(@mean,vegwp(8,ix),month(ix)+(year(ix)-2001)*12);
+    plot(out-out2)
+    
+    set(gca,'xtick',3:3:36)
+    set(gca,'xticklabel',repmat(3:3:12,1,3))
+    grid on
+    
+    ix  = mcsec>=diurn(25)&mcsec<diurn(29);
+    out = splitapply(@mean,vegwp(1,ix),month(ix)+(year(ix)-2001)*12);
+    figure
+    plot(out)
+    hold on
+    out = splitapply(@mean,vegwp(5,ix),month(ix)+(year(ix)-2001)*12);
+    plot(out)
+    
+    x = -1e4:-1e4:-5e5;
+    s = 2.^-((x/-250000).^3.95);
+    figure
+    plot(x,s)
+    grid on
+    st1 = 2^-((150000/250000)^3.95)
+    st2 = 2^-((160000/250000)^3.95)
+    
+end
 
 if ff(16)>0
     out = nan(14,36);
@@ -131,6 +160,7 @@ if ff(16)>0
     out(13:14,13:36) = out2;
     
     
+    
     %plotting
     xdk = figure;
 
@@ -141,7 +171,7 @@ if ff(16)>0
     ylim([0 1])
     xlim([0 36])
     grid on
-    ylabel('Stress')
+    ylabel('Stress function')
     set(gca,'xtick',3:3:36)
     set(gca,'xticklabel',[])
     text(2,0.167,'(a)','FontSize',14,'FontWeight','bold')
@@ -170,6 +200,7 @@ if ff(16)>0
     grid on
     ylabel('GPP (g/m2/d)')
     text(2,1.67,'(c)','FontSize',14,'FontWeight','bold')
+    legend({'AMB','TFE'},'location','SouthEast')
     
     subplot('Position',[0.535,0.38,0.44,0.285])
         hold on
