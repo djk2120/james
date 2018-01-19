@@ -68,8 +68,8 @@ p = [p,a(:,2)];
 %************************************************************************
 %------------------------------------------------------------------------
 
-ff = [0,0,0,0,2,...
-    0,0,0,0,0,...
+ff = [0,0,0,0,0,...
+    0,0,0,2,0,...
     0,0,0,0,0,...
     0,0];
 
@@ -650,100 +650,74 @@ if ff(10)>0
 
 end
 
-
 if ff(9)>0
+    out     = zeros(80,4);
+    ix_wet  = (mcsec>diurn(12)&mcsec<diurn(37))&(month==2|month==3|month==4)&year==2003;
 
-    out = zeros(80,4);
-    ix = (mcsec>diurn(12)&mcsec<diurn(37))&month==9&year>2001;  %day time
-    ll = 41:60;
-    oo = 1:20;
+    for i=1:4
+    ll = (1:20)+(i-1)*20;
+    oo = (1:20)+(i-1)*20;
     
-    out(oo,1) =     mean(qrootsink(ll,ix),2);
-    out(oo,2) =   median(qrootsink(ll,ix),2);
-    out(oo,3) = quantile(qrootsink(ll,ix)',0.25)-out(oo,2)';
-    out(oo,4) = quantile(qrootsink(ll,ix)',0.75)-out(oo,2)';
+    out(oo,1) =     mean(qrootsink(ll,ix_wet),2);
+    out(oo,2) =   median(qrootsink(ll,ix_wet),2);
+    out(oo,3) = quantile(qrootsink(ll,ix_wet)',0.25)-out(oo,2)';
+    out(oo,4) = quantile(qrootsink(ll,ix_wet)',0.75)-out(oo,2)';
     
-    ix = (mcsec>diurn(12)&mcsec<diurn(37))&month==12&year>2001;  %day time
-    ll = 41:60;
-    oo = 21:40;
-    
-    out(oo,1) =     mean(qrootsink(ll,ix),2);
-    out(oo,2) =   median(qrootsink(ll,ix),2);
-    out(oo,3) = quantile(qrootsink(ll,ix)',0.25)-out(oo,2)';
-    out(oo,4) = quantile(qrootsink(ll,ix)',0.75)-out(oo,2)';
-    
-    ix = (mcsec>diurn(12)&mcsec<diurn(37))&month==9&year>2001;  %day time
-    ll = 61:80;
-    oo = 41:60;
-    
-    out(oo,1) =     mean(qrootsink(ll,ix),2);
-    out(oo,2) =   median(qrootsink(ll,ix),2);
-    out(oo,3) = quantile(qrootsink(ll,ix)',0.25)-out(oo,2)';
-    out(oo,4) = quantile(qrootsink(ll,ix)',0.75)-out(oo,2)';
-    
-    ix = (mcsec>diurn(12)&mcsec<diurn(37))&month==12&year>2001;  %day time
-    ll = 61:80;
-    oo = 61:80;
-    
-    out(oo,1) =     mean(qrootsink(ll,ix),2);
-    out(oo,2) =   median(qrootsink(ll,ix),2);
-    out(oo,3) = quantile(qrootsink(ll,ix)',0.25)-out(oo,2)';
-    out(oo,4) = quantile(qrootsink(ll,ix)',0.75)-out(oo,2)';
-    
+    end
 
     xdk = figure;
-
-    subplot('position',[0.05, 0.55, 0.46, 0.39])
+    
+    subplot('position',[0.07, 0.55, 0.45, 0.39])
     ll = 1:20;
     hold on
     bar(out(ll,1),'FaceColor',[0.6,0.6,0.8],'EdgeColor',[0.55,0.55,0.8])
     errorbar(1:20,out(ll,2),out(ll,3),out(ll,4),'x','Color',[0.7 0.1 0.1],'Marker','none')
     xlim([0 21])
+    ylim([-0.5e-5,4e-5])
     set(gca,'xticklabel',[])
-    set(gca,'ytick',0:1e-5:2e-5)
+    text(18.5,34e-6,'(a)','FontSize',14,'FontWeight','bold')
     ax = gca;
     ax.YAxis.Exponent = -5;
     ylabel('Soil sink (mm/s)')
-    ylim([-.5e-5,2e-5])
-    text(18.5,17e-6,'(a)','FontSize',14,'FontWeight','bold')
     
-    subplot('position',[0.525, 0.55, 0.46, 0.39])
+    subplot('position',[0.535, 0.55, 0.45, 0.39])
     ll = 21:40;
     hold on
     bar(out(ll,1),'FaceColor',[0.6,0.6,0.8],'EdgeColor',[0.55,0.55,0.8])
     errorbar(1:20,out(ll,2),out(ll,3),out(ll,4),'x','Color',[0.7 0.1 0.1],'Marker','none')
     xlim([0 21])
-    set(gca,'ytick',0:1e-5:2e-5)
+    ylim([-0.5e-5,4e-5])
     set(gca,'xticklabel',[])
     set(gca,'yticklabel',[])
-    ylim([-.5e-5,2e-5])
-    text(18.5,17e-6,'(b)','FontSize',14,'FontWeight','bold')
+    text(18.5,34e-6,'(b)','FontSize',14,'FontWeight','bold')
     
-    subplot('position',[0.05, 0.11, 0.46, 0.39])
+    
+        subplot('position',[0.07, 0.11, 0.45, 0.39])
     ll = 41:60;
     hold on
     bar(out(ll,1),'FaceColor',[0.6,0.6,0.8],'EdgeColor',[0.55,0.55,0.8])
     errorbar(1:20,out(ll,2),out(ll,3),out(ll,4),'x','Color',[0.7 0.1 0.1],'Marker','none')
     xlim([0 21])
-    ylim([-.5e-5,2e-5])
-    set(gca,'ytick',0:1e-5:2e-5)
+    set(gca,'xticklabel',{'',5:5:20})
+    ylim([-0.5e-5,4e-5])
+    xlabel('Soil Layer')
+    text(18.5,34e-6,'(c)','FontSize',14,'FontWeight','bold')
     ax = gca;
     ax.YAxis.Exponent = -5;
-    xlabel('Soil Layer')
     ylabel('Soil sink (mm/s)')
-    text(18.5,17e-6,'(c)','FontSize',14,'FontWeight','bold')
     
-    subplot('position',[0.525, 0.11, 0.46, 0.39])
+    
+    subplot('position',[0.535, 0.11, 0.45, 0.39])
     ll = 61:80;
     hold on
     bar(out(ll,1),'FaceColor',[0.6,0.6,0.8],'EdgeColor',[0.55,0.55,0.8])
     errorbar(1:20,out(ll,2),out(ll,3),out(ll,4),'x','Color',[0.7 0.1 0.1],'Marker','none')
     xlim([0 21])
-    ylim([-.5e-5,2e-5])
+    ylim([-0.5e-5,4e-5])
     xlabel('Soil Layer')
-    set(gca,'ytick',0:1e-5:2e-5)
+    set(gca,'xticklabel',{'',5:5:20})
     set(gca,'yticklabel',[])
-    text(18.5,17e-6,'(d)','FontSize',14,'FontWeight','bold')
+    text(18.5,34e-6,'(d)','FontSize',14,'FontWeight','bold')
     
     xdk.Units = 'inches';
     xdk.Position = [2,2,7,4];
@@ -756,89 +730,75 @@ if ff(9)>0
     
 end
 
-
+%rewriting daytime sink
 if ff(8)>0
+    out     = zeros(80,4);
+    ix_dry  = (mcsec>diurn(12)&mcsec<diurn(37))&(month==9|month==10|month==11)&year==2003;
 
-    out = zeros(80,4);
-   
-    ix = (mcsec>diurn(12)&mcsec<diurn(37))&month==9;  %day time
-    ll = 1:20;
-    oo = 1:20;
-    out(oo,1) =     mean(qrootsink(ll,ix),2);
-    out(oo,2) =   median(qrootsink(ll,ix),2);
-    out(oo,3) = quantile(qrootsink(ll,ix)',0.25)-out(oo,2)';
-    out(oo,4) = quantile(qrootsink(ll,ix)',0.75)-out(oo,2)';
+    for i=1:4
+    ll = (1:20)+(i-1)*20;
+    oo = (1:20)+(i-1)*20;
     
-    ix = (mcsec>diurn(12)&mcsec<diurn(37))&month==12;  %day time
-    oo = 21:40;
-    out(oo,1) =     mean(qrootsink(ll,ix),2);
-    out(oo,2) =   median(qrootsink(ll,ix),2);
-    out(oo,3) = quantile(qrootsink(ll,ix)',0.25)-out(oo,2)';
-    out(oo,4) = quantile(qrootsink(ll,ix)',0.75)-out(oo,2)';
+    out(oo,1) =     mean(qrootsink(ll,ix_dry),2);
+    out(oo,2) =   median(qrootsink(ll,ix_dry),2);
+    out(oo,3) = quantile(qrootsink(ll,ix_dry)',0.25)-out(oo,2)';
+    out(oo,4) = quantile(qrootsink(ll,ix_dry)',0.75)-out(oo,2)';
     
-    ix = (mcsec>diurn(12)&mcsec<diurn(37))&month==9&year>2001;  %day time
-    ll = 21:40;
-    oo = 41:60;
-    out(oo,1) =     mean(qrootsink(ll,ix),2);
-    out(oo,2) =   median(qrootsink(ll,ix),2);
-    out(oo,3) = quantile(qrootsink(ll,ix)',0.25)-out(oo,2)';
-    out(oo,4) = quantile(qrootsink(ll,ix)',0.75)-out(oo,2)';
-    
-    ix = (mcsec>diurn(12)&mcsec<diurn(37))&month==12&year>2001;  %day time
-    ll = 21:40;
-    oo = 61:80;
-    out(oo,1) =     mean(qrootsink(ll,ix),2);
-    out(oo,2) =   median(qrootsink(ll,ix),2);
-    out(oo,3) = quantile(qrootsink(ll,ix)',0.25)-out(oo,2)';
-    out(oo,4) = quantile(qrootsink(ll,ix)',0.75)-out(oo,2)';
-    
+    end
+
     xdk = figure;
-
-    subplot('position',[0.05, 0.55, 0.46, 0.39])
+    
+    subplot('position',[0.07, 0.55, 0.45, 0.39])
     ll = 1:20;
     hold on
     bar(out(ll,1),'FaceColor',[0.6,0.6,0.8],'EdgeColor',[0.55,0.55,0.8])
     errorbar(1:20,out(ll,2),out(ll,3),out(ll,4),'x','Color',[0.7 0.1 0.1],'Marker','none')
     xlim([0 21])
+    ylim([-2.5e-6,20e-6])
     set(gca,'xticklabel',[])
+    text(18.5,17e-6,'(a)','FontSize',14,'FontWeight','bold')
+    ax = gca;
+    ax.YAxis.Exponent = -5;
     ylabel('Soil sink (mm/s)')
-    ylim([-5e-6,35e-6])
-    text(18.5,30e-6,'(a)','FontSize',14,'FontWeight','bold')
     
-    subplot('position',[0.525, 0.55, 0.46, 0.39])
+    subplot('position',[0.535, 0.55, 0.45, 0.39])
     ll = 21:40;
     hold on
     bar(out(ll,1),'FaceColor',[0.6,0.6,0.8],'EdgeColor',[0.55,0.55,0.8])
     errorbar(1:20,out(ll,2),out(ll,3),out(ll,4),'x','Color',[0.7 0.1 0.1],'Marker','none')
     xlim([0 21])
+    ylim([-2.5e-6,20e-6])
     set(gca,'xticklabel',[])
     set(gca,'yticklabel',[])
-    ylim([-5e-6,35e-6])
-    text(18.5,30e-6,'(b)','FontSize',14,'FontWeight','bold')
+    text(18.5,17e-6,'(b)','FontSize',14,'FontWeight','bold')
     
-    subplot('position',[0.05, 0.11, 0.46, 0.39])
+    
+        subplot('position',[0.07, 0.11, 0.45, 0.39])
     ll = 41:60;
     hold on
     bar(out(ll,1),'FaceColor',[0.6,0.6,0.8],'EdgeColor',[0.55,0.55,0.8])
     errorbar(1:20,out(ll,2),out(ll,3),out(ll,4),'x','Color',[0.7 0.1 0.1],'Marker','none')
     xlim([0 21])
-    ylim([-5e-6,35e-6])
+    set(gca,'xticklabel',{'',5:5:20})
+    ylim([-2.5e-6,20e-6])
     xlabel('Soil Layer')
+    text(18.5,17e-6,'(c)','FontSize',14,'FontWeight','bold')
+    ax = gca;
+    ax.YAxis.Exponent = -5;
     ylabel('Soil sink (mm/s)')
-    text(18.5,30e-6,'(c)','FontSize',14,'FontWeight','bold')
     
-    subplot('position',[0.525, 0.11, 0.46, 0.39])
+    
+    subplot('position',[0.535, 0.11, 0.45, 0.39])
     ll = 61:80;
     hold on
     bar(out(ll,1),'FaceColor',[0.6,0.6,0.8],'EdgeColor',[0.55,0.55,0.8])
     errorbar(1:20,out(ll,2),out(ll,3),out(ll,4),'x','Color',[0.7 0.1 0.1],'Marker','none')
     xlim([0 21])
-    ylim([-5e-6,35e-6])
+    ylim([-2.5e-6,20e-6])
     xlabel('Soil Layer')
+    set(gca,'xticklabel',{'',5:5:20})
     set(gca,'yticklabel',[])
-    text(18.5,30e-6,'(d)','FontSize',14,'FontWeight','bold')
-    
-
+    text(18.5,17e-6,'(d)','FontSize',14,'FontWeight','bold')
     
     xdk.Units = 'inches';
     xdk.Position = [2,2,7,4];
@@ -848,15 +808,15 @@ if ff(8)>0
     if ff(8)>1
         print(xdk,'../figs/fig7','-dpdf')
     end
+    
 end
-
 
 
 if ff(7)>0
 
     out = zeros(80,4);
    
-    ix = (mcsec<diurn(13)|mcsec>diurn(36))&month==9;  %night time
+    ix = (mcsec<diurn(13)|mcsec>diurn(36))&year==2003&(month==9|month==10|month==11);  %night time
     ll = 1:20;
     oo = 1:20;
     out(oo,1) =     mean(qrootsink(ll,ix),2);
@@ -864,14 +824,15 @@ if ff(7)>0
     out(oo,3) = quantile(qrootsink(ll,ix)',0.25)-out(oo,2)';
     out(oo,4) = quantile(qrootsink(ll,ix)',0.75)-out(oo,2)';
     
-    ix = (mcsec<diurn(13)|mcsec>diurn(36))&month==12;  %night time
+    
+    ix = (mcsec<diurn(13)|mcsec>diurn(36))&year==2003&(month==2|month==3|month==4);  %night time
     oo = 21:40;
     out(oo,1) =     mean(qrootsink(ll,ix),2);
     out(oo,2) =   median(qrootsink(ll,ix),2);
     out(oo,3) = quantile(qrootsink(ll,ix)',0.25)-out(oo,2)';
     out(oo,4) = quantile(qrootsink(ll,ix)',0.75)-out(oo,2)';
     
-    ix = (mcsec<diurn(13)|mcsec>diurn(36))&month==9&year>2001;  %night time
+    ix = (mcsec<diurn(13)|mcsec>diurn(36))&year==2003&(month==9|month==10|month==11);  %night time
     ll = 21:40;
     oo = 41:60;
     out(oo,1) =     mean(qrootsink(ll,ix),2);
@@ -879,7 +840,7 @@ if ff(7)>0
     out(oo,3) = quantile(qrootsink(ll,ix)',0.25)-out(oo,2)';
     out(oo,4) = quantile(qrootsink(ll,ix)',0.75)-out(oo,2)';
     
-    ix = (mcsec<diurn(13)|mcsec>diurn(36))&month==12&year>2001;  %night time
+    ix = (mcsec<diurn(13)|mcsec>diurn(36))&year==2003&(month==2|month==3|month==4);  %night time
     ll = 21:40;
     oo = 61:80;
     out(oo,1) =     mean(qrootsink(ll,ix),2);
@@ -896,32 +857,36 @@ if ff(7)>0
     errorbar(1:20,out(ll,2),out(ll,3),out(ll,4),'x','Color',[0.7 0.1 0.1],'Marker','none')
     xlim([0 21])
     set(gca,'xticklabel',[])
-    set(gca,'ytick',0:1e-5:2e-5)
+    set(gca,'ytick',-1e-5:1e-5:2e-5)
     ylabel('Soil sink (mm/s)')
-    ylim([-8e-6,2.5e-5])
-    text(1,21e-6,'(a)','FontSize',14,'FontWeight','bold')
+    ylim([-1e-5,1e-5])
+    text(18.5,0.75e-5,'(a)','FontSize',14,'FontWeight','bold')
     
     subplot('position',[0.53, 0.55, 0.45, 0.39])
-    ll = 21:40;
-    hold on
-    bar(out(ll,1),'FaceColor',[0.6,0.6,0.8],'EdgeColor',[0.55,0.55,0.8])
-    errorbar(1:20,out(ll,2),out(ll,3),out(ll,4),'x','Color',[0.7 0.1 0.1],'Marker','none')
-    xlim([0 21])
-    set(gca,'xticklabel',[])
-    set(gca,'yticklabel',[])
-    ylim([-8e-6,2.5e-5])
-    text(18.5,21e-6,'(b)','FontSize',14,'FontWeight','bold')
-    
-    subplot('position',[0.06, 0.11, 0.45, 0.39])
     ll = 41:60;
     hold on
     bar(out(ll,1),'FaceColor',[0.6,0.6,0.8],'EdgeColor',[0.55,0.55,0.8])
     errorbar(1:20,out(ll,2),out(ll,3),out(ll,4),'x','Color',[0.7 0.1 0.1],'Marker','none')
     xlim([0 21])
-    ylim([-5e-6,2.5e-5])
+    ylim([-1e-5,1e-5])
+    set(gca,'xticklabel',[])
+    set(gca,'yticklabel',[])
+    text(18.5,0.75e-5,'(b)','FontSize',14,'FontWeight','bold')
+    
+    
+    subplot('position',[0.06, 0.11, 0.45, 0.39])
+
+        ll = 21:40;
+    hold on
+    bar(out(ll,1),'FaceColor',[0.6,0.6,0.8],'EdgeColor',[0.55,0.55,0.8])
+    errorbar(1:20,out(ll,2),out(ll,3),out(ll,4),'x','Color',[0.7 0.1 0.1],'Marker','none')
+    xlim([0 21])
+    
     xlabel('Soil Layer')
-    ylabel('Soil sink (mm/s)')
-    text(1,21e-6,'(c)','FontSize',14,'FontWeight','bold')
+        ylabel('Soil sink (mm/s)')
+    
+    ylim([-1e-5,3e-5])
+    text(18.5,2.5e-5,'(c)','FontSize',14,'FontWeight','bold')
     
     subplot('position',[0.53, 0.11, 0.45, 0.39])
     ll = 61:80;
@@ -929,24 +894,42 @@ if ff(7)>0
     bar(out(ll,1),'FaceColor',[0.6,0.6,0.8],'EdgeColor',[0.55,0.55,0.8])
     errorbar(1:20,out(ll,2),out(ll,3),out(ll,4),'x','Color',[0.7 0.1 0.1],'Marker','none')
     xlim([0 21])
-    ylim([-5e-6,2.5e-5])
+    ylim([-1e-5,3e-5])
     xlabel('Soil Layer')
     set(gca,'yticklabel',[])
-    text(18.5,21e-6,'(d)','FontSize',14,'FontWeight','bold')
-    
+    text(18.5,2.5e-5,'(d)','FontSize',14,'FontWeight','bold')
 
-    
     xdk.Units = 'inches';
     xdk.Position = [2,2,7,4];
     xdk.PaperSize = [7,4];
     xdk.PaperPosition = [0,0,7,4];
-    
-    
-    
+
     
     if ff(7)>1
         print(xdk,'../figs/fig6','-dpdf')
     end
+    
+    
+    x = reshape(out(:,1),20,4);
+    x = x(:,[1,3]);
+    y = x;
+    x = x.*(x<0);
+    y = y.*(y>0);
+    sum(x)*1800*91*24
+    
+    figure
+    ix = (mcsec<diurn(13)|mcsec>diurn(36))&year==2003&(month==9|month==10|month==11);  %night time
+    t = doy(ix)+mcsec(ix)/max(diurn);
+    x = qrootsink(22,ix);
+       
+    xv = -1e-5:1e-6:7e-5;
+    out = zeros(length(xv),1);
+    for i=1:length(xv)-1
+        out(i)=sum(x>xv(i)&x<=xv(i+1));        
+    end
+    plot(xv,out)
+    
+    
 end
 
 
@@ -957,30 +940,42 @@ if ff(6)>0
         hr(ss,:) = -qrootsink(ss,:).*(qrootsink(ss,:)<0);
     end
     
-    hr1 = 1800*splitapply(@sum,sum(hr(1:20,year>2001)),month(year>2001));
-    hr2 = 1800*splitapply(@sum,sum(hr(21:40,year>2001)),month(year>2001));
-    %hr1 = 1800*splitapply(@sum,sum(hr(1:20,year>2001)),month(year>2001)+12*(year(year>2001)-2002));
-    %hr2 = 1800*splitapply(@sum,sum(hr(21:40,year>2001)),month(year>2001)+12*(year(year>2001)-2002));
+    ix = (mcsec<diurn(13)|mcsec>diurn(36))&year==2003;
+    ix2 = (~(mcsec<diurn(13)|mcsec>diurn(36)))&year==2003;
+    hr1 = [1800*splitapply(@sum,sum(hr(1:20,ix)),month(ix))',...
+        1800*splitapply(@sum,sum(hr(1:20,ix2)),month(ix2))'];
+    hr2 = [1800*splitapply(@sum,sum(hr(21:40,ix)),month(ix))',...
+        1800*splitapply(@sum,sum(hr(21:40,ix2)),month(ix2))'];
+    %hr2 = 1800*splitapply(@sum,sum(hr(21:40,ix)),month(ix));
     
     xdk = figure;
     
     subplot('Position',[0.08,0.11,0.45,0.84])
-    bar(hr1,'FaceColor',[0.6,0.6,0.8],'EdgeColor',[0.55,0.55,0.8])
+    b=bar(hr1,'stacked');
+    b(1).FaceColor = [0.4,0.4,0.6];
+    b(2).FaceColor = [0.6,0.6,0.8];
+    b(1).EdgeColor = [0.35,0.35,0.6];
+    b(2).EdgeColor = [0.55,0.55,0.8];
     xlabel('Month')
     ylabel('Total HR (mm)')
     title('AMB')
     xlim([0 13])
-    ylim([0 180])
-    text(1,170,'(a)','FontSize',14,'FontWeight','bold')
+    ylim([0 110])
+    text(1,100,'(a)','FontSize',14,'FontWeight','bold')
     
     subplot('Position',[0.54,0.11,0.45,0.84])
-    bar(hr2,'FaceColor',[0.6,0.6,0.8],'EdgeColor',[0.55,0.55,0.8])
+    b=bar(hr2,'stacked');
+        b(1).FaceColor = [0.4,0.4,0.6];
+    b(2).FaceColor = [0.6,0.6,0.8];
+        b(1).EdgeColor = [0.35,0.35,0.6];
+    b(2).EdgeColor = [0.55,0.55,0.8];
+    %bar(hr2,'FaceColor',[0.6,0.6,0.8],'EdgeColor',[0.55,0.55,0.8])
     xlabel('Month')
     xlim([0 13])
-    ylim([0 180])
+    ylim([0 110])
     title('TFE')
     set(gca,'yticklabel',[])
-    text(11,170,'(b)','FontSize',14,'FontWeight','bold')
+    text(11,100,'(b)','FontSize',14,'FontWeight','bold')
     
     xdk.Units = 'inches';
     xdk.Position = [2,2,7,4];
@@ -992,7 +987,7 @@ if ff(6)>0
     end
     
     
-    
+
 end
 
 
@@ -1001,7 +996,8 @@ if ff(5) >0
     
     out = zeros(80,3);
     kon = nan*smp(1:80,:);
-    ix  = fsds>1&year==2003;
+    ix  = year==2003&fctr(1,:)>4;
+    %    ix  = fsds>1&year==2003;
     kon(1:40,ix) = ksr(1:40,ix);
 
     
@@ -1042,7 +1038,7 @@ if ff(5) >0
     errorbar(1:20,out(ll,1),out(ll,2),out(ll,3),'x','Color',[0.7 0.1 0.1],'Marker','none')
     xlabel('Soil Layer')
     ylabel('Conductance (s-1)')
-    ylim([0 9e-11])
+    ylim([0 1e-10])
     text(17,6/7*8e-11,'(c)','FontSize',14,'FontWeight','bold')
     
     subplot('position',[0.54, 0.12, 0.43, 0.39])
@@ -1051,7 +1047,7 @@ if ff(5) >0
     plot(1:20,out(ll,1),'x')
     errorbar(1:20,out(ll,1),out(ll,2),out(ll,3),'x','Color',[0.7 0.1 0.1],'Marker','none')
     xlabel('Soil Layer')
-    ylim([0 9e-11])
+    ylim([0 1e-10])
     text(17,6/7*8e-11,'(d)','FontSize',14,'FontWeight','bold')
     
     
@@ -1065,7 +1061,7 @@ if ff(5) >0
         print(xdk,'../figs/fig3','-dpdf')
     end
     
-    
+    if 1==2
     xdk = figure;
     bar(out(21:40,1))
     xlim([0 20.5])
@@ -1080,6 +1076,20 @@ if ff(5) >0
     if ff(5)>1
         print(xdk,'../figs/fig3a','-dpdf')
     end
+    end
+    
+    close all
+    ix  = year==2003&fctr(1,:)>4;
+    y   = kon(67,ix);
+    x   = doy(ix&kon(67,:)==0);
+    
+    m   = (month(ix&kon(67,:)==0));
+    d   = (day(ix&kon(67,:)==0));
+    
+    plot(x,y(y==0))
+    hold on
+    median(kon(47,ix&kon(67,:)==0))
+    
 end
 
 

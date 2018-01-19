@@ -529,10 +529,52 @@ PHS functionality is as expected in these simulations, where hydraulic danger ca
 In the ambient simulation, with well-watered conditions, hydraulic danger is present, but only due to atmospheric demand. 
 With TFE, hydraulic danger is imposed by both high atmospheric demand and dry soils.
 
-\subsection{Hydraulic redistribution}
+\subsection{Conductance}
+ksr is modeled in PHS based on kmax and a vulnerability curve and soil conductance
+A notion of ksr can be inferred for PHS-off by dividing the rootsink by the btran gradient definition.
+well-watered, why the variability?\\
+acknowledge nuked first layer \\
+absolute values \\
+shape \\
+increase vs. decrease
+relative conductance for phs-off can change, but only via zeros
+looking at layer 7, conductance is zero from nov22 through the end of the year
+compared to ambient, where mean daytime conductance is 3.6e-11 s-1
 
 \subsection{Extraction via hydraulic gradient}
 deep roots \citep{nepstad1994}
+
+\subsection{Hydraulic redistribution}
+
+Totals
+
+HR increases from 408mm in the ambient simulation to 563 mm with TFE.
+HR is predominately at night, ambient is 307/101, TFE is 401/163. 
+Slight shift towards daytime with TFE 29\% daytime compared to 25\% daytime.
+With TFE, HR is highly correlated to precipitation, with R=0.97 between monthly total precip and HR.
+Ambient, lower correlation, just 0.26. 
+Ambient has less TFE during wet condition (Feb-August), but more TFE in Jan,Sep-Dec.
+
+By layer, at night, Dry season
+
+Bars are average HR, which also stands in for net HR.
+Amb net HR = 48.8mm
+TFE net HR = 53.2mm
+For amb, net HR is concentrated to layers 6-9
+with tfe, net HR is distributed among 4-13
+
+Top layers are a source in both ambient and TFE. The other source is the deep soil.
+TFE plumbs deeper into the soil column, net extraction of 39.8 mm from layers 15-20 (beyond 3.26meters)
+Compared to amb net extraction of 8.2 mm from those layers.
+
+The lines span interquartile range. 
+Variability as measure by IQR is much higher in the ambient simulation, which explains why total HR is significantly higher, 
+but net HR is actually slightly lower (as compared to TFE). 
+For TFE, layer 3, which is a net source of HR, has its entire interquartile range as a sink.
+Likewise layer 2, spends most of the time as a sink.
+This points to an asymmetrical distribution of qrootsink for these layers, with long source tail. Flows in slowly, out fast (following rain).
+
+
 
 \subsection{Soil profile}
 
@@ -586,6 +628,7 @@ whereby TFE is delta of approximately 2 meters of water.
      (a) PHS on, and
      (b) PHS off.
      Solid lines correspond to ambient throughfall conditions, and dotted lines feature 50\% throughfall exclusion.
+     Note that the water stress function equals 1 when there is no stress and 0 when fully stressed.
      }
      \label{fig2}
   \end{figure}
@@ -619,30 +662,9 @@ whereby TFE is delta of approximately 2 meters of water.
      }
      \label{fig3a}
   \end{figure}
-  \clearpage
-    \begin{figure}[h]
-     \centering
-     \includegraphics[width=30pc]{../figs/fig5.pdf}
-     \caption{Total hydraulic redistribution (mm) by month over two years (2002-3). For (a) ambient throughfall conditions, and (b) 50\% throughfall exclusion.      }
-     \label{fig2}
-  \end{figure}
+
   
-    \clearpage
-    \begin{figure}[h]
-     \centering
-     \includegraphics[width=30pc]{../figs/fig6.pdf}
-     \caption{PHS-on, Nighttime (6pm to 6am)  soil sink by layer.
-          Bars show mean and lines span interquartile range, for 
-     (a) September 2001-3, ambient throughfall,
-     (b) December 2001-3, ambient throughfall,
-     (c) September 2002-3, 50\% throughfall excluded,
-     (d) December 2002-3, 50\% throughfall excluded. 
-     Note that positive values correspond to water extracted from the given soil layer, 
-     and negative values correspond to water deposited into the given soil layer.}
-     \label{fig2}
-  \end{figure}
-  
-      \clearpage
+        \clearpage
     \begin{figure}[h]
      \centering
      \includegraphics[width=30pc]{../figs/fig7.pdf}
@@ -670,6 +692,31 @@ whereby TFE is delta of approximately 2 meters of water.
      \label{fig2}
   \end{figure}
   
+    \clearpage
+    \begin{figure}[h]
+     \centering
+     \includegraphics[width=30pc]{../figs/fig5.pdf}
+     \caption{Total hydraulic redistribution (mm) by month over two years (2002-3). For (a) ambient throughfall conditions, and (b) 50\% throughfall exclusion. 
+     Darker shading shows portion of HR at night [6pm,6am), lighter shading shows portion of HR during day [6am,6pm).}
+     \label{fig2}
+  \end{figure}
+  
+    \clearpage
+    \begin{figure}[h]
+     \centering
+     \includegraphics[width=30pc]{../figs/fig6.pdf}
+     \caption{PHS-on, Nighttime (6pm to 6am)  soil sink by layer.
+          Bars show mean and lines span interquartile range, for 
+     (a) SON, ambient throughfall,
+     (b) SON, 50\% throughfall excluded,
+     (c) FMA, ambient throughfall,
+     (d) FMA, 50\% throughfall excluded,
+     Note that positive values correspond to water extracted from the given soil layer, 
+     and negative values correspond to water deposited into the given soil layer.}
+     \label{fig2}
+  \end{figure}
+  
+
 
 
   
