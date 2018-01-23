@@ -9,6 +9,13 @@ files = {...
     [dir,'BR-CAX_I1PTCLM50_r270_off_tfe.clm2.h1.2001-01-01-00000.nc']};
     
 
+b = ncread(['/Users/kennedy/Desktop/james/data/aug25/',...
+'BR-CAX_I1PTCLM50_r251off_k5g7.clm2.h1.2001-01-01-00000.nc']...
+,'H2OSOI');
+c = zeros(20,52561);
+c(:,:)=b(1,:,:);
+pore = max(c,[],2);
+
 %dir = '../data/aug25/';
 %files = {...
 %    [dir,'BR-CAX_I1PTCLM50_r251_k5g7.clm2.h1.2001-01-01-00000.nc'];...
@@ -69,9 +76,9 @@ p = [p,a(:,2)];
 %------------------------------------------------------------------------
 
 ff = [0,0,0,0,0,...
-    0,0,0,2,0,...
     0,0,0,0,0,...
-    0,0];
+    0,0,0,0,0,...
+    0,0,2];
 
 %1  = water potential
 %5  = conductances
@@ -84,6 +91,102 @@ ff = [0,0,0,0,0,...
 %14 = timeseries
 %15 = sapflow
 %16 = timeseries with btran
+
+
+if ff(18)>0
+    
+    x=mean(smp(:,year==2003&month>8&month<12),2)/101972;
+    y=mean(smp(:,year==2003&month>1&month<5),2)/101972;
+    
+    xdk = figure;
+    
+    subplot('Position',[0.07,0.56,0.42,0.42])
+    plot(y(1:20),-z,'k','LineWidth',1.5)
+    hold on
+    plot(y(21:40),-z,'k:','LineWidth',1.5)
+    xlim([-2.75,0])
+    ylim([-8.5,0])
+    text(-2.6,-7.3,'(a)','FontSize',14,'FontWeight','bold')
+    set(gca,'xticklabel',[])
+    set(gca,'ytick',-8:2:0)
+    set(gca,'yticklabel',8:-2:0)
+    box off
+    ylabel('Depth (m)')
+    yyaxis right
+    ylim([-10,0])
+    set(gca,'ytick',-z(20:-5:5))
+    set(gca,'yticklabel',[])
+    ax = gca;
+    ax.YColor = [0,0,0];
+    legend('AMB','TFE','Location','NorthWest')
+
+    subplot('Position',[0.51,0.56,0.42,0.42])
+    plot(x(1:20),-z,'k','LineWidth',1.5)
+    hold on
+    plot(x(21:40),-z,'k:','LineWidth',1.5)
+    xlim([-2.75,0])
+    ylim([-8.5,0])
+    text(-2.6,-7.3,'(b)','FontSize',14,'FontWeight','bold')
+    set(gca,'xticklabel',[])
+    set(gca,'yticklabel',[])
+    box off
+    yyaxis right
+    ylim([-10,0])
+    set(gca,'ytick',-z(20:-5:5))
+    set(gca,'yticklabel',[])
+    ax = gca;
+    ax.YColor = [0,0,0];
+        ylabel('Soil Layer')
+        set(gca,'yticklabel',20:-5:5)
+
+    subplot('Position',[0.07,0.11,0.42,0.42])
+    plot(y(41:60),-z,'k','LineWidth',1.5)
+    hold on
+    plot(y(61:80),-z,'k:','LineWidth',1.5)
+    xlim([-2.75,0])
+    ylim([-8.5,0])
+    text(-2.6,-7.3,'(c)','FontSize',14,'FontWeight','bold')
+    set(gca,'ytick',-8:2:0)
+    set(gca,'yticklabel',8:-2:0)
+    box off
+    ylabel('Depth (m)')
+    yyaxis right
+    ylim([-10,0])
+    set(gca,'ytick',-z(20:-5:5))
+    set(gca,'yticklabel',[])
+    ax = gca;
+    ax.YColor = [0,0,0];
+    xlabel('Water Potential (MPa)')
+
+    
+    subplot('Position',[0.51,0.11,0.42,0.42])
+    plot(x(41:60),-z,'k','LineWidth',1.5)
+    hold on
+    plot(x(61:80),-z,'k:','LineWidth',1.5)
+    xlim([-2.75,0])
+    ylim([-8.5,0])
+    text(-2.6,-7.3,'(d)','FontSize',14,'FontWeight','bold')
+    set(gca,'yticklabel',[])
+    box off
+    yyaxis right
+    ylim([-10,0])
+    set(gca,'ytick',-z(20:-5:5))
+    set(gca,'yticklabel',20:-5:5)
+    ax = gca;
+    ax.YColor = [0,0,0];
+    ylabel('Soil Layer')
+    xlabel('Water Potential (MPa)')
+    
+     xdk.Units = 'inches';
+    xdk.Position = [2,2,7,4];
+    xdk.PaperSize = [7,4];
+    xdk.PaperPosition = [0,0,7,4];
+    
+    if ff(18)>1
+        print(xdk,'../figs/fig13','-dpdf')
+    end
+end
+
 
 if ff(17)>0
     ix  = mcsec==diurn(10);
@@ -808,6 +911,26 @@ if ff(8)>0
     if ff(8)>1
         print(xdk,'../figs/fig7','-dpdf')
     end
+    
+    x=sum(sum(qrootsink(41:60,ix_dry)))/(91*24);
+    (out(41:60,1)'-x*zr)./out(41:60,1)'
+    
+    1800*24*91*sum(out(35:40,1))
+    1800*24*91*sum(out(75:80,1))
+ 
+    zv = pore'*1000.*(zs(2:end)-zs(1:20));
+    
+    
+    x = max(qrootsink(21:40,year==2003&month>8&month<12),[],2);
+    
+    y = zv'./x/60/60;
+    min(y)
+    
+    x = max(qrootsink(61:80,year==2003&month>8&month<12),[],2);
+    y = zv'./x/60/60;
+    min(y)
+
+    
     
 end
 
