@@ -1,6 +1,6 @@
 close all
 
-dir = '../data/jan7/';
+dir = '../data/jan24/';
 
 files = {...
     [dir,'BR-CAX_I1PTCLM50_r270.clm2.h1.2001-01-01-00000.nc'];...
@@ -78,7 +78,7 @@ p = [p,a(:,2)];
 ff = [0,0,0,0,0,...
     0,0,0,0,0,...
     0,0,0,0,0,...
-    0,0,2];
+    0,0,0];
 
 %1  = water potential
 %5  = conductances
