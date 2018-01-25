@@ -76,12 +76,13 @@ p = [p,a(:,2)];
 %************************************************************************
 %------------------------------------------------------------------------
 
-ff = [0,0,0,0,0,...
-    0,2,0,0,0,...
+ff = [0,0,0,0,2,...
+    0,0,0,0,0,...
     0,0,0,0,0,...
     0,0,0];
 
 %2  = water potential
+%5  = stress vs. vpd
 %6  = conductances
 %7  = SON, daytime, qrootsink
 %9  = total HR
@@ -171,18 +172,9 @@ if ff(2)>0
     
     disp('net leaf drop')
     disp(out(1,27)-out(5,27))
-    
-    
-    
-    
-    
-    
-    
+ 
 end
     
-    
-
-
 
 if ff(18)>0
     
@@ -713,7 +705,7 @@ if ff(11)>0
  
 end
 
-if ff(10)>0
+if ff(5)>0
     
     ix1 = smp(1:4,:)==1;
     ix2 = smp(1:4,:)==1;
@@ -838,13 +830,13 @@ if ff(10)>0
     xdk.PaperSize = [7,4];
     xdk.PaperPosition = [0,0,7,4];
     
-    if ff(10)>1
-        print(xdk,'../figs/fig9','-dpdf')
+    if ff(5)>1
+        print(xdk,'../figs/fig5','-dpdf')
     end
 
 end
 
-if ff(1)>0
+if ff(8)>0
     out     = zeros(80,4);
     ix_wet  = (mcsec>diurn(12)&mcsec<diurn(37))&(month==2|month==3|month==4)&year==2003;
 
@@ -867,9 +859,9 @@ if ff(1)>0
     bar(out(ll,1),'FaceColor',[0.6,0.6,0.8],'EdgeColor',[0.55,0.55,0.8])
     errorbar(1:20,out(ll,2),out(ll,3),out(ll,4),'x','Color',[0.7 0.1 0.1],'Marker','none')
     xlim([0 21])
-    ylim([-0.5e-5,4e-5])
+    ylim([-0.5e-5,3e-5])
     set(gca,'xticklabel',[])
-    text(18.5,34e-6,'(a)','FontSize',14,'FontWeight','bold')
+    text(18.5,25e-6,'(a)','FontSize',14,'FontWeight','bold')
     ax = gca;
     ax.YAxis.Exponent = -5;
     ylabel('Soil sink (mm/s)')
@@ -880,10 +872,10 @@ if ff(1)>0
     bar(out(ll,1),'FaceColor',[0.6,0.6,0.8],'EdgeColor',[0.55,0.55,0.8])
     errorbar(1:20,out(ll,2),out(ll,3),out(ll,4),'x','Color',[0.7 0.1 0.1],'Marker','none')
     xlim([0 21])
-    ylim([-0.5e-5,4e-5])
+    ylim([-0.5e-5,3e-5])
     set(gca,'xticklabel',[])
     set(gca,'yticklabel',[])
-    text(18.5,34e-6,'(b)','FontSize',14,'FontWeight','bold')
+    text(18.5,25e-6,'(b)','FontSize',14,'FontWeight','bold')
     
     
         subplot('position',[0.07, 0.11, 0.45, 0.39])
@@ -893,9 +885,9 @@ if ff(1)>0
     errorbar(1:20,out(ll,2),out(ll,3),out(ll,4),'x','Color',[0.7 0.1 0.1],'Marker','none')
     xlim([0 21])
     set(gca,'xticklabel',{'',5:5:20})
-    ylim([-0.5e-5,4e-5])
+    ylim([-0.5e-5,3e-5])
     xlabel('Soil Layer')
-    text(18.5,34e-6,'(c)','FontSize',14,'FontWeight','bold')
+    text(18.5,25e-6,'(c)','FontSize',14,'FontWeight','bold')
     ax = gca;
     ax.YAxis.Exponent = -5;
     ylabel('Soil sink (mm/s)')
@@ -907,18 +899,18 @@ if ff(1)>0
     bar(out(ll,1),'FaceColor',[0.6,0.6,0.8],'EdgeColor',[0.55,0.55,0.8])
     errorbar(1:20,out(ll,2),out(ll,3),out(ll,4),'x','Color',[0.7 0.1 0.1],'Marker','none')
     xlim([0 21])
-    ylim([-0.5e-5,4e-5])
+    ylim([-0.5e-5,3e-5])
     xlabel('Soil Layer')
     set(gca,'xticklabel',{'',5:5:20})
     set(gca,'yticklabel',[])
-    text(18.5,34e-6,'(d)','FontSize',14,'FontWeight','bold')
+    text(18.5,25e-6,'(d)','FontSize',14,'FontWeight','bold')
     
     xdk.Units = 'inches';
     xdk.Position = [2,2,7,4];
     xdk.PaperSize = [7,4];
     xdk.PaperPosition = [0,0,7,4];
     
-    if ff(1)>1
+    if ff(8)>1
         print(xdk,'../figs/fig8','-dpdf')
     end
     

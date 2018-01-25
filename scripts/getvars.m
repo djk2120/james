@@ -14,7 +14,7 @@ fsds      = zeros(1,n);
 %flds      = zeros(1,n);
 %pbot      = zeros(1,n);
 %zbot      = zeros(1,n);
-%tbot      = zeros(1,n);
+tbot      = zeros(1,n);
 %windv     = zeros(1,n);
 
 temp      = double(ncread(file,'mdcur'));
@@ -37,7 +37,7 @@ fsds(:)=temp(1,1+offset:end);
 %pbot(:)=temp(1,1+offset:end);
 %temp=ncread(file,'ZBOT');
 %zbot(:)=temp(1,1+offset:end);
-temp=ncread(file,'TV');
+temp=ncread(file,'TBOT');
 tbot(:)=temp(1,1+offset:end);
 %temp=ncread(file,'WIND');
 %windv(:)=temp(1,1+offset:end);
