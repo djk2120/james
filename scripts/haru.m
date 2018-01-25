@@ -76,8 +76,8 @@ p = [p,a(:,2)];
 %************************************************************************
 %------------------------------------------------------------------------
 
-ff = [0,0,0,0,2,...
-    0,0,0,0,0,...
+ff = [0,0,0,0,0,...
+    0,0,0,0,2,...
     0,0,0,0,0,...
     0,0,0];
 
@@ -86,6 +86,7 @@ ff = [0,0,0,0,2,...
 %6  = conductances
 %7  = SON, daytime, qrootsink
 %9  = total HR
+%10 = nighttime sink
 
 if ff(2)>0
 
@@ -1034,7 +1035,7 @@ if ff(7)>0
 end
 
 
-if ff(1)>0
+if ff(10)>0
 
     out = zeros(80,4);
    
@@ -1072,31 +1073,34 @@ if ff(1)>0
     
     xdk = figure;
     
-    subplot('position',[0.06, 0.55, 0.45, 0.39])
+    subplot('position',[0.08, 0.55, 0.45, 0.39])
     ll = 1:20;
     hold on
     bar(out(ll,1),'FaceColor',[0.6,0.6,0.8],'EdgeColor',[0.55,0.55,0.8])
     errorbar(1:20,out(ll,2),out(ll,3),out(ll,4),'x','Color',[0.7 0.1 0.1],'Marker','none')
     xlim([0 21])
     set(gca,'xticklabel',[])
-    set(gca,'ytick',-1e-5:1e-5:2e-5)
+    set(gca,'ytick',-0.4e-5:0.4e-5:2e-5)
+    ax = gca;
+    ax.YAxis.Exponent = -5;
     ylabel('Soil sink (mm/s)')
-    ylim([-1e-5,1e-5])
-    text(18.5,0.75e-5,'(a)','FontSize',14,'FontWeight','bold')
+    ylim([-0.6e-5,0.81e-5])
+    text(18.5,0.66e-5,'(a)','FontSize',14,'FontWeight','bold')
     
-    subplot('position',[0.53, 0.55, 0.45, 0.39])
+    subplot('position',[0.54, 0.55, 0.45, 0.39])
     ll = 41:60;
     hold on
     bar(out(ll,1),'FaceColor',[0.6,0.6,0.8],'EdgeColor',[0.55,0.55,0.8])
     errorbar(1:20,out(ll,2),out(ll,3),out(ll,4),'x','Color',[0.7 0.1 0.1],'Marker','none')
     xlim([0 21])
-    ylim([-1e-5,1e-5])
+    ylim([-0.6e-5,0.81e-5])
+    set(gca,'ytick',-0.4e-5:0.4e-5:2e-5)
     set(gca,'xticklabel',[])
     set(gca,'yticklabel',[])
-    text(18.5,0.75e-5,'(b)','FontSize',14,'FontWeight','bold')
+    text(18.5,0.66e-5,'(b)','FontSize',14,'FontWeight','bold')
     
     
-    subplot('position',[0.06, 0.11, 0.45, 0.39])
+    subplot('position',[0.08, 0.11, 0.45, 0.39])
 
         ll = 21:40;
     hold on
@@ -1107,19 +1111,19 @@ if ff(1)>0
     xlabel('Soil Layer')
         ylabel('Soil sink (mm/s)')
     
-    ylim([-1e-5,3e-5])
-    text(18.5,2.5e-5,'(c)','FontSize',14,'FontWeight','bold')
+    ylim([-1e-5,2.5e-5])
+    text(18.5,2.1e-5,'(c)','FontSize',14,'FontWeight','bold')
     
-    subplot('position',[0.53, 0.11, 0.45, 0.39])
+    subplot('position',[0.54, 0.11, 0.45, 0.39])
     ll = 61:80;
     hold on
     bar(out(ll,1),'FaceColor',[0.6,0.6,0.8],'EdgeColor',[0.55,0.55,0.8])
     errorbar(1:20,out(ll,2),out(ll,3),out(ll,4),'x','Color',[0.7 0.1 0.1],'Marker','none')
     xlim([0 21])
-    ylim([-1e-5,3e-5])
+    ylim([-1e-5,2.5e-5])
     xlabel('Soil Layer')
     set(gca,'yticklabel',[])
-    text(18.5,2.5e-5,'(d)','FontSize',14,'FontWeight','bold')
+    text(18.5,2.1e-5,'(d)','FontSize',14,'FontWeight','bold')
 
     xdk.Units = 'inches';
     xdk.Position = [2,2,7,4];
@@ -1127,29 +1131,12 @@ if ff(1)>0
     xdk.PaperPosition = [0,0,7,4];
 
     
-    if ff(1)>1
-        print(xdk,'../figs/fig6','-dpdf')
+    if ff(10)>1
+        print(xdk,'../figs/fig10','-dpdf')
     end
     
     
-    x = reshape(out(:,1),20,4);
-    x = x(:,[1,3]);
-    y = x;
-    x = x.*(x<0);
-    y = y.*(y>0);
-    sum(x)*1800*91*24
-    
-    figure
-    ix = (mcsec<diurn(13)|mcsec>diurn(36))&year==2003&(month==9|month==10|month==11);  %night time
-    t = doy(ix)+mcsec(ix)/max(diurn);
-    x = qrootsink(22,ix);
-       
-    xv = -1e-5:1e-6:7e-5;
-    out = zeros(length(xv),1);
-    for i=1:length(xv)-1
-        out(i)=sum(x>xv(i)&x<=xv(i+1));        
-    end
-    plot(xv,out)
+   
     
     
 end
