@@ -33,14 +33,15 @@ if ~exist('fctr','var')
     a          = getvars( files{1} , offset, ns, 1);
     varlist    = {'FCTR','FPSN','BTRAN','VEGWP','SMP','QROOTSINK',...
         ...              1      2      3       4        5     6
-        'FCEV','FSH','KSR','GSSUN','GSSHA','ELAI','FGEV'};
-    %     7      8      9     10
+        'FCEV','FSH','KSR','GSSUN','GSSHA','ELAI','FGEV','H2OSOI'};
+    %     7      8      9     10      11     12     13      14
     vard       = ones(length(varlist),length(files));
     vard(3,:)  = [0,0,1,1];
     vard(4,:)  = [4,4,0,0];
     vard(5,:)  = ns;
     vard(6,:)  = ns;
-    vard(9,:) = [ns,ns,0,0];
+    vard(9,:)  = [ns,ns,0,0];
+    vard(14,:) = ns;
     x          = getmore( files,offset,n,varlist,vard );
 end
 
@@ -76,21 +77,111 @@ p = [p,a(:,2)];
 %------------------------------------------------------------------------
 
 ff = [0,0,0,0,0,...
-    0,0,0,0,0,...
+    0,2,0,0,0,...
     0,0,0,0,0,...
     0,0,0];
 
-%1  = water potential
-%5  = conductances
-%6  = seasonal HR
-%7  = phs, nighttime, soil sink
-%8  = phs, daytime, soil sink
-%9  = phs-off, daytime, soil sink
-%10 = stress vs. vpd
-%11 = diurnal stress function
-%14 = timeseries
-%15 = sapflow
-%16 = timeseries with btran
+%2  = water potential
+%6  = conductances
+%7  = SON, daytime, qrootsink
+%9  = total HR
+
+if ff(2)>0
+
+    %figure 2, SON2013 diurnal mean of veg water potential
+
+    % calculate SON-2003 diurnal mean
+    ix  = year==2003&month>8&month<12;
+    g   = findgroups(mcsec);
+    out = zeros(8,48);
+    for i=1:8
+    out(i,:) = splitapply(@mean,vegwp(i,ix),g(ix));
+    end
+    
+    %plotting
+    xdk = figure;
+    x = 0.25:0.5:24;
+    xf = 1/101972;  %converts mm to MPa
+    subplot('position',[0.08, 0.12, 0.43, 0.83])
+    plot(x,xf*out(1:4,:)')
+    xlim([0 24])
+    ylim([-2.5 0])
+    xlabel('Hour')
+    ylabel('Water Potential (MPa)')
+    title('AMB')
+    text(1.5,-2.3,'(a)','FontSize',14,'FontWeight','bold')
+    set(gca,'xtick',0:6:24)
+    subplot('position',[0.54, 0.12, 0.43, 0.83])
+    plot(x,xf*out(5:8,:)')
+    set(gca,'xtick',0:6:24)
+    ylim([-2.5 0])
+    xlim([0 24])
+    xlabel('Hour')
+    title('TFE')
+    xdk.Units = 'inches';
+    xdk.Position = [2,2,7,4];
+    xdk.PaperSize = [7,4];
+    xdk.PaperPosition = [0,0,7,4];
+    set(gca,'yticklabel',[])
+    l = legend('sun-leaf','shade-leaf','stem','root','location','southeast');
+    l.Position(1) = 0.45;
+    l.Position(2) = 0.22;
+    set(gca,'xtick',0:6:24)
+    text(21,-2.3,'(b)','FontSize',14,'FontWeight','bold')
+    
+    if ff(2)>1
+        print(xdk,'../figs/fig2','-dpdf')
+    end
+    
+    %predawn water potentials?
+    out         = xf*out;
+    
+    disp('AMB MIDDAY')
+    disp(out(1:3,27)')
+    
+    disp('TFE MIDDAY')
+    disp(out(5:7,27)')
+    
+    disp('AMB PREDAWN ROOT')
+    disp(out(4,11))
+    
+    disp('TFE PREDAWN ROOT')
+    disp(out(8,11))
+    
+    disp('delta')
+    disp(out(4,11)-out(8,11))
+    
+    disp('AMB MD ROOT & drop')
+    disp([out(4,27),out(4,27)-out(4,11)])
+    
+    disp('TFE MD ROOT & drop')
+    disp([out(8,27),out(8,27)-out(8,11)])
+    
+    disp('delta drop')
+    disp(out(4,27)-out(4,11)-(out(8,27)-out(8,11)))
+    
+    disp('AMB MD SUN & drop')
+    disp([out(1,27),out(4,27)-out(1,27)])
+    
+    disp('TFE MD SUN & drop')
+    disp([out(5,27),out(8,27)-out(5,27)])
+    
+    disp('delta drop')
+    disp(out(4,27)-out(1,27)-(out(8,27)-out(5,27)))
+    
+    disp('net leaf drop')
+    disp(out(1,27)-out(5,27))
+    
+    
+    
+    
+    
+    
+    
+end
+    
+    
+
 
 
 if ff(18)>0
@@ -753,7 +844,7 @@ if ff(10)>0
 
 end
 
-if ff(9)>0
+if ff(1)>0
     out     = zeros(80,4);
     ix_wet  = (mcsec>diurn(12)&mcsec<diurn(37))&(month==2|month==3|month==4)&year==2003;
 
@@ -827,14 +918,14 @@ if ff(9)>0
     xdk.PaperSize = [7,4];
     xdk.PaperPosition = [0,0,7,4];
     
-    if ff(9)>1
+    if ff(1)>1
         print(xdk,'../figs/fig8','-dpdf')
     end
     
 end
 
-%rewriting daytime sink
-if ff(8)>0
+%daytime SON qrootsink
+if ff(7)>0
     out     = zeros(80,4);
     ix_dry  = (mcsec>diurn(12)&mcsec<diurn(37))&(month==9|month==10|month==11)&year==2003;
 
@@ -908,34 +999,50 @@ if ff(8)>0
     xdk.PaperSize = [7,4];
     xdk.PaperPosition = [0,0,7,4];
     
-    if ff(8)>1
+    if ff(7)>1
         print(xdk,'../figs/fig7','-dpdf')
     end
     
-    x=sum(sum(qrootsink(41:60,ix_dry)))/(91*24);
-    (out(41:60,1)'-x*zr)./out(41:60,1)'
-    
-    1800*24*91*sum(out(35:40,1))
-    1800*24*91*sum(out(75:80,1))
- 
-    zv = pore'*1000.*(zs(2:end)-zs(1:20));
-    
-    
-    x = max(qrootsink(21:40,year==2003&month>8&month<12),[],2);
-    
-    y = zv'./x/60/60;
-    min(y)
-    
-    x = max(qrootsink(61:80,year==2003&month>8&month<12),[],2);
-    y = zv'./x/60/60;
-    min(y)
+    disp('phs-on layer 3 extraction')
+    disp(1800*sum(qrootsink(3,ix_dry)))
 
+    disp('phs-on layer 8 extraction')
+    disp(1800*sum(qrootsink(48,ix_dry)))
+    
+    disp('tfe deep extraction')
+    disp([1800*sum(sum(qrootsink(35:40,ix_dry))),1800*sum(sum(qrootsink(75:80,ix_dry)))])
+    
+    [a,b]=max(max(qrootsink(21:40,ix_dry),[],2));
+    disp('max phs root sink')
+    disp(['occurs from layer',num2str(b)])
+    disp(a)
+    
+    p  = max(max(h2osoi(b:20:80,:)));
+    dz = 1000*(zs(b+1)-zs(b));
+    disp('phs time')
+    disp(p*dz/a/3600)
+    
+    p  = max(reshape(max(h2osoi,[],2),20,4),[],2); 
+    a  = max(qrootsink(61:80,ix_dry),[],2);
+    [x,b] = max(a);
+    
+    disp('max off root sink')
+    disp(['from layer',num2str(b)])
+    disp(x)
+    
+    disp('time')
+    [x,b] = min(z'*1000.*p./a/3600);
+    disp(['from layer',num2str(b)])
+    disp(x)
+    disp(a(b))
+    
+    
     
     
 end
 
 
-if ff(7)>0
+if ff(1)>0
 
     out = zeros(80,4);
    
@@ -1028,7 +1135,7 @@ if ff(7)>0
     xdk.PaperPosition = [0,0,7,4];
 
     
-    if ff(7)>1
+    if ff(1)>1
         print(xdk,'../figs/fig6','-dpdf')
     end
     
@@ -1056,7 +1163,7 @@ if ff(7)>0
 end
 
 
-if ff(6)>0
+if ff(9)>0
     
     hr = qrootsink(1:40,:);
     for ss=1:40
@@ -1069,7 +1176,7 @@ if ff(6)>0
         1800*splitapply(@sum,sum(hr(1:20,ix2)),month(ix2))'];
     hr2 = [1800*splitapply(@sum,sum(hr(21:40,ix)),month(ix))',...
         1800*splitapply(@sum,sum(hr(21:40,ix2)),month(ix2))'];
-    %hr2 = 1800*splitapply(@sum,sum(hr(21:40,ix)),month(ix));
+    
     
     xdk = figure;
     
@@ -1083,8 +1190,8 @@ if ff(6)>0
     ylabel('Total HR (mm)')
     title('AMB')
     xlim([0 13])
-    ylim([0 110])
-    text(1,100,'(a)','FontSize',14,'FontWeight','bold')
+    ylim([0 100])
+    text(1,90,'(a)','FontSize',14,'FontWeight','bold')
     
     subplot('Position',[0.54,0.11,0.45,0.84])
     b=bar(hr2,'stacked');
@@ -1095,32 +1202,43 @@ if ff(6)>0
     %bar(hr2,'FaceColor',[0.6,0.6,0.8],'EdgeColor',[0.55,0.55,0.8])
     xlabel('Month')
     xlim([0 13])
-    ylim([0 110])
+    ylim([0 100])
     title('TFE')
     set(gca,'yticklabel',[])
-    text(11,100,'(b)','FontSize',14,'FontWeight','bold')
+    text(11,90,'(b)','FontSize',14,'FontWeight','bold')
     
     xdk.Units = 'inches';
     xdk.Position = [2,2,7,4];
     xdk.PaperSize = [7,4];
     xdk.PaperPosition = [0,0,7,4];
     
-    if ff(6)>1
-        print(xdk,'../figs/fig5','-dpdf')
+    if ff(9)>1
+        print(xdk,'../figs/fig9','-dpdf')
     end
-    
-    
 
+    disp('Total HR')
+    disp([sum(sum(hr1)),sum(sum(hr2))])
+    
+    disp('Day/night')
+    disp([sum(hr1),sum(hr2)])
+    
+    disp('% day')
+    disp([sum(hr1(:,2))/sum(sum(hr1)),sum(hr2(:,2))/sum(sum(hr2))])
+    
+    disp('corrs')
+    p = splitapply(@sum,1800*prec(year==2003),month(year==2003))';
+    disp([corr(sum(hr1,2),p),corr(sum(hr2,2),p)])
+    
+    disp('amb higher these months')
+    disp([(1:12)',sum(hr1,2)>sum(hr2,2)])
 end
 
-
-if ff(5) >0
+if ff(6) >0
     xdk = figure;
     
     out = zeros(80,3);
     kon = nan*smp(1:80,:);
     ix  = year==2003&fctr(1,:)>4;
-    %    ix  = fsds>1&year==2003;
     kon(1:40,ix) = ksr(1:40,ix);
 
     
@@ -1161,8 +1279,8 @@ if ff(5) >0
     errorbar(1:20,out(ll,1),out(ll,2),out(ll,3),'x','Color',[0.7 0.1 0.1],'Marker','none')
     xlabel('Soil Layer')
     ylabel('Conductance (s-1)')
-    ylim([0 1e-10])
-    text(17,6/7*8e-11,'(c)','FontSize',14,'FontWeight','bold')
+    ylim([0 9e-11])
+    text(17,6/7*9e-11,'(c)','FontSize',14,'FontWeight','bold')
     
     subplot('position',[0.54, 0.12, 0.43, 0.39])
     hold on
@@ -1170,48 +1288,23 @@ if ff(5) >0
     plot(1:20,out(ll,1),'x')
     errorbar(1:20,out(ll,1),out(ll,2),out(ll,3),'x','Color',[0.7 0.1 0.1],'Marker','none')
     xlabel('Soil Layer')
-    ylim([0 1e-10])
-    text(17,6/7*8e-11,'(d)','FontSize',14,'FontWeight','bold')
-    
-    
+    ylim([0 9e-11])
+    text(17,6/7*9e-11,'(d)','FontSize',14,'FontWeight','bold')
     
     xdk.Units = 'inches';
     xdk.Position = [2,2,7,4];
     xdk.PaperSize = [7,4];
     xdk.PaperPosition = [0,0,7,4];
     
-    if ff(5)>1
-        print(xdk,'../figs/fig3','-dpdf')
-    end
-    
-    if 1==2
-    xdk = figure;
-    bar(out(21:40,1))
-    xlim([0 20.5])
-    xlabel('Soil Layer')
-    ylabel('Conductance (s-1)')
-    title('PHS-on, TFE')
-    
-    xdk.Units = 'inches';
-    xdk.Position = [2,2,7,4];
-    xdk.PaperSize = [7,4];
-    xdk.PaperPosition = [0,0,7,4];
-    if ff(5)>1
-        print(xdk,'../figs/fig3a','-dpdf')
-    end
+    if ff(6)>1
+        print(xdk,'../figs/fig6','-dpdf')
     end
     
     close all
-    ix  = year==2003&fctr(1,:)>4;
-    y   = kon(67,ix);
-    x   = doy(ix&kon(67,:)==0);
-    
-    m   = (month(ix&kon(67,:)==0));
-    d   = (day(ix&kon(67,:)==0));
-    
-    plot(x,y(y==0))
-    hold on
-    median(kon(47,ix&kon(67,:)==0))
+    mm=min(month(year==2003&fctr(1,:)>4&kon(67,:)==0));
+    dd=min(day(month==mm&year==2003&fctr(1,:)>4&kon(67,:)==0));
+    disp('first zero conductance')
+    disp([num2str(mm),'-',num2str(dd)])
     
 end
 
@@ -1335,99 +1428,9 @@ if ff(4)>0
 end
 
 
-if ff(2)>0
-    % look at cumulative ET
-    targ = fctr+fcev+fgev;
-    out  = 1800*4e-7*sum(targ,2);
-    
-    for i=[2,4]
-        
-        out  = mean(smp((1:20)+(i-1)*20,year==2003&month>8&month<12),2);
-        plot(out,-zs(2:end))
-        hold on
-        xlim([-0.5e5,0])
-    end
-end
 
 
 
-if ff(1)>0
-    %figure 2, water potential from a dry day
-
-    % calculate SON-2003 diurnal mean
-    ix  = year==2003&month>8&month<12;
-    g   = findgroups(mcsec);
-    out = zeros(8,48);
-    for i=1:8
-    out(i,:) = splitapply(@mean,vegwp(i,ix),g(ix));
-    end
-    
-    %plotting
-    xdk = figure;
-    x = 0.25:0.5:24;
-    xf = 1/101972;  %converts mm to MPa
-    subplot('position',[0.08, 0.12, 0.43, 0.83])
-    plot(x,xf*out(1:4,:)')
-    xlim([0 24])
-    ylim([-2.5 0])
-    xlabel('Hour')
-    ylabel('Water Potential (MPa)')
-    title('AMB')
-    text(1.5,-2.3,'(a)','FontSize',14,'FontWeight','bold')
-    set(gca,'xtick',0:6:24)
-    subplot('position',[0.54, 0.12, 0.43, 0.83])
-    plot(x,xf*out(5:8,:)')
-    set(gca,'xtick',0:6:24)
-    ylim([-2.5 0])
-    xlim([0 24])
-    xlabel('Hour')
-    title('TFE')
-    xdk.Units = 'inches';
-    xdk.Position = [2,2,7,4];
-    xdk.PaperSize = [7,4];
-    xdk.PaperPosition = [0,0,7,4];
-    set(gca,'yticklabel',[])
-    l = legend('sun-leaf','shade-leaf','stem','root','location','southeast');
-    l.Position(1) = 0.45;
-    l.Position(2) = 0.22;
-    set(gca,'xtick',0:6:24)
-    text(21,-2.3,'(b)','FontSize',14,'FontWeight','bold')
-    if ff(1)>1
-        print(xdk,'../figs/fig2','-dpdf')
-    end
-    
-    %predawn water potentials?
-    out         = xf*out;
-    psi_predawn = [out(4,11),out(8,11),out(4,11)-out(8,11)];
-    psi_midday  = [out(1:4,27),out(5:8,27)];
-    psi_drops   = [out(4,11),out(8,11)];
-    psi_drops   = [psi_drops;out(4,27)-out(4,11),out(8,27)-out(8,11)];
-    psi_drops   = [psi_drops;out(1,27)-out(4,27),out(5,27)-out(8,27)];
-    psi_drops   = [psi_drops,psi_drops(:,1)-psi_drops(:,2)]
-    
-    %what about effect of TFE on phs-off?
-    % calculate root-area average smp
-    % lopping off lower than -255000mm (full stomatal closure)
-    % this is not the stress functional input
-    % because you also would need to lop off > -60000mm
-    x = zeros(2,1);
-    for i=1:2
-        if i==1
-            ll=41:60;
-        else
-            ll=61:80;
-        end
-        ix  = year==2003&month>8&month<12;
-        tmp = smp(ll,ix);
-        tmp = tmp+(-255000-tmp).*(tmp<-255000);
-        
-        x(i) = xf*mean(zr*tmp);
-    end
-    
-    
-    
-    
-end
 
 
 

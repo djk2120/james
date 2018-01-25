@@ -432,26 +432,26 @@ Our goal:
 
 Both cases: stem, sunlit, shaded basically indistinguishable, 3 lines overlap. \\
 Ambient Midday (1pm): -1.95, -1.94, -1.93 \\
-TFE Midday (1pm): -2.29, -2.28, -2.27 \\
+TFE Midday (1pm): -2.17, -2.16, -2.15 \\
 
-Ambient: Predawn (5am) root water potential = -0.07MPa \\
-TFE: Predawn (5am) root water potential = -0.28MPa \\
-delta = -0.22 MPa
+Ambient: Predawn (5am) root water potential = -0.067MPa \\
+TFE: Predawn (5am) root water potential = -0.224MPa \\
+delta = -0.16 MPa
 
 Ambient: Midday (1pm) root water potential = -0.10 MPa, for a drop of 0.03 MPa relative to predawn \\
-TFE: Midday (1pm) root water potential = -0.60 MPa, for a drop of 0.32 MPa relative to predawn \\
-delta = -0.28 MPa
+TFE: Midday (1pm) root water potential = -0.41 MPa, for a drop of 0.19 MPa relative to predawn \\
+delta = -0.15 MPa
 
 Ambient: Midday (1pm) sun leaf water potential = -1.95 MPa, for a drop of 1.85 MPa relative to midday roots \\
-TFE: Midday (1pm) sun leaf water potential = -2.29 MPa, for a drop of 1.69 MPa relative to midday roots \\
-delta = +0.16 MPa
+TFE: Midday (1pm) sun leaf water potential = -2.17 MPa, for a drop of 1.76 MPa relative to midday roots \\
+delta = +0.09 MPa
 
 Discussion:
 Overlapping lines tips hand on naive approach, likewise instant refilling.
 Water potential values are in range (cite).
-LWP drop due to TFE is -0.34MPa, probably small.
-Due in equal measure to change in predawn water potential (-0.22 MPa) and change in soil-to-root drop (-0.28 MPa). 
-Stem drop actually attenuated (+0.16 MPa).
+LWP drop due to TFE is -0.22MPa, probably small (rosie).
+Due partly to change in predawn water potential (-0.16 MPa) and change in soil-to-root drop (-0.15 MPa). 
+Stem drop actually abates (+0.09 MPa).
 Stem drop smaller because though PLC increases, transpiration decreases to larger effect.
 Consistent with findings that root resistance is most important in Amazonia (rosie).
 
@@ -530,6 +530,7 @@ In the ambient simulation, with well-watered conditions, hydraulic danger is pre
 With TFE, hydraulic danger is imposed by both high atmospheric demand and dry soils.
 
 \subsection{Conductance}
+Figure 6
 ksr is modeled in PHS based on kmax and a vulnerability curve and soil conductance
 A notion of ksr can be inferred for PHS-off by dividing the rootsink by the btran gradient definition.
 well-watered, why the variability?\\
@@ -538,7 +539,7 @@ absolute values \\
 shape \\
 increase vs. decrease
 relative conductance for phs-off can change, but only via zeros
-looking at layer 7, conductance is zero from nov22 through the end of the year
+looking at layer 7, conductance is zero from dec22 through the end of the year
 compared to ambient, where mean daytime conductance is 3.6e-11 s-1
 
 \subsection{Extraction via hydraulic gradient}
@@ -549,13 +550,13 @@ lines span interquartile range
 constrained to [6am,6pm).
 Clearly the profiles of extraction are quite different.
 PHS concentrates extraction higher in the soil column, with the most extraction from layer 3 (6 to 12 cm below the surface).
-Total extraction from this layer in daytime SON 2003 is 4.24 cm.
-With PHS-off, the most extraction is from layer 8 (68 to 92 cm).
+Total extraction from this layer in daytime SON 2003 is 4.38 cm.
+With PHS-off, the most extraction is 3.63 cm from layer 8 (spans 68 to 92 cm).
 
 The profile for mean extraction in PHS-off, ambient is driven by root fraction, R = 1.
 If you multiply root fraction by average transpiration, the result is those bars, max error 1.8\%.
 
-The correlation between PHS-on average root sink and root fraction is R = 0.47.
+The correlation between ambient PHS-on average root sink and root fraction is R = 0.47.
 This reflects various additional controls on root sink introduced by PHS.
 (1) work against gravity
 (2) length-scaling of root xylem resistance (longer roots, more resistance)
@@ -568,19 +569,18 @@ Due to the dynamic root potential, the vegetation can increase the potential gra
 and when deep soils are sufficiently wet compared to surface layers, deep water extraction occurs.
 
 This can be seen during the TFE experiment. With PHS-on there is more extraction from deep layers, 
-with a net daytime sink of 11.0 cm of water from layers 15-20 (beyond 3.26 meters). 
-With PHS-off there is 5.9 cm of water extracted from those layers.
+with a net daytime sink of 9.6 cm of water from layers 15-20 (beyond 3.26 meters). 
+With PHS-off  5.0 cm of water is extracted from those layers.
 deep roots \citep{nepstad1994}
 
-As a result (during TFE) there is more dry season transpiration (SON) with PHS on, 32.1 cm vs. 29.2 cm with PHS off.
 Finally note that TFE, phs-on layers 3 and 4 show the mean outside the interquartile range. 
 This belies an asymmetric distribution of root water uptake rates from these layers.
-After rain events, (there is 26cm of rain in SON2003), root water uptake rates can run as high as 1.02e-4 mm/s in layer 2.
+After rain events, (there is 26cm of rain in SON2003), root water uptake rates can run as high as 9.08e-5 mm/s in layer 2.
 
-For a sense of scale, at this rate the full saturated water volume from layer 2 (0.66*4cm) can be taken up by the roots in about 72 hours.
-With PHS off, the fastest root water uptake is 2.7e-5 mm/s from layer 9. This is smaller and occurs from a larger soil layer (spans 92 to 120cm depth).
-With PHS off, the fastest root water uptake relative to the layer size is from layer 1, 4.3e-6 mm/s, 
-which would take approximately 850 hours to process the saturated layer water volume. 
+For a sense of scale, at this maximal rate the full saturated water volume from layer 2 (0.66*4cm) can be taken up by the roots in about 81 hours.
+With PHS off, the fastest root water uptake is 2.5e-5 mm/s from layer 8. This is smaller and occurs from a larger soil layer (spans 68 to 92cm depth).
+With PHS off, the fastest root water uptake relative to the layer size is from layer 1, 3.9e-6 mm/s, 
+which would take approximately 475 hours to process the saturated layer water volume. 
 As a result, PHS-on has a much higher capacity to homogenize a soil layer out of equilibrium. 
 
 This probably stands as the biggest challenge for implementing a plant hydraulics framework, 
@@ -606,10 +606,10 @@ This functionality is precluded with PHS-off, which sets uptake to zero if soil 
 Figure \ref{fig9} shows the total hydraulic redistribution by month for 2003.
 The darker shading shows the portion of HR that occurs at night [6pm,6am). 
 
-HR increases from 408mm in the ambient simulation to 563 mm with TFE.
-HR is predominately at night, ambient is 307/101, TFE is 401/163. 
-Slight shift towards daytime with TFE 29\% daytime compared to 25\% daytime.
-With TFE, HR is highly correlated to precipitation, with R=0.97 between monthly total precip and HR.
+HR increases from 408mm in the ambient simulation to 560 mm with TFE.
+HR is predominately at night, ambient is 307/101, TFE is 412/148. 
+Slight shift towards daytime with TFE 26.5\% daytime compared to 24.7\% daytime.
+With TFE, HR is highly correlated to precipitation, with R=0.94 between monthly total precip and HR.
 Ambient, lower correlation, just 0.26. 
 Ambient has less HR during wet condition (Feb-August), but more HR in Jan,Sep-Dec.
 
@@ -710,7 +710,7 @@ For comparison, total precip is 6.7 meters.
 \clearpage   
   \begin{figure}[h]
      \centering
-     \includegraphics[width=30pc]{../figs/fig3.pdf}
+     \includegraphics[width=30pc]{../figs/fig6.pdf}
      \caption{Distribution of daytime soil-to-root hydraulic conductance by soil layer in 2003. Bars span interquartile range and x's mark the median. 
      (a) PHS-on, ambient throughfall.
      (b) PHS-on, with 50\% throughfall excluded.
@@ -754,7 +754,7 @@ For comparison, total precip is 6.7 meters.
     \clearpage
     \begin{figure}[h]
      \centering
-     \includegraphics[width=30pc]{../figs/fig5.pdf}
+     \includegraphics[width=30pc]{../figs/fig9.pdf}
      \caption{Total hydraulic redistribution (mm) by month in 2003. For (a) ambient throughfall conditions, and (b) 50\% throughfall exclusion. 
      Darker shading shows portion of HR at night [6pm,6am), lighter shading shows portion of HR during day [6am,6pm).}
      \label{fig9}
