@@ -468,9 +468,9 @@ As a result, PHS-on has less GPP than off, and less seasonality in GPP. Likewise
 
 TFE \\
 In both cases, the effect of TFE accumulates through the simulation. 
-The effect of TFE is underestimated in both cases, seeming to overestimate the ability of soil water to buffer stress.
-For PHS-on, the effect of TFE is small, with additive stress peaking in November: adding 12\% to the stress in Nov-2002 and 19\% to the stress in Nov-2003.
-For PHS-off, the effect of TFE is larger, adding 45\% in January 2003  and 75\% in December 2003. \\
+The effect of TFE is underestimated in both cases compared to sapflow, seeming to overestimate the ability of soil water to buffer stress.
+For PHS-on, the effect of TFE is small, with additive stress peaking in November: adding 6.6\% to the stress in Nov-2002 and 11.4\% to the stress in Nov-2003.
+For PHS-off, the effect of TFE is larger, adding 37.4\% in December 2002  and 67\% in December 2003. \\
 Note the different seasonality
 PHS-on has the most stress in JAS and least stress in JFM. 
 PHS-off has the most stress in DJF and least stress in JJA. \\
@@ -482,7 +482,7 @@ PHS-on stress is a function of leaf water potential, which responds to both soil
 Ambient dynamics of predawn root water potential are 0.1 MPa corresponds to about 2-3\% extra stress, without factoring in lost conductance
 Ambient dynamics of stress are about 30\%. Mostly due to atmospheric demand.
 
-TFE causes 2003 SON predawn water potential to decrease by 0.22MPa. 
+TFE causes 2003 SON predawn water potential to decrease by 0.11MPa. 
 Added stress is due to soil forcing, but still depends on atmospheric demand, 
 because lowering water potential is more damaging during the dry season,
 due to nonlinear stress function.
@@ -490,8 +490,8 @@ due to nonlinear stress function.
 Diurnal cycle
 
 Another look at PHS-on has significant stress in ambient, PHS-off does not.
-TFE has a larger effect on PHS-off lowering stress function by about 50\%.
-PHS-on TFE adds about 15\% to midday stress.
+TFE has a larger effect on PHS-off lowering stress function by about 30\%.
+PHS-on TFE adds about 10\% to midday stress.
 
 PHS-on introduces diurnal cycle to stress function, responding to atmospheric demand, peaking after noon
 when VPD and solar radiation are high. 
@@ -499,17 +499,13 @@ when VPD and solar radiation are high.
 The PHS-on stress function deviates from 1 to limit photosynthesis and transpiration when the unattenuated Medlyn transpiration requires
 very negative leaf water potential. At night, this is typically not the case, so the stress function evaluates to 1. 
 A time-average of the stress function is not appropriate for interpreting the effect of water stress on photosynthesis.
-In this case, the time averages of the stress function over SON 2013 are 0.94,0.88,1,0.52
-The average photosynthesis values are 8.1,7.3,9.1,6.2 g/m2/d
-Very helpfully, we can use the phs-off, amb as maximal photosynthesis. Divide all the averages by that you get
-0.89,0.8,1,0.68.
-TFE PHS-off GPP is 68\%, which is higher than the stress function of 52\%.
-Why? Because though stress increases, WUE also increases, because with lower stomatal conductance, C$_i$ increases.
-PHS-on GPP is 89\% and 80\%, which are lower than the time average stress functions.
-Why? Because all the ones at night, shouldn't count.
+Time-averaged stress during SON, with TFE, is 90.5\% for PHS on and 69\% for PHS off.
+Time-averaged GPP during SON,  with TFE, is 7.63 g/m2/d for PHS on and 7.57 g/m2/d for PHS off.
+Comparing this with maximal GPP (9.07 g/m2/d from amb/off), we see that,
+with TFE, PHS on is 84.1\% of maximum GPP and PHS off is 83.5\% of maximum GPP.
 
 Instead we should look at the inner product of stress with a notion of potential photosynthesis (in this case PHS-off, AMB) divided by total potential photosynthesis.
-This weighted average stress function over SON2013 is 0.84,0.71,1,0.53, delivering a more consistent metric for average stress, robust to diurnal variation.
+This weighted average stress function over SON2013 is 0.84,0.76,1,0.70, delivering a more consistent metric for average stress, robust to diurnal variation.
 
 Stress vs. VPD
 
@@ -609,30 +605,45 @@ The darker shading shows the portion of HR that occurs at night [6pm,6am).
 HR increases from 408mm in the ambient simulation to 560 mm with TFE.
 HR is predominately at night, ambient is 307/101, TFE is 412/148. 
 Slight shift towards daytime with TFE 26.5\% daytime compared to 24.7\% daytime.
-With TFE, HR is highly correlated to precipitation, with R=0.94 between monthly total precip and HR.
-Ambient, lower correlation, just 0.26. 
-Ambient has less HR during wet condition (Feb-August), but more HR in Jan,Sep-Dec.
+With TFE, HR is highly correlated with precipitation, r2 is 0.877. More precip, more HR.
+Ambient correlation with precip is not strong, not a significant predictor on its own r2 = 0.07
+Ambient has its highest value of HR in February, but then decreases every month until August.
+Then there is an uptick in September. 
+When precip is combined with predawn water potential, both are significant predictors (both p<0.01), r2 = 0.846,
+higher rain, higher HR, lower predawn water potential, higher HR.
+For TFE, predawn water potential is not a significant predictor, p=0.12.
 
 By layer, at night, Dry season
 
-Bars are average HR, which also stands in for net HR.
-Amb net HR = 48.8mm
-TFE net HR = 53.2mm
-For amb, net HR is concentrated to layers 6-9
-with tfe, net HR is distributed among 4-13
-
+Looking at the sink by layer shows the direction of HR.
+Even in the dry season HR occurs on both directions.
 Top layers are a source in both ambient and TFE. The other source is the deep soil.
-TFE plumbs deeper into the soil column, net extraction of 39.8 mm from layers 15-20 (beyond 3.26meters)
-Compared to amb net extraction of 8.2 mm from those layers.
+
+For amb, HR sink is concentrated to layers 6-9
+with tfe, HR sink is distributed among 4-13
+
+TFE plumbs deeper into the soil column, net extraction of 48.4 mm from layers 15-20 (beyond 3.26meters)
+Compared to amb net extraction of 8.1 mm from those layers.
 
 The lines span interquartile range. 
-Variability as measure by IQR is much higher in the ambient simulation, which explains why total HR is significantly higher, 
-but net HR is actually slightly lower (as compared to TFE). 
+Variability as measured by IQR is much higher in the ambient simulation, which explains why total HR is significantly higher, 
+but net HR is actually lower (as compared to TFE). 
+
+Bars are average HR, which also stands in for net HR.
+Amb net HR = 48.8mm 
+TFE net HR = 64.0mm
+
 TFE, layer 3, which is a net source of HR, has its entire interquartile range as a sink.
 Likewise layer 2, spends most of the time as a sink.
 This points to an asymmetrical distribution of qrootsink for these layers, with long source tail. Flows in slowly, out fast (following rain).
 
+By layer, at night, Wet season
 
+In the wet season, HR is downwards.
+
+Both net and total HR are higher in the TFE simulation. 
+Net HR is 76.0 mm in ambient wet season at night,
+Net HR is 149.6 mm in tfe wet season at night.
 
 \subsection{Soil profile}
 
@@ -665,7 +676,7 @@ For comparison, total precip is 6.7 meters.
   \clearpage   
   \begin{figure}[h]
      \centering
-     \includegraphics[width=30pc]{../figs/fig12.pdf}
+     \includegraphics[width=30pc]{../figs/fig3.pdf}
      \caption{(a,b) Monthly mean water stress function. Note that the water stress function equals 1 when there is no stress and 0 when fully stressed.
      (c,d) Monthly mean transpiration (W/m$^2$).
      (e,f) Monthly mean gross primary productivity (g/m$^2$/d). 
@@ -680,7 +691,7 @@ For comparison, total precip is 6.7 meters.
           \clearpage
     \begin{figure}[h]
      \centering
-     \includegraphics[width=30pc]{../figs/fig10.pdf}
+     \includegraphics[width=30pc]{../figs/fig4.pdf}
      \caption{2003 Dry season (SON) diurnal mean water stress function for 
      (a) PHS on, and
      (b) PHS off.
