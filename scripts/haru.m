@@ -78,7 +78,7 @@ p = [p,a(:,2)];
 
 ff = [0,0,0,0,0,...
     0,0,0,0,0,...
-    0,1,0,0,0,...
+    0,0,1,0,0,...
     0,0,0];
 
 %2  = water potential
@@ -1145,9 +1145,29 @@ if ff(11)>0
     if ff(11)>1
         print(xdk,'../figs/fig11','-dpdf')
     end
+    
+    ix = year==2003&month>8&month<12;
+    disp('PHS off (amb/tfe): ')
+    disp([mean(zr*smp(41:60,ix))/101972,...
+        mean(zr*smp(61:80,ix))/101972])
+    
+    ix = year==2003&month>8&month<12&mcsec==diurn(11);
+    disp('PHS on (amb/tfe): ')
+    disp([mean(vegwp(4,ix))/101972,...
+    mean(vegwp(8,ix))/101972])
+
+    targ = fctr+fcev+fgev;
+    disp('total ET: ')
+    y = 1800*sum(targ,2)*4e-10;
+    disp(y)
+    
+    zv = zs(2:end)-zs(1:end-1);
+    x=zv*reshape(h2osoi(:,end),20,4)
+    y(3)-y(1)
+    x(1)-x(3)
+    y(4)-y(2)
+    x(2)-x(4)
 end
-
-
 
 if ff(12)>0
     x=mean(h2osoi(:,year==2003&month>8&month<12),2);
@@ -1158,7 +1178,16 @@ if ff(12)>0
     out(:,i) = tmp(:);
     end
     
-
+        zv = zeros(40,1);
+    zv(1) = 0;
+    ct = 1;
+    for i = 1:19
+        ct = ct+1;
+        zv(ct) = zs(i+1)-.0001;
+        ct = ct+1;
+        zv(ct) = zs(i+1)+.0001;
+    end
+    zv(end) = zs(end);
 
     subplot(1,2,1)
     plot(out(:,1),-zv,'LineWidth',2)
@@ -1173,7 +1202,33 @@ if ff(12)>0
     title('TFE')
     xlim([0 1])
     legend({'on','off'})
+ 
+end
+
+if ff(13)>0
     
+    yy  = 2002;
+    dd  = 200;
+    for i = 1:529
+        dd = dd+1;
+        if dd==366
+            dd = 1;
+            yy = 2003;
+        end
+        
+        subplot(1,2,1)
+        %x = mean(smp(61:80,year==yy&doy==dd),2)/101972;
+        x = mean(h2osoi(61:80,year==yy&doy==dd),2);
+        barh(-1:-1:-20,x)
+        %xlim([-2.7,0])
+        xlim([0,1])
+        title(dd)
+        subplot(1,2,2)
+        x = mean(h2osoi(21:40,year==yy&doy==dd),2);
+        barh(-1:-1:-20,x)
+        xlim([0,1])
+        pause(0.1)
+    end
     
 end
 
