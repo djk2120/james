@@ -77,8 +77,8 @@ p = [p,a(:,2)];
 %------------------------------------------------------------------------
 
 ff = [0,0,0,0,0,...
+    2,0,0,0,0,...
     0,0,0,0,0,...
-    0,0,1,0,0,...
     0,0,0];
 
 %2  = water potential
@@ -536,7 +536,7 @@ if ff(6) >0
     for ss = 41:80
         
         kon(ss,ix)  = qrootsink(ss,ix)./min(189000,(smp(ss,ix)+255000));
-        ix1         = ix&smp(ss,:)<=-255000;
+        ix1         = ix&smp(ss,:)<=-254900;
         kon(ss,ix1) = 0;
     end
     
@@ -591,11 +591,15 @@ if ff(6) >0
         print(xdk,'../figs/fig6','-dpdf')
     end
     
-    close all
-    mm=min(month(year==2003&fctr(1,:)>4&kon(67,:)==0));
+    
+    mm=min(month(month>8&year==2003&fctr(1,:)>4&kon(67,:)==0));
     dd=min(day(month==mm&year==2003&fctr(1,:)>4&kon(67,:)==0));
     disp('first zero conductance')
     disp([num2str(mm),'-',num2str(dd)])
+    
+    figure
+    ix = month>8&year==2003&fctr(1,:)>4;
+    plot(kon(67,ix))
     
 end
 

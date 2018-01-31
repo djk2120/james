@@ -399,8 +399,8 @@ Our goal:
     \end{equation}
     \end{linenomath*}
     
-    With some manipulation, we can recast (\ref{bt:4}) into the hydraulic framework. Define $T_{\text{max}}$, such that: $T = 
-    \beta_t T_{\text{max}}$ and use this expression to replace $T$ in (\ref{bt:4}).  Likewise replace $w_i$ in (\ref{bt:4}) with the 
+    With some manipulation, we can recast (\ref{bt:4}) into the hydraulic framework. We define $T_{\text{max}}$, such that: $T = 
+    \beta_t T_{\text{max}}$ and use this expression to replace $T$ in (\ref{bt:4}).  Likewise we replace $w_i$ in (\ref{bt:4}) with the 
     formula from (\ref{bt:2}).
     
     \begin{linenomath*}
@@ -409,7 +409,7 @@ Our goal:
     \end{equation}
     \end{linenomath*}
     
-    This yields $\beta_t$ analogs for the three terms of Equation \ref{phs:sink}.
+    This yields $\beta_t$ analogs for the two terms of Equation \ref{phs:sink}.
     \begin{linenomath*}
     \begin{equation} \begin{aligned}
     k &= r_i \, \dfrac{T_{max}}{\psi_{o}-\psi_{c}} \\
@@ -425,8 +425,10 @@ Our goal:
     \end{linenomath*}
     
     Note that in Figure \ref{fig:cond}, we compare conductance values derived from both the PHS and $\beta_t$ implementations.
-    With the $\beta_t$ formulation $k$ is not explicitly modeled, so instead we infer $k$, by dividing $q_i$ by the 
-    $\beta_t$ notion of $\Delta\psi$ from Equation \ref{kb}.
+    With the $\beta_t$ formulation $k$ is not explicitly modeled, so instead we infer $k$, 
+    by dividing $q_i$ by $\Delta\psi$ as defined in Equation \ref{kb}.
+    Furthermore, we interpret the constraint that $\Delta\psi$ be greater than or equal to zero to mean 
+    that conductance is zero in non-conforming cases. As such, we say $k=0$ when $\Delta\psi<\text{1 kPa}$.
     
     Issues with $\beta_t$ representation of the soil transpiration sink: 
     
@@ -443,7 +445,8 @@ Our goal:
     Instead, soil sink dynamics derive from a highly dynamic conductance in the $\beta_t$ implementation.
     As inferred in Equation \ref{kb}, conductance is modeled as a function of $T_{max}$, and three constant parameters.
     $T_{max}$ is highly dynamic, responding to the diurnal course in transpiration demand.
-    This is inconsistent with typical expressions, where $k$ is a function of some maximal conductance that is attenuated with drying.
+    This is inconsistent with general principles of porous media flow, where conductivity is a function of the hydraulic architecture and its wetted status.
+    Likewise, this representation of conductance does not represent the characteristic phenomenon where vessels lose conductance with drying.
       
     (3) No dependence on absolute root biomass \\
     As is typical, the $\beta_t$ conductance is scaled by layer using an area basis.
@@ -585,7 +588,7 @@ absolute values \\
 shape \\
 increase vs. decrease
 relative conductance for phs-off can change, but only via zeros
-looking at layer 7, conductance is zero from dec22 through the end of the year
+looking at layer 8, conductance is zero from nov16 through the end of the year.
 compared to ambient, where mean daytime conductance is 3.6e-11 s-1
 
 \subsection{Extraction via hydraulic gradient}
