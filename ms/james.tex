@@ -60,7 +60,7 @@ SPAC representation is important, defines:
   - hydrologic transpiration sink
   - magnitude and timing of transpiration
 
-Representation in CLM is bad
+Representation in CLM is known deficiency
   - also in other models
       . \citep{powell2013,ukkola2016}
 
@@ -346,9 +346,10 @@ Our goal:
 
 \section{BTRAN}
 \label{sect:btran}
-    PHS replaces the transpiration beta function ($\beta_t$, colloquially btran), 
-    which is the phenomenological soil water stress function in CLM4.5,
-    as described in \citet{oleson2013,sellers1996a,sellers1996b}.
+    PHS replaces the transpiration beta function ($\beta_t$, colloquially BTRAN), 
+    which is the phenomenological soil water stress function in CLM4.5, as described in \citet{oleson2013,sellers1996a,sellers1996b}.
+    $\beta_t$ is calculated based on soil matric potential, as a root-fraction weighted average of a soil layer wilting factor (Equation \ref{bt:1}).
+    $\beta_t$ multiplies $v_{\text{cmax}}$, effecting attenuation of photosynthesis and transpiration with drought.
     
     Recent studies suggest that the $\beta_t$ parameterization introduces model bias in turbulent fluxes \citep{bonan2014}
     and contributes to unrealistic drought response of photosynthesis and stomatal conductance  \citep{powell2013}.
@@ -356,21 +357,24 @@ Our goal:
     dangerously low leaf water potentials, it makes sense to represent more of the hydraulic architecture (a la SPA or PHS)
     and assess hydraulic safety based on prognostic leaf water potential.
     
-    But weirdly, this isn't even the biggest home run for why to replace btran. Because btran, while responsible for applying
-    water stress to photosynthesis, also sets the framework for vegetation root water extraction. And it does a terrible job!
-    In this section, we recast the btran soil water extraction equations into a hydraulic framework, for comparison to the PHS implementation, making the case that this is a good reason to ditch btran.
+    $\beta_t$ also sets the framework for vegetation soil water extraction. 
+    Each timestep, $\beta_t$ is calculated and used to solve for photosynthesis and transpiration.
+    The transpiration flux must then be distributed among the vertically discretized soil layers.
+    In the $\beta_t$ framework, the transpiration sink is partitioned by layer according to the layer wilting factor and root fraction.
+    This framework leaves out several key physical attributes of soil water extraction, which are addressed in the PHS implementation.
     
-    Btran is unitless, ranging from 0 to 1, with 1 corresponding to no water stress, and 0 corresponding to fully water stressed. 
-    Btran is calculated based on a root-fraction weighted average of soil layer wilting factor ($w_i$), which is a bounded linear 
+    $\beta_t$ is unitless, ranging from 0 to 1, with 1 corresponding to no water stress, and 0 corresponding to fully water stressed. 
+    It is calculated based on a root-fraction weighted average of soil layer wilting factor ($w_i$), which is a bounded linear 
     function of soil water potential ($\psi_i$) relative to PFT parameters defining the soil potential with stomates fully open ($
-    \psi_{fo}$) and fully closed ($\psi_{fc}$). Note that root fraction ($r_i$) must sum to 1.
+    \psi_{o}$) and fully closed ($\psi_{c}$). Note that root fraction ($r_i$) must sum to 1.
     
     \begin{linenomath*}
     \begin{equation} \beta_t = \sum_{i=1}^{n}{r_iw_i}
+    \label{bt:1}
     \end{equation}
     \begin{equation} 
     \label{bt:2}
-    w_i=0 \leq \dfrac{\psi_i-\psi_{fc}}{\psi_{fo}-\psi_{fc}} \leq 1
+    w_i=0 \leq \dfrac{\psi_i-\psi_{c}}{\psi_{o}-\psi_{c}} \leq 1
     \end{equation}
     \end{linenomath*}
     
@@ -386,12 +390,12 @@ Our goal:
     \end{equation}
     \end{linenomath*}
     
-    The PHS implementation adopts the hydraulic framework for soil water extraction, where the flux to transpiration ($q_i$) is 
-    the product of the hydraulic conductance ($k$), the area basis of that conductance ($A$), and the gradient in water 
-    potential driving the flow ($\Delta\psi$).
+    The PHS implementation adopts a hydraulic framework for soil water extraction, where the flux to transpiration ($q_i$) is 
+    the product of the hydraulic conductance ($k$) and the gradient in water potential driving the flow ($\Delta\psi$).
     \begin{linenomath*}
     \begin{equation}
-    q_i = kA\Delta\psi
+    q_i = k\Delta\psi
+    \label{phs:sink}
     \end{equation}
     \end{linenomath*}
     
@@ -401,31 +405,77 @@ Our goal:
     
     \begin{linenomath*}
     \begin{equation} 
-    q_i = \dfrac{T_{\text{max}}}{\psi_{fo}-\psi_{fc}} r_i \left(\psi_i-\psi_{fc} \right)
+    q_i = \dfrac{T_{\text{max}}}{\psi_{o}-\psi_{c}} r_i \left(\psi_i-\psi_{c} \right)
     \end{equation}
     \end{linenomath*}
     
-    This yields Btran analogs for the three terms of $q_i = kA\Delta\psi$
+    This yields $\beta_t$ analogs for the three terms of Equation \ref{phs:sink}.
     \begin{linenomath*}
     \begin{equation} \begin{aligned}
-    k &= \dfrac{T_{max}}{\psi_{fo}-\psi_{fc}} \\
-    A &= r_i \\
-    \Delta\psi &= \psi_i - \psi_{fc} \\
+    k &= r_i \, \dfrac{T_{max}}{\psi_{o}-\psi_{c}} \\
+    \Delta\psi &= \psi_i - \psi_{c} \\
     \mbox{constrained by:} \qquad
     \Delta\psi &=
     \begin{cases}
-    0                          & \text{if } \psi_i<\psi_{fc}  \\
-    \psi_{fo}-\psi_{fc} & \text{if } \psi_i>\psi_{fo}
+    0                          & \text{if } \psi_i<\psi_{c}  \\
+    \psi_{o}-\psi_{c} & \text{if } \psi_i>\psi_{o}
+    \label{kb}
     \end{cases}
     \end{aligned}\end{equation}
     \end{linenomath*}
     
-    Issues: \\
-    1) No gravity component \\
-    2) No length-scaling of conductance \\
-    3) No dependence on absolute root biomass \\
-    4) Constant pulling $\psi$ \\
-    5) Would like to represent reverse flows \\
+    Note that in Figure \ref{fig:cond}, we compare conductance values derived from both the PHS and $\beta_t$ implementations.
+    With the $\beta_t$ formulation $k$ is not explicitly modeled, so instead we infer $k$, by dividing $q_i$ by the 
+    $\beta_t$ notion of $\Delta\psi$ from Equation \ref{kb}.
+    
+    Issues with $\beta_t$ representation of the soil transpiration sink: 
+    
+    (1) Constant pulling potential \\
+    Darcy's Law governs the flow of water through the soil-plant-atmosphere continuum, 
+    with fluxes proportional to the gradient in water potential. 
+    In the $\beta_t$ framework, that gradient is defined for each soil layer as 
+    the difference between the soil water potential in that layer ($\psi_i$) 
+    and a constant parameter, the soil water potential when stomata are fully closed ($\psi_{c}$).
+    It serves as the vegetation ``pulling'' potential for calculating the soil transpiration sink.
+    Using a constant is inconsistent with extensive evidence from the field of dynamic vegetation water potential.
+    
+    (2) Conductance dynamics \\
+    Instead, soil sink dynamics derive from a highly dynamic conductance in the $\beta_t$ implementation.
+    As inferred in Equation \ref{kb}, conductance is modeled as a function of $T_{max}$, and three constant parameters.
+    $T_{max}$ is highly dynamic, responding to the diurnal course in transpiration demand.
+    This is inconsistent with typical expressions, where $k$ is a function of some maximal conductance that is attenuated with drying.
+      
+    (3) No dependence on absolute root biomass \\
+    As is typical, the $\beta_t$ conductance is scaled by layer using an area basis.
+    In this case the relative root fraction is used.
+    With PHS, an absolute measure of root biomass is used (see Appendix Equation \ref{eq:rai}).
+    An absolute measure better conforms with the physics of porous media flow and better responds to varying carbon allocation strategies.
+
+    (4) Lacks penalties for extraction from depth \\
+    PHS implements two penalties for extracting water from deep in the soil column that are missing from the $\beta_t$ framework.
+    The first is minor, but water extracted from depth must overcome gravity. This amounts to about 0.01 MPa per meter in depth. 
+    This is missing from $\beta_t$ and included with PHS. 
+    Likewise $\beta_t$ ignores that hydraulic conductance generally scales with the inverse of conducting length.
+    In PHS, this is featured both in the conductance within root vessels and 
+    in the conductance governing the flux across the soil matrix to the root surface.
+    
+    (5) Constraints \\
+    In the $\beta_t$ framework, the gradient in water potential is constrained between 0 and 
+    the range of soil potential with stomata fully open and closed (Equation \ref{kb}). 
+    The upper constraint caps the gradient in water potential when soil potential reaches the value for stomata fully open.
+    There is no physical basis for why this would not continue to increase until saturation.
+    The lower constraint caps the gradient in water potential at zero, disallowing negative gradients.
+    However, reversed water fluxes, caused by negative gradients in water potential, have been observed in the field.
+    Both constraints are eschewed with PHS.
+    
+    This derivation suggests that $\beta_t$ was designed primarily as a heuristic for determining soil moisture stress
+    as relevant to photosynthesis and transpiration.
+    As a framework for modeling the vertically resolved transpiration sink, 
+    it fails to reproduce the expected functionality of porous media flow.
+    
+     
+    
+
     
 \section{Results and Discussion}
 \subsection{Modeling vegetation water potential}
@@ -737,7 +787,7 @@ very similar to delta ET, bit more infiltration from off
      (c) PHS-off, ambient throughfall.
      (d) PHS-off, with 50\% throughfall excluded.
      }
-     \label{fig6}
+     \label{fig:cond}
   \end{figure}
 
   
@@ -868,6 +918,7 @@ q_{3,i} = k_{3,i} \cdot  \text{RAI}_i  \cdot \left( \psi_{\text{soil,i}}-\psi_{\
 \end{equation} \end{linenomath*}
 \begin{linenomath*} \begin{equation}
 \text{RAI}_i=f_{\text{root}} \cdot \left( \text{SAI} + \text{LAI} \right) \cdot r_i
+\label{eq:rai}
 \end{equation} \end{linenomath*}
 \begin{linenomath*} \begin{equation}
 k_{3,i} = \dfrac{k_{r,i}+k_{s,i}}{k_{r,i}\cdot k_{s,i}}
