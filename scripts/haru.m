@@ -76,8 +76,8 @@ p = [p,a(:,2)];
 %************************************************************************
 %------------------------------------------------------------------------
 
-ff = [0,0,0,0,0,...
-    2,0,0,0,0,...
+ff = [0,0,1,0,0,...
+    0,0,0,0,0,...
     0,0,0,0,0,...
     0,0,0];
 
@@ -318,8 +318,11 @@ if ff(3)>0
         print(xdk,'../figs/fig3','-dpdf')
     end
     
-    ix = year==2003&mcsec==diurn(11);
-    (mean(vegwp(4,ix))-mean(vegwp(8,ix)))/101972
+    ix = year==2003;
+    gpp03 = 1800*12*sum(fpsn(:,ix),2)*10^-6;
+    gpp03(1)-gpp03(3)
+    t03   = 1800*sum(fctr(:,ix),2)*4e-7
+    t03(1)-t03(3)
     
 end
 
@@ -1221,16 +1224,16 @@ if ff(13)>0
         end
         
         subplot(1,2,1)
-        %x = mean(smp(61:80,year==yy&doy==dd),2)/101972;
-        x = mean(h2osoi(61:80,year==yy&doy==dd),2);
-        barh(-1:-1:-20,x)
-        %xlim([-2.7,0])
-        xlim([0,1])
+        x = mean(smp(61:80,year==yy&doy==dd),2)/101972;
+        %x = mean(h2osoi(61:80,year==yy&doy==dd),2);
+        plot(x,-1:-1:-20,'k-','LineWidth',2)
+        xlim([-2.7,0])
         title(dd)
         subplot(1,2,2)
-        x = mean(h2osoi(21:40,year==yy&doy==dd),2);
-        barh(-1:-1:-20,x)
-        xlim([0,1])
+        x = mean(smp(21:40,year==yy&doy==dd),2)/101972;
+        %x = mean(h2osoi(21:40,year==yy&doy==dd),2);
+        plot(x,-1:-1:-20,'k-','LineWidth',2)
+        xlim([-2.7,0])
         pause(0.1)
     end
     

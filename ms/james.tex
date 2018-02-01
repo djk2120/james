@@ -36,8 +36,6 @@ Pierre Gentine\affil{1}
 
 \section{Introduction}
 
-
-
  - droughts are increasing 
       . \citep{cook2015}
       . \citep{dai2013}
@@ -464,7 +462,7 @@ Our goal:
     
     (5) Constraints \\
     In the $\beta_t$ framework, the gradient in water potential is constrained between 0 and 
-    the range of soil potential with stomata fully open and closed (Equation \ref{kb}). 
+    the range of soil potential between parameters for stomata fully open and closed (Equation \ref{kb}). 
     The upper constraint caps the gradient in water potential when soil potential reaches the value for stomata fully open.
     There is no physical basis for why this would not continue to increase until saturation.
     The lower constraint caps the gradient in water potential at zero, disallowing negative gradients.
@@ -483,41 +481,77 @@ Our goal:
 \section{Results and Discussion}
 \subsection{Modeling vegetation water potential}
 
-Both cases: stem, sunlit, shaded basically indistinguishable, 3 lines overlap. \\
-Ambient Midday (1pm): -1.95, -1.94, -1.93 \\
-TFE Midday (1pm): -2.17, -2.16, -2.15 \\
+The new plant hydraulics module (PHS) introduces a representation of vegetation water potential to CLM.
+Vegetation water potential is modeled at four locations within the plant: at the root, stem, shaded, and sunlit leaf levels.
+Figure \ref{fig:vwp} shows the average diurnal cycle of vegetation water potential for the 2003 dry season at Caxiuana for two experiments:
+the first with ambient throughfall, and the second with 50\% of throughfall excluded. 
+Both panels show the characteristic drop in water potential around midday and the expected sequencing with 
+the leaf water potentials more negative than the stem, which is more negative than the root water potential.
 
-Ambient: Predawn (5am) root water potential = -0.067MPa \\
-TFE: Predawn (5am) root water potential = -0.224MPa \\
-delta = -0.16 MPa
+The sequencing is difficult to distinguish from the plot, where stem, sunlit, shaded nearly overlap for both experiments. 
+In the ambient simulation (Fig \ref{fig:vwp}a), midday (1p.m.) water potentials are -1.95, -1.94, -1.93 MPa 
+for sunlit leaf, shaded leaf, and stem, respectively.
+With throughfall exclusion (Fig \ref{fig:vwp}b) midday (1p.m.) water potentials decrease to -2.17, -2.16, -2.15 MPa, respectively.
+The small difference between leaf and stem water potentials results from minimal resistance to water flow across this segment. 
 
-Ambient: Midday (1pm) root water potential = -0.10 MPa, for a drop of 0.03 MPa relative to predawn \\
-TFE: Midday (1pm) root water potential = -0.41 MPa, for a drop of 0.19 MPa relative to predawn \\
-delta = -0.15 MPa
 
-Ambient: Midday (1pm) sun leaf water potential = -1.95 MPa, for a drop of 1.85 MPa relative to midday roots \\
-TFE: Midday (1pm) sun leaf water potential = -2.17 MPa, for a drop of 1.76 MPa relative to midday roots \\
-delta = +0.09 MPa
+Throughfall exclusion (TFE) lowers midday sunlit leaf water potential by 0.22 MPa compared to the ambient simulation.
+This drop in water potential can be partitioned among the segments of water flow from soil to leaf.
+In the ambient simulation, predawn (5am) root water potential is -0.067 MPa. 
+With TFE, it falls to -0.224 MPa, resulting in a drop in predawn root water potential of 0.16 MPa relative to the ambient simulation. 
+The potential drop from predawn to midday root water potential increases from 0.033 MPa in the ambient simulation to 0.185 MPA with TFE.
+Therefore TFE causes the drop in root water potential to increase by 0.15 MPa.
+The drop from root to stem acts in the opposite direction, decreasing from 1.85 MPa in the ambient simulation
+to 1.76 MPa with TFE, attenuating the drop in water potential by 0.09 MPa
 
 Discussion:
-Overlapping lines tips hand on naive approach, likewise instant refilling.
-Water potential values are in range (cite).
-LWP drop due to TFE is -0.22MPa, probably small (rosie).
+
+\cite{fisher2006}
+Predicted water potential values are in range, average dry season observation = -2.47 MPa, 
+with no statistically significant difference between AMB and TFE.
+For us, LWP drop due to TFE is -0.22MPa,
 Due partly to change in predawn water potential (-0.16 MPa) and change in soil-to-root drop (-0.15 MPa). 
 Stem drop actually abates (+0.09 MPa).
 Stem drop smaller because though PLC increases, transpiration decreases to larger effect.
-Consistent with findings that root resistance is most important in Amazonia (rosie).
+Consistent with findings in \cite{fisher2006} of 
+1) isohydric behavior
+and
+2) that most of the resistance is above ground, but that the added resistance from drying is predominately below ground.
+
+\cite{fisher2006} report dry season soil potential as -0.17 MPa in the ambient plot and -0.66 MPa in the TFE plot.
+These are drier than predawn root water potential in our simulations.
+Likewise the difference between TFE and AMB is more than 3x larger in the observations than in our simulations.
+This indicates that our simulations underestimate the forcing from throughfall exclusion, likely due to an overestimation of the 
+soil column's ability to buffer drying.
+
+The current PHS parameterization of stem-to-leaf resistance is relatively naive compared to the literature \citep{franks2007}
+and could be improved in future versions. 
+This results in little difference between stem, shaded, and sunlit leaf water potentials.
+Likewise the current PHS parameterization eschews vegetation capacitance. \citep{meinzer2004}
+This leads to instantaneous equilibration of water potential with soil moisture and atmospheric forcing.
+Finally, hydraulic conductance hysteresis is absent from the PHS vulnerability parameterization, 
+whereby xylem segments fully regain conducting capacity upon re-wetting.
+This limits the influence of drought legacy, which has been shown to be significant for forest mortality \citep{anderegg2013}.
+Our objective was to simplify the plant hydraulic representation for this first implementation, 
+allowing that it will likely be necessary to advance process representation in future versions
+to accurately model leaf water potential dynamics.
 
 \subsection{Stress function}
 
-Monthly means
+With PHS, the water stress factor is modeled as a function of leaf water potential.
+Previously water stress was an empirical function of root-zone soil matric potential (see Section \ref{sect:btran}).
+The stress factor multiplies $v_{\text{cmax}}$, with values of one equating to no stress and zero equating to fully stressed. 
+Figure \ref{fig:mm} shows monthly mean values of the water stress factor, gross primary productivity, and transpiration
+over the three-year simulation with PHS on and off under both ambient and 50\% excluded throughfall conditions.
 
-Ambient \\
-PHS-off has no stress. PHS-on has significant stress, ranging from 0.6 to 0.9.
+In the ambient throughfall experiment, PHS-off has no stress (Fig \ref{fig:mm}b, solid line). 
+PHS-on has significant stress, ranging from 0.6 to 0.9 (Fig \ref{fig:mm}a, solid line).
 PHS-on stress has a seasonal cycle, least stress in February, most stress in September.
-Predawn water potential annual change less than 0.1 MPa
-Instead seasonality due to transpiration demand, driven by solar radiation and VPD. \\
-As a result, PHS-on has less GPP than off, and less seasonality in GPP. Likewise for transpiration.
+This seasonality responds to transpiration demand, driven by solar radiation and VPD.
+As a result, PHS-on has less GPP than off, and less seasonality in GPP. 
+For 2003, PHS-on GPP was 279 g/m2/y (9\%) less than PHS off.
+Likewise for transpiration, which is less on than off by 93 mm (7\%) over 2003.
+PHS better reproduces transpiration under ambient conditions according to sap flux observations (Fig \ref{fig:mm}e). 
 
 TFE \\
 In both cases, the effect of TFE accumulates through the simulation. 
@@ -732,7 +766,7 @@ very similar to delta ET, bit more infiltration from off
      \caption{Diurnal mean root, stem, shaded leaf, and sunlit leaf water potentials for 2003 dry season (SON), Caxiuan\~a national forest, Brazil.
      (a) Ambient throughfall conditions (b) 50\% throughfall excluded
      }
-     \label{fig2}
+     \label{fig:vwp}
   \end{figure}
   
   \clearpage   
@@ -747,7 +781,7 @@ very similar to delta ET, bit more infiltration from off
      Red lines show observational transpiration derived from sap flux (see zqz).
      PHS is on for (a), (c), and (e). PHS is off for (b), (d), and (f).
      }
-     \label{fig3}
+     \label{fig:mm}
   \end{figure}
   
           \clearpage
