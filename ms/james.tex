@@ -536,37 +536,35 @@ Our objective was to simplify the plant hydraulic representation for this first 
 allowing that it will likely be necessary to advance process representation in future versions
 to accurately model leaf water potential dynamics.
 
-\subsection{Stress function}
+\subsection{Stress function, annual cycle}
 
 With PHS, the water stress factor is modeled as a function of leaf water potential.
 Previously water stress was an empirical function of root-zone soil matric potential (see Section \ref{sect:btran}).
 The stress factor multiplies $v_{\text{cmax}}$, with values of one equating to no stress and zero equating to fully stressed. 
 Figure \ref{fig:mm} shows monthly mean values of the water stress factor, gross primary productivity, and transpiration
-over the three-year simulation with PHS on and off under both ambient and 50\% excluded throughfall conditions.
+over the three-year simulation showing PHS versus SMS under both ambient and 50\% excluded throughfall conditions.
 
-In the ambient throughfall experiment, PHS-off has no stress (Fig \ref{fig:mm}b, solid line). 
-PHS-on has significant stress, ranging from 0.6 to 0.9 (Fig \ref{fig:mm}a, solid line).
-PHS-on stress has a seasonal cycle, least stress in February, most stress in September.
+In the ambient throughfall experiment, SMS has no stress (Fig \ref{fig:mm}b, solid line). 
+PHS has significant stress, ranging from 0.9 to as low as 0.6 (Fig \ref{fig:mm}a, solid line).
+With PHS, stress has a seasonal cycle, with the least stress in February, and the most stress in September.
 This seasonality responds to transpiration demand, driven by solar radiation and VPD.
-As a result, PHS-on has less GPP than off, and less seasonality in GPP. 
-For 2003, PHS-on GPP was 279 g/m2/y (9\%) less than PHS off.
-Likewise for transpiration, which is less on than off by 93 mm (7\%) over 2003.
-PHS better reproduces transpiration under ambient conditions according to sap flux observations (Fig \ref{fig:mm}e). 
+As a result, PHS has less GPP, and less seasonality in GPP. 
+In the ambient simulation, for 2003, PHS GPP was 279 g/m2/y (9\%) less than SMS.
+Likewise for transpiration, PHS is less by 93 mm (7\%) over 2003.
 
-TFE \\
 In both cases, the effect of TFE accumulates through the simulation. 
-The effect of TFE is underestimated in both cases compared to sapflow, seeming to overestimate the ability of soil water to buffer stress.
-For PHS-on, the effect of TFE is small, with additive stress peaking in November: adding 6.6\% to the stress in Nov-2002 and 11.4\% to the stress in Nov-2003.
-For PHS-off, the effect of TFE is larger, adding 37.4\% in December 2002  and 67\% in December 2003. \\
+For PHS, the effect of TFE is small, with additive stress peaking in November: 
+adding 6.6\% to the stress in Nov-2002 and 11.4\% to the stress in Nov-2003.
+For SMS, the effect of TFE is larger, adding 37.4\% in December 2002  and 67\% in December 2003. \\
 Note the different seasonality
-PHS-on has the most stress in JAS and least stress in JFM. 
-PHS-off has the most stress in DJF and least stress in JJA. \\
+PHS has the most stress in JAS and least stress in JFM. 
+SMS has the most stress in DJF and least stress in JJA.
 
-PHS-off stress is driven by soil potential (weighted by root fraction), leading to no stress in the ambient conditions.
+SMS stress is driven by soil potential (weighted by root fraction), leading to no stress in the ambient conditions.
 Likewise with TFE, soil potential doesn't rebound until well into the wet season, whereby stress peaks in DJF.
 
-PHS-on stress is a function of leaf water potential, which responds to both soil potential and atmospheric demand. 
-Ambient dynamics of predawn root water potential are 0.1 MPa corresponds to about 2-3\% extra stress, without factoring in lost conductance
+PHS stress is a function of leaf water potential, which responds to both soil potential and atmospheric demand. 
+Ambient dynamics of predawn root water potential are 0.1 MPa corresponds to about 2-3\% extra stress, without factoring in lost conductance.
 Ambient dynamics of stress are about 30\%. Mostly due to atmospheric demand.
 
 TFE causes 2003 SON predawn water potential to decrease by 0.11MPa. 
@@ -574,29 +572,41 @@ Added stress is due to soil forcing, but still depends on atmospheric demand,
 because lowering water potential is more damaging during the dry season,
 due to nonlinear stress function.
 
-Diurnal cycle
+PHS better reproduces transpiration under ambient conditions according to sap flux observations (Fig \ref{fig:mm}e). 
+\citep{restrepo2017}
+The effect of TFE is underestimated in both cases compared to sapflow, seeming to overestimate the ability of soil water to buffer stress.
 
+\subsection{Stress function, diurnal cycle}
+
+PHS introduces diurnal cycle to stress function, responding to atmospheric demand, peaking after noon
+when VPD and solar radiation are high. 
+Figure \ref{fig4} shows the average diurnal cycle of the water stress function during the 2003 dry season (SON)
+for PHS vs. SMS with ambient and 50\% excluded throughfall conditions.
+SMS simulations feature no stress in the ambient simulation and no diurnal cycle to the stress function with TFE (Fig \ref{fig4}b).
 Another look at PHS-on has significant stress in ambient, PHS-off does not.
-TFE has a larger effect on PHS-off lowering stress function by about 30\%.
+TFE has a larger effect on SMS lowering stress function by about 30\%.
 PHS-on TFE adds about 10\% to midday stress.
 
-PHS-on introduces diurnal cycle to stress function, responding to atmospheric demand, peaking after noon
-when VPD and solar radiation are high. 
-
-The PHS-on stress function deviates from 1 to limit photosynthesis and transpiration when the unattenuated Medlyn transpiration requires
-very negative leaf water potential. At night, this is typically not the case, so the stress function evaluates to 1. 
+With SMS, stress is a function of soil potential.
+The stress function deviates from 1 to limit photosynthesis and transpiration according to water stress.
+With PHS, this occurs when the unattenuated Medlyn transpiration requires very negative leaf water potential.
+At night, this is typically not the case, so the stress function evaluates to 1. 
 A time-average of the stress function is not appropriate for interpreting the effect of water stress on photosynthesis.
 Time-averaged stress during SON, with TFE, is 90.5\% for PHS on and 69\% for PHS off.
 Time-averaged GPP during SON,  with TFE, is 7.63 g/m2/d for PHS on and 7.57 g/m2/d for PHS off.
 Comparing this with maximal GPP (9.07 g/m2/d from amb/off), we see that,
 with TFE, PHS on is 84.1\% of maximum GPP and PHS off is 83.5\% of maximum GPP.
 
-Instead we should look at the inner product of stress with a notion of potential photosynthesis (in this case PHS-off, AMB) divided by total potential photosynthesis.
+Instead we should look at the inner product of stress with potential photosynthesis (in this case SMS-amb) divided by total potential photosynthesis.
 This weighted average stress function over SON2013 is 0.84,0.76,1,0.70, delivering a more consistent metric for average stress, robust to diurnal variation.
 
-Stress vs. VPD
-
-PHS-on introduces a diurnal course to the water stress function, with plants experience more stress near midday. This relationship is a function of transpiration demand, driven by solar radiation and VPD. In figure \ref{fig5}, the effect of high VPD is shown for the four experiments. Data are constrained to timesteps with downwelling solar radiation between 400 and 425 W/m$^2$ (n=775), to highlight the VPD effect. Data are colored based on the soil moisture state. For PHS-on, soil moisture state is predawn root water potential. For PHS-off, soil moisture state is root-fraction weighted soil matric potential. The data are split into terciles, coloring the driest tercile red, the wettest tercile blue, and the intermediate tercile yellow.
+The diurnal cycle of stress with PHS is a function of transpiration demand, driven by solar radiation and VPD. 
+In Figure \ref{fig5}, the effect of VPD is shown for each of the four experiments. 
+Data are constrained to timesteps with downwelling solar radiation between 400 and 425 W/m$^2$ (n=775), to highlight the VPD effect. 
+Data are colored based on the soil moisture state. 
+For PHS-on, soil moisture state is predawn root water potential. 
+For PHS-off, soil moisture state is root-fraction weighted soil matric potential. 
+The data are split into terciles, coloring the driest tercile red, the wettest tercile blue, and the intermediate tercile yellow.
 
 For PHS-off there's no stress in the ambient simulation. 
 With TFE there is significant stress, with a strong relationship to soil potential, and no relationship with VPD. 
@@ -802,13 +812,13 @@ very similar to delta ET, bit more infiltration from off
      \centering
      \includegraphics[width=30pc]{../figs/fig5.pdf}
      \caption{Water stress function versus vapor pressure deficit, for points with downwelling shortwave radiation between 400 and 425 W/m2.
-     (a) PHS-on, ambient throughfall
-     (b) PHS-on, 50\% throughfall excluded
-     (c) PHS-off, ambient throughfall
-     (d) PHS-off, 50\% throughfall excluded. 
-     For (a) and (b) data are subdivided based on predawn root water potential.
-     For (c) and (d) data are subdivided based on average soil matric potential, weighted by root fraction.
-     Blue dots represent the highest tercile, yellow dots represent the intermediate tercile, and red dots represent the most negative tercile.
+     (a) PHS, ambient throughfall
+     (b) SMS, ambient throughfall
+     (c) PHS, 50\% throughfall excluded
+     (d) SMS, 50\% throughfall excluded. 
+     For (a) and (c) data are subdivided based on predawn root water potential.
+     For (b) and (d) data are subdivided based on average soil matric potential, weighted by root fraction.
+     Blue dots represent the wettest tercile, yellow dots represent the intermediate tercile, and red dots represent the driest tercile.
      }
      \label{fig5}
        \end{figure}

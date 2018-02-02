@@ -230,7 +230,7 @@ if ff(3)>0
     %plotting
     xdk = figure;
     
-    subplot('Position',[0.07,0.69,0.44,0.285])
+    subplot('Position',[0.07,0.69,0.44,0.28])
     hold on
     plot(out(1,:),'k-','LineWidth',1.5)
     plot(out(2,:),'k:','LineWidth',1.5)
@@ -241,8 +241,9 @@ if ff(3)>0
     set(gca,'xtick',3:3:36)
     set(gca,'xticklabel',[])
     text(2,0.167,'(a)','FontSize',14,'FontWeight','bold')
+    title('PHS')
     
-    subplot('Position',[0.535,0.69,0.44,0.285])
+    subplot('Position',[0.535,0.69,0.44,0.28])
     hold on
     plot(out(3,:),'k-','LineWidth',1.5)
     plot(out(4,:),'k:','LineWidth',1.5)
@@ -253,8 +254,9 @@ if ff(3)>0
     xlim([0 36])
     grid on
     text(2,0.167,'(b)','FontSize',14,'FontWeight','bold')
+    title('SMS')
     
-    subplot('Position',[0.07,0.38,0.44,0.285])
+    subplot('Position',[0.07,0.38,0.44,0.28])
     hold on
     plot(out(5,:),'k-','LineWidth',1.5)
     plot(out(6,:),'k:','LineWidth',1.5)
@@ -267,7 +269,7 @@ if ff(3)>0
     text(2,1.67,'(c)','FontSize',14,'FontWeight','bold')
     legend({'AMB','TFE'},'location','SouthEast')
     
-    subplot('Position',[0.535,0.38,0.44,0.285])
+    subplot('Position',[0.535,0.38,0.44,0.28])
     hold on
     plot(out(7,:),'k-','LineWidth',1.5)
     plot(out(8,:),'k:','LineWidth',1.5)
@@ -279,7 +281,7 @@ if ff(3)>0
     grid on
     text(2,1.67,'(d)','FontSize',14,'FontWeight','bold')
     
-    subplot('Position',[0.07,0.07,0.44,0.285])
+    subplot('Position',[0.07,0.07,0.44,0.28])
     hold on
     plot(out(9,:),'k-','LineWidth',1.5)
     plot(out(10,:),'k:','LineWidth',1.5)
@@ -294,7 +296,7 @@ if ff(3)>0
     xlabel('Month')
     text(2,25,'(e)','FontSize',14,'FontWeight','bold')
     
-    subplot('Position',[0.535,0.07,0.44,0.285])
+    subplot('Position',[0.535,0.07,0.44,0.28])
     hold on
     plot(out(11,:),'k-','LineWidth',1.5)
     plot(out(12,:),'k:','LineWidth',1.5)
@@ -472,10 +474,25 @@ if ff(5)>0
     set(gca,'ytick',0:0.25:1)
     ylabel('Stress function')
     text(0.1,0.15,'(a)','FontSize',14,'FontWeight','bold')
+    title('PHS')
+    
+    
+    subplot('position',[0.08, 0.12, 0.43, 0.39])
+    ee  = 2;
+    hold on
+    plot(x(ix3(ee,:)),y(ee,ix3(ee,:)),'.','MarkerSize',9)
+    plot(x(ix1(ee,:)),y(ee,ix1(ee,:)),'.','MarkerSize',9)
+    plot(x(ix2(ee,:)),y(ee,ix2(ee,:)),'.','MarkerSize',9)
+    xlim([0 3.25])
+    ylim([0 1])
+        set(gca,'ytick',0:0.25:1)
+    ylabel('Stress function')
+    xlabel('VPD (kPa)')
+    text(0.1,0.15,'(c)','FontSize',14,'FontWeight','bold')
     
     
     subplot('position',[0.54, 0.56, 0.43, 0.39])
-    ee  = 2;
+    ee  = 3;
     hold on
     plot(x(ix3(ee,:)),y(ee,ix3(ee,:)),'.','MarkerSize',9)
     plot(x(ix1(ee,:)),y(ee,ix1(ee,:)),'.','MarkerSize',9)
@@ -485,21 +502,9 @@ if ff(5)>0
     set(gca,'ytick',0:0.25:1)
     set(gca,'yticklabel',[])
     set(gca,'xticklabel',[])
+title('SMS')
     text(2.9,0.15,'(b)','FontSize',14,'FontWeight','bold')
     
-    
-    subplot('position',[0.08, 0.12, 0.43, 0.39])
-    ee  = 3;
-    hold on
-    plot(x(ix3(ee,:)),y(ee,ix3(ee,:)),'.','MarkerSize',9)
-    plot(x(ix1(ee,:)),y(ee,ix1(ee,:)),'.','MarkerSize',9)
-    plot(x(ix2(ee,:)),y(ee,ix2(ee,:)),'.','MarkerSize',9)
-    xlim([0 3.25])
-    ylim([0 1])
-    set(gca,'ytick',0:0.25:1)
-    ylabel('Stress function')
-    xlabel('VPD (kPa)')
-    text(0.1,0.15,'(c)','FontSize',14,'FontWeight','bold')
     
     subplot('position',[0.54, 0.12, 0.43, 0.39])
     ee  = 4;
