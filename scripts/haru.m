@@ -93,8 +93,29 @@ ff = [0,0,0,0,0,...
 %11 = smp profile
 %12 = h2osoi profile
 
+xdk = figure;
+for i=1:4
+    zv = zs(2:end)-zs(1:end-1);
+    x=zv(1:13)*h2osoi((1:13)+(i-1)*20,:)+h2osoi(14+(i-1)*20,:)*(3-zs(14));
+    plot(1000*x,'LineWidth',1.5)
+    hold on
+end
+legend({'phs-amb','phs-tfe','sms-amb','sms-tfe'},'location','southwest')
+xlim([0,3*48*365])
+set(gca,'xtick',0:48*365:3*48*365)
+set(gca,'xticklabel',2001:2004)
+xlabel('Time')
+title('Water content of top3m')
+ylabel('mm H2O')
 
-out=splitapply(@mean,fpsn(3,month==9),findgroups(mcsec(month==9)));
+xdk.Units = 'inches';
+xdk.Position = [2,2,4,3];
+xdk.PaperSize = [4,3];
+xdk.PaperPosition = [0,0,4,3];
+
+print(xdk,'../figs/top3m','-dpdf')
+
+
 
 if ff(2)>0
     
@@ -1038,11 +1059,7 @@ if ff(10)>0
     x = out(61:80,1);
     disp(1800*24*91*sum(x(x<0)))
     
-    
-    
-    
-    
-    
+   
 end
 
 
