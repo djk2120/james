@@ -82,10 +82,10 @@ p = [p,a(:,2)];
 %************************************************************************
 %------------------------------------------------------------------------
 
-ff = [0,0,0,0,0,...
+ff = [0,2,0,0,0,...
     0,0,0,0,0,...
     0,0,0,0,0,...
-    0,0,0,0,2,...
+    0,0,0,0,0,...
     0];
 
 %2  = water potential
@@ -120,7 +120,7 @@ xlim([0,3*48*365])
 set(gca,'xtick',0:48*365:3*48*365)
 set(gca,'xticklabel',2001:2004)
 xlabel('Time')
-title('Water content of top3m')
+title('Water content of Top 3m of Soil Column')
 ylabel('mm H2O')
 
 xdk.Units = 'inches';
@@ -159,17 +159,17 @@ if ff(2)>0
     x = 0.25:0.5:24;
     xf = 1/101972;  %converts mm to MPa
     
-    subplot('position',[0.1, 0.61, 0.43, 0.34])
+    subplot('position',[0.1, 0.59, 0.43, 0.36])
     plot(x,xf*out(1:4,:)')
     xlim([0 24])
     ylim([-3 0])
     xlabel('Hour')
     ylabel({'Water Potential';'(MPa)'})
     title('AMB')
-    text(1.5,-2.3,'(a)','FontSize',14,'FontWeight','bold')
+    text(1,-2.5,'(a)','FontSize',14,'FontWeight','bold')
     set(gca,'xtick',0:6:24)
     
-    subplot('position',[0.55, 0.61, 0.43, 0.34])
+    subplot('position',[0.55, 0.59, 0.43, 0.36])
     plot(x,xf*out(5:8,:)')
     set(gca,'xtick',0:6:24)
     ylim([-3 0])
@@ -179,11 +179,11 @@ if ff(2)>0
     set(gca,'yticklabel',[])
     l = legend('sun-leaf','shade-leaf','stem','root','location','southeast');
     l.Position(1) = 0.45;
-    l.Position(2) = 0.68;
+    l.Position(2) = 0.65;
     set(gca,'xtick',0:6:24)
-    text(21,-2.3,'(b)','FontSize',14,'FontWeight','bold')
+    text(21,-2.5,'(b)','FontSize',14,'FontWeight','bold')
     
-    subplot('position',[0.1, 0.1, 0.88, 0.38])
+    subplot('position',[0.1, 0.1, 0.88, 0.36])
     plot(lwp(1,:),'k-','LineWidth',2)
     hold on
     plot(lwp(2,:),'k:','LineWidth',2)
