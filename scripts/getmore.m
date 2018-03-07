@@ -8,6 +8,7 @@ for vv=1:length(varlist)
     out=zeros(sum(vard(vv,:)),n);
     for ee=1:ne
         if vard(vv,ee)>0
+
             temp  = ncread(filelist{ee},varlist{vv});
             if ee>1
                 idx   = sum(vard(vv,1:ee-1))+(1:vard(vv,ee));

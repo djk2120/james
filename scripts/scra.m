@@ -1,128 +1,167 @@
 clear
 close all
 
-f1 = ['/Users/kennedy/Desktop/james/data/feb14/',...
-'b5_k15e-3.nc'];
-f2 = ['/Users/kennedy/Desktop/james/data/jan24/',...
-    'BR-CAX_I1PTCLM50_r270.clm2.h1.2001-01-01-00000.nc'];
-f3 = ['/Users/kennedy/Desktop/james/data/feb14/',...
-'b7_k15e-3.nc'];
 
+thedir = '../data/mar6/';
+x = dir(thedir);
+files = cell(length(x)-2,1);
+for i = 3:length(x)
+    files(i-2) = {[thedir,x(i).name]};
+end
+
+files = files([5,6,1]);
+
+offset = 10;
+nx = length(files);
+n  = length(ncread(files{1},'FCTR'))-offset;
+
+a  = 1;
+ct = 0;
+month = zeros(1,48*365);
+for x = eomday(2001,1:12)
+ct = ct+1;
+month(a:a+x*48-1) = ct;
+a = a +x*48;
+end
+month = repmat(month,1,3);
+month = month(1:n);
+year  = 1:length(month);
+year(year<48*365+1) = 1;
+year(year>48*365*2) = 3;
+year(year>3)        = 2;
+tt    = repmat(1:48,1,365*3);
+tt    = tt(1:n);
 
 zs=[     0  , 0.0200  , 0.0600  , 0.1200  , 0.2000  , 0.3200  , 0.4800,...
     0.6800  , 0.9200  , 1.2000  , 1.5200  , 1.8800  , 2.2800  , 2.7200,...
     3.2600  , 3.9000  , 4.6400  , 5.4800  , 6.4200  , 7.4600  , 8.6000];
 
-zv = zs(2:end)-zs(1:end-1);
+zr=[1.40e-2,2.73e-2,3.96e-2,5.02e-2,7.02e-2,...
+    8.49e-2,9.36e-2,9.62e-2,9.36e-2,8.67e-2,...
+    7.68e-2,6.54e-2,5.36e-2,4.67e-2,3.67e-2,...
+    2.62e-2,1.71e-2,1.03e-2,5.70e-3,2.92e-3];
 
-tmp = ncread(f2,'H2OSOI');
-h2osoi = zeros(60,length(tmp)-10);
-h2osoi(1:20,:) = tmp(1,1:20,1+10:end);
-tmp = ncread(f1,'H2OSOI');
-h2osoi(21:40,:) = tmp(1,1:20,1+10:end);
-tmp = ncread(f3,'H2OSOI');
-h2osoi(41:60,:) = tmp(1,1:20,1+10:end);
-
-
-tmp = ncread(f2,'SMP');
-smp = zeros(60,length(tmp)-10);
-smp(1:20,:) = tmp(1,1:20,1+10:end);
-tmp = ncread(f1,'SMP');
-smp(21:40,:) = tmp(1,1:20,1+10:end);
-tmp = ncread(f3,'SMP');
-smp(41:60,:) = tmp(1,1:20,1+10:end);
-
-tmp = ncread(f2,'QROOTSINK');
-qrootsink = zeros(60,length(tmp)-10);
-qrootsink(1:20,:) = tmp(1,1:20,1+10:end);
-tmp = ncread(f1,'QROOTSINK');
-qrootsink(21:40,:) = tmp(1,1:20,1+10:end);
-tmp = ncread(f3,'QROOTSINK');
-qrootsink(41:60,:) = tmp(1,1:20,1+10:end);
-
-
-
-xdk = figure;
-i = 1;
-x=zv(1:13)*h2osoi((1:13)+(i-1)*20,:)+h2osoi(14+(i-1)*20,:)*(3-zs(14));
-i = 2;
-y=zv(1:13)*h2osoi((1:13)+(i-1)*20,:)+h2osoi(14+(i-1)*20,:)*(3-zs(14));
-i = 3;
-z=zv(1:13)*h2osoi((1:13)+(i-1)*20,:)+h2osoi(14+(i-1)*20,:)*(3-zs(14));
-
-plot(x,'LineWidth',1.2)
-hold on
-plot(y,'LineWidth',1.2)
-plot(z,'LineWidth',1.2)
-set(gca,'xtick',0:48*365:3*48*365)
-set(gca,'xticklabel',0:48*365:3*48*365)
-title('Water content top 3m')
-ylabel('mm h2o')
-xlabel('year')
-xlim([0,3*48*365])
-set(gca,'xticklabel',2001:2004)
-
-if 1==2
-xdk.Units = 'inches';
-xdk.Position = [2,2,4,3];
-xdk.PaperSize = [4,3];
-xdk.PaperPosition = [0,0,4,3];
-
-print(xdk,'../figs/top3m','-dpdf')
+if ~exist('qsink','var')
+h2osoi = zeros(20*nx,n);
+qsink  = h2osoi;
+ksr    = h2osoi;
+et     = zeros(nx,n);
+vwp    = zeros(4*nx,n);
+for ff=1:nx
+    tmp = ncread(files{ff},'H2OSOI');
+    h2osoi((1:20)+(ff-1)*20,:) = tmp(1,:,1+offset:end);
+    tmp = ncread(files{ff},'FCTR');
+    et(ff,:) = tmp(1+offset:end);
+    tmp = ncread(files{ff},'VEGWP');
+    vwp((1:4)+(ff-1)*4,:) = tmp(1,1:4,1+offset:end);
+    tmp = ncread(files{ff},'QROOTSINK');
+    qsink((1:20)+(ff-1)*20,:) = tmp(1,:,1+offset:end);
+    tmp = ncread(files{ff},'KSR');
+    ksr((1:20)+(ff-1)*20,:) = tmp(1,:,1+offset:end);
 end
+end
+%-----------------------------
 
-if 1==1
+rr = [1,0,0,0,0];
+
+if rr(1)>0
 figure
-for i=1:480
-barh(-1:-1:-20,h2osoi(41:60,i))
-xlim([0,0.5])
-pause(0.1)
+for i=[1,6]
+    x = splitapply(@mean,et(i,:),month+(year-1)*12);
+    if i==1
+    plot(x,'k','LineWidth',1.5)
+    else
+        plot(x,'k:','LineWidth',1.5)
+    end
+    hold on
+    ylim([0 150])
+    xlim([0 36])
+    set(gca,'ytick',0:50:150)
+    set(gca,'xtick',3:3:36)
+    set(gca,'xticklabel',repmat(3:3:12,1,3))
+    grid on
+end
 
 end
-end
 
-
-tmp = ncread(f2,'FCTR')+ ncread(f2,'FCEV') + ncread(f2,'FGEV');
-et = zeros(3,length(tmp)-10);
-et(1,:) = tmp(1+10:end);
-tmp = ncread(f1,'FCTR')+ ncread(f1,'FCEV') + ncread(f1,'FGEV');
-et(2,:) = tmp(1+10:end);
-tmp = ncread(f3,'FCTR')+ ncread(f1,'FCEV') + ncread(f1,'FGEV');
-et(3,:) = tmp(1+10:end);
-
-dd = repmat(1:365*3,48,1);
-dd = dd(:);
-dd = dd(1:52551);
-etperday = 1800*4e-7*splitapply(@sum,et',dd);
-
-
-
-hr = zeros(1,length(qrootsink));
-ss = 40;
-for i=1:20
-    hr = hr+qrootsink(ss+i,:).*(qrootsink(ss+i,:)<0);
-end
+if rr(2)>0
 figure
-plot(cumsum(hr))
+for i=1:nx
+    zv = zs(2:end)-zs(1:end-1);
+    x=zv(1:13)*h2osoi((1:13)+(i-1)*20,:)+h2osoi(14+(i-1)*20,:)*(3-zs(14));
+    t= 2001+(1:length(x))/(48*365);
+    plot(t,1000*x,'LineWidth',1.5)
+    set(gca,'xtick',2001:2004)
+    hold on
+end
+ylim([200,1000])
+end
+
+if rr(3)>0
+    
+    for i=1:8
+    subplot(2,4,i)
+    ix = year==2&month==11;
+    t  = 0.5:0.5:24;
+    x  = splitapply(@mean,vwp(1+(i-1)*4,ix),tt(ix));
+    plot(t,x/101972)
+    hold on
+    x  = splitapply(@mean,vwp(4+(i-1)*4,ix),tt(ix));
+    plot(t,x/101972)
+    hold on
+    set(gca,'xtick',0:6:24)
+    xlim([0 24])
+    ylim([-3.3,0])
+    end
+              
+end
+
+if rr(4)>0
+    hr = qsink;
+    for i=1:length(qsink(:,1))
+        hr(i,:) = -qsink(i,:).*(qsink(i,:)<0);
+    end
+    
+    hr2 = zeros(nx,n);
+    for i=1:nx
+        hr2(i,:) = sum(hr((1:20)+(i-1)*20,:));
+    end
+    
+    for i=1:nx
+        plot(1800*cumsum(hr2(i,:)))
+        hold on
+    end
+    legend(num2str((1:nx)'))
+    
+end
+
+if rr(5)>0
+    for xx=1:2
+    for ss=2:10
+        targ = ksr(ss+(xx-1)*20,:);
+        xmin = min(targ);
+        xmax = max(targ);
+        dx   = (xmax-xmin)/501;
+        xv   = xmin+dx:dx:xmax-dx;
+        out  = zeros(500,1);
+        last = 0;
+        for i=1:500
+            a  = sum(targ<xv(i))/n;
+            out(i) = a;
+            last = a;
+        end
+        subplot(3,3,ss-1)
+        plot(xv,out)
+        hold on
+    end
+    end
+end
+    
+    
+    
+    
+    
+
+
 
     
- xf = 1000/101972;  %converts mm to kPa
-
-
-t = 0.08:0.005:0.42;
-s = t/0.42;
-p = 500*s.^-4;
-
-figure
-%plot(t,-p)
-if 1==1
-hold on
-for i=1:20
-plot(h2osoi(40+i,24:48:end),smp(40+i,24:48:end)/101972,'.')
-end
-end
-
-
-
-
-

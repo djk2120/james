@@ -95,14 +95,13 @@ Our goal:
     CO2 with photosynthetic assimilation flux of CO2.
     
     Vegetation water stress is implemented via the vegetation water stress factor ($f_w$, dimensionless, 0 to 1, formerly 
-    $\beta_t$). This factor multiplies the rate of maximum carboxylation ($V_{\text{cmax}}$) and the minimum stomatal 
-    conductance ($g_0$) as described in \citet{oleson2013} and first implemented in \citet{sellers1996a,sellers1996b}. 
+    $\beta_t$). This factor multiplies the rate of maximum carboxylation ($V_{\text{cmax}}$) as described in \citet{oleson2013} and first implemented in \citet{sellers1996a,sellers1996b}. 
     
     With PHS, $f_w$ replaces the CLM4.5 transpiration beta function ($\beta_t$). 
     These factors are used by the photosynthesis model in the same way, but calculated differently. 
-    The parameterization for $f_w$ is based on leaf water potential. 
-    For $\beta_t$, the parameterization is based on soil water potential.
-    The switch to leaf water potential adopts the framework where optimal stomatal conductance is concurrently limited by hydraulic constraints \citep{novick2016a}
+    The parameterization for $f_w$ is based on leaf water potential (see Section \ref{sect:demand}) . 
+    For $\beta_t$, the parameterization is based on soil water potential (see Section \ref{sect:btran}).
+    The switch to leaf water potential adopts the framework where stomatal conductance optimized for carbon gain is concurrently limited by hydraulic constraints \citep{novick2016a}
 
 
 %Stomatal Conductance
@@ -121,21 +120,19 @@ Our goal:
     
     The attenuation of stomatal conductance due to water stress follows the CLM4.5 formulation as described in 
     \citet{oleson2013} and \citet{bonan2011}. Prognostic water stress ($f_w$, ranging from 0-1) attenuates stomatal 
-    conductance directly via multiplication of $g_0$, and indirectly via multiplication of $V_{\text{cmax}}$. 
-    
-    What did \citet{zhou2014} show? What did \citet{manzoni2011} show? Can we cite changge?
+    conductance indirectly via multiplication of $V_{\text{cmax}}$. 
 
 % Plant Hydaulics
 \subsection{Plant Hydraulic Stress (PHS)}
   We implemented a simplified plant hydraulic framework in CLM. 
-  We used hydraulic laws and the corresponding circuit analogy to represent the 
+  Using hydraulic laws and the corresponding circuit analogy, we represent the 
   flow of water through the soil-plant-atmosphere continuum. 
   The hydraulic framework is used to effect water stress associated with increasing xylem tension
-  and for calculating the layer-by-layer soil transpiration sink. 
+  and for calculating the soil transpiration sink for each soil layer. 
   Water stress attenuation of transpiration and photosynthesis is based on prognostic leaf water potential. 
-  We refer to the module that cranks out the hydraulic solution as Plant Hydraulic Stress (PHS).
-  During model development, design decisions followed a preference for a simplified implementation that,
+  Design decisions followed a preference for a simplified implementation that,
   whenever possible, conformed to existing CLM architecture.
+  We refer to the combined water supply and demand implementations as Plant Hydraulic Stress (PHS).
   
   \begin{figure}[h]
      \centering
@@ -164,7 +161,7 @@ Our goal:
 %Water Supply
     \subsubsection{Water supply}
     \label{sect:supply}
-    Water supply is modeled via hydraulic laws where flow is proportional to the gradient in water potential. 
+    Water supply is modeled via Darcy's Law where flow is proportional to the gradient in water potential. 
     Flow of water ($q$) is the product of the path hydraulic conductance ($k$) and 
     the gradient in water potential (accounting for change in gravitational potential). 
     Equation \ref{eq:darcy} represents the flow from node 1 to node 2. 
@@ -176,7 +173,7 @@ Our goal:
      \end{equation}
      \end{linenomath*}
     
-    PHS does not include plant tissue water storage (by circuit analogy: capacitance). 
+    PHS does not represent plant tissue water storage (by circuit analogy: capacitance). 
     Capacitance significantly complicates the water potential solution \citep{celia1990}
     and is challenging to parameterize \citep{bartlett2016}.
     However, buffering of water stress provided by tissue water storage can be important
@@ -195,7 +192,7 @@ Our goal:
      Parameterization based on $p_{50}$ is especially attractive in light of the call for transition to
      a trait-based model paradigm \citep{anderegg2015a}.
      The loss of xylem conductivity is based on lower terminus water potential ($\psi_1$)
-     as is typical in other models \citep{xu2016}, but 
+     as is typical in other simplified models \citep{xu2016}, but 
      may underestimate the integrated loss of conductivity \citep{sperry2015}. 
          
      \begin{linenomath*}
@@ -208,21 +205,24 @@ Our goal:
      PHS models root, stem, and leaf conductances according to equation \ref{eq:vulnerability}.
      The parameterization of $k_{\text{max}}$ varies by hydraulic segment (see details in Appendix zqz).
      The conductance across the matrix from soil to root follows \citet{williams2001} and \citet{bonan2014} 
-     to estimate the distance between roots for the length-scaling of soil conductance. 
+     to estimate the distance between roots for the length-scaling of soil conductance.
      Bulk soil resistivity is based on \citet{clapp1978} as described in \citet{oleson2013}.
+     For a more complete description see Appendix zqz.
     
 %Water demand
     \subsubsection{Water demand}
+    \label{sect:demand}
     
-    Water demand is based on the Medlyn stomatal conductance model (see section \ref{sect:gs}), 
+    Water demand is based on the Medlyn stomatal conductance model (see Section \ref{sect:gs}), 
     which we adjust for water stress with $f_w$, the PHS water stress factor. 
-    The water stress factor multiplies $V_{\text{cmax}}$ and minimum stomatal conductance $g_0$.
+    The water stress factor attenuates stomatal conductance indirectly, multiplying $V_{\text{cmax}}$.
     We calculate the water stress factor based on leaf water potential, such that 
     as leaf water potentials decrease, stress increases.
+    The PHS stress factor is different from the CLM4.5 stress function, because that one 
+    is calculated based on soil potential.
     The PHS stress factor is the same as the CLM4.5 stress function in that, once calculated, they are used
     to attenuate photosynthesis and stomatal conductance in the same way.
-    The PHS stress factor is different from (and better than) the CLM4.5 stress function, because that one 
-    is calculated based on soil potential.
+
     
      \begin{linenomath*}
      \begin{eqnarray}
@@ -772,9 +772,13 @@ very similar to delta ET, bit more infiltration from off
 \section{Figures}
   \begin{figure}[h]
      \centering
-     \includegraphics[width=30pc]{../figs/fig2.pdf}
-     \caption{Diurnal mean root, stem, shaded leaf, and sunlit leaf water potentials for 2003 dry season (SON), Caxiuan\~a national forest, Brazil.
-     (a) Ambient throughfall conditions (b) 50\% throughfall excluded
+     \includegraphics[width=30pc]{../figs2/fig2.pdf}
+     \caption{Modeled vegetation water potential at  Caxiuan\~a national forest, Brazil.
+     (a) Dry season (SON) diurnal mean, ambient throughfall conditions,
+     (b) Dry season (SON) diurnal mean, with 60\% throughfall excluded.
+     Curves are drawn for sunlit leaf, shaded leaf, stem, and root water potentials. Note that the first three mostly overlap.
+     (c) Monthly mean midday leaf water potential, under ambient (solid line) and 60\% throughfall exclusion (dotted line) conditions.
+     Note that throughfall exclusion begins in month 11 (Nov 1, 2001).
      }
      \label{fig:vwp}
   \end{figure}
@@ -782,7 +786,7 @@ very similar to delta ET, bit more infiltration from off
   \clearpage   
   \begin{figure}[h]
      \centering
-     \includegraphics[width=30pc]{../figs/fig3.pdf}
+     \includegraphics[width=30pc]{../figs2/fig3.pdf}
      \caption{(a,b) Monthly mean water stress function. Note that the water stress function equals 1 when there is no stress and 0 when fully stressed.
      (c,d) Monthly mean transpiration (W/m$^2$).
      (e,f) Monthly mean gross primary productivity (g/m$^2$/d). 
@@ -797,7 +801,7 @@ very similar to delta ET, bit more infiltration from off
           \clearpage
     \begin{figure}[h]
      \centering
-     \includegraphics[width=30pc]{../figs/fig4.pdf}
+     \includegraphics[width=30pc]{../figs2/fig4.pdf}
      \caption{2003 Dry season (SON) diurnal mean water stress function for 
      (a) PHS on, and
      (b) PHS off.
@@ -810,7 +814,7 @@ very similar to delta ET, bit more infiltration from off
       \clearpage
     \begin{figure}[h]
      \centering
-     \includegraphics[width=30pc]{../figs/fig5.pdf}
+     \includegraphics[width=30pc]{../figs2/fig5.pdf}
      \caption{Water stress function versus vapor pressure deficit, for points with downwelling shortwave radiation between 400 and 425 W/m2.
      (a) PHS, ambient throughfall
      (b) SMS, ambient throughfall
@@ -819,6 +823,7 @@ very similar to delta ET, bit more infiltration from off
      For (a) and (c) data are subdivided based on predawn root water potential.
      For (b) and (d) data are subdivided based on average soil matric potential, weighted by root fraction.
      Blue dots represent the wettest tercile, yellow dots represent the intermediate tercile, and red dots represent the driest tercile.
+     Note that panels (c) and (d) exclude data from 2001, when throughfall exclusion was not active.
      }
      \label{fig5}
        \end{figure}
@@ -827,12 +832,23 @@ very similar to delta ET, bit more infiltration from off
 \clearpage   
   \begin{figure}[h]
      \centering
-     \includegraphics[width=30pc]{../figs/fig6.pdf}
-     \caption{Distribution of daytime soil-to-root hydraulic conductance by soil layer in 2003. Bars span interquartile range and x's mark the median. 
-     (a) PHS-on, ambient throughfall.
-     (b) PHS-on, with 50\% throughfall excluded.
-     (c) PHS-off, ambient throughfall.
-     (d) PHS-off, with 50\% throughfall excluded.
+     \includegraphics[width=30pc]{../figs2/fig6.pdf}
+     \caption{Soil Layer 3 conductance, under ambient throughfall conditions in 2003. 
+     (a) Time-series of PHS modeled soil-to-root conductance (s$^{-1}$) from Soil Layer 3 (spanning 6 to 12 centimeters in depth).
+     (b) Time-series of SMS inferred soil-to-leaf conductance (s$^{-1}$)  from Soil Layer 3.
+     (c) Concurrent precipitation forcing (mm/d).
+     }
+     \label{fig:cond}
+  \end{figure}
+  
+  \clearpage   
+  \begin{figure}[h]
+     \centering
+     \includegraphics[width=30pc]{../figs2/fig6a.pdf}
+     \caption{Soil Layer 3 conductance, under ambient throughfall conditions in 2003. 
+     (a) Time-series of PHS modeled soil-to-root conductance (s$^{-1}$) from Soil Layer 3 (spanning 6 to 12 centimeters in depth).
+     (b) Time-series of SMS inferred soil-to-leaf conductance (s$^{-1}$)  from Soil Layer 3.
+     (c) Concurrent precipitation forcing (mm/d).
      }
      \label{fig:cond}
   \end{figure}
@@ -841,7 +857,7 @@ very similar to delta ET, bit more infiltration from off
         \clearpage
     \begin{figure}[h]
      \centering
-     \includegraphics[width=30pc]{../figs/fig7.pdf}
+     \includegraphics[width=30pc]{../figs2/fig7.pdf}
      \caption{Dry season (SON), Daytime (6am to 6pm) soil sink by layer for 2003. 
      Bars show mean and lines span interquartile range, for 
      (a) PHS on, ambient throughfall,
@@ -856,7 +872,7 @@ very similar to delta ET, bit more infiltration from off
         \clearpage
     \begin{figure}[h]
      \centering
-     \includegraphics[width=30pc]{../figs/fig8.pdf}
+     \includegraphics[width=30pc]{../figs2/fig8.pdf}
      \caption{Wet season (FMA), Daytime (6am to 6pm) soil sink by layer for 2003. 
      Bars show mean and lines span interquartile range, for 
      (a) PHS on, ambient throughfall,
@@ -871,7 +887,7 @@ very similar to delta ET, bit more infiltration from off
     \clearpage
     \begin{figure}[h]
      \centering
-     \includegraphics[width=30pc]{../figs/fig9.pdf}
+     \includegraphics[width=30pc]{../figs2/fig9.pdf}
      \caption{Total hydraulic redistribution (mm) by month in 2003. For (a) ambient throughfall conditions, and (b) 50\% throughfall exclusion. 
      Darker shading shows portion of HR at night [6pm,6am), lighter shading shows portion of HR during day [6am,6pm).}
      \label{fig9}
