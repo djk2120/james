@@ -82,11 +82,11 @@ p = [p,a(:,2)];
 %************************************************************************
 %------------------------------------------------------------------------
 
-ff = [0,2,0,0,0,...
+ff = [0,0,0,0,0,...
     0,0,0,0,0,...
     0,0,0,0,0,...
     0,0,0,0,0,...
-    0];
+    0,0,2,0];
 
 %2  = water potential
 %3  = timeseries
@@ -106,6 +106,7 @@ ff = [0,2,0,0,0,...
 %19 = new conductance angle 2
 %20 = look at soil profiles in time
 %21 = ibid
+%22 = rootfraction
 
 if ff(13)>0
 xdk = figure;
@@ -1517,5 +1518,252 @@ if ff(21)>0
         pause(0.1)
 
     end
+
+end
+
+if ff(22)>0
+    %resample zr to d
+    dz = round(100*(zs(2:end)-zs(1:end-1)))/2;
+    ct = 0;
+    out = zeros(sum(dz),1);
+    for i=1:length(dz)
+        for j=1:dz(i)
+            ct = ct+1;
+            out(ct) = zr(i)/dz(i);
+        end
+    end
+            
+    subplot(1,2,1)
+    barh((-1:-2:-860)/100,out)
+    xlim([-0.001,0.015])
+    ylim([-8.65,0.2])
+    subplot(1,2,2)
+    
+    barh(-1:-1:-20,zr)
+    ylim([-21,0])
+    set(gca,'ytick',-19:2:-1)
+    set(gca,'yticklabel',19:-2:1)
+    ylabel('Soil Layer')
+    xlabel('Root Fraction')
+     
+end
+
+
+if ff(23)>0
+    % what if I show soil sink with depth?
+    allout = [];
+    ymax = [5e-6,15e-6];
+    lcol   = [0,0,0;0,0,0;0.5,0.5,0.5;0.5,0.5,0.5];
+    lsty   = {'-',':','-',':'};
+    tlab   = {'PHS-amb','PHS-tfe','SMS-amb','SMS-tfe'};
+    plab   = {'(b)','(c)','(d)','(e)'};
+    tloc   = ymax-(ymax+2e-6)*0.1;
+    ploc   = ymax-(ymax+2e-6)*0.15;
+    xdk    = figure;
+    for season = [1,2]
+        if season==1
+            ix_dry  = (mcsec>diurn(12)&mcsec<diurn(37))&(month==9|month==10|month==11)&year==2003;
+            ix      = ix_dry;
+        elseif season==2
+            ix_wet  = (mcsec>diurn(12)&mcsec<diurn(37))&(month==2|month==3|month==4)&year==2003;
+            ix      = ix_wet;
+            xdk = figure;
+        end
+        
+    x  = 0.785:-(0.175+0.13/3):0;
+    c = 0;
+    for ss = [0,20,40,60]
+        c = c+1;
+    out = mean(qrootsink(ss+(1:20),ix),2);
+    
+    dz = round(100*(zs(2:end)-zs(1:end-1)))/2;
+    ct = 0;
+    out2 = zeros(sum(dz),1);
+    for i=1:length(dz)
+        for j=1:dz(i)
+            ct = ct+1;
+            out2(ct) = out(i)/dz(i);
+        end
+    end
+    
+    allout = [allout,out2];
+    
+    subplot('Position',[0.06,0.13,0.42,0.83])
+    plot(sum(out2)-cumsum(out2),-(1:2:860)/100,'LineWidth',2,'Color',lcol(c,:),'LineStyle',lsty{c})
+    hold on
+    set(gca,'yticklabel',9:-1:0)
+    ylabel('Depth (m)')
+    xlabel({'Cumulative Root Water Uptake';'(mm/s)'})
+    if c==4
+        legend(tlab,'location','southeast')
+        if season==1
+        text(9e-5,-0.5,'(a)','FontSize',14,'FontWeight','bold')
+        else
+        text(7e-5,-0.5,'(a)','FontSize',14,'FontWeight','bold')
+        end
+    end
+    
+    subplot('position',[0.56,x(c),0.42,0.175])
+    xv = (1:2:860)/100;
+    a = area(xv(out2>0),out2(out2>0),'FaceColor',[0.5,0.5,0.5],'EdgeColor',[0.5,0.5,0.5]);
+    a.ShowBaseLine = 'off';
+    if sum(out2<0)>0
+        hold on
+    a = area(xv(out2<0),out2(out2<0),'FaceColor',[1,0,0],'EdgeColor',[1,0,0]);
+    a.ShowBaseLine = 'off';
+    end
+    text(3.9,tloc(season),tlab{c},'HorizontalAlignment','center','FontWeight','bold')
+    text(8,ploc(season),plab{c},'FontSize',14,'FontWeight','bold')
+    
+   
+    
+    xlim([0,9])
+    ylim([-1e-6,ymax(season)])
+
+    if c<4
+        set(gca,'xticklabel',[])
+    else
+        xlabel('Depth (m)')
+    end
+   
+    ax1 = axes('Position',[0 0 1 1],'Visible','off');
+    t   = text(0.51,0.39,'Root Water Uptake (mm/s)',...
+        'FontSize',11,'Rotation',90);
+
+ 
+    end
+    
+    xdk.Units = 'inches';
+    xdk.Position = [2,2,7,5];
+    xdk.PaperSize = [7,5];
+    xdk.PaperPosition = [0,0,7,5];
+    
+    if ff(23)>1
+    if season==1
+    print(xdk,'../figs2/fig7','-dpdf')
+    else
+        print(xdk,'../figs2/fig8','-dpdf')
+    end
+    end
+    end
+
+    
+
+end
+
+
+if ff(24)>0
+    % what if I show soil sink with depth?
+    allout = [];
+    ymax = [8.1e-6,8.1e-6];
+    acol   = [0.5,0.5,0.5;1,0,0];
+    addpath('/Users/kennedy/Documents/MATLAB/othercolor')
+    cmap = colormap(othercolor('BrBG4'));
+    lcol   = [cmap(2,:);cmap(2,:);cmap(60,:);cmap(60,:)];
+    lsty   = {'-',':','-',':'};
+    tlab   = {'DRY-amb','DRY-tfe','WET-amb','WET-tfe'};
+    plab   = {'(b)','(c)','(d)','(e)'};
+    tloc   = ymax-(ymax+2e-6)*0.1;
+    ploc   = ymax-(ymax+2e-6)*0.15;
+    close all
+    xdk    = figure;
+    c=0;
+    for season = [1,2]
+        if season==1
+            ix_dry  = (mcsec<diurn(13)|mcsec>diurn(36))&year==2003&(month==9|month==10|month==11);
+            ix      = ix_dry;
+        elseif season==2
+            ix_wet  = (mcsec<diurn(13)|mcsec>diurn(36))&year==2003&(month==2|month==3|month==4);
+            ix      = ix_wet;
+        end
+        
+    x  = 0.785:-(0.175+0.13/3):0;
+    for ss = [0,20]
+        c = c+1;
+    out = mean(qrootsink(ss+(1:20),ix),2);
+    
+    dz = round(100*(zs(2:end)-zs(1:end-1)))/2;
+    ct = 0;
+    out2 = zeros(sum(dz),1);
+    for i=1:length(dz)
+        for j=1:dz(i)
+            ct = ct+1;
+            out2(ct) = out(i)/dz(i);
+        end
+    end
+    
+    allout = [allout,out2];
+    
+    subplot('Position',[0.06,0.13,0.42,0.83])
+    plot(sum(out2)-cumsum(out2),-(1:2:860)/100,'LineWidth',2,'Color',lcol(c,:),'LineStyle',lsty{c})
+    hold on
+    set(gca,'yticklabel',9:-1:0)
+    ylabel('Depth (m)')
+    xlabel({'Cumulative Root Water Uptake';'(mm/s)'})
+    if c==4
+        legend(tlab,'location','southwest')
+        text(5e-6,-0.5,'(a)','FontSize',14,'FontWeight','bold')
+    end
+    
+    subplot('position',[0.56,x(c),0.42,0.175])
+    xv = (1:2:860)/100;
+
+    % you have to be careful plotting the areas
+    hr_ix = out2<0;
+    gr_ix = 1+0*hr_ix;
+    for tt=2:length(hr_ix)
+        if hr_ix(tt)~=hr_ix(tt-1)
+            gr_ix(tt:end) = gr_ix(tt-1)+1;
+        end
+    end
+    for tt=1:max(gr_ix)
+        colidx = mean(hr_ix(gr_ix==tt))+1;
+        a = area(xv(gr_ix==tt),out2(gr_ix==tt),'FaceColor',acol(colidx,:),'EdgeColor',acol(colidx,:));
+        a.ShowBaseLine = 'off';
+        hold on
+    end
+    
+    
+    
+    if sum(out2<0)>0&&1==2
+        hold on
+    a = area(xv(out2<0),out2(out2<0),'FaceColor',[1,0,0],'EdgeColor',[1,0,0]);
+    a.ShowBaseLine = 'off';
+    end
+    text(3.9,tloc(season),tlab{c},'HorizontalAlignment','center','FontWeight','bold')
+    text(8,ploc(season),plab{c},'FontSize',14,'FontWeight','bold')
+    
+   
+    
+    xlim([0,9])
+    ylim([-1e-6,ymax(season)])
+
+    if c<4
+        set(gca,'xticklabel',[])
+    else
+        xlabel('Depth (m)')
+    end
+   
+    ax1 = axes('Position',[0 0 1 1],'Visible','off');
+    t   = text(0.51,0.39,'Root Water Uptake (mm/s)',...
+        'FontSize',11,'Rotation',90);
+
+ 
+    end
+    
+
+    
+    end
+    
+    xdk.Units = 'inches';
+    xdk.Position = [2,2,7,5];
+    xdk.PaperSize = [7,5];
+    xdk.PaperPosition = [0,0,7,5];
+    
+    
+    if ff(24)>1
+        print(xdk,'../figs2/fig10','-dpdf')
+    end
+    
 
 end
