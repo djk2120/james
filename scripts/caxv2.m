@@ -85,7 +85,7 @@ p = [p,a(:,2)];
 ff = [0,0,0,0,0,...
     0,0,0,0,0,...
     0,0,0,0,0,...
-    0,0,0,2,0,...
+    0,0,0,0,2,...
     0];
 
 %2  = water potential
@@ -1465,6 +1465,7 @@ if ff(20)>0
     x = 0;
     ymax = [-0.8,-2.5];
     vsn  = {'PHS','SMS'};
+    pnl  = {'(a)','(b)'};
     for ss=[20,60]
         x = x+1;
     nz  = round(100*(zs(2:end)-zs(1:end-1)));
@@ -1483,11 +1484,13 @@ if ff(20)>0
     title(vsn{x})
     ylim([0,8.605])
     ylabel('Depth (m)')
-    
+    if x==2
         xlabel('Days since Jan 1, 2001')
+    end
     set(gca,'ytick',0:2:8)
     c = colorbar;
-    ylabel(c,'Soil Potential (MPa)')
+    ylabel(c,'Soil Potential (MPa)','FontSize',11)
+    text(30,1,pnl{x},'FontSize',14,'FontWeight','bold','Color',[0.8,0.8,0.8])
     end
     
     xdk.Units = 'inches';
@@ -1495,7 +1498,8 @@ if ff(20)>0
     xdk.PaperSize = [7,5];
     xdk.PaperPosition = [0,0,7,5];
     
-    print(xdk,'newfig','-dpdf')
+    
+    print(xdk,'../figs2/fig11','-dpdf')
  
     
 end
