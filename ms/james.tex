@@ -476,43 +476,40 @@ Our goal:
     
      
     
-
-    
 \section{Results and Discussion}
 \subsection{Modeling vegetation water potential}
 
 The new plant hydraulics module (PHS) introduces a representation of vegetation water potential to CLM.
 Vegetation water potential is modeled at four locations within the plant: at the root, stem, shaded, and sunlit leaf levels.
 Figure \ref{fig:vwp} shows the average diurnal cycle of vegetation water potential for the 2003 dry season at Caxiuana for two experiments:
-the first with ambient throughfall, and the second with 50\% of throughfall excluded. 
+the first with ambient throughfall, and the second with 60\% of throughfall excluded. 
 Both panels show the characteristic drop in water potential around midday and the expected sequencing with 
 the leaf water potentials more negative than the stem, which is more negative than the root water potential.
 
 The sequencing is difficult to distinguish from the plot, where stem, sunlit, shaded nearly overlap for both experiments. 
-In the ambient simulation (Fig \ref{fig:vwp}a), midday (1p.m.) water potentials are -1.95, -1.94, -1.93 MPa 
+In the ambient simulation (Fig \ref{fig:vwp}a), midday (1p.m.) water potentials are -1.98, -1.97, -1.96 MPa 
 for sunlit leaf, shaded leaf, and stem, respectively.
-With throughfall exclusion (Fig \ref{fig:vwp}b) midday (1p.m.) water potentials decrease to -2.17, -2.16, -2.15 MPa, respectively.
+With throughfall exclusion (Fig \ref{fig:vwp}b) midday (1p.m.) water potentials decrease to -2.77, -2.76, -2.75 MPa, respectively.
 The small difference between leaf and stem water potentials results from minimal resistance to water flow across this segment. 
 
-
-Throughfall exclusion (TFE) lowers midday sunlit leaf water potential by 0.22 MPa compared to the ambient simulation.
+Throughfall exclusion (TFE) lowers midday sunlit leaf water potential by 0.79 MPa compared to the ambient simulation.
 This drop in water potential can be partitioned among the segments of water flow from soil to leaf.
-In the ambient simulation, predawn (5am) root water potential is -0.067 MPa. 
-With TFE, it falls to -0.224 MPa, resulting in a drop in predawn root water potential of 0.16 MPa relative to the ambient simulation. 
-The potential drop from predawn to midday root water potential increases from 0.033 MPa in the ambient simulation to 0.185 MPA with TFE.
-Therefore TFE causes the drop in root water potential to increase by 0.15 MPa.
+In the ambient simulation, predawn (5am) root water potential is -0.075 MPa. 
+With TFE, it falls to -0.36 MPa, resulting in a drop in predawn root water potential of 0.28 MPa relative to the ambient simulation. 
+The potential drop from predawn to midday root water potential increases from 0.058 MPa in the ambient simulation to 1.12 MPA with TFE.
+Therefore TFE causes the drop in root water potential to increase by 1.06 MPa.
 The drop from root to stem acts in the opposite direction, decreasing from 1.85 MPa in the ambient simulation
-to 1.76 MPa with TFE, attenuating the drop in water potential by 0.09 MPa
+to 1.29 MPa with TFE, attenuating the drop in water potential by 0.55 MPa
+
+
 
 Discussion:
 
 \cite{fisher2006}
 Predicted water potential values are in range, average dry season observation = -2.47 MPa, 
 with no statistically significant difference between AMB and TFE.
-For us, LWP drop due to TFE is -0.22MPa,
-Due partly to change in predawn water potential (-0.16 MPa) and change in soil-to-root drop (-0.15 MPa). 
-Stem drop actually abates (+0.09 MPa).
-Stem drop smaller because though PLC increases, transpiration decreases to larger effect.
+For us, LWP drop due to TFE is -0.79MPa, which can be partitioned into -0.28 MPa predawn, -1.06 soil-to-root drop, +0.55 root-to-leaf drop.
+Stem drop actually abates, smaller because though PLC increases, transpiration decreases to larger effect.
 Consistent with findings in \cite{fisher2006} of 
 1) isohydric behavior
 and
@@ -542,7 +539,7 @@ With PHS, the water stress factor is modeled as a function of leaf water potenti
 Previously water stress was an empirical function of root-zone soil matric potential (see Section \ref{sect:btran}).
 The stress factor multiplies $v_{\text{cmax}}$, with values of one equating to no stress and zero equating to fully stressed. 
 Figure \ref{fig:mm} shows monthly mean values of the water stress factor, gross primary productivity, and transpiration
-over the three-year simulation showing PHS versus SMS under both ambient and 50\% excluded throughfall conditions.
+over the three-year simulation showing PHS versus SMS under both ambient and 60\% excluded throughfall conditions.
 
 In the ambient throughfall experiment, SMS has no stress (Fig \ref{fig:mm}b, solid line). 
 PHS has significant stress, ranging from 0.9 to as low as 0.6 (Fig \ref{fig:mm}a, solid line).
@@ -581,7 +578,7 @@ The effect of TFE is underestimated in both cases compared to sapflow, seeming t
 PHS introduces diurnal cycle to stress function, responding to atmospheric demand, peaking after noon
 when VPD and solar radiation are high. 
 Figure \ref{fig4} shows the average diurnal cycle of the water stress function during the 2003 dry season (SON)
-for PHS vs. SMS with ambient and 50\% excluded throughfall conditions.
+for PHS vs. SMS with ambient and 60\% excluded throughfall conditions.
 SMS simulations feature no stress in the ambient simulation and no diurnal cycle to the stress function with TFE (Fig \ref{fig4}b).
 Another look at PHS-on has significant stress in ambient, PHS-off does not.
 TFE has a larger effect on SMS lowering stress function by about 30\%.
@@ -624,16 +621,30 @@ With TFE, hydraulic danger is imposed by both high atmospheric demand and dry so
 
 \subsection{Conductance}
 Figure 6
-ksr is modeled in PHS based on kmax and a vulnerability curve and soil conductance
-A notion of ksr can be inferred for PHS-off by dividing the rootsink by the btran gradient definition.
-well-watered, why the variability?\\
-acknowledge nuked first layer \\
-absolute values \\
-shape \\
-increase vs. decrease
-relative conductance for phs-off can change, but only via zeros
-looking at layer 8, conductance is zero from nov16 through the end of the year.
-compared to ambient, where mean daytime conductance is 3.6e-11 s-1
+ksr is modeled in PHS, the typical sort of way, soil and root tissue in series
+ksr is not explicitly modeled in SMS, but it can be inferred, by dividing qrootsink (mm/s) by the SMS extraction gradient (see Section \ref{sect:btran}).
+
+well-watered values are very different, two orders of magnitude, SMS is a result of smpso is -2.5 MPa, 
+whereas root water potential varies between -0.02 MPa and -0.23 MPa. 
+(note that on the low end of this you can't over come gravity beyond 2m depth)
+SMS conductances are way low, ours may be a bit too high
+
+dynamics are super different
+
+mean of daily standard deviation of 2003 ambient PHS layer-3 conductance is 7.5e-11 (s$^{-1}$),
+which is 1.7\% of the mean 2003 ambient PHS layer-3 conductance
+
+mean of daily standard deviation of 2003 ambient SMS layer-3 conductance is 1.1e-11 (s$^{-1}$),
+which is 53\% of the mean 2003 ambient SMS layer-3 conductance
+
+from Section \ref{sect:btran}, SMS inferred conductance is tethered to transpiration
+Instead PHS uses brooks-corey and root xylem vulnerability to calculate conductance, which better reflects our best understanding of the physics.
+As a result we get a stabler curve, which responds with loss of conductance with drydown and increased conductance upon re-wetting.
+
+This is reinforced in Figure 7. With 60\% throughfall exclusion (Fig7a, dotted line), PHS conductance decreases, whereas with SMS, the daily mean conductance actually increases (Fig7b).
+
+SMS root water uptake uses a heuristic to partition transpiration, but its dynamics end up a bit backwards. It's a workaround that's necessary when you aren't modeling the gradient in water potential between vegetation and soil. But now we are, which is a big benefit of modeling vegetation water potential.
+
 
 \subsection{Extraction via hydraulic gradient}
 
@@ -790,7 +801,7 @@ very similar to delta ET, bit more infiltration from off
      \caption{(a,b) Monthly mean water stress function. Note that the water stress function equals 1 when there is no stress and 0 when fully stressed.
      (c,d) Monthly mean transpiration (W/m$^2$).
      (e,f) Monthly mean gross primary productivity (g/m$^2$/d). 
-     Solid lines correspond to ambient throughfall conditions, and dotted lines feature 50\% throughfall exclusion.
+     Solid lines correspond to ambient throughfall conditions, and dotted lines feature 60\% throughfall exclusion.
      Black lines represent model output.
      Red lines show observational transpiration derived from sap flux (see zqz).
      PHS is on for (a), (c), and (e). PHS is off for (b), (d), and (f).
@@ -805,7 +816,7 @@ very similar to delta ET, bit more infiltration from off
      \caption{2003 Dry season (SON) diurnal mean water stress function for 
      (a) PHS on, and
      (b) PHS off.
-     Solid lines correspond to ambient throughfall conditions, and dotted lines feature 50\% throughfall exclusion.
+     Solid lines correspond to ambient throughfall conditions, and dotted lines feature 60\% throughfall exclusion.
      Note that the water stress function equals 1 when there is no stress and 0 when fully stressed.
      }
      \label{fig4}
@@ -818,8 +829,8 @@ very similar to delta ET, bit more infiltration from off
      \caption{Water stress function versus vapor pressure deficit, for points with downwelling shortwave radiation between 400 and 425 W/m2.
      (a) PHS, ambient throughfall
      (b) SMS, ambient throughfall
-     (c) PHS, 50\% throughfall excluded
-     (d) SMS, 50\% throughfall excluded. 
+     (c) PHS, 60\% throughfall excluded
+     (d) SMS, 60\% throughfall excluded. 
      For (a) and (c) data are subdivided based on predawn root water potential.
      For (b) and (d) data are subdivided based on average soil matric potential, weighted by root fraction.
      Blue dots represent the wettest tercile, yellow dots represent the intermediate tercile, and red dots represent the driest tercile.
@@ -835,7 +846,7 @@ very similar to delta ET, bit more infiltration from off
      \includegraphics[width=30pc]{../figs2/fig6.pdf}
      \caption{Soil Layer 3 conductance, under ambient throughfall conditions in 2003. 
      (a) Time-series of PHS modeled soil-to-root conductance (s$^{-1}$) from Soil Layer 3 (spanning 6 to 12 centimeters in depth).
-     (b) Time-series of SMS inferred soil-to-leaf conductance (s$^{-1}$) also from Soil Layer 3.
+     (b) Time-series of SMS inferred conductance (s$^{-1}$) also from Soil Layer 3.
      (c) Concurrent precipitation forcing (mm/d).
      }
      \label{fig:cond}
@@ -845,9 +856,9 @@ very similar to delta ET, bit more infiltration from off
   \begin{figure}[h]
      \centering
      \includegraphics[width=30pc]{../figs2/fig6a.pdf}
-     \caption{Daily mean Soil Layer 3 conductance, throughout 2003 under ambient (solid line) and 60\% throughfall exclusion (dotted line).
+     \caption{Daily mean Soil Layer 3 conductance, throughout 2003 under ambient (solid line) and 60\% throughfall exclusion (dotted line) conditions.
      (a) Daily mean of PHS modeled soil-to-root conductance (s$^{-1}$) from Soil Layer 3 (spanning 6 to 12 centimeters in depth).
-     (b) Daily mean of SMS inferred soil-to-leaf conductance (s$^{-1}$) also from Soil Layer 3.
+     (b) Daily mean of SMS inferred conductance (s$^{-1}$) also from Soil Layer 3.
      }
      \label{fig:cond2}
   \end{figure}
@@ -856,9 +867,11 @@ very similar to delta ET, bit more infiltration from off
     \begin{figure}[h]
      \centering
      \includegraphics[width=30pc]{../figs2/fig7.pdf}
-     \caption{Dry season (SON), daytime (6am to 6pm) average root water uptake profiles with depth. 
-     Panel (a) shows cumulative (starting at depth) root water uptake (mm/s) for the four simulations.
-     Panels (b)-(e) present the information from (a) in non-cumulative form. 
+     \caption{2003 dry season (SON) root water uptake. 
+     Panel (a) shows the cumulative profile of daytime root water uptake (mm/s) for the four simulations during SON-2003.
+     Panel (b) shows total water uptake from above 0.2m for the four simulations during SON-2003.
+     Panel (c) shows total water uptake from below 0.2m for the four simulations during SON-2003. 
+     Panel (d) shows total ambient precipitation during SON-2003. 
      }
      \label{fig7}
   \end{figure}
@@ -867,10 +880,12 @@ very similar to delta ET, bit more infiltration from off
     \begin{figure}[h]
      \centering
      \includegraphics[width=30pc]{../figs2/fig8.pdf}
-     \caption{Wet season (FMA), daytime (6am to 6pm) average root water uptake profiles with depth. 
-     Panel (a) shows cumulative (starting at depth) root water uptake (mm/s) for the four simulations.
-     Panels (b)-(e) present the information from (a) in non-cumulative form. 
-     Note that negative root water uptake is shaded red. }
+     \caption{2003 wet season (FMA) root water uptake. 
+     Panel (a) shows the cumulative profile of daytime root water uptake (mm/s) for the four simulations during FMA-2003.
+     Panel (b) shows total water uptake from above 0.2m for the four simulations during FMA-2003.
+     Panel (c) shows total water uptake from below 0.2m for the four simulations during FMA-2003. 
+     Panel (d) shows total ambient precipitation during FMA-2003. 
+     }
      \label{fig8}
   \end{figure}
   
@@ -878,7 +893,7 @@ very similar to delta ET, bit more infiltration from off
     \begin{figure}[h]
      \centering
      \includegraphics[width=30pc]{../figs2/fig9.pdf}
-     \caption{Total hydraulic redistribution (mm) by month in 2003. For (a) ambient throughfall conditions, and (b) 50\% throughfall exclusion. 
+     \caption{Total hydraulic redistribution (mm) by month in 2003. For (a) ambient throughfall conditions, and (b) 60\% throughfall exclusion. 
      Darker shading shows portion of HR at night [6pm,6am), lighter shading shows portion of HR during day [6am,6pm).}
      \label{fig9}
   \end{figure}

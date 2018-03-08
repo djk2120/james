@@ -86,7 +86,8 @@ ff = [0,0,0,0,0,...
     0,0,0,0,0,...
     0,0,0,0,0,...
     0,0,0,0,0,...
-    0,0,2,0];
+    0,0,0,0,0,...
+    1];
 
 %2  = water potential
 %3  = timeseries
@@ -107,7 +108,7 @@ ff = [0,0,0,0,0,...
 %20 = look at soil profiles in time
 %21 = ibid
 %22 = rootfraction
-
+%25 = soil-to-leaf for phs
 if ff(13)>0
 xdk = figure;
 for i=1:4
@@ -1368,6 +1369,18 @@ if ff(18)>0
     ix = year==2003;
     pday2003 = 1800*splitapply(@sum,prec(ix),doy(ix));
     
+    
+    %calc stdev by day
+    ixn = year==2003&~isnan(kon(41,:));
+    outx = zeros(80,365);
+    for ss=1:80
+        outx(ss,:) = splitapply(@std,kon(ss,ixn),doy(ixn));
+    end
+    mean(outx(3,:))
+    mean(outx(3,:))./mean(kon(3,ixn))
+    mean(outx(43,:))
+    mean(outx(43,:))./mean(kon(43,ixn))
+    
     xdk = figure;
      
     subplot('Position',[0.09,0.69,0.9,0.26])
@@ -1647,6 +1660,8 @@ if ff(23)>0
     end
     end
 
+    figure
+    plot(allout(1:100,4))
     
 
 end
@@ -1766,4 +1781,192 @@ if ff(24)>0
     end
     
 
+end
+
+if ff(25)>0
+    ix = year==2003;
+    x=splitapply(@min,vegwp(4,ix),doy(ix));
+    plot(x)
+    max(x)/101972
+    min(x)/101972
+    
+end
+
+if ff(26)>0
+    
+    %analysis 1 - avg cumulative root water uptake profile
+    allout = [];
+    for season = [1,2]
+        if season==1
+            ix_dry  = (mcsec>diurn(12)&mcsec<diurn(37))&(month==9|month==10|month==11)&year==2003;
+            ix      = ix_dry;
+        elseif season==2
+            ix_wet  = (mcsec>diurn(12)&mcsec<diurn(37))&(month==2|month==3|month==4)&year==2003;
+            ix      = ix_wet;
+        end
+        c = 0;
+        for ss = [0,20,40,60]
+            c = c+1;
+            out = mean(qrootsink(ss+(1:20),ix),2);
+            
+            dz = round(100*(zs(2:end)-zs(1:end-1)))/2;
+            ct = 0;
+            out2 = zeros(sum(dz),1);
+            for i=1:length(dz)
+                for j=1:dz(i)
+                    ct = ct+1;
+                    out2(ct) = out(i)/dz(i);
+                end
+            end
+            
+            allout = [allout,sum(out2)-cumsum(out2)];
+        end
+    
+    end
+    
+    %analsysis2 - cumulative timeseries lyrs1-4 vs. 5-20
+    ct = 0;
+    out2 = zeros(16,5000);
+    for w=[0,1]
+        if ~w
+            ix = year==2003&month>8&month<12;
+        else
+            ix = year==2003&month>1&month<5;
+        end
+        n  = sum(ix);
+        for d = [0,1]
+            if ~d
+                sv = 1:4;
+            else
+                sv=5:20;
+            end
+            
+            for i=1:4
+                ct = ct+1;
+                out2(ct,1:n) = 180*cumsum(sum(qrootsink(sv+(i-1)*20,ix)));
+            end
+        end
+    end
+    
+    
+    %plot1
+    xdk = figure;
+    subplot('Position',[0.06,0.13,0.42,0.83])
+    s = {'-',':','-',':'};
+    c = [zeros(2,3);0.5*ones(2,3)];
+    t = {'Extracted from 0-0.2m','Extracted from 0.2-8.6m','Ambient Precipitation'};
+    p = {'(b)','(c)','(d)'};
+    th = [150,400,300];
+    tlab   = {'PHS-amb','PHS-tfe','SMS-amb','SMS-tfe'};
+    for i=1:4
+        plot(allout(:,i),(-1:-2:-860)/100,...
+            'LineStyle',s{i},'Color',c(i,:),'LineWidth',2)
+        hold on
+    end
+    set(gca,'yticklabel',9:-1:0)
+    ylabel('Depth (m)')
+    xlabel({'Cumulative Root Water Uptake';'(mm/s)'})
+    legend(tlab,'location','Southeast')
+    text(0.9e-4,-0.5,'(a)','FontWeight','bold','FontSize',14)
+    box off
+    ix = year==2003&month>8&month<12;
+    n  = sum(ix);
+    b = 0.71:-0.29:0.1;
+    ct = 0;
+    for i=1:3
+        subplot('Position',[0.56,b(i),0.42,0.25])
+        hold on
+        if i<3
+            for j=1:4
+                ct = ct+1;
+                plot(doy(ix)+mcsec(ix)/max(diurn),out2(ct,1:n),...
+                    'LineStyle',s{j},'Color',c(j,:),'LineWidth',2)
+            end
+            set(gca,'xticklabel',[])
+        else
+        plot(doy(ix)+mcsec(ix)/max(diurn),180*cumsum(prec(ix)),'LineWidth',2)
+        xlabel('Day of 2003')
+        end
+        text(242,0.09*th(i),t{i},'FontWeight','bold')
+        text(330,0.01*th(i),p{i},'FontWeight','bold','FontSize',14)
+    end
+    
+    ax1 = axes('Position',[0 0 1 1],'Visible','off');
+    text(0.51,0.39,'Cumulative Water (cm)',...
+        'FontSize',11,'Rotation',90);
+    
+    
+    xdk.Units = 'inches';
+    xdk.Position = [2,2,7,5];
+    xdk.PaperSize = [7,5];
+    xdk.PaperPosition = [0,0,7,5];
+    print(xdk,'../figs2/fig7','-dpdf')
+      
+    
+    
+    
+    
+    
+    
+    
+    
+    %plot2
+    xdk = figure;
+    subplot('Position',[0.06,0.13,0.42,0.83])
+    s = {'-',':','-',':'};
+    c = [zeros(2,3);0.5*ones(2,3)];
+    t = {'Extracted from 0-0.2m','Extracted from 0.2-8.6m','Ambient Precipitation'};
+    p = {'(b)','(c)','(d)'};
+    th = [0.9*40,30-0.1*40,0.9*110];
+    tlab   = {'PHS-amb','PHS-tfe','SMS-amb','SMS-tfe'};
+    for i=1:4
+        plot(allout(:,i+4),(-1:-2:-860)/100,...
+            'LineStyle',s{i},'Color',c(i,:),'LineWidth',2)
+        hold on
+    end
+    set(gca,'yticklabel',9:-1:0)
+    ylabel('Depth (m)')
+    xlabel({'Cumulative Root Water Uptake';'(mm/s)'})
+    legend(tlab,'location','Southeast')
+    text(0.7e-4,-0.5,'(a)','FontWeight','bold','FontSize',14)
+    box off
+    ix = year==2003&month>1&month<5;
+    n  = sum(ix);
+    b = 0.71:-0.29:0.1;
+    ct = 8;
+    for i=1:3
+        subplot('Position',[0.56,b(i),0.42,0.25])
+        hold on
+        if i<3
+            for j=1:4
+                ct = ct+1;
+                plot(doy(ix)+mcsec(ix)/max(diurn),out2(ct,1:n),...
+                    'LineStyle',s{j},'Color',c(j,:),'LineWidth',2)
+            end
+            set(gca,'xticklabel',[])
+        else
+            plot(doy(ix)+mcsec(ix)/max(diurn),180*cumsum(prec(ix)),'LineWidth',2)
+            xlabel('Day of 2003')
+        end
+        xlim([31,121])
+        text(34,th(i),t{i},'FontWeight','bold')
+        text(90,th(i),p{i},'FontWeight','bold','FontSize',14)
+    end
+    ylim([0,110])
+    ax1 = axes('Position',[0 0 1 1],'Visible','off');
+    text(0.51,0.39,'Cumulative Water (cm)',...
+        'FontSize',11,'Rotation',90);
+    
+    
+    xdk.Units = 'inches';
+    xdk.Position = [2,2,7,5];
+    xdk.PaperSize = [7,5];
+    xdk.PaperPosition = [0,0,7,5];
+    
+    
+    
+    print(xdk,'../figs2/fig8','-dpdf')
+
+
+    
 end
