@@ -85,9 +85,9 @@ p = [p,a(:,2)];
 ff = [0,0,0,0,0,...
     0,0,0,0,0,...
     0,0,0,0,0,...
+    0,0,0,2,0,...
     0,0,0,0,0,...
-    0,0,0,0,0,...
-    1];
+    0];
 
 %2  = water potential
 %3  = timeseries
@@ -1384,23 +1384,23 @@ if ff(18)>0
     xdk = figure;
      
     subplot('Position',[0.09,0.69,0.9,0.26])
-    plot((1:sum(year==2003))/48,kon(3,year==2003),'.','Color',[0.4,0.4,0.4])
+    plot(1+(1:sum(year==2003))/48,kon(3,year==2003),'.','Color',[0.4,0.4,0.4])
     ylabel({'PHS Conductance';'(1/s)'})
-    xlim([-1,366])
+    xlim([0,366])
     set(gca,'xticklabel',[])
     text(5,1e-9,'(a)','FontSize',14,'FontWeight','bold')
     
     subplot('Position',[0.09,0.39,0.9,0.26])
-    plot((1:sum(year==2003))/48,kon(43,year==2003),'.','Color',[0.4,0.4,0.4])
+    plot(1+(1:sum(year==2003))/48,kon(43,year==2003),'.','Color',[0.4,0.4,0.4])
     ylabel({'SMS Conductance';'(1/s)'})
-    xlim([-1,366])
+    xlim([0,366])
     set(gca,'xticklabel',[])
     text(5,5e-11,'(b)','FontSize',14,'FontWeight','bold')
     
     subplot('Position',[0.09,0.09,0.9,0.26])
     bar(pday2003,'FaceColor',[0.4,0.4,0.4])
     ylabel('Rain (mm/d)')
-    xlim([-1,366])
+    xlim([0,366])
     xlabel('Day of 2003')
     text(5,5/6*80,'(c)','FontSize',14,'FontWeight','bold')
     
@@ -1445,7 +1445,7 @@ if ff(19)>0
     hold on
     plot(out(ss+20,:),'k:','LineWidth',2)
     ylabel({'PHS Daily Mean';'Conductance (s^{-1})'})
-    xlim([-1,366])
+    xlim([0,366])
     set(gca,'xticklabel',[])
     text(5,1e-9,'(a)','FontSize',14,'FontWeight','bold')
     
@@ -1453,13 +1453,13 @@ if ff(19)>0
     plot(out(ss+40,:),'k','LineWidth',2)
     hold on
     plot(out(ss+60,:),'k:','LineWidth',2)
-    xlim([-1,366])
+    xlim([0,366])
     ylabel({'SMS Daily Mean';'Conductance (s^{-1})'})
     legend({'AMB','TFE'},'location','northwest')
     xlabel('Day of 2003')
     text(345,5/6*8e-11,'(b)','FontSize',14,'FontWeight','bold')
     
-    xdk.Units = 'inches'
+    xdk.Units = 'inches';
     xdk.Position = [2,2,7,4];
     xdk.PaperSize = [7,4];
     xdk.PaperPosition = [0,0,7,4];
@@ -1494,17 +1494,21 @@ if ff(20)>0
     addpath('/Users/kennedy/Documents/MATLAB/othercolor')
     colormap(othercolor('BrBG4'))
     subplot(2,1,x)
-    imagesc((1:n)/48,(1:860)/100,out,[ymax(x),0])
+    imagesc((1:n)/(48*365)+2001,(1:860)/100,out,[ymax(x),0])
     title(vsn{x})
+    xlim([2001,2004])
     ylim([0,8.605])
     ylabel('Depth (m)')
     if x==2
-        xlabel('Days since Jan 1, 2001')
+        xlabel('Year')
     end
+    aa={'2001','','2002','','2003','','2004'};
+    
+    set(gca,'xticklabel',aa)
     set(gca,'ytick',0:2:8)
     c = colorbar;
     ylabel(c,'Soil Potential (MPa)','FontSize',11)
-    text(30,1,pnl{x},'FontSize',14,'FontWeight','bold','Color',[0.8,0.8,0.8])
+    text(2001.08,1,pnl{x},'FontSize',14,'FontWeight','bold','Color',[0.8,0.8,0.8])
     end
     
     xdk.Units = 'inches';
