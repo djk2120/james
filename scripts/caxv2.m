@@ -87,7 +87,7 @@ ff = [0,0,0,0,0,...
     0,0,0,0,0,...
     0,0,0,0,0,...
     0,0,0,0,0,...
-    1];
+    0,0,0,1];
 
 %2  = water potential
 %3  = timeseries
@@ -109,6 +109,10 @@ ff = [0,0,0,0,0,...
 %21 = ibid
 %22 = rootfraction
 %25 = soil-to-leaf for phs
+%27 = vpd, fsds
+%28 = shorter sms conductance
+%29 = comparing resistances
+
 if ff(13)>0
 xdk = figure;
 for i=1:4
@@ -1975,4 +1979,94 @@ if ff(26)>0
 
 
     
+end
+
+if ff(27)>0
+   %find daily max vpd
+   maxvpd = splitapply(@max,vpd,doy+(year-2001)*365);
+   %fill
+   maxvpd = repmat(maxvpd,48,1);
+   maxvpd = maxvpd(1:length(fsds));
+   
+   subplot(3,1,1)
+   plot(splitapply(@mean,maxvpd,month+(year-2001)*12))
+   set(gca,'xtick',3:3:36)
+   grid on
+   ylim([0,3])
+   xlim([0,36])
+   
+   subplot(3,1,2)
+   plot(splitapply(@mean,fsds,month+(year-2001)*12))
+   set(gca,'xtick',3:3:36)
+   grid on
+   ylim([0,250])
+   xlim([0,36])
+   
+      
+   subplot(3,1,3)
+   ix = mcsec==diurn(10);
+   plot(splitapply(@mean,vegwp(4,ix),month(ix)+(year(ix)-2001)*12)/101972)
+   hold on
+   plot(splitapply(@mean,vegwp(8,ix),month(ix)+(year(ix)-2001)*12)/101972)
+   s1 = zr*smp(41:60,:);
+   s2 = zr*smp(61:80,:);
+   plot(splitapply(@mean,s1,month+(year-2001)*12)/101972)
+   plot(splitapply(@mean,s2,month+(year-2001)*12)/101972)
+   set(gca,'xtick',3:3:36)
+   grid on
+   ylim([-2.5,0])
+   xlim([0,36])
+
+end
+
+
+if ff(28)>0
+        
+    kon = nan*smp(1:80,:);
+    ix  = year==2003&fctr(1,:)>1;
+    kon(1:40,:) = ksr(1:40,:);
+    
+    
+    for ss = 41:80
+        
+        kon(ss,ix)  = qrootsink(ss,ix)./min(189000,(smp(ss,ix)+255000));
+        ix1         = ix&smp(ss,:)<=-254900;
+        kon(ss,ix1) = 0;
+    end
+    
+    ix = year==2003&month==9;
+    tmask = splitapply(@mean,fctr(1,ix),findgroups(mcsec(ix)))>1;
+    for ss=[43,63]
+    out = splitapply(@nanmean,kon(ss,ix),findgroups(mcsec(ix)));
+    xv = 0.25:0.5:24;
+    subplot(1,2,2)
+    plot(xv(tmask),out(tmask))
+    hold on
+    end
+    xlim([6,18])
+    
+    for ss=[3,23]
+    out = splitapply(@nanmean,kon(ss,ix),findgroups(mcsec(ix)));
+    xv = 0.25:0.5:24;
+    subplot(1,2,1)
+    plot(xv(tmask),out(tmask))
+    hold on
+    end
+    xlim([6,18])
+    
+end
+
+
+
+if ff(29)>0
+   rtot = 1;    % m2 s MPa mmol-1   
+   r2   = 5.56e4; % MPa s mm-1   
+   
+   %rosie pressure drop?
+   qmm = 3; %mm/d
+   q   = qmm/(60*12*60); %mm/s
+   
+   dp  = r2*q; %MPa
+  
+   
 end

@@ -529,91 +529,54 @@ Our objective was to simplify the plant hydraulic representation for this first 
 allowing that it will likely be necessary to advance process representation in future versions
 to accurately model leaf water potential dynamics.
 
-\subsection{Stress function, annual cycle}
+\subsection{Stress factor, annual cycle}
 
+The Medlyn stomatal conductance model optimizes carbon gain relative to water costs, but does not represent hydraulic constraints.
+Representing the influence of drought in combination with the Medlyn model is an area of active research \citep{zhou2013,novick2016a}.
+Dating back to \cite{sellers1996a}, CLM has used a water stress factor (unitless, 0-1, stressed-unstressed), to attenuate $v_{\text{cmax}}$ with declining water status. Decreases in $v_{\text{cmax}}$ result in decreases in photosynthesis, stomatal conductance, and transpiration, coupled via the stomatal conductance model and through the intercellular CO$_2$ concentration.
+
+Previously (SMS) water stress was an empirical function of root-zone soil matric potential (see Section \ref{sect:btran}).
 With PHS, the water stress factor is modeled as a function of leaf water potential.
-Previously water stress was an empirical function of root-zone soil matric potential (see Section \ref{sect:btran}).
-The stress factor multiplies $v_{\text{cmax}}$, with values of one equating to no stress and zero equating to fully stressed. 
+Once calculated, the implementation of the stress factor are the same (in that they both multiply $v_{\text{cmax}}$).
+But the dynamics of the two formulations are quite different, because with SMS the stress factor only responds to changes in soil potential,
+whereas with PHS the stress factor also responds to transpiration demand.
+
 Figure \ref{fig:mm} shows monthly mean values of the water stress factor, gross primary productivity, and transpiration
 over the three-year simulation showing PHS versus SMS under both ambient and 60\% excluded throughfall conditions.
 
-In the ambient throughfall experiment, SMS has no stress (Fig \ref{fig:mm}b, solid line). 
-PHS has significant stress, ranging from 0.9 to as low as 0.6 (Fig \ref{fig:mm}a, solid line).
-With PHS, stress has a seasonal cycle, with the least stress in February, and the most stress in September.
-This seasonality responds to transpiration demand, driven by solar radiation and VPD.
-As a result, PHS has less GPP, and less seasonality in GPP. 
-In the ambient simulation, for 2003, PHS GPP was 279 g/m2/y (9\%) less than SMS.
-Likewise for transpiration, PHS is less by 93 mm (7\%) over 2003.
+ambient
 
-In both cases, the effect of TFE accumulates through the simulation. 
-For PHS, the effect of TFE is small, with additive stress peaking in November: 
-adding 6.6\% to the stress in Nov-2002 and 11.4\% to the stress in Nov-2003.
-For SMS, the effect of TFE is larger, adding 37.4\% in December 2002  and 67\% in December 2003. \\
-Note the different seasonality
-PHS has the most stress in JAS and least stress in JFM. 
-SMS has the most stress in DJF and least stress in JJA.
+SMS no stress (fw>0.99), 24 out of 36 months
+PHS more stress, follows leaf water potential (Figure \ref{fig:vwp}).
 
-SMS stress is driven by soil potential (weighted by root fraction), leading to no stress in the ambient conditions.
-Likewise with TFE, soil potential doesn't rebound until well into the wet season, whereby stress peaks in DJF.
+PHS mins generally in September (high FSDS, high VPD).
+SMS mins generally in December (min root-average SMP).
 
-PHS stress is a function of leaf water potential, which responds to both soil potential and atmospheric demand. 
-Ambient dynamics of predawn root water potential are 0.1 MPa corresponds to about 2-3\% extra stress, without factoring in lost conductance.
-Ambient dynamics of stress are about 30\%. Mostly due to atmospheric demand.
+Effect of TFE accumulates. 
+PHS, adds 30\% and 47\% in Nov 2002 and Nov 2003
+SMS, adds 60\% and 88\% in Oct 2002 and Sept 2003.
 
-TFE causes 2003 SON predawn water potential to decrease by 0.11MPa. 
-Added stress is due to soil forcing, but still depends on atmospheric demand, 
-because lowering water potential is more damaging during the dry season,
-due to nonlinear stress function.
+Difference in sensitivity to TFE due to root water uptake (Sections zqz)
+PHS suppresses IAV of GPP
+Neither gets TFE, but PHS looks nice compared to sap flux.
 
-PHS better reproduces transpiration under ambient conditions according to sap flux observations (Fig \ref{fig:mm}e). 
-\citep{restrepo2017}
-The effect of TFE is underestimated in both cases compared to sapflow, seeming to overestimate the ability of soil water to buffer stress.
+Discussion
 
-\subsection{Stress function, diurnal cycle}
+(1) Why can't we match TFE (PHS)?
+        - isohydricity
+        - draining soil column
+        - too efficient extracting water from depth
+(2) But we're very excited about the dynamics of the factor
 
-PHS introduces diurnal cycle to stress function, responding to atmospheric demand, peaking after noon
-when VPD and solar radiation are high. 
-Figure \ref{fig4} shows the average diurnal cycle of the water stress function during the 2003 dry season (SON)
-for PHS vs. SMS with ambient and 60\% excluded throughfall conditions.
-SMS simulations feature no stress in the ambient simulation and no diurnal cycle to the stress function with TFE (Fig \ref{fig4}b).
-Another look at PHS-on has significant stress in ambient, PHS-off does not.
-TFE has a larger effect on SMS lowering stress function by about 30\%.
-PHS-on TFE adds about 10\% to midday stress.
+\subsection{Stress factor, diurnal cycle}
 
-With SMS, stress is a function of soil potential.
-The stress function deviates from 1 to limit photosynthesis and transpiration according to water stress.
-With PHS, this occurs when the unattenuated Medlyn transpiration requires very negative leaf water potential.
-At night, this is typically not the case, so the stress function evaluates to 1. 
-A time-average of the stress function is not appropriate for interpreting the effect of water stress on photosynthesis.
-Time-averaged stress during SON, with TFE, is 90.5\% for PHS on and 69\% for PHS off.
-Time-averaged GPP during SON,  with TFE, is 7.63 g/m2/d for PHS on and 7.57 g/m2/d for PHS off.
-Comparing this with maximal GPP (9.07 g/m2/d from amb/off), we see that,
-with TFE, PHS on is 84.1\% of maximum GPP and PHS off is 83.5\% of maximum GPP.
+PHS introduces diurnal cycle to stress factor (Figure \ref{fig4}). This follows the diurnal cycle in leaf water potential (e.g. Figure \ref{fig:vwp}a,b).
 
-Instead we should look at the inner product of stress with potential photosynthesis (in this case SMS-amb) divided by total potential photosynthesis.
-This weighted average stress function over SON2013 is 0.84,0.76,1,0.70, delivering a more consistent metric for average stress, robust to diurnal variation.
+Transpiration demand responds to solar radiation (through photosynthesis) and to vpd.
 
-The diurnal cycle of stress with PHS is a function of transpiration demand, driven by solar radiation and VPD. 
-In Figure \ref{fig5}, the effect of VPD is shown for each of the four experiments. 
-Data are constrained to timesteps with downwelling solar radiation between 400 and 425 W/m$^2$ (n=775), to highlight the VPD effect. 
-Data are colored based on the soil moisture state. 
-For PHS-on, soil moisture state is predawn root water potential. 
-For PHS-off, soil moisture state is root-fraction weighted soil matric potential. 
-The data are split into terciles, coloring the driest tercile red, the wettest tercile blue, and the intermediate tercile yellow.
+stress factor backs off medlyn conductance
+because medlyn conductance is chill at night, 1 it is.
 
-For PHS-off there's no stress in the ambient simulation. 
-With TFE there is significant stress, with a strong relationship to soil potential, and no relationship with VPD. 
-
-For PHS-on there is stress in the ambient simulation, with more stress with increasing VPD
-and no strong relationship between stress and soil state.
-With TFE stress increases, and in this case, drier soil states are clearly related to increased stress.
-
-For PHS on, stress is imposed to constrain the unattenuated transpiration based on leaf water potential. 
-As leaf water potential becomes more negative, the stress function evaluates lower, attenuating photosynthesis and transpiration.
-This provides a hydraulic safety constraint to the GPP and transpiration solutions.
-PHS functionality is as expected in these simulations, where hydraulic danger can derive from both high atmospheric demand and drying soils.
-In the ambient simulation, with well-watered conditions, hydraulic danger is present, but only due to atmospheric demand. 
-With TFE, hydraulic danger is imposed by both high atmospheric demand and dry soils.
 
 \subsection{Conductance}
 Figure 6
@@ -864,7 +827,7 @@ very similar to delta ET, bit more infiltration from off
      \centering
      \includegraphics[width=30pc]{../figs2/fig7.pdf}
      \caption{2003 dry season (SON) root water uptake. 
-     Panel (a) shows the cumulative profile of daytime root water uptake (mm/s) for the four simulations during SON-2003.
+     Panel (a) shows the average cumulative profile of daytime root water uptake (mm/s) for the four simulations during SON-2003.
      Panel (b) shows total water uptake from above 0.2m for the four simulations during SON-2003.
      Panel (c) shows total water uptake from below 0.2m for the four simulations during SON-2003. 
      Panel (d) shows total ambient precipitation during SON-2003. 
@@ -877,7 +840,7 @@ very similar to delta ET, bit more infiltration from off
      \centering
      \includegraphics[width=30pc]{../figs2/fig8.pdf}
      \caption{2003 wet season (FMA) root water uptake. 
-     Panel (a) shows the cumulative profile of daytime root water uptake (mm/s) for the four simulations during FMA-2003.
+     Panel (a) shows the average cumulative profile of daytime root water uptake (mm/s) for the four simulations during FMA-2003.
      Panel (b) shows total water uptake from above 0.2m for the four simulations during FMA-2003.
      Panel (c) shows total water uptake from below 0.2m for the four simulations during FMA-2003. 
      Panel (d) shows total ambient precipitation during FMA-2003. 
