@@ -87,7 +87,7 @@ ff = [0,0,0,0,0,...
     0,0,0,0,0,...
     0,0,0,0,0,...
     0,0,0,0,0,...
-    0,0,0,1];
+    0,0,0,0,1];
 
 %2  = water potential
 %3  = timeseries
@@ -2069,4 +2069,25 @@ if ff(29)>0
    dp  = r2*q; %MPa
   
    
+end
+
+
+if ff(30)>0
+    fw = 2.^-((vegwp./-255000).^3.95);
+    fw = fw([1,5],:);
+    
+    out = zeros(48,6);
+    bin = 5;
+    
+    dailymeanfpsn = splitapply(@nanmean,fpsn(1,:)./fsds,doy+(year-2001)*365);
+    i=25;
+    ix = mcsec>=diurn(i)&mcsec<=diurn(i-1+bin);
+    dailmeanfw    = splitapply(@mean,fw(1,ix),doy(ix)+(year(ix)-2001)*365);
+    plot(dailmeanfw,dailymeanfpsn,'.')
+    r  = corr(dailmeanfw',dailymeanfpsn');
+
+    ix = mcsec>0;
+    dailmeanfw    = splitapply(@mean,fw(1,ix),doy(ix)+(year(ix)-2001)*365);
+    rall  = corr(dailmeanfw',dailymeanfpsn');
+    
 end

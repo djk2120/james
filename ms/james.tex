@@ -505,7 +505,7 @@ to 1.29 MPa with TFE, attenuating the drop in water potential by 0.55 MPa.
 Predicted water potential values are in range, average dry season observation = -2.47 MPa, 
 with no statistically significant difference between AMB and TFE.
 For us, LWP drop due to TFE is -0.79MPa, which can be partitioned into -0.28 MPa predawn, -1.06 soil-to-root drop, +0.55 root-to-leaf drop.
-Stem drop actually abates, smaller because though PLC increases, transpiration decreases to larger effect.
+Stem drop abates, smaller because though PLC increases, transpiration decreases to larger effect.
 Consistent with findings in \cite{fisher2006} of 
 1) isohydric behavior
 and
@@ -543,6 +543,9 @@ whereas with PHS the stress factor also responds to transpiration demand.
 
 Figure \ref{fig:mm} shows monthly mean values of the water stress factor, gross primary productivity, and transpiration
 over the three-year simulation showing PHS versus SMS under both ambient and 60\% excluded throughfall conditions.
+Careful interpretation is required for comparison, because straight time-averaging PHS stress function is not appropriate due to coincident diurnal cycles in $f_w$ and potential photosynthesis.
+As such we plot the average midday $f_w$
+
 
 ambient
 
@@ -558,7 +561,7 @@ SMS, adds 60\% and 88\% in Oct 2002 and Sept 2003.
 
 Difference in sensitivity to TFE due to root water uptake (Sections zqz)
 PHS suppresses IAV of GPP
-Neither gets TFE, but PHS looks nice compared to sap flux.
+Neither gets TFE, but PHS looks nice compared to ambient sap flux.
 
 Discussion
 
@@ -570,12 +573,23 @@ Discussion
 
 \subsection{Stress factor, diurnal cycle}
 
-PHS introduces diurnal cycle to stress factor (Figure \ref{fig4}). This follows the diurnal cycle in leaf water potential (e.g. Figure \ref{fig:vwp}a,b).
+PHS introduces diurnal cycle to $f_w$ the CLM water stress factor (Figure \ref{fig4}). 
+This follows the diurnal cycle in leaf water potential (e.g. Figure \ref{fig:vwp}a,b).
+The SMS version of $f_w$ has no diurnal cycle because it depends only on soil potential.
+Why diurnal cycle?
+PHS stress factor is a function of leaf water potential, which depends on soil potential, but also on transpiration demand.
+Transpiration demand a function of solar radiation (through photosynthesis) and vpd (among others).
 
-Transpiration demand responds to solar radiation (through photosynthesis) and to vpd.
-
-stress factor backs off medlyn conductance
-because medlyn conductance is chill at night, 1 it is.
+In Figure \ref{fig5}, we plot a subset of $f_w$ data from the four simulations. 
+To emphasize the relationship with VPD, we subset for a small window in downwelling solar radiation (between 400 and 425 W/m2).
+Furthermore, for the TFE simulations (panels $c$ and $d$), we also subset for years 2002 and 2003, because TFE was not active during most of 2001.
+Points are colored based on soil potential, splitting the data from each plot into terciles, blue points are wettest, red points driest, and yellow points intermediate.
+For details see (zqz).
+As expected the SMS version of $f_w$ has a clear dependence on soil potential, but no relationship with VPD. 
+Drier soil potentials are associated with lower values of $f_w$, which corresponds to more stress.
+With PHS, there is a clear dependence of $f_w$ on VPD, with higher VPD associated with more stress.
+In panel $a$ the soil water has minimal influence, ambient simulation doesn't get dry enough.
+In panel $b$, TFE yields drier soils, and the result is combined dependence of $f_w$ on VPD and soil water.
 
 
 \subsection{Conductance}
