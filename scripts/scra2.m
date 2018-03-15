@@ -1,18 +1,13 @@
 clear
 close all
 
+p = -0.01:-0.01:-5;
 
-t = 0.12:0.01:0.42;
-tsat = 0.42;
-psat = -100;
-ksat = .015;
-b    = 6;
+p50 = -2.5;
 
+f1 = @(x,a) 1./(1+(x/p50).^a);
+f2 = @(x,a) 2.^-((x/p50).^a);
 
-p = psat*(t/tsat).^(-b);
-
-%plot(t,log10(-p))
-
-
-k = ksat*(t/tsat).^(2*b+3);
-plot(t,log10(k))
+plot(p,f1(p,6))
+hold on
+plot(p,f2(p,5))

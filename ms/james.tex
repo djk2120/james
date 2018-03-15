@@ -180,7 +180,6 @@ Our goal:
     especially on sub-daily timescales \citep{meinzer2009}, whereby its inclusion may be warranted 
     in future model generations.
 
-     
      Vegetation segment conductance is modeled with empirical xylem vulnerability curves \citep{tyree1989}, 
      where segments lose conductance with increasing drought status associated with 
      cavitation and embolism \citep{holbrook2001}.
@@ -245,8 +244,6 @@ Our goal:
      \end{eqnarray}
      \end{linenomath*}
     
-
-     
     We define $f_w$ as the ratio of stressed to unstressed stomatal conductance (Equation \ref{eq:stress}).
     The unstressed stomatal conductance is the stomatal conductance when calculated with $f_w=1$
     (i.e. without water stress). 
@@ -336,7 +333,7 @@ Our goal:
 %====================
 \section{Experiment Description}
     
-    
+\section{Analysis}    
     
 %====================
 %  BTRAN
@@ -573,24 +570,37 @@ Discussion
 
 \subsection{Stress factor, diurnal cycle}
 
-PHS introduces diurnal cycle to $f_w$ the CLM water stress factor (Figure \ref{fig4}). 
-This follows the diurnal cycle in leaf water potential (e.g. Figure \ref{fig:vwp}a,b).
+PHS introduces a diurnal cycle to $f_w$, the CLM water stress factor (Fig \ref{fig4}a). 
+This follows the diurnal cycle in leaf water potential (e.g. Fig \ref{fig:vwp}a,b).
 The SMS version of $f_w$ has no diurnal cycle because it depends only on soil potential.
-Why diurnal cycle?
-PHS stress factor is a function of leaf water potential, which depends on soil potential, but also on transpiration demand.
-Transpiration demand a function of solar radiation (through photosynthesis) and vpd (among others).
+Leaf water potential declines with decreasing soil potential, but also with increasing transpiration demand.
+Transpiration demand is a function of VPD, solar radiation (via photosynthesis), and other variables.
 
 In Figure \ref{fig5}, we plot a subset of $f_w$ data from the four simulations. 
 To emphasize the relationship with VPD, we subset for a small window in downwelling solar radiation (between 400 and 425 W/m2).
 Furthermore, for the TFE simulations (panels $c$ and $d$), we also subset for years 2002 and 2003, because TFE was not active during most of 2001.
 Points are colored based on soil potential, splitting the data from each plot into terciles, blue points are wettest, red points driest, and yellow points intermediate.
 For details see (zqz).
-As expected the SMS version of $f_w$ has a clear dependence on soil potential, but no relationship with VPD. 
+As expected the SMS version of $f_w$ has a clear dependence on soil potential, but no relationship with VPD (Fig \ref{fig:vpd}b,d). 
 Drier soil potentials are associated with lower values of $f_w$, which corresponds to more stress.
 With PHS, there is a clear dependence of $f_w$ on VPD, with higher VPD associated with more stress.
-In panel $a$ the soil water has minimal influence, ambient simulation doesn't get dry enough.
-In panel $b$, TFE yields drier soils, and the result is combined dependence of $f_w$ on VPD and soil water.
+Under ambient throughfall conditions (Fig\ref{fig:vpd}a) the soil water has minimal influence.
+In Figure \ref{fig:vpd}c, TFE yields drier soils, showing the combined dependence of $f_w$ on VPD and soil water.
 
+What is the stress factor? An acknowledgment that optimizing $A-\lambda E$ is not the full story of vegetation water use.
+For example, plants must also manage the risk of cavitation associated with increasing xylem tension.
+No one answer is accepted within the field for how to apply water stress to photosynthesis and stomatal conductance.
+Some groups abandon optimizing $A-\lambda E$ in lieu of pure hydraulic limitation.
+Some groups are exploring soil water adjustments to the Medlyn parameters.
+Other groups are combining Medlyn stomatal conductance, with so-called non-stomatal limitation, attenuating vcmax or mesophyl conductance
+(which feeds back through photosynthesis to lower stomatal conductance).
+We opt for the this approach, but acknowledge that the various approaches all have merit, and that future research will likely improve our function.
+
+But having said that, we do really like our approach.
+We are taking the point of view that Medlyn well-watered makes sense, but needs a hydraulic constraint.
+We are not changing the Medlyn parameters with drying, though that may be justified.
+Soil potential is a viable option for measuring water status, but doesn't capture the dual effects of supply and demand on xylem tension.
+So we couple Medlyn to vcmax attenuated based on leaf water potential.
 
 \subsection{Conductance}
 Figure 6
@@ -809,7 +819,7 @@ very similar to delta ET, bit more infiltration from off
      Blue dots represent the wettest tercile, yellow dots represent the intermediate tercile, and red dots represent the driest tercile.
      Note that panels (c) and (d) exclude data from 2001, when throughfall exclusion was not active.
      }
-     \label{fig5}
+     \label{fig:vpd}
        \end{figure}
   
   
