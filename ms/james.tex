@@ -541,7 +541,7 @@ whereas with PHS the stress factor also responds to transpiration demand.
 Figure \ref{fig:mm} shows monthly mean values of the water stress factor, gross primary productivity, and transpiration
 over the three-year simulation showing PHS versus SMS under both ambient and 60\% excluded throughfall conditions.
 Careful interpretation is required for comparison, because straight time-averaging PHS stress function is not appropriate due to coincident diurnal cycles in $f_w$ and potential photosynthesis.
-As such we plot the average midday $f_w$
+As such we plot the average midday $f_w$ (see zqz).
 
 
 ambient
@@ -567,6 +567,7 @@ Discussion
         - draining soil column
         - too efficient extracting water from depth
 (2) But we're very excited about the dynamics of the factor
+        - soil moisture stress vs. xylem tension stress
 
 \subsection{Stress factor, diurnal cycle}
 
@@ -576,7 +577,7 @@ The SMS version of $f_w$ has no diurnal cycle because it depends only on soil po
 Leaf water potential declines with decreasing soil potential, but also with increasing transpiration demand.
 Transpiration demand is a function of VPD, solar radiation (via photosynthesis), and other variables.
 
-In Figure \ref{fig5}, we plot a subset of $f_w$ data from the four simulations. 
+The effects of VPD and soil potential are shown in Figure \ref{fig:vpd}, where we plot a subset of $f_w$ data from the four simulations. 
 To emphasize the relationship with VPD, we subset for a small window in downwelling solar radiation (between 400 and 425 W/m2).
 Furthermore, for the TFE simulations (panels $c$ and $d$), we also subset for years 2002 and 2003, because TFE was not active during most of 2001.
 Points are colored based on soil potential, splitting the data from each plot into terciles, blue points are wettest, red points driest, and yellow points intermediate.
@@ -590,29 +591,36 @@ In Figure \ref{fig:vpd}c, TFE yields drier soils, showing the combined dependenc
 What is the stress factor? An acknowledgment that optimizing $A-\lambda E$ is not the full story of vegetation water use.
 For example, plants must also manage the risk of cavitation associated with increasing xylem tension.
 No one answer is accepted within the field for how to apply water stress to photosynthesis and stomatal conductance.
-Some groups abandon optimizing $A-\lambda E$ in lieu of pure hydraulic limitation.
-Some groups are exploring soil water adjustments to the Medlyn parameters.
+Some groups abandon optimizing $A-\lambda E$ in favor of hydraulic costs \citep{sperry2017}.
+Some groups are exploring soil water adjustments to lambda \citep{manzoni2013b}, but this may underestimate drought effects \citep{zhou2013}.
 Other groups are combining Medlyn stomatal conductance, with so-called non-stomatal limitation, attenuating vcmax or mesophyl conductance
-(which feeds back through photosynthesis to lower stomatal conductance).
-We opt for the this approach, but acknowledge that the various approaches all have merit, and that future research will likely improve our function.
+(which feeds back through photosynthesis to lower stomatal conductance). \citep{egea2011,novick2016a}
+We opt for a simplified form of this last approach, but don't claim superiority, but rather that stress parameterizations are an important topic for continued research.
 
 But having said that, we do really like our approach.
-We are taking the point of view that Medlyn well-watered makes sense, but needs a hydraulic constraint.
+We are taking the point of view that Medlyn well-watered makes sense, but needs a water status factor.
 We are not changing the Medlyn parameters with drying, though that may be justified.
-Soil potential is a viable option for measuring water status, but doesn't capture the dual effects of supply and demand on xylem tension.
+Soil water is a viable option for measuring water status \citep{drake2017}, but doesn't capture the dual effects of supply and demand on xylem tension.
 So we couple Medlyn to vcmax attenuated based on leaf water potential.
 
 \subsection{Conductance}
-Figure 6
-ksr is modeled in PHS, the typical sort of way, soil and root tissue in series
-ksr is not explicitly modeled in SMS, but it can be inferred, by dividing qrootsink (mm/s) by the SMS extraction gradient (see Section \ref{sect:btran}).
 
-well-watered values are very different, two orders of magnitude, SMS is a result of smpso is -2.5 MPa, 
-whereas root water potential varies between -0.02 MPa and -0.23 MPa. 
-(note that on the low end of this you can't over come gravity beyond 2m depth)
-SMS conductances are way low, ours may be a bit too high
+PHS calculates vegetation water potential.
+The prognostic vegetation water potential has two interfaces with the model.
+As above, it is used to effect drought stress for the photosynthesis/stomatal conductance routines.
+But we also use it to calculate root water uptake in the Darcy framework where $q=k\Delta\psi$.
+More typically, a heuristic is used to partition the transpiration sink throughout the soil column (need ref).
+CLM (with SMS) based this on root fraction and a soil wilting factor, which can be recast into the hydraulic framework (Section \ref{sect:btran}).
+Looking at the conductance values associated with root water uptake serves to highlight the differences between paradigms.
 
-dynamics are super different
+Soil-to-root conductance ($k_{sr}$) is modeled in PHS and is used to model root water uptake (see zqz).
+With SMS, $k_{sr}$ is not explicitly modeled, but it can be inferred, by dividing the root water uptake by the SMS extraction gradient (see Section \ref{sect:btran}).
+In Figure \ref{fig6}, we plot the time-series of conductance values from Soil Layer 3 (spans from 6 to 12 centimeters below the surface) under ambient throughfall conditions during 2003.
+
+Well-watered values are very different, two orders of magnitude. 
+Dynamics also very different, PHS conductance is relatively steady through the wet season (Fig \ref{fig6}a).
+Through the dry season, the conductance generally declines with short resurgence episodes associated with rain events.
+SMS is more highly dynamic with more variability relative to the mean.
 
 mean of daily standard deviation of 2003 ambient PHS layer-3 conductance is 7.5e-11 (s$^{-1}$),
 which is 1.7\% of the mean 2003 ambient PHS layer-3 conductance
@@ -620,11 +628,22 @@ which is 1.7\% of the mean 2003 ambient PHS layer-3 conductance
 mean of daily standard deviation of 2003 ambient SMS layer-3 conductance is 1.1e-11 (s$^{-1}$),
 which is 53\% of the mean 2003 ambient SMS layer-3 conductance
 
+With SMS there is a clear diurnal cycle (Supp Fig \ref{supp:cond}). 
+
+SMS is a result of smpso is -2.5 MPa, 
+whereas root water potential varies between -0.02 MPa and -0.23 MPa. 
+(note that on the low end of this you can't over come gravity beyond 2m depth)
+SMS conductances are way low, ours may be a bit too high
+
+dynamics are super different
+
+
+
 from Section \ref{sect:btran}, SMS inferred conductance is tethered to transpiration
 Instead PHS uses brooks-corey and root xylem vulnerability to calculate conductance, which better reflects our best understanding of the physics.
 As a result we get a stabler curve, which responds with loss of conductance with drydown and increased conductance upon re-wetting.
 
-This is reinforced in Figure 7. With 60\% throughfall exclusion (Fig7a, dotted line), PHS conductance decreases, whereas with SMS, the daily mean conductance actually increases (Fig7b).
+This is reinforced in Figure 7. With 60\% throughfall exclusion (Fig7a, dotted line), PHS conductance decreases, whereas with SMS, the daily mean conductance increases (Fig7b).
 
 SMS root water uptake uses a heuristic to partition transpiration, but its dynamics end up a bit backwards. It's a workaround that's necessary when you aren't modeling the gradient in water potential between vegetation and soil. But now we are, which is a big benefit of modeling vegetation water potential.
 
@@ -914,6 +933,14 @@ very similar to delta ET, bit more infiltration from off
      \includegraphics[width=30pc]{../figs2/top3m.pdf}
      \caption{Total water content of the top three meters of the soil column through time for the four simulations.}
      \label{top3m}
+  \end{figure}
+  \clearpage
+  
+        \begin{figure}[h]
+     \centering
+     \includegraphics[width=30pc]{../figs2/suppfig1.pdf}
+     \caption{FMA-2003 average diurnal cycle of layer 3 conductance.}
+     \label{supp:cond}
   \end{figure}
   \clearpage
 

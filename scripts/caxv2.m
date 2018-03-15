@@ -87,7 +87,7 @@ ff = [0,0,0,0,0,...
     0,0,0,0,0,...
     0,0,0,0,0,...
     0,0,0,0,0,...
-    0,0,0,0,1];
+    0,0,1,0,0];
 
 %2  = water potential
 %3  = timeseries
@@ -110,7 +110,7 @@ ff = [0,0,0,0,0,...
 %22 = rootfraction
 %25 = soil-to-leaf for phs
 %27 = vpd, fsds
-%28 = shorter sms conductance
+%28 = conductance diurnal
 %29 = comparing resistances
 
 if ff(13)>0
@@ -2025,7 +2025,7 @@ if ff(28)>0
     kon = nan*smp(1:80,:);
     ix  = year==2003&fctr(1,:)>1;
     kon(1:40,:) = ksr(1:40,:);
-    
+    xdk = figure;
     
     for ss = 41:80
         
@@ -2034,26 +2034,53 @@ if ff(28)>0
         kon(ss,ix1) = 0;
     end
     
-    ix = year==2003&month==9;
+    styl ={'-',':'};
+    c = [zeros(1,3);0.5*ones(1,3)];
+    ix = year==2003&month>1&month<5;
     tmask = splitapply(@mean,fctr(1,ix),findgroups(mcsec(ix)))>1;
+    ct = 0;
     for ss=[43,63]
+        ct = ct+1;
     out = splitapply(@nanmean,kon(ss,ix),findgroups(mcsec(ix)));
     xv = 0.25:0.5:24;
     subplot(1,2,2)
-    plot(xv(tmask),out(tmask))
+    plot(xv(tmask),out(tmask),'Color',c(ct,:),'LineWidth',2,'LineStyle',styl{ct})
     hold on
     end
     xlim([6,18])
+        set(gca,'xtick',6:3:18)
+    title('SMS')
+    xlabel('Hour')
+    ylabel('Conductance (s^{-1})')
+    ylim([0 4e-11])
+    set(gca,'ytick',(0:4)*1e-11)
     
+    ct = 0;
     for ss=[3,23]
+        ct = ct+1;
     out = splitapply(@nanmean,kon(ss,ix),findgroups(mcsec(ix)));
     xv = 0.25:0.5:24;
     subplot(1,2,1)
-    plot(xv(tmask),out(tmask))
+    plot(xv(tmask),out(tmask),'Color',c(ct,:),'LineWidth',2,'LineStyle',styl{ct})
     hold on
     end
+    ylim([0,6e-9])
     xlim([6,18])
+    set(gca,'xtick',6:3:18)
+    title('PHS')
+    ylabel('Conductance (s^{-1})')
+    xlabel('Hour')
+    legend('AMB','TFE','location','Southeast')
     
+        xdk.Units = 'inches';
+    xdk.Position = [2,2,7,4];
+    xdk.PaperSize = [7,4];
+    xdk.PaperPosition = [0,0,7,4];
+    
+    
+    
+    print(xdk,'../figs2/suppfig1','-dpdf')
+
 end
 
 
