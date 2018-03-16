@@ -620,88 +620,64 @@ In Figure \ref{fig6}, we plot the time-series of conductance values from Soil La
 Well-watered values are very different, two orders of magnitude. 
 Dynamics also very different, PHS conductance is relatively steady through the wet season (Fig \ref{fig6}a).
 Through the dry season, the conductance generally declines with short resurgence episodes associated with rain events.
-SMS is more highly dynamic with more variability relative to the mean.
+SMS is highly dynamic with more variability relative to the mean (Fig \ref{fig6}b).
+During FMA-2003, mean daily standard deviation of Layer 3 conductance is 4.6e-12 s$^{-1}$ with PHS
+and 9.9e-12 s$^{-1}$ with SMS, whereby in an absolute sense SMS standard deviation is about twice as large.
+The difference is larger in a relative sense, as that standard deviation is 0.08\% of the mean FMA conductance with PHS
+and 62.9\% of the mean FMA conductance with SMS.
 
-mean of daily standard deviation of 2003 ambient PHS layer-3 conductance is 7.5e-11 (s$^{-1}$),
-which is 1.7\% of the mean 2003 ambient PHS layer-3 conductance
-
-mean of daily standard deviation of 2003 ambient SMS layer-3 conductance is 1.1e-11 (s$^{-1}$),
-which is 53\% of the mean 2003 ambient SMS layer-3 conductance
-
-With SMS there is a clear diurnal cycle (Supp Fig \ref{supp:cond}). 
-
-SMS is a result of smpso is -2.5 MPa, 
-whereas root water potential varies between -0.02 MPa and -0.23 MPa. 
-(note that on the low end of this you can't over come gravity beyond 2m depth)
-SMS conductances are way low, ours may be a bit too high
-
-dynamics are super different
-
-
-
-from Section \ref{sect:btran}, SMS inferred conductance is tethered to transpiration
-Instead PHS uses brooks-corey and root xylem vulnerability to calculate conductance, which better reflects our best understanding of the physics.
-As a result we get a stabler curve, which responds with loss of conductance with drydown and increased conductance upon re-wetting.
-
+This variability results from having SMS inferred conductance tethered to transpiration (see Section \ref{sect:btran}).
+SMS features a clear diurnal cycle in the inferred Layer 3 conductance (Supp Fig \ref{supp:cond}). 
+Instead PHS uses brooks-corey and root xylem vulnerability to calculate conductance, which better reflects our understanding of the physical process and the temporal dynamics.
+As a result conductance is less variable, with the expected responses to drydown (loss of conductance) and re-wetting (increased conductance).
 This is reinforced in Figure 7. With 60\% throughfall exclusion (Fig7a, dotted line), PHS conductance decreases, whereas with SMS, the daily mean conductance increases (Fig7b).
 
-SMS root water uptake uses a heuristic to partition transpiration, but its dynamics end up a bit backwards. It's a workaround that's necessary when you aren't modeling the gradient in water potential between vegetation and soil. But now we are, which is a big benefit of modeling vegetation water potential.
+Why are the absolute values so different? When well-wetted
+The SMS extraction gradient is measured relative to $\psi_c$ (a parameter defining soil potential with stomates fully closed), which equals -2.5MPa.
+The PHS extraction gradient is relative to root water potential which during 2003 (ambient throughfall) varies between -0.02 and -0.23 MPa.
+Even as a leaf pull -2.5 MPa is too large during the wet season, but it really doesn't make sense to pull from the leaves, because the soil layers aren't in parallel to the leaves. 
+Near surface $\psi$, before stem pressure drop is the more appropriate driving force, and it varies seasonally, way lower than -2.5 wet season.
 
+During TFE, PHS Layer 3 conductance actually gets basically just as low.
+PHS-tfe Aug-2003 k=4.75e-11
+SMS-amb Aug-2003 k= 3.89e-11
+
+Which is a result of the orders of magnitude response of PHS k to changes in soil potential, as expected with soil conductances.
+Inferred SMS k has no clear relationship with soil potential (Supp Fig \ref{supp:cond2}). 
+SMS root water uptake uses a heuristic to partition transpiration, but its dynamics end up a bit backwards. It's a workaround that's necessary when you aren't modeling the gradient in water potential between vegetation and soil. But now we are, which is a big benefit of modeling vegetation water potential.
 
 \subsection{Extraction via hydraulic gradient}
 
-Dry season, ambient panels (a) and (c)
-bars show 2003 mean root sink for each layer
-lines span interquartile range
-constrained to [6am,6pm).
-Clearly the profiles of extraction are quite different.
-PHS concentrates extraction higher in the soil column, with the most extraction from layer 3 (6 to 12 cm below the surface).
-Total extraction from this layer in daytime SON 2003 is 4.38 cm.
-With PHS-off, the most extraction is 3.63 cm from layer 8 (spans 68 to 92 cm).
+Dry season water uptake Figure \ref{fig7} 
+ambient, 
+PHS more surface extraction (Fig \ref{fig7}a)
+SMS a bit more extraction from beyond 2 meters, but quite a bit more between 0.5 and 2 meters.
+PHS surface extraction (Fig \ref{fig7}b, black/solid) responds to precip (Fig \ref{fig7}d),
+SMS does not.
 
-The profile for mean extraction in PHS-off, ambient is driven by root fraction, R = 1.
-If you multiply root fraction by average transpiration, the result is those bars, max error 1.8\%.
+tfe,
+curves flip in Figure \ref{fig7}a, now PHS has about twice the extraction from beyond 2m.
+note how surface extraction decreases substantially for PHS (Fig \ref{fig7}b),
+but increases slightly for SMS.
+PHS continues to respond to precip.
+SMS now has a slight response to precip.
 
-The correlation between ambient PHS-on average root sink and root fraction is R = 0.47.
-This reflects various additional controls on root sink introduced by PHS.
-(1) work against gravity
-(2) length-scaling of root xylem resistance (longer roots, more resistance)
-(3) length-scaling of soil-to-root resistance (sparser roots, more resistance)
-(4) dynamic root potential
+Wet season Figure \ref{fig8}
+A lot more precip, steadier precip.
 
-The first three all represent penalties for extracting water from depth that are not present without PHS.
-However this does not mean extraction from depth is precluded.
-Due to the dynamic root potential, the vegetation can increase the potential gradient, overcoming these penalties,  
-and when deep soils are sufficiently wet compared to surface layers, deep water extraction occurs.
+ambient,
+PHS more surface extraction. net extraction zero beyond about 85 centimeters
+SMS gets more than half its water from beyond about 1 meter
 
-This can be seen during the TFE experiment. With PHS-on there is more extraction from deep layers, 
-with a net daytime sink of 9.6 cm of water from layers 15-20 (beyond 3.26 meters). 
-With PHS-off  5.0 cm of water is extracted from those layers.
+tfe,
+PHS surface extraction increases, in service of downward HR.
+note that HR is not going to depth, but rather to between 1 and 4.6 meters
+there is extraction beyond 4.6 meters (albeit minimal, 1.6e-6 mm/s)
+SMS surface extraction increases 3.33 to 4.75 cm
+SMS deep extraction decreases 21.6 to 17.2 cm
 deep roots \citep{nepstad1994}
 
-Finally note that TFE, phs-on layers 3 and 4 show the mean outside the interquartile range. 
-This belies an asymmetric distribution of root water uptake rates from these layers.
-After rain events, (there is 26cm of rain in SON2003), root water uptake rates can run as high as 9.1e-5 mm/s in layer 2.
 
-For a sense of scale, at this maximal rate the full saturated water volume from layer 2 (0.66*4cm) can be taken up by the roots in about 81 hours.
-With PHS off, the fastest root water uptake is 2.5e-5 mm/s from layer 8. This is smaller and occurs from a larger soil layer (spans 68 to 92cm depth).
-With PHS off, the fastest root water uptake relative to the layer size is from layer 1, 3.9e-6 mm/s, 
-which would take approximately 475 hours to process the saturated layer water volume. 
-As a result, PHS-on has a much higher capacity to homogenize a soil layer out of equilibrium. 
-
-This probably stands as the biggest challenge for implementing a plant hydraulics framework, 
-when you switch to plant hydraulics you take off the guard rails. 
-It may prove necessary to improve the model of water flow across the soil matrix, if these values are too high.
-
-Figure \ref{fig8} shows the root water uptake data for three months during the wet season, FMA 2003. 
-Average values for PHS-on with TFE are even higher in the wet season (Figure 8b), but the maximum value is actually smaller (5.6e-5 mm/s)).
-Similar to during the dry season, PHS-on (ambient throughfall) has root water uptake concentrated higher in the soil column.
-Total wet season transpiration with TFE is similar for the PHS-on and off (23.2 and 23.9 cm water respectively), 
-but the vertical profile of extraction is very different.
-For PHS-on, TFE, (Figure 8b), layers 9 through 15 (spanning 0.92 to 3.9 meters below the surface) are net sinks for water,
-meaning that roots on average are depositing water in these layers.
-This is a new feature with PHS that results from the gradient-based approach to water extraction. 
-If soil water potential is more negative than root water potential, water flows backwards into the soil layer.
 This has been observed in the field (cite Dawson, Oliveira), and has been highlighted as an important missing feature from CLM (cite jungeun).
 This functionality is precluded with PHS-off, which sets uptake to zero if soil water potential is more negative than the smpsc. 
 
@@ -941,6 +917,14 @@ very similar to delta ET, bit more infiltration from off
      \includegraphics[width=30pc]{../figs2/suppfig1.pdf}
      \caption{FMA-2003 average diurnal cycle of layer 3 conductance.}
      \label{supp:cond}
+  \end{figure}
+  \clearpage
+  
+  \begin{figure}[h]
+     \centering
+     \includegraphics[width=30pc]{../figs2/suppfig2.pdf}
+     \caption{Log of conductance versus soil potential for Soil Layer 3 (2003).}
+     \label{supp:cond2}
   \end{figure}
   \clearpage
 

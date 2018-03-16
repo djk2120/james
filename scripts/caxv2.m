@@ -87,7 +87,8 @@ ff = [0,0,0,0,0,...
     0,0,0,0,0,...
     0,0,0,0,0,...
     0,0,0,0,0,...
-    0,0,1,0,0];
+    1,0,0,0,0,...
+    0];
 
 %2  = water potential
 %3  = timeseries
@@ -112,6 +113,7 @@ ff = [0,0,0,0,0,...
 %27 = vpd, fsds
 %28 = conductance diurnal
 %29 = comparing resistances
+%31 = layer3 relationship with smp
 
 if ff(13)>0
 xdk = figure;
@@ -1910,16 +1912,9 @@ if ff(26)>0
     xdk.Position = [2,2,7,5];
     xdk.PaperSize = [7,5];
     xdk.PaperPosition = [0,0,7,5];
+    if ff(26)>1
     print(xdk,'../figs2/fig7','-dpdf')
-      
-    
-    
-    
-    
-    
-    
-    
-    
+    end
     %plot2
     xdk = figure;
     subplot('Position',[0.06,0.13,0.42,0.83])
@@ -1974,9 +1969,9 @@ if ff(26)>0
     xdk.PaperPosition = [0,0,7,5];
     
     
-    
+    if ff(26)>1
     print(xdk,'../figs2/fig8','-dpdf')
-
+    end
 
     
 end
@@ -2077,10 +2072,29 @@ if ff(28)>0
     xdk.PaperSize = [7,4];
     xdk.PaperPosition = [0,0,7,4];
     
+    figure
+    for dry=[0,1]
+        if ~dry
+            ix = year==2003&month<5&month>1;
+        else
+            ix = year==2003&month>8&month<12;
+        end
+        dd = min(doy(ix))-1;
+        
+        for ss=[3,43]
+            s = splitapply(@nanstd,kon(ss,ix),doy(ix)-dd);
+            plot(s)
+            hold on
+            mean(s)
+            100*mean(s)/nanmean(kon(ss,ix))
+        end
+    end
     
+    km = splitapply(@mean,kon(23,:),month+(year-2001)*12);
     
+    if ff(28)>1
     print(xdk,'../figs2/suppfig1','-dpdf')
-
+    end
 end
 
 
@@ -2118,3 +2132,38 @@ if ff(30)>0
     rall  = corr(dailmeanfw',dailymeanfpsn');
     
 end
+
+if ff(31)>0
+    ix = year==2003;
+    xdk = figure;
+    subplot(1,2,1)
+    plot(smp(23,ix)/101972,log10(ksr(23,ix)),'.')
+    hold on
+    plot(smp(3,ix)/101972,log10(ksr(3,ix)),'.')
+    xlabel('Lyr 3 Soil Potential (MPa)')
+    ylabel('Log_{10} of Layer 3 conductance (s^{-1})')
+    title('PHS')
+    subplot(1,2,2)
+        plot(smp(63,ix)/101972,log10(kon(63,ix)),'.')
+    hold on
+    plot(smp(43,ix)/101972,log10(kon(43,ix)),'.')
+    title('SMS')
+    legend('TFE','AMB','Location','Southwest')
+    xlabel('Layer 3 Soil Potential (MPa)')
+    
+            xdk.Units = 'inches';
+    xdk.Position = [2,2,7,4];
+    xdk.PaperSize = [7,4];
+    xdk.PaperPosition = [0,0,7,4];
+    
+    if ff(31)>0
+    print(xdk,'../figs2/suppfig2','-dpdf')
+    end
+    
+end
+    
+    
+    
+    
+    
+    
