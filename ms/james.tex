@@ -339,32 +339,38 @@ Our goal:
 %  BTRAN
 %====================
 
-\section{BTRAN}
+\section{Water stress factor, SMS vs. PHS}
 \label{sect:btran}
-    PHS replaces the transpiration beta function ($\beta_t$, colloquially BTRAN), 
-    which is the phenomenological soil water stress function in CLM4.5, as described in \citet{oleson2013,sellers1996a,sellers1996b}.
-    $\beta_t$ is calculated based on soil matric potential, as a root-fraction weighted average of a soil layer wilting factor (Equation \ref{bt:1}).
-    $\beta_t$ multiplies $v_{\text{cmax}}$, effecting attenuation of photosynthesis and transpiration with drought.
+    PHS alters the transpiration beta function ($\beta_t$, colloquially BTRAN), 
+    which is the phenomenological soil water stress function in CLM2-CLM4.5, as described in \citet{oleson2013}.
+    Because the name $\beta_t$ is associated with this specific plant hydrodynamics representation, we opt to rename the variable to $f_w$ (water stress factor).
+    Throughout this paper we refer to the CLM4.5 plant hydrodynamics framework as SMS (soil moisture stress), 
+    as compared to the newer implementation, PHS (plant hydraulic stress).
+    We adopt this terminology (in lieu of CLM4.5 vs. CLM5), because SMS is still deployable with CLM5. 
+    All simulations in this paper use the same development version of CLM5, changing only the plant hydrodynamics model and the throughfall forcing.
+    In this section we present the SMS version of $f_w$ and outline the differences as compared to PHS.
     
-    Recent studies suggest that the $\beta_t$ parameterization introduces model bias in turbulent fluxes \citep{bonan2014}
-    and contributes to unrealistic drought response of photosynthesis and stomatal conductance  \citep{powell2013}.
-    Furthermore, if $\beta_t$ represents a plant hydraulic safety mechanism, attenuating stomatal conductance to avoid
+    With SMS, $f_w$ is calculated based on soil matric potential, as a root-fraction weighted average of a soil layer wilting factor (Equation \ref{bt:1}).
+    This value multiplies $v_{\text{cmax}}$, effecting attenuation of photosynthesis and transpiration with drought.
+    Recent studies suggest that the SMS parameterization introduces model bias in turbulent fluxes \citep{bonan2014}
+    and contributes to unrealistic drought response of photosynthesis and stomatal conductance \citep{powell2013}.
+    Furthermore, if $f_w$ represents a plant hydraulic safety mechanism, attenuating stomatal conductance to avoid
     dangerously low leaf water potentials, it makes sense to represent more of the hydraulic architecture (a la SPA or PHS)
     and assess hydraulic safety based on prognostic leaf water potential.
     
-    $\beta_t$ also sets the framework for vegetation soil water extraction. 
-    Each timestep, $\beta_t$ is calculated and used to solve for photosynthesis and transpiration.
+    With SMS, $f_w$ also sets the framework for vegetation soil water extraction. 
+    Each timestep, $f_w$ is calculated and used to solve for photosynthesis and transpiration.
     The transpiration flux must then be distributed among the vertically discretized soil layers.
-    In the $\beta_t$ framework, the transpiration sink is partitioned by layer according to the layer wilting factor and root fraction.
+    In the SMS framework, the transpiration sink is partitioned by layer according to the layer wilting factor and root fraction.
     This framework leaves out several key physical attributes of soil water extraction, which are addressed in the PHS implementation.
     
-    $\beta_t$ is unitless, ranging from 0 to 1, with 1 corresponding to no water stress, and 0 corresponding to fully water stressed. 
+    $f_w$ is unitless, ranging from 0 to 1, with 1 corresponding to no water stress, and 0 corresponding to fully water stressed. 
     It is calculated based on a root-fraction weighted average of soil layer wilting factor ($w_i$), which is a bounded linear 
     function of soil water potential ($\psi_i$) relative to PFT parameters defining the soil potential with stomates fully open ($
     \psi_{o}$) and fully closed ($\psi_{c}$). Note that root fraction ($r_i$) must sum to 1.
     
     \begin{linenomath*}
-    \begin{equation} \beta_t = \sum_{i=1}^{n}{r_iw_i}
+    \begin{equation} f_w = \sum_{i=1}^{n}{r_iw_i}
     \label{bt:1}
     \end{equation}
     \begin{equation} 
@@ -373,29 +379,33 @@ Our goal:
     \end{equation}
     \end{linenomath*}
     
-    CLM4.5 uses $\beta_t$ to attenuate photosynthesis and stomatal conductance with soil water stress. It is also used for 
-    modeling vegetation water extraction from the soil column. The total transpiration ($T$) is partitioned among the soil layers, 
-    based on the $\beta_t$ framework of soil water availability. For each soil layer ($i$), the flux to transpiration ($q_i$) is 
-    calculated as the layer root fraction times the layer wilting factor, normalized by $\beta_t$. This guarantees that the total 
-    soil water extraction equals the transpiration.
+    SMS uses $f_w$ to attenuate photosynthesis and stomatal conductance with soil water stress. 
+    It is also used for modeling vegetation water extraction from the soil column. 
+    The total transpiration ($T$) is partitioned among the soil layers, based on the $f_w$ framework of soil water availability. 
+    For each soil layer ($i$), the flux to transpiration ($q_i$) is calculated as the layer root fraction times the layer wilting factor, normalized by $f_w$. 
+    This guarantees that the total soil water extraction equals the transpiration.
     \begin{linenomath*}
     \begin{equation}
     \label{bt:4}
-    q_i = \dfrac{r_i w_i}{\beta_t}T
+    q_i = \dfrac{r_i w_i}{f_w}T
     \end{equation}
     \end{linenomath*}
     
-    The PHS implementation adopts a hydraulic framework for soil water extraction, where the flux to transpiration ($q_i$) is 
-    the product of the hydraulic conductance ($k$) and the gradient in water potential driving the flow ($\Delta\psi$).
+    The PHS implementation adopts a hydraulic framework for root water uptake, where the flux from Soil Layer $i$ ($q_i$) is 
+    the product of the hydraulic conductance ($k_i$) and the gradient in water potential ($\Delta\psi$) driving the flow.
+    That gradient is the difference between the root water potential ($\psi_{\text{root}}$) and the soil water potential ($\psi_i$), less changes in gravitational potential.
     \begin{linenomath*}
     \begin{equation}
-    q_i = k\Delta\psi
+        \begin{aligned}
+    q_i &= k_i \Delta\psi \\
+    \Delta\psi &= \left(\psi_{i}-\psi_{\text{root}}-\Delta\psi_{\rho g,i} \right)
     \label{phs:sink}
+    \end{aligned}
     \end{equation}
     \end{linenomath*}
     
-    With some manipulation, we can recast (\ref{bt:4}) into the hydraulic framework. We define $T_{\text{max}}$, such that: $T = 
-    \beta_t T_{\text{max}}$ and use this expression to replace $T$ in (\ref{bt:4}).  Likewise we replace $w_i$ in (\ref{bt:4}) with the 
+    With some manipulation, we recast (\ref{bt:4}) into the hydraulic framework. We define $T_{\text{max}}$, such that: $T = 
+    f_w T_{\text{max}}$ and use this expression to replace $T$ in (\ref{bt:4}).  Likewise we replace $w_i$ in (\ref{bt:4}) with the 
     formula from (\ref{bt:2}).
     
     \begin{linenomath*}
@@ -404,10 +414,10 @@ Our goal:
     \end{equation}
     \end{linenomath*}
     
-    This yields $\beta_t$ analogs for the two terms of Equation \ref{phs:sink}.
+    This yields SMS analogs for the two terms of Equation \ref{phs:sink}.
     \begin{linenomath*}
     \begin{equation} \begin{aligned}
-    k &= r_i \, \dfrac{T_{max}}{\psi_{o}-\psi_{c}} \\
+    k_i &= r_i \, \dfrac{T_{max}}{\psi_{o}-\psi_{c}} \\
     \Delta\psi &= \psi_i - \psi_{c} \\
     \mbox{constrained by:} \qquad
     \Delta\psi &=
@@ -419,59 +429,53 @@ Our goal:
     \end{aligned}\end{equation}
     \end{linenomath*}
     
-    Note that in Figure \ref{fig:cond}, we compare conductance values derived from both the PHS and $\beta_t$ implementations.
-    With the $\beta_t$ formulation $k$ is not explicitly modeled, so instead we infer $k$, 
+    In Figure \ref{fig:cond}, we compare conductance values derived from the PHS and SMS implementations.
+    With SMS, $k$ is not explicitly modeled, so instead we infer $k$, 
     by dividing $q_i$ by $\Delta\psi$ as defined in Equation \ref{kb}.
     Furthermore, we interpret the constraint that $\Delta\psi$ be greater than or equal to zero to mean 
     that conductance is zero in non-conforming cases. As such, we say $k=0$ when $\Delta\psi<\text{1 kPa}$.
     
-    Issues with $\beta_t$ representation of the soil transpiration sink: 
+    Issues with the SMS representation of the soil transpiration sink: 
     
     (1) Constant pulling potential \\
     Darcy's Law governs the flow of water through the soil-plant-atmosphere continuum, 
     with fluxes proportional to the gradient in water potential. 
-    In the $\beta_t$ framework, that gradient is defined for each soil layer as 
+    With SMS, that gradient is defined for each soil layer as 
     the difference between the soil water potential in that layer ($\psi_i$) 
     and a constant parameter, the soil water potential when stomata are fully closed ($\psi_{c}$).
     It serves as the vegetation ``pulling'' potential for calculating the soil transpiration sink.
     Using a constant is inconsistent with extensive evidence from the field of dynamic vegetation water potential.
+    Likewise the values for $\psi_{c}$ are very low. 
     
     (2) Conductance dynamics \\
-    Instead, soil sink dynamics derive from a highly dynamic conductance in the $\beta_t$ implementation.
+    Instead, intra-day SMS soil sink dynamics derive from a highly dynamic conductance.
     As inferred in Equation \ref{kb}, conductance is modeled as a function of $T_{max}$, and three constant parameters.
     $T_{max}$ is highly dynamic, responding to the diurnal course in transpiration demand.
     This is inconsistent with general principles of porous media flow, where conductivity is a function of the hydraulic architecture and its wetted status.
     Likewise, this representation of conductance does not represent the characteristic phenomenon where vessels lose conductance with drying.
       
     (3) No dependence on absolute root biomass \\
-    As is typical, the $\beta_t$ conductance is scaled by layer using an area basis.
+    As is typical, the SMS conductance is scaled by layer using an area basis.
     In this case the relative root fraction is used.
     With PHS, an absolute measure of root biomass is used (see Appendix Equation \ref{eq:rai}).
     An absolute measure better conforms with the physics of porous media flow and better responds to varying carbon allocation strategies.
 
     (4) Lacks penalties for extraction from depth \\
-    PHS implements two penalties for extracting water from deep in the soil column that are missing from the $\beta_t$ framework.
+    PHS implements two penalties for extracting water from deep in the soil column that are missing from SMS.
     The first is minor, but water extracted from depth must overcome gravity. This amounts to about 0.01 MPa per meter in depth. 
-    This is missing from $\beta_t$ and included with PHS. 
-    Likewise $\beta_t$ ignores that hydraulic conductance generally scales with the inverse of conducting length.
+    This is missing from SMS and included with PHS. 
+    Likewise SMS ignores that hydraulic conductance generally scales with the inverse of conducting length.
     In PHS, this is featured both in the conductance within root vessels and 
     in the conductance governing the flux across the soil matrix to the root surface.
     
     (5) Constraints \\
-    In the $\beta_t$ framework, the gradient in water potential is constrained between 0 and 
+    With SMS, the gradient in water potential is constrained between 0 and 
     the range of soil potential between parameters for stomata fully open and closed (Equation \ref{kb}). 
     The upper constraint caps the gradient in water potential when soil potential reaches the value for stomata fully open.
     There is no physical basis for why this would not continue to increase until saturation.
     The lower constraint caps the gradient in water potential at zero, disallowing negative gradients.
     However, reversed water fluxes, caused by negative gradients in water potential, have been observed in the field.
-    Both constraints are eschewed with PHS.
-    
-    This derivation suggests that $\beta_t$ was designed primarily as a heuristic for determining soil moisture stress
-    as relevant to photosynthesis and transpiration.
-    As a framework for modeling the vertically resolved transpiration sink, 
-    it fails to reproduce the expected functionality of porous media flow.
-    
-     
+    Both constraints are eschewed with PHS.     
     
 \section{Results and Discussion}
 \subsection{Modeling vegetation water potential}
@@ -615,36 +619,37 @@ Looking at the conductance values associated with root water uptake serves to hi
 
 Soil-to-root conductance ($k_{sr}$) is modeled in PHS and is used to model root water uptake (see zqz).
 With SMS, $k_{sr}$ is not explicitly modeled, but it can be inferred, by dividing the root water uptake by the SMS extraction gradient (see Section \ref{sect:btran}).
-In Figure \ref{fig6}, we plot the time-series of conductance values from Soil Layer 3 (spans from 6 to 12 centimeters below the surface) under ambient throughfall conditions during 2003.
+In Figure \ref{fig:cond}, we plot the time-series of conductance values from Soil Layer 3 (spans from 6 to 12 centimeters below the surface) under ambient throughfall conditions during 2003.
 
 Well-watered values are very different, two orders of magnitude. 
-Dynamics also very different, PHS conductance is relatively steady through the wet season (Fig \ref{fig6}a).
+Dynamics also very different, PHS conductance is relatively steady through the wet season (Fig \ref{fig:cond}a).
 Through the dry season, the conductance generally declines with short resurgence episodes associated with rain events.
-SMS is highly dynamic with more variability relative to the mean (Fig \ref{fig6}b).
+SMS is highly dynamic with more variability relative to the mean (Fig \ref{fig:cond}b).
 During FMA-2003, mean daily standard deviation of Layer 3 conductance is 4.6e-12 s$^{-1}$ with PHS
 and 9.9e-12 s$^{-1}$ with SMS, whereby in an absolute sense SMS standard deviation is about twice as large.
 The difference is larger in a relative sense, as that standard deviation is 0.08\% of the mean FMA conductance with PHS
 and 62.9\% of the mean FMA conductance with SMS.
 
-This variability results from having SMS inferred conductance tethered to transpiration (see Section \ref{sect:btran}).
-SMS features a clear diurnal cycle in the inferred Layer 3 conductance (Supp Fig \ref{supp:cond}). 
+SMS inferred conductance is tethered to transpiration (see Section \ref{sect:btran}), causing the high variance.
+Likewise, SMS features a clear diurnal cycle in the inferred Layer 3 conductance (Supp Fig \ref{supp:cond}). 
 Instead PHS uses brooks-corey and root xylem vulnerability to calculate conductance, which better reflects our understanding of the physical process and the temporal dynamics.
 As a result conductance is less variable, with the expected responses to drydown (loss of conductance) and re-wetting (increased conductance).
-This is reinforced in Figure 7. With 60\% throughfall exclusion (Fig7a, dotted line), PHS conductance decreases, whereas with SMS, the daily mean conductance increases (Fig7b).
+This is reinforced by the results in Figure 7. 
+With 60\% throughfall exclusion (Fig7a, dotted line), PHS conductance decreases, whereas with SMS, the daily mean conductance increases (Fig7b).
 
-Why are the absolute values so different? When well-wetted
-The SMS extraction gradient is measured relative to $\psi_c$ (a parameter defining soil potential with stomates fully closed), which equals -2.5MPa.
+The average SMS and PHS Layer 3 conductance for well-watered conditions (i.e. wet season, ambient throughfall) differ by about two orders of magnitude.
+The SMS extraction gradient is measured relative to $\psi_c$ (a parameter defining soil potential with stomates fully closed), which equals -2.5MPa for BET.
 The PHS extraction gradient is relative to root water potential which during 2003 (ambient throughfall) varies between -0.02 and -0.23 MPa.
 Even as a leaf pull -2.5 MPa is too large during the wet season, but it really doesn't make sense to pull from the leaves, because the soil layers aren't in parallel to the leaves. 
 Near surface $\psi$, before stem pressure drop is the more appropriate driving force, and it varies seasonally, way lower than -2.5 wet season.
 
-During TFE, PHS Layer 3 conductance actually gets basically just as low.
-PHS-tfe Aug-2003 k=4.75e-11
-SMS-amb Aug-2003 k= 3.89e-11
-
-Which is a result of the orders of magnitude response of PHS k to changes in soil potential, as expected with soil conductances.
-Inferred SMS k has no clear relationship with soil potential (Supp Fig \ref{supp:cond2}). 
-SMS root water uptake uses a heuristic to partition transpiration, but its dynamics end up a bit backwards. It's a workaround that's necessary when you aren't modeling the gradient in water potential between vegetation and soil. But now we are, which is a big benefit of modeling vegetation water potential.
+With TFE, PHS Layer 3 conductance can approach the values seen in SMS. 
+The average Layer 3 conductance with PHS for August 2003 (60\%TFE) is 4.75e-11 s$^{-1}$ as compared to 3.89e-11 s$^{-1}$ for SMS.
+This is a result of the orders of magnitude response of PHS soil-to-root conductance to changes in soil potential, which is as expected with soil conductances.
+Inferred SMS conductance has no clear relationship with soil potential (Supp Fig \ref{supp:cond2}). 
+SMS root water uptake uses a heuristic to partition transpiration, but its dynamics end up a bit backwards. 
+It's a workaround that's necessary when you aren't modeling the gradient in water potential between vegetation and soil. 
+But now we are, which is a big benefit of modeling vegetation water potential.
 
 \subsection{Extraction via hydraulic gradient}
 
@@ -677,66 +682,31 @@ SMS surface extraction increases 3.33 to 4.75 cm
 SMS deep extraction decreases 21.6 to 17.2 cm
 deep roots \citep{nepstad1994}
 
-HR has been observed in the field (cite Dawson, Oliveira), and has been highlighted as an important missing feature from CLM (cite jungeun).
-This functionality is precluded with PHS-off, which sets uptake to zero if soil water potential is more negative than the smpsc. 
-But this is a new and significant functionality that we will have to grapple with. Should test it turned off.
+HR has been observed in the field \citep{oliveira2005}, and has been highlighted as an important missing feature from CLM \citep{lee2005}.
+This functionality is precluded with SMS, which sets root water uptake to zero if the gradient in water potential is negative. 
+The PHS implementation allows hydraulic redistribution and is discussed in the next section.
 
-SMS provides a useful heuristic, with the advantage of this type of heuristic is that you have guardrails.
-But the consequent dynamics and drought response are underwhelming.
-PHS offers improved model structure, which spans the expected dynamics.
-PHS also offers a process connection between smp and leaf water potential and potentially VOD.
-This is interesting, because it exposes smp to a new stream of observational data.
-However, scale mismatch, parallel assumptions and parameter uncertainty may add up to hydraulics no more "physical" than a heuristic.
-It's clear that we'll have more work to constrain the degrees of freedom in the PHS RWU vector, but on the other hand SMS seems plainly wrong.
-The clear conclusion, which is hardly new, is that we need to find ways to constrain this process.
+The advantage of the SMS type of heuristic is that it sets up guardrails.
+Hydraulic redistribution is precluded and extraction is capped.
+However the consequent dynamics and drought response are not in agreement with expectations.
+PHS offers improved model structure, with a more reasonable drought response.
+PHS also offers a process connection between soil potential and leaf water potential.
+This is attractive, because it exposes the vegetation water dynamics representation to new streams of observational data, 
+namely in-situ leaf water potential and remotely-sensed vegetation optical depth.
+However, scale mismatch, parallel assumptions and parameter uncertainty may add up to hydraulics no more realistic than the heuristic.
+Likewise it's clear that we'll have more work to constrain the degrees of freedom in the PHS RWU vector.
+While there are advantages to both, it seems there is a lot we can learn more from the PHS style of implementation.
+Root water extraction is a critical component of vegetation hydrodynamics and merits continued research.
+PHS makes inroads into a better representation of root water extraction.
+I'm interested in seeing this parameterization studied further. 
+It's probably also worth investigating alternative heuristic approaches that improve upon SMS.
+Either way, we should also find new ways to constrain root water uptake with observations.
+
 
 \subsection{Hydraulic redistribution}
 
 Figure \ref{fig9} shows the total hydraulic redistribution by month for 2003.
 The darker shading shows the portion of HR that occurs at night [6pm,6am). 
-
-HR increases from 408mm in the ambient simulation to 560 mm with TFE.
-HR is predominately at night, ambient is 307/101, TFE is 412/148. 
-Slight shift towards daytime with TFE 26.5\% daytime compared to 24.7\% daytime.
-With TFE, HR is highly correlated with precipitation, r2 is 0.877. More precip, more HR.
-Ambient correlation with precip is not strong, not a significant predictor on its own r2 = 0.07
-Ambient has its highest value of HR in February, but then decreases every month until August.
-Then there is an uptick in September. 
-When precip is combined with predawn water potential, both are significant predictors (both p<0.01), r2 = 0.846,
-higher rain, higher HR, lower predawn water potential, higher HR.
-For TFE, predawn water potential is not a significant predictor, p=0.12.
-
-By layer, at night, Dry season
-
-Looking at the sink by layer shows the direction of HR.
-Even in the dry season HR occurs on both directions.
-Top layers are a source in both ambient and TFE. The other source is the deep soil.
-
-For amb, HR sink is concentrated to layers 6-9
-with tfe, HR sink is distributed among 4-13
-
-TFE plumbs deeper into the soil column, net extraction of 48.4 mm from layers 15-20 (beyond 3.26meters)
-Compared to amb net extraction of 8.1 mm from those layers.
-
-The lines span interquartile range. 
-Variability as measured by IQR is much higher in the ambient simulation, which explains why total HR is significantly higher, 
-but net HR is actually lower (as compared to TFE). 
-
-Bars are average HR, which also stands in for net HR.
-Amb net HR = 48.8mm 
-TFE net HR = 64.0mm
-
-TFE, layer 3, which is a net source of HR, has its entire interquartile range as a sink.
-Likewise layer 2, spends most of the time as a sink.
-This points to an asymmetrical distribution of qrootsink for these layers, with long source tail. Flows in slowly, out fast (following rain).
-
-By layer, at night, Wet season
-
-In the wet season, HR is downwards.
-
-Both net and total HR are higher in the TFE simulation. 
-Net HR is 76.0 mm in ambient wet season at night,
-Net HR is 149.6 mm in tfe wet season at night.
 
 \subsection{Soil profile}
 
