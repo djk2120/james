@@ -677,11 +677,18 @@ SMS surface extraction increases 3.33 to 4.75 cm
 SMS deep extraction decreases 21.6 to 17.2 cm
 deep roots \citep{nepstad1994}
 
-
-This has been observed in the field (cite Dawson, Oliveira), and has been highlighted as an important missing feature from CLM (cite jungeun).
+HR has been observed in the field (cite Dawson, Oliveira), and has been highlighted as an important missing feature from CLM (cite jungeun).
 This functionality is precluded with PHS-off, which sets uptake to zero if soil water potential is more negative than the smpsc. 
+But this is a new and significant functionality that we will have to grapple with. Should test it turned off.
 
-
+SMS provides a useful heuristic, with the advantage of this type of heuristic is that you have guardrails.
+But the consequent dynamics and drought response are underwhelming.
+PHS offers improved model structure, which spans the expected dynamics.
+PHS also offers a process connection between smp and leaf water potential and potentially VOD.
+This is interesting, because it exposes smp to a new stream of observational data.
+However, scale mismatch, parallel assumptions and parameter uncertainty may add up to hydraulics no more "physical" than a heuristic.
+It's clear that we'll have more work to constrain the degrees of freedom in the PHS RWU vector, but on the other hand SMS seems plainly wrong.
+The clear conclusion, which is hardly new, is that we need to find ways to constrain this process.
 
 \subsection{Hydraulic redistribution}
 
@@ -752,6 +759,8 @@ tfe = 17.8 cm
 very similar to delta ET, bit more infiltration from off
 
 
+
+final thoughts
 
 
 

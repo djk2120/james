@@ -1,13 +1,17 @@
 clear
 close all
 
-p = -0.01:-0.01:-5;
 
-p50 = -2.5;
+b=5;
+psat = -121;  %mm
+p    = -8*101972; %mm
 
-f1 = @(x,a) 1./(1+(x/p50).^a);
-f2 = @(x,a) 2.^-((x/p50).^a);
 
-plot(p,f1(p,6))
-hold on
-plot(p,f2(p,5))
+ksat = 600/60/60; %mm/s
+
+
+(p/psat)^(-1/b)
+
+
+ksat = 1;
+%k = ksat*(t/tsat)^(2*b+3);
