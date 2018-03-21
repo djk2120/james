@@ -69,12 +69,12 @@ p = [p,a(:,2)];
 %------------------------------------------------------------------------
 
 ff = [0,0,0,0,0,...  %1
-    0,0,0,1,0,...    %2
+    0,0,0,0,0,...    %2
     0,0,0,0,0,...    %3
     0,0,0,0,0,...    %4
     0,0,0,0,0,...    %5
     0,0,0,0,0,...    %6
-    0];
+    0,1,0];
 
 %2  = water potential
 %3  = timeseries
@@ -1780,11 +1780,145 @@ if ff(24)>0
 end
 
 if ff(25)>0
+    xdk=figure;
+    xdk.Units='inches';
+    xdk.Position = [1,1,12,7];
+    yy = 2002;
+    dd=300;
+    nd  = 150;
+    out = zeros(nd,2);
+    for i=[]
+        dd=dd+1;
+        if dd==366
+            dd=1;
+            yy=2003;
+        end
+        ix = year==yy&doy==dd;
+        subplot(3,2,1)
+        barh(-2:-1:-20,mean(smp(2:20,ix),2))
+        xlim([-8e4,0])
+        title([num2str(mean(month(ix))),'-',num2str(mean(day(ix))),'-',num2str(yy)])
+
+        subplot(3,2,2)
+        out(i,1)=-1800*sum(sum(qrootsink(1:20,ix).*(qrootsink(1:20,ix)<0)));
+        bar(out(:,1))
+        xlim([0,nd+1])
+        ylim([0,6])
+        
+        ix = year==yy&doy==dd;
+        subplot(3,2,3)
+        barh(-2:-1:-20,mean(smp(22:40,ix),2))
+        xlim([-8e4,0])
+        
+        
+        subplot(3,2,4)
+        out(i,2)=-1800*sum(sum(qrootsink(21:40,ix).*(qrootsink(21:40,ix)<0)));
+        bar(out(:,2))
+        xlim([0,nd+1])
+        ylim([0,6])
+        
+        
+        subplot(3,2,6)
+        ix2 = (year==2002&doy>300);
+        if yy==2002
+            ix2 = ix2&doy<=dd;
+        else
+            ix2 = ix2|(year==2003&doy<=dd);
+        end
+        g = findgroups((year(ix2)-2001)*365+doy(ix2));
+        bar(splitapply(@sum,1800*prec(ix2),findgroups((year(ix2)-2001)*365+doy(ix2))))
+        xlim([0,nd+1])
+        ylim([0,50])
+       
+        
+    pause(0.1)
+    end
+    
+    close all
+    figure
+    ss = 21:40;
+    x=-1800*sum(qrootsink(ss,:).*(qrootsink(ss,:)<0));
     ix = year==2003;
-    x=splitapply(@min,vegwp(4,ix),doy(ix));
-    plot(x)
-    max(x)/101972
-    min(x)/101972
+    hh=splitapply(@sum,x(ix),doy(ix));
+    vv=splitapply(@mean,vegwp(8,ix),doy(ix));
+    pp=splitapply(@sum,1800*prec(ix),doy(ix));
+    ix2 = (year==2002&doy==365)|(year==2003&doy<365);
+    galt = findgroups(year(ix2)*365+doy(ix2));
+    ppalt = splitapply(@sum,1800*prec(ix2),galt);
+    
+    subplot(3,2,1)
+    plot(vv,hh,'.')
+    ylabel('today HR')
+    xlabel('today rwp')
+    
+    subplot(3,2,2)
+    plot(pp,hh,'.')
+    xlabel('today precip')
+    ylabel('today HR')
+    
+    subplot(3,2,3)
+    plot(vv,pp,'.')
+    xlabel('today rwp')
+    ylabel('today precip')
+    
+    subplot(3,2,4)
+    plot(ppalt,hh,'.')
+    xlabel('ayer precip')
+    ylabel('today HR')
+    
+    subplot(3,2,5)
+    plot(vv,pp+ppalt,'.')
+    xlabel('today rwp')
+    ylabel('today+ayer precip')
+    
+    subplot(3,2,6)
+    plot(pp+ppalt,hh,'.')
+    xlabel('today+ayer precip')
+    ylabel('today HR')
+    
+    figure
+    ss = 1:20;
+    x=-1800*sum(qrootsink(ss,:).*(qrootsink(ss,:)<0));
+    ix = year==2003;
+    hh=splitapply(@sum,x(ix),doy(ix));
+    vv=splitapply(@mean,vegwp(4,ix),doy(ix));
+    pp=splitapply(@sum,1800*prec(ix),doy(ix));
+    ix2 = (year==2002&doy==365)|(year==2003&doy<365);
+    galt = findgroups(year(ix2)*365+doy(ix2));
+    ppalt = splitapply(@sum,1800*prec(ix2),galt);
+    pp2   = pp+ppalt;
+    
+    subplot(3,2,1)
+    plot(vv,hh,'.')
+    hold on
+    plot(vv(pp2<10),hh(pp2<10),'.')
+    ylabel('today HR')
+    xlabel('today rwp')
+    
+    subplot(3,2,2)
+    plot(pp,hh,'.')
+    xlabel('today precip')
+    ylabel('today HR')
+    
+    subplot(3,2,3)
+    plot(vv,pp,'.')
+    xlabel('today rwp')
+    ylabel('today precip')
+    
+    subplot(3,2,4)
+    plot(ppalt,hh,'.')
+    xlabel('ayer precip')
+    ylabel('today HR')
+    
+    subplot(3,2,5)
+    plot(vv,pp+ppalt,'.')
+    xlabel('today rwp')
+    ylabel('today+ayer precip')
+    
+    subplot(3,2,6)
+    plot(pp+ppalt,hh,'.')
+    xlabel('today+ayer precip')
+    ylabel('today HR')
     
 end
 
@@ -2148,13 +2282,99 @@ if ff(31)>0
     xdk.PaperSize = [7,4];
     xdk.PaperPosition = [0,0,7,4];
     
-    if ff(31)>0
+    if ff(31)>1
     print(xdk,'../figs2/suppfig2','-dpdf')
     end
     
 end
+
+if ff(32)>0
+    out = 0*prec;
+    out2 = out;
+    for i=1:length(prec)
+        t = qrootsink(1:20,i);
+        surp = 0;
+        up   = 0;
+        down = 0;
+        for ss=20:-1:1
+            x = t(ss);
+            if x>0
+                surp = surp+x;
+            elseif ss==2
+                up = up-x;
+            elseif abs(x)<=surp
+                up = up-x;
+                surp = surp+x;
+            elseif surp>0
+                up = up+surp;
+                down = down-x-surp;
+                surp = surp+x;
+            else
+                surp = surp+x;
+                down = down-x;
+                
+            end
+        end
+        out(i)=up;
+        out2(i)=down;
+    end
+    
+    ix = year==2003;
+    a=(splitapply(@sum,1800*out(ix),doy(ix)));
+    vv = vegwp(4,year==2003&mcsec==diurn(10));
+    plot(vv,a,'.')
+    
+    figure
+    b=(splitapply(@sum,1800*out2(ix),doy(ix)));
+    plot(vv,b,'.')
     
     
+    
+end
+
+if ff(33)>0
+   
+    for zz=1:10
+   dd = 1+floor(rand*365);
+   %dd = 231;
+   i  = 1+floor(48*rand);
+   %i  = 5;
+   ix = year==2003&doy==dd&mcsec==diurn(i);   
+   barh(-1:-1:-20,qrootsink(1:20,ix))
+   title([num2str(dd),'-',num2str(i)])
+   hold on
+   surp = 0;
+   up   = 0;
+   down = 0;
+   for ss=20:-1:1
+       x = qrootsink(ss,ix);
+       if x>0
+           surp = surp+x;
+       elseif ss==2
+           up = up-x;
+           barh(-ss,x,'r')
+       elseif abs(x)<=surp
+           up = up-x;
+           surp = surp+x;
+           barh(-ss,x,'r')
+       elseif surp>0
+           up = up+surp;
+           down = down-x-surp;
+           barh(-ss,x,'r')
+           barh(-ss,x+surp,'g')
+           surp = surp+x;
+       else
+           surp = surp+x;
+           down = down-x;
+           barh(-ss,x,'g')
+       end
+           
+   end
+   hold off
+   pause(1)
+    end
+    
+end
     
     
     
