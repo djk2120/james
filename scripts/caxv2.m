@@ -15,20 +15,6 @@ files = {...
 };
 
 
-b = ncread(['/Users/kennedy/Desktop/james/data/aug25/',...
-    'BR-CAX_I1PTCLM50_r251off_k5g7.clm2.h1.2001-01-01-00000.nc']...
-    ,'H2OSOI');
-c = zeros(20,52561);
-c(:,:)=b(1,:,:);
-pore = max(c,[],2);
-
-%dir = '../data/aug25/';
-%files = {...
-%    [dir,'BR-CAX_I1PTCLM50_r251_k5g7.clm2.h1.2001-01-01-00000.nc'];...
-%    [dir,'BR-CAX_I1PTCLM50_r251tfe_k5g7.clm2.h1.2001-01-01-00000.nc'];...
-%    [dir,'BR-CAX_I1PTCLM50_r251off_k5g7.clm2.h1.2001-01-01-00000.nc'];...
-%    [dir,'BR-CAX_I1PTCLM50_r251offtfe_k5g7.clm2.h1.2001-01-01-00000.nc']};
-
 a=ncinfo(files{1});
 
 offset = 10;
@@ -83,9 +69,9 @@ p = [p,a(:,2)];
 %------------------------------------------------------------------------
 
 ff = [0,0,0,0,0,...  %1
-    0,0,0,0,0,...    %2
+    0,0,0,1,0,...    %2
     0,0,0,0,0,...    %3
-    0,0,0,0,2,...    %4
+    0,0,0,0,0,...    %4
     0,0,0,0,0,...    %5
     0,0,0,0,0,...    %6
     0];
@@ -980,7 +966,7 @@ if ff(9)>0
     lm0 = fitlm(p,sum(hr1,2));
     lm1 = fitlm([p,x'],sum(hr1,2));
     x   = splitapply(@mean,vegwp(8,ix),month(ix));
-    disp('amb corr with pd vwp')
+    disp('tfe corr with pd vwp')
     disp(corr(x',sum(hr2,2)))
     lm2 = fitlm([p,x'],sum(hr2,2));
     lm3 = fitlm(p,sum(hr2,2));

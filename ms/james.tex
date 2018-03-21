@@ -333,7 +333,7 @@ Our goal:
 %====================
 \section{Experiment Description}
     
-\section{Analysis}    
+\section{Analysis Methods}    
     
 %====================
 %  BTRAN
@@ -445,11 +445,11 @@ Our goal:
     and a constant parameter, the soil water potential when stomata are fully closed ($\psi_{c}$).
     It serves as the vegetation ``pulling'' potential for calculating the soil transpiration sink.
     Using a constant is inconsistent with extensive evidence from the field of dynamic vegetation water potential.
-    Likewise the values for $\psi_{c}$ are very low. 
+    Likewise the values for $\psi_{c}$ are quite negative, (-2.5 MPa for broadleaf evergreen tropical). 
     
     (2) Conductance dynamics \\
-    Instead, intra-day SMS soil sink dynamics derive from a highly dynamic conductance.
-    As inferred in Equation \ref{kb}, conductance is modeled as a function of $T_{max}$, and three constant parameters.
+    In lieu of dynamic vegetation water potential, intra-day SMS soil sink dynamics derive from a highly variable conductance.
+    As inferred in Equation \ref{kb}, SMS conductance is modeled as a function of $T_{max}$, and three constant parameters.
     $T_{max}$ is highly dynamic, responding to the diurnal course in transpiration demand.
     This is inconsistent with general principles of porous media flow, where conductivity is a function of the hydraulic architecture and its wetted status.
     Likewise, this representation of conductance does not represent the characteristic phenomenon where vessels lose conductance with drying.
@@ -459,12 +459,14 @@ Our goal:
     In this case the relative root fraction is used.
     With PHS, an absolute measure of root biomass is used (see Appendix Equation \ref{eq:rai}).
     An absolute measure better conforms with the physics of porous media flow and better responds to varying carbon allocation strategies.
+    For example, with SMS, if root mass double in every soil layer, the root access to water remains unchanged.
 
     (4) Lacks penalties for extraction from depth \\
     PHS implements two penalties for extracting water from deep in the soil column that are missing from SMS.
-    The first is minor, but water extracted from depth must overcome gravity. This amounts to about 0.01 MPa per meter in depth. 
+    The first is minor, but water extracted from depth must overcome gravity. 
+    This amounts to about 0.01 MPa per meter in depth. 
     This is missing from SMS and included with PHS. 
-    Likewise SMS ignores that hydraulic conductance generally scales with the inverse of conducting length.
+    Likewise SMS ignores that hydraulic conductance is generally taken to scale with the inverse of conducting length.
     In PHS, this is featured both in the conductance within root vessels and 
     in the conductance governing the flux across the soil matrix to the root surface.
     
@@ -503,7 +505,7 @@ The drop from root to stem acts in the opposite direction, decreasing from 1.85 
 to 1.29 MPa with TFE, attenuating the drop in water potential by 0.55 MPa.
 
 \cite{fisher2006}
-Predicted water potential values are in range, average dry season observation = -2.47 MPa, 
+predicted water potential values are in range, average dry season observation = -2.47 MPa, 
 with no statistically significant difference between AMB and TFE.
 For us, LWP drop due to TFE is -0.79MPa, which can be partitioned into -0.28 MPa predawn, -1.06 soil-to-root drop, +0.55 root-to-leaf drop.
 Stem drop abates, smaller because though PLC increases, transpiration decreases to larger effect.
@@ -527,8 +529,7 @@ Finally, hydraulic conductance hysteresis is absent from the PHS vulnerability p
 whereby xylem segments fully regain conducting capacity upon re-wetting.
 This limits the influence of drought legacy, which has been shown to be significant for forest mortality \citep{anderegg2013}.
 Our objective was to simplify the plant hydraulic representation for this first implementation, 
-allowing that it will likely be necessary to advance process representation in future versions
-to accurately model leaf water potential dynamics.
+allowing that it will be of interest to investigate more extended process representation in future versions.
 
 \subsection{Stress factor, annual cycle}
 
@@ -707,6 +708,20 @@ Either way, we should also find new ways to constrain root water uptake with obs
 
 Figure \ref{fig9} shows the total hydraulic redistribution by month for 2003.
 The darker shading shows the portion of HR that occurs at night [6pm,6am). 
+
+2003HRamb is 41.3 cm (10.3 day, 31.0 night)
+2003HRtfe is 37.0 cm (11.5 day, 25.5 night)
+
+tfe monthly total HR is highly correlated with monthly total precipitation (R =0.968)
+compare to amb (R= -0.172)
+
+correlation with monthly mean predawn root water potential are in opposite directions
+tfe (R=0.882),
+amb (R=-0.700)
+
+tfe multiple linear regression has precip significant (p<<0.01), predawn potential insignificant (p=0.18), R2 = 0.94 (only precip)
+amb has both significant positive association with precip, negative association with predawn water potential R2 = 0.77 (both)
+
 
 \subsection{Soil profile}
 
