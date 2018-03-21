@@ -2,16 +2,16 @@ clear
 close all
 
 
-b=5;
-psat = -121;  %mm
-p    = -8*101972; %mm
+p = -0.1:-0.1:-5;
+
+p50 = -2.5;
+ck  = 4.95;
+a   = 6
 
 
-ksat = 600/60/60; %mm/s
+f1 = 2.^-((p/p50).^ck);
+plot(p,f1)
 
-
-(p/psat)^(-1/b)
-
-
-ksat = 1;
-%k = ksat*(t/tsat)^(2*b+3);
+hold on
+f2 = 1./(1+(p/p50).^a)
+plot(p,f2)
