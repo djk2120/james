@@ -69,12 +69,12 @@ p = [p,a(:,2)];
 %------------------------------------------------------------------------
 
 ff = [0,0,0,0,0,...  %1
-    0,0,0,0,0,...    %2
+    0,0,0,1,0,...    %2
     0,0,0,0,0,...    %3
     0,0,0,0,0,...    %4
     0,0,0,0,0,...    %5
     0,0,0,0,0,...    %6
-    0,0,0,1];
+    0,0,0,0];
 
 %2  = water potential
 %3  = timeseries
@@ -916,7 +916,7 @@ if ff(9)>0
     title('AMB')
     xlim([0 13])
     ylim([0 80])
-    text(1,90,'(a)','FontSize',14,'FontWeight','bold')
+    text(0.5,75,'(a)','FontSize',14,'FontWeight','bold')
     
     
     subplot('Position',[0.54,0.11,0.45,0.84])
@@ -931,7 +931,7 @@ if ff(9)>0
     ylim([0 80])
     title('TFE')
     set(gca,'yticklabel',[])
-    text(11,90,'(b)','FontSize',14,'FontWeight','bold')
+    text(0.5,75,'(b)','FontSize',14,'FontWeight','bold')
     legend({'Nighttime','Daytime'})
     
     xdk.Units = 'inches';
@@ -2289,10 +2289,10 @@ if ff(31)>0
 end
 
 if ff(32)>0
-    out = 0*prec;
-    out2 = out;
+    out = zeros(2,n);
+    for ee=0:1
     for i=1:length(prec)
-        t = qrootsink(1:20,i);
+        t = qrootsink((1:20)+ee*20,i);
         surp = 0;
         up   = 0;
         down = 0;
@@ -2315,20 +2315,58 @@ if ff(32)>0
                 
             end
         end
-        out(i)=up;
-        out2(i)=down;
+        out(1+ee*2,i)=up;
+        out(2+ee*2,i)=down;
+    end
     end
     
-    ix = year==2003;
-    a=(splitapply(@sum,1800*out(ix),doy(ix)));
-    vv = vegwp(4,year==2003&mcsec==diurn(10));
-    plot(vv,a,'.')
+    xdk=figure;
+    tstr={'AMB','TFE'};
+    for ee=[0,1]
+    ix = (mcsec<diurn(13)|mcsec>diurn(36))&year==2003;
+    ix2 = (~(mcsec<diurn(13)|mcsec>diurn(36)))&year==2003;
+    a1=(splitapply(@sum,1800*out(1+ee*2,ix),month(ix)));
+    a2=(splitapply(@sum,1800*out(1+ee*2,ix2),month(ix2)));
+    b1=(splitapply(@sum,1800*out(2+ee*2,ix),month(ix)));
+    b2=(splitapply(@sum,1800*out(2+ee*2,ix2),month(ix2)));
     
-    figure
-    b=(splitapply(@sum,1800*out2(ix),doy(ix)));
-    plot(vv,b,'.')
+    subplot(2,1,ee+1)
+    cc=colormap(othercolor('BrBG4'));
+    b=bar(2:3:36,a1+a2,0.3);
+    b.FaceColor=cc(20,:);
+    b.EdgeColor=cc(15,:);
+    hold on
+    b=bar(2:3:36,a1,0.3);
+    b.FaceColor=cc(5,:);
+    b.EdgeColor=cc(4,:);
+    b=bar(1:3:36,b1+b2,0.3);
+    b.FaceColor=cc(40,:);
+    b.EdgeColor=cc(50,:);
+    b=bar(1:3:36,b1,0.3);
+    b.FaceColor=cc(60,:);
+    b.EdgeColor=cc(61,:);
     
+    xlim([0,36])
+    ylim([0,80])
+    set(gca,'xtick',1.5:3:36)
+    set(gca,'xticklabel',1:12)
+    xlabel('Month')
+    ylabel('HR (mm)')
+    title(tstr{ee+1})
+    box off
+    end
     
+    legend('Up,day','Up,night',...
+        'Down,day','Down,night'...
+        )
+    xdk.Units = 'inches';
+    xdk.Position = [2,2,7,5];
+    xdk.PaperSize = [7,5];
+    xdk.PaperPosition = [0,0,7,5];
+
+    if ff(32)>0
+        print(xdk,'-dpdf','../figs2/supphr')
+    end
     
 end
 
@@ -2393,7 +2431,7 @@ if ff(34)>0
     %plotting
     subplot(2,1,(x==40)+1)
     addpath('/Users/kennedy/Documents/MATLAB/othercolor')
-    colormap(othercolor('BrBG4'))    
+    cc=colormap(othercolor('BrBG4'));
     imagesc(1:1095,d,out,[ymin((x==40)+1),0])
     xlim([0,1095])
     set(gca,'xtick',0:365/2:1095)
