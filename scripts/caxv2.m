@@ -73,8 +73,8 @@ ff = [0,0,0,0,0,...  %1
     0,0,0,0,0,...    %3
     0,0,0,0,0,...    %4
     0,0,0,0,0,...    %5
-    0,0,0,0,0,...    %6
-    0,0,1,0];
+    1,0,0,0,0,...    %6
+    0,0,0,0,0];
 
 %2  = water potential
 %3  = timeseries
@@ -1928,10 +1928,12 @@ if ff(26)>0
     allout = [];
     for season = [1,2]
         if season==1
-            ix_dry  = (mcsec>diurn(12)&mcsec<diurn(37))&(month==9|month==10|month==11)&year==2003;
+            %ix_dry  = (mcsec>diurn(12)&mcsec<diurn(37))&(month==9|month==10|month==11)&year==2003;
+            ix_dry  = (month==9|month==10|month==11)&year==2003;
             ix      = ix_dry;
         elseif season==2
-            ix_wet  = (mcsec>diurn(12)&mcsec<diurn(37))&(month==2|month==3|month==4)&year==2003;
+            %ix_wet  = (mcsec>diurn(12)&mcsec<diurn(37))&(month==2|month==3|month==4)&year==2003;
+            ix_wet  = (month==2|month==3|month==4)&year==2003;
             ix      = ix_wet;
         end
         c = 0;
@@ -2496,4 +2498,31 @@ if ff(34)>0
     end
 end
     
+if ff(35)>0
+    xdk = figure;
+    xdk.Units = 'inches';
+    xdk.Position = [2,2,12,7];
+    for yy=2002:2002
+        for dd=1:300
+            subplot(2,3,1)
+            barh(-1:-1:-20,mean(smp(61:80,year==yy&doy==dd),2)/101972)
+            xlim([-2.6,0])
+            title([num2str(mean(month(doy==dd))),'-',num2str(yy)])
+            subplot(2,3,2)
+            rwu = 1800*sum(qrootsink(61:80,year==yy&doy==dd),2);
+            barh(-1:-1:-20,rwu)
+            xlim([0,1])
+            subplot(2,3,3)
+            barh(-1:-1:-20,zr./dz)
+            
+            subplot(2,1,2)
+            plot((1:48*dd)/48,1800*cumsum(prec(year==2002&doy<=dd)),...
+                'LineWidth',2)
+            ylim([0,2500])
+            xlim([0,365])
+            pause(0.5)
+        end
+    end
+    
+end
     

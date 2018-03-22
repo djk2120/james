@@ -469,6 +469,7 @@ Our goal:
     Likewise SMS ignores that hydraulic conductance is generally taken to scale with the inverse of conducting length.
     In PHS, this is featured both in the conductance within root vessels and 
     in the conductance governing the flux across the soil matrix to the root surface.
+    Both PHS and SMS account for the effect of decreasing root area with depth (PHS, root area; SMS, root fraction).
     
     (5) Constraints \\
     With SMS, the gradient in water potential is constrained between 0 and 
@@ -672,13 +673,13 @@ Wet season Figure \ref{fig8}
 A lot more precip, steadier precip.
 
 ambient,
-PHS more surface extraction. net extraction zero beyond about 85 centimeters
-SMS gets more than half its water from beyond about 1 meter
+PHS more surface extraction. net extraction is zero beyond about 85 centimeters
+SMS gets more than half its water from beyond 1 meter in depth.
 
 tfe,
-PHS surface extraction increases, in service of downward HR.
-note that HR is not going to depth, but rather to between 1 and 4.6 meters
-there is extraction beyond 4.6 meters (albeit minimal, 1.6e-6 mm/s)
+PHS surface extraction increases, in service of some downward HR.
+note that HR is not going to depth, but rather to between 0.32 and 4.64m in depth.
+there is actually extraction beyond 4.64 meters (albeit minimal, 6.7 mm over the 89 days)
 SMS surface extraction increases 3.33 to 4.75 cm
 SMS deep extraction decreases 21.6 to 17.2 cm
 deep roots \citep{nepstad1994}
@@ -735,7 +736,6 @@ Follow up studies could test the effect of turning it off.
 Likewise it would be interesting to see the effects of stem capacitance, and/or better resolved soil water physics.
 
 
-
 \subsection{Soil profile}
 
 Cumulative ET, three years \\
@@ -766,9 +766,7 @@ Note how the minimum smp for PHS gets lower each dry season.
 My feeling is that the value for $\psi_c$ is really just tuned to get the photosynthesis/transpiration in range, 
 and the soil moisture dynamics, with scarce observational constraints, are allowed to miss.
 
-PHS has a bit less ground evap 17.4/14.9 cm compared to 18.8/17.4 cm
 
-final thoughts
 
 
 
@@ -863,10 +861,11 @@ final thoughts
      \centering
      \includegraphics[width=30pc]{../figs2/fig7.pdf}
      \caption{2003 dry season (SON) root water uptake. 
-     Panel (a) shows the average cumulative profile of daytime root water uptake (mm/s) for the four simulations during SON-2003.
+     Panel (a) shows the average cumulative profile of root water uptake (mm/s) for the four simulations during SON-2003.
      Panel (b) shows total water uptake from above 0.2m for the four simulations during SON-2003.
      Panel (c) shows total water uptake from below 0.2m for the four simulations during SON-2003. 
-     Panel (d) shows total ambient precipitation during SON-2003. 
+     Panel (d) shows total ambient precipitation during SON-2003.
+     Note that these curves are the net of transpiration sink and hydraulic redistribution.
      }
      \label{fig7}
   \end{figure}
@@ -876,10 +875,11 @@ final thoughts
      \centering
      \includegraphics[width=30pc]{../figs2/fig8.pdf}
      \caption{2003 wet season (FMA) root water uptake. 
-     Panel (a) shows the average cumulative profile of daytime root water uptake (mm/s) for the four simulations during FMA-2003.
+     Panel (a) shows the average cumulative profile of root water uptake (mm/s) for the four simulations during FMA-2003.
      Panel (b) shows total water uptake from above 0.2m for the four simulations during FMA-2003.
      Panel (c) shows total water uptake from below 0.2m for the four simulations during FMA-2003. 
      Panel (d) shows total ambient precipitation during FMA-2003. 
+     Note that these curves are the net of transpiration sink and hydraulic redistribution.
      }
      \label{fig8}
   \end{figure}
