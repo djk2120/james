@@ -74,7 +74,7 @@ ff = [0,0,0,0,0,...  %1
     0,0,0,0,0,...    %4
     0,0,0,0,0,...    %5
     0,0,0,0,0,...    %6
-    0,1,0];
+    0,0,0,1];
 
 %2  = water potential
 %3  = timeseries
@@ -2376,6 +2376,44 @@ if ff(33)>0
     
 end
     
+  
+if ff(34)>0
+    xdk = figure;
+    d  = 0.01:0.02:8.6;
+    dds=round(zs*50+1);
+    out = zeros(20,1095);
+    ymin = [-1,-3];
+    tstr = {'PHS','SMS'};
+    for x   = [0,40]
+    for ss=1:20
+        xv        = dds(ss):dds(ss+1)-1;
+        out(xv,:) = repmat(splitapply(@mean,smp(ss+x,:),(year-2001)*365+doy)/101972,length(xv),1);
+    end
     
+    %plotting
+    subplot(2,1,(x==40)+1)
+    addpath('/Users/kennedy/Documents/MATLAB/othercolor')
+    colormap(othercolor('BrBG4'))    
+    imagesc(1:1095,d,out,[ymin((x==40)+1),0])
+    xlim([0,1095])
+    set(gca,'xtick',0:365/2:1095)
+    set(gca,'xticklabel',{'2001','','2002','','2003','','2004'})
+    xlabel('Year')
+    ylabel('Depth (m)')
+    title(tstr{(x==40)+1})
+    c=colorbar;
+    ylabel(c,'Soil Potential (MPa)')
+    
+    end
+    
+    xdk.Units = 'inches';
+    xdk.Position = [2,2,7,5];
+    xdk.PaperSize = [7,5];
+    xdk.PaperPosition = [0,0,7,5];
+
+    if ff(34)>0
+        print(xdk,'-dpdf','../figs2/suppsmp')
+    end
+end
     
     
