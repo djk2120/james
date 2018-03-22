@@ -69,12 +69,12 @@ p = [p,a(:,2)];
 %------------------------------------------------------------------------
 
 ff = [0,0,0,0,0,...  %1
-    0,0,0,1,0,...    %2
+    0,0,0,0,0,...    %2
     0,0,0,0,0,...    %3
     0,0,0,0,0,...    %4
     0,0,0,0,0,...    %5
     0,0,0,0,0,...    %6
-    0,0,0,0];
+    0,0,1,0];
 
 %2  = water potential
 %3  = timeseries
@@ -2240,23 +2240,15 @@ end
 
 
 if ff(30)>0
-    fw = 2.^-((vegwp./-255000).^3.95);
-    fw = fw([1,5],:);
-    
-    out = zeros(48,6);
-    bin = 5;
-    
-    dailymeanfpsn = splitapply(@nanmean,fpsn(1,:)./fsds,doy+(year-2001)*365);
-    i=25;
-    ix = mcsec>=diurn(i)&mcsec<=diurn(i-1+bin);
-    dailmeanfw    = splitapply(@mean,fw(1,ix),doy(ix)+(year(ix)-2001)*365);
-    plot(dailmeanfw,dailymeanfpsn,'.')
-    r  = corr(dailmeanfw',dailymeanfpsn');
-
-    ix = mcsec>0;
-    dailmeanfw    = splitapply(@mean,fw(1,ix),doy(ix)+(year(ix)-2001)*365);
-    rall  = corr(dailmeanfw',dailymeanfpsn');
-    
+    targ = fctr+fcev+fgev;
+    targ2 = fcev;
+    ix = year==2003;
+    0.1*sum(1800*4e-7*fctr(1,ix))
+    0.1*sum(1800*4e-7*targ(1,ix))
+    0.1*sum(1800*4e-7*targ2(1,ix))
+    0.1*sum(1800*4e-7*fctr(2,ix))
+    0.1*sum(1800*4e-7*targ(2,ix))
+    0.1*sum(1800*4e-7*targ2(2,ix))
 end
 
 if ff(31)>0
@@ -2371,45 +2363,95 @@ if ff(32)>0
 end
 
 if ff(33)>0
-   
-    for zz=1:10
-   dd = 1+floor(rand*365);
-   %dd = 231;
-   i  = 1+floor(48*rand);
-   %i  = 5;
-   ix = year==2003&doy==dd&mcsec==diurn(i);   
-   barh(-1:-1:-20,qrootsink(1:20,ix))
-   title([num2str(dd),'-',num2str(i)])
-   hold on
-   surp = 0;
-   up   = 0;
-   down = 0;
-   for ss=20:-1:1
-       x = qrootsink(ss,ix);
-       if x>0
-           surp = surp+x;
-       elseif ss==2
-           up = up-x;
-           barh(-ss,x,'r')
-       elseif abs(x)<=surp
-           up = up-x;
-           surp = surp+x;
-           barh(-ss,x,'r')
-       elseif surp>0
-           up = up+surp;
-           down = down-x-surp;
-           barh(-ss,x,'r')
-           barh(-ss,x+surp,'g')
-           surp = surp+x;
-       else
-           surp = surp+x;
-           down = down-x;
-           barh(-ss,x,'g')
-       end
-           
-   end
-   hold off
-   pause(1)
+   out = zeros(2,n);
+    for ee=0:1
+    for i=1:length(prec)
+        t = qrootsink((1:20)+ee*20,i);
+        surp = 0;
+        up   = 0;
+        down = 0;
+        for ss=20:-1:1
+            x = t(ss);
+            if x>0
+                surp = surp+x;
+            elseif ss==2
+                up = up-x;
+            elseif abs(x)<=surp
+                up = up-x;
+                surp = surp+x;
+            elseif surp>0
+                up = up+surp;
+                down = down-x-surp;
+                surp = surp+x;
+            else
+                surp = surp+x;
+                down = down-x;
+                
+            end
+        end
+        out(1+ee*2,i)=up;
+        out(2+ee*2,i)=down;
+    end
+    end
+    
+    if 1==2
+    oneto=1:n;
+    q = quantile(out(3,:),0.7);
+    
+    aset = oneto(out(3,:)>q&year>2001);
+    x    = aset(1+floor(rand*length(aset)));
+    
+    subplot(2,2,1)
+    barh(-1:-1:-20,smp(1:20,x))
+    title([num2str(month(x)),'-',num2str(day(x)),'-',num2str(year(x))])
+    xlim([-1e5,0])
+    
+    subplot(2,2,2)
+    barh(-1:-1:-20,qrootsink(1:20,x))
+    title([num2str(round(1800*out(1,x),4)),' (+',num2str(round(1800*out(2,x),4)),')'])
+    xlim([-3e-5,3e-5])
+    
+    subplot(2,2,3)
+    barh(-1:-1:-20,smp(21:40,x))
+    xlim([-1e5,0])
+
+    subplot(2,2,4)
+    barh(-1:-1:-20,qrootsink(21:40,x))
+    title([num2str(round(1800*out(3,x),4)),' (+',num2str(round(1800*out(4,x),4)),')'])
+    xlim([-3e-5,3e-5])
+    end
+    ix = (mcsec<diurn(13)|mcsec>diurn(36));
+    ix2 = (~(mcsec<diurn(13)|mcsec>diurn(36)));
+    
+    figure
+    plot(quantile(qrootsink(22,year==2003),0:0.01:1),0:0.01:1,'LineWidth',2)
+    hold on
+    plot(quantile(qrootsink(62,year==2003),0:0.01:1),0:0.01:1,'LineWidth',2)
+    box off
+    grid on
+    xlabel('Layer 2 RWU (mm/s)')
+    ylabel('Cumulative density')
+    legend({'PHS','SMS'})
+    title('2003, w/TFE')
+    
+    xdk = figure;
+    ix = year==2003&month>8&month<12;
+    xv = doy(ix)+mcsec(ix)/max(diurn);
+    plot(xv,h2osoi(22,ix),'k','LineWidth',2)
+    hold on
+    plot(xv,h2osoi(62,ix),'Color',[0.5,0.5,0.5],'LineWidth',2)
+    ylim([0,0.4])
+    xlabel('Day of 2003')
+    ylabel('Volumetric Soil Water')
+    legend({'PHS','SMS'})
+    
+    xdk.Units = 'inches';
+    xdk.Position = [2,2,7,5];
+    xdk.PaperSize = [7,5];
+    xdk.PaperPosition = [0,0,7,5];
+
+    if ff(33)>0
+        print(xdk,'-dpdf','../figs2/supplayer2')
     end
     
 end
@@ -2449,7 +2491,7 @@ if ff(34)>0
     xdk.PaperSize = [7,5];
     xdk.PaperPosition = [0,0,7,5];
 
-    if ff(34)>0
+    if ff(34)>1
         print(xdk,'-dpdf','../figs2/suppsmp')
     end
 end
