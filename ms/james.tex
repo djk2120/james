@@ -65,16 +65,19 @@ Representation in CLM is known deficiency
 
 Adds complexity, is it worth it, tractable?
        . hydraulic traits too hard \citep{drake2017}?, but people are doing it \citep{xu2016,christoffersen2016}
-
   - Trait information is available \citep{kattge2011,anderegg2015a} and valuable \citep{choat2012}
   - Water status information available \citep{konings2016,grant2016} and valuable \citep{momen2017,konings2017b}
-  - Model structural information
+
+Model structural information
+  - there are some reasons to believe PHS offers better model structure,
+  e.g. medlyn wants a hydraulic constraint, opens up darcy root water uptake
   
 Our goal:
-  - parsimonious plant hydraulic implementation
-  - setting a framework to represent vegetation water status
-       . opening an interface to trait data, satellite VOD \citep{momen2017}
-       . improving functionality
+  - simplified plant hydraulic implementation
+  - setting a framework to represent vegetation water potential, which
+  (1) is pretty appealing as the functional argument for several land surface processes
+  (2) generates an interface to trait data, in situ observations of water potential, and satellite VOD \citep{momen2017}
+
 
 %====================
 %  MODEL DESCRIPTION
@@ -317,11 +320,11 @@ Our goal:
     \end{linenomath*}    
     
     The numerics are especially tractable because $f$ has analytical derivatives and $A$ 
-    (a 4x4 matrix with six null entries) is easily inverted when well-conditioned. 
+    (a 4x4 matrix with six null entries) is easy to invert when well-conditioned. 
     Supply and demand converge, because transpiration demand decreases with more negative 
     leaf water potentials and supply increases with more negative leaf water potentials.
     
-    Furthermore several simplifications were made that decreases the numerical complexity.
+    Furthermore several simplifications were made that decrease the numerical complexity.
     For the purposes of the PHS solution, soil potentials are assumed constant during each timestep.
     During each PHS iteration (\ref{eq:iter}), transpiration is assumed to be linear with $f_w$,
     which precludes updating leaf temperature and intercellular CO$_2$.
@@ -332,8 +335,19 @@ Our goal:
 %  EXP DESCRIPTION
 %====================
 \section{Experiment Description}
-    
-\section{Analysis Methods}    
+Need:
+site description,
+model configuration and parameter values,
+simulation description,
+sapflux observation description
+
+\section{Analysis Details}  
+Need to:
+define midday and predawn, point to meaningful stress indicator/soil moisture
+lay out vpd methodology
+define inferred k, averaging and standard deviation
+define HR
+say predawn root wp ~= rootfr-weighted average
     
 %====================
 %  BTRAN
@@ -776,13 +790,11 @@ Here, because we're modeling vegetation water potential, we can utilize the Darc
 SMS has problematic model structure, seemingly no empirical basis, and intuitively does not look good on soil water dynamics.
 PHS improves model structure and it adds some new observational data, but it also adds many degrees of freedom to the RWU vector. 
 Given the large uncertainties in the model parameters and scarce observational constraints on the vertically-resolved states or fluxes, 
-it becomes hard to justify all the added degrees of freedom in the PHS RWU vector.
-But PHS is exciting because it opens a frontier for actually getting better at this, and for learning about the system along the way.
-In parallel, I do think pursuing an improved heuristic, with somewhat limited DOF, is very worthwhile.
+it is clear that the increased DOF need to be carefully studied and managed (e.g. is the HR reasonable and/or how can we constrain it).
+But PHS is exciting because it opens a frontier for actually getting better at this, and for learning a lot about the system along the way.
+In parallel, I do think pursuing an improved heuristic, blending better model structure with limited DOF, is very worthwhile.
 The clear takeaway is that this process is starved for observations, and is a really interesting thread for ecohydrological research.
 
-
-    
 \clearpage    
 
 \section{Figures}
@@ -941,6 +953,22 @@ The clear takeaway is that this process is starved for observations, and is a re
      \label{top3m}
   \end{figure}
   \clearpage
+  
+      \begin{figure}[h]
+     \centering
+     \includegraphics[width=30pc]{../figs2/suppfsds.pdf}
+     \caption{Water stress function versus downwelling shortwave radiation for points with vapor pressure deficit between 1 and 1.0559 kPa.
+     (a) PHS, ambient throughfall
+     (b) SMS, ambient throughfall
+     (c) PHS, 60\% throughfall excluded
+     (d) SMS, 60\% throughfall excluded. 
+     For (a) and (c) data are subdivided based on predawn root water potential.
+     For (b) and (d) data are subdivided based on average soil matric potential, weighted by root fraction.
+     Blue dots represent the wettest tercile, yellow dots represent the intermediate tercile, and red dots represent the driest tercile.
+     Note that panels (c) and (d) exclude data from 2001, when throughfall exclusion was not active.
+     }
+     \label{supp:fsds}
+       \end{figure}
   
         \begin{figure}[h]
      \centering
