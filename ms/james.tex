@@ -534,46 +534,49 @@ allowing that it will be of interest to investigate more extended process repres
 
 \subsection{Stress factor, annual cycle}
 
-The Medlyn stomatal conductance model optimizes carbon gain relative to water costs, but does not represent hydraulic constraints.
+The Medlyn stomatal conductance model optimizes carbon gain relative to water costs, but does not represent hydraulic constraints \citep{medlyn2011}.
 Representing the influence of drought in combination with the Medlyn model is an area of active research \citep{zhou2013,novick2016a}.
-Dating back to \cite{sellers1996a}, CLM has used a water stress factor (unitless, 0-1, stressed-unstressed), to attenuate $v_{\text{cmax}}$ with declining water status. Decreases in $v_{\text{cmax}}$ result in decreases in photosynthesis, stomatal conductance, and transpiration, coupled via the stomatal conductance model and through the intercellular CO$_2$ concentration.
+CLM uses a water stress factor (unitless, 0-1, stressed-unstressed), to attenuate $v_{\text{cmax}}$ with declining water status \citep{oleson2013}. 
+Decreasing $v_{\text{cmax}}$, coupled via the stomatal conductance model and through the intercellular CO$_2$ concentration, 
+results in decreases in photosynthesis, stomatal conductance, and transpiration.
 
 Previously (SMS) water stress was an empirical function of root-zone soil matric potential (see Section \ref{sect:btran}).
 With PHS, the water stress factor is modeled as a function of leaf water potential.
 Once calculated, the implementation of the stress factor are the same (in that they both multiply $v_{\text{cmax}}$).
-But the dynamics of the two formulations are quite different, because with SMS the stress factor only responds to changes in soil potential,
+However the dynamics of the two formulations are quite different, because with SMS the stress factor only responds to changes in soil potential,
 whereas with PHS the stress factor also responds to transpiration demand.
 
 Figure \ref{fig:mm} shows monthly mean values of the water stress factor, gross primary productivity, and transpiration
 over the three-year simulation showing PHS versus SMS under both ambient and 60\% excluded throughfall conditions.
 Careful interpretation is required for comparison, because straight time-averaging PHS stress function is not appropriate due to coincident diurnal cycles in $f_w$ and potential photosynthesis.
-As such we plot the average midday $f_w$ (see zqz).
+As such, for PHS, we plot the monthly mean midday $f_w$ (see zqz).
 
 
 ambient
 
-SMS no stress (fw>0.99), 24 out of 36 months
+SMS no stress (fw>0.99), 24 out of 36 months.
 PHS more stress, follows leaf water potential (Figure \ref{fig:vwp}).
 
 PHS mins generally in September (high FSDS, high VPD).
 SMS mins generally in December (min root-average SMP).
 
+tfe
+
 Effect of TFE accumulates. 
-PHS, adds 30\% and 47\% in Nov 2002 and Nov 2003
-SMS, adds 60\% and 88\% in Oct 2002 and Sept 2003.
+With PHS, TFE adds 30\% and 47\% in Nov 2002 and Nov 2003, for example.
+With SMS, TFE adds 60\% and 88\% in Oct 2002 and Sept 2003, for example.
 
-Difference in sensitivity to TFE due to root water uptake (Sections zqz)
-PHS suppresses IAV of GPP
-Neither gets TFE, but PHS looks nice compared to ambient sap flux.
+Neither really gets TFE (even with soil parameter tinkering). 
+PHS and SMS parameters are out-of-the-box.
+Why can't we match TFE (PHS)?
+Could we get closer by editing those parameters?
+Difference in sensitivity to TFE is largely attributable to differences in root water uptake (see section zqz).
 
-Discussion
+PHS does look nice compared to ambient sap flux.
+And we're very excited about the dynamics of the factor.
+Xylem tension stress vs. soil moisture stress.
+PHS suppresses variability of GPP.
 
-(1) Why can't we match TFE (PHS)?
-        - isohydricity
-        - draining soil column
-        - too efficient extracting water from depth
-(2) But we're very excited about the dynamics of the factor
-        - soil moisture stress vs. xylem tension stress
 
 \subsection{Stress factor, diurnal cycle}
 
@@ -591,35 +594,37 @@ For details see (zqz).
 As expected the SMS version of $f_w$ has a clear dependence on soil potential, but no relationship with VPD (Fig \ref{fig:vpd}b,d). 
 Drier soil potentials are associated with lower values of $f_w$, which corresponds to more stress.
 With PHS, there is a clear dependence of $f_w$ on VPD, with higher VPD associated with more stress.
-Under ambient throughfall conditions (Fig\ref{fig:vpd}a) the soil water has minimal influence.
-In Figure \ref{fig:vpd}c, TFE yields drier soils, showing the combined dependence of $f_w$ on VPD and soil water.
+Under ambient throughfall conditions (Fig\ref{fig:vpd}a), the soil water potential has minimal influence.
+In Figure \ref{fig:vpd}c, TFE yields drier soils, showing the combined dependence of PHS $f_w$ on VPD and soil water.
 
 What is the stress factor? An acknowledgment that optimizing $A-\lambda E$ is not the full story of vegetation water use.
 For example, plants must also manage the risk of cavitation associated with increasing xylem tension.
 No one answer is accepted within the field for how to apply water stress to photosynthesis and stomatal conductance.
 Some groups abandon optimizing $A-\lambda E$ in favor of hydraulic costs \citep{sperry2017}.
 Some groups are exploring soil water adjustments to lambda \citep{manzoni2013b}, but this may underestimate drought effects \citep{zhou2013}.
-Other groups are combining Medlyn stomatal conductance, with so-called non-stomatal limitation, attenuating vcmax or mesophyl conductance
-(which feeds back through photosynthesis to lower stomatal conductance). \citep{egea2011,novick2016a}
+Other groups take a hybrid approach, combining Medlyn stomatal conductance, with hydraulic constraints and/or 
+so-called non-stomatal limitation, attenuating vcmax or mesophyl conductance
+(which feeds back through photosynthesis to lower stomatal conductance) \citep{egea2011,novick2016a}.
 We opt for a simplified form of this last approach, but don't claim superiority, but rather that stress parameterizations are an important topic for continued research.
 
 But having said that, we do really like our approach.
-We are taking the point of view that Medlyn well-watered makes sense, but needs a water status factor.
+We are taking the point of view that Medlyn well-watered makes sense, but it does need a water status factor.
 We are not changing the Medlyn parameters with drying, though that may be justified.
 Soil water is a viable option for measuring water status \citep{drake2017}, but doesn't capture the dual effects of supply and demand on xylem tension.
 So we couple Medlyn to vcmax attenuated based on leaf water potential.
 
 \subsection{Conductance}
 
-PHS calculates vegetation water potential.
-The prognostic vegetation water potential has two interfaces with the model.
-As above, it is used to effect drought stress for the photosynthesis/stomatal conductance routines.
-But we also use it to calculate root water uptake in the Darcy framework where $q=k\Delta\psi$.
+PHS introduces prognostic vegetation water potential to CLM.
+The vegetation water potential has two interfaces with the model.
+As above, leaf water potential is used to effect drought stress for the photosynthesis/stomatal conductance routines.
+Secondly, we use root water potential to calculate the soil transpiration sink term in Richard's equation.
+PHS represents root water uptake via the Darcy framework where $q=k\Delta\psi$.
 More typically, a heuristic is used to partition the transpiration sink throughout the soil column (need ref).
 CLM (with SMS) based this on root fraction and a soil wilting factor, which can be recast into the hydraulic framework (Section \ref{sect:btran}).
-Looking at the conductance values associated with root water uptake serves to highlight the differences between paradigms.
+Looking at the conductance values associated with root water uptake from SMS vs. PHS serves to highlight the differences between paradigms.
 
-Soil-to-root conductance ($k_{sr}$) is modeled in PHS and is used to model root water uptake (see zqz).
+Soil-to-root conductance ($k_{sr}$) is modeled in PHS and is used to calculate root water uptake (see zqz).
 With SMS, $k_{sr}$ is not explicitly modeled, but it can be inferred, by dividing the root water uptake by the SMS extraction gradient (see Section \ref{sect:btran}).
 In Figure \ref{fig:cond}, we plot the time-series of conductance values from Soil Layer 3 (spans from 6 to 12 centimeters below the surface) under ambient throughfall conditions during 2003.
 
@@ -627,16 +632,16 @@ Well-watered values are very different, two orders of magnitude.
 Dynamics also very different, PHS conductance is relatively steady through the wet season (Fig \ref{fig:cond}a).
 Through the dry season, the conductance generally declines with short resurgence episodes associated with rain events.
 SMS is highly dynamic with more variability relative to the mean (Fig \ref{fig:cond}b).
-During FMA-2003, mean daily standard deviation of Layer 3 conductance is 4.6e-12 s$^{-1}$ with PHS
+During FMA-2003, mean intra-day standard deviation of Layer 3 conductance is 4.6e-12 s$^{-1}$ with PHS
 and 9.9e-12 s$^{-1}$ with SMS, whereby in an absolute sense SMS standard deviation is about twice as large.
 The difference is larger in a relative sense, as that standard deviation is 0.08\% of the mean FMA conductance with PHS
 and 62.9\% of the mean FMA conductance with SMS.
 
-SMS inferred conductance is tethered to transpiration (see Section \ref{sect:btran}), causing the high variance.
-Likewise, SMS features a clear diurnal cycle in the inferred Layer 3 conductance (Supp Fig \ref{supp:cond}). 
+The SMS inferred conductance is tethered to transpiration (see Section \ref{sect:btran}), which leads to the high variance.
+This leads to SMS having a clear diurnal cycle in the inferred Layer 3 conductance (Supp Fig \ref{supp:cond}). 
 Instead PHS uses brooks-corey and root xylem vulnerability to calculate conductance, which better reflects our understanding of the physical process and the temporal dynamics.
 As a result conductance is less variable, with the expected responses to drydown (loss of conductance) and re-wetting (increased conductance).
-This is reinforced by the results in Figure 7. 
+This is demonstrated in Figure 7, where we plot the daily mean conductance from Soil Layer 3.
 With 60\% throughfall exclusion (Fig7a, dotted line), PHS conductance decreases, whereas with SMS, the daily mean conductance increases (Fig7b).
 
 The average SMS and PHS Layer 3 conductance for well-watered conditions (i.e. wet season, ambient throughfall) differ by about two orders of magnitude.
@@ -647,8 +652,8 @@ Near surface $\psi$, before stem pressure drop is the more appropriate driving f
 
 With TFE, PHS Layer 3 conductance can approach the values seen in SMS. 
 The average Layer 3 conductance with PHS for August 2003 (60\%TFE) is 4.75e-11 s$^{-1}$ as compared to 3.89e-11 s$^{-1}$ for SMS.
-This is a result of the orders of magnitude response of PHS soil-to-root conductance to changes in soil potential, which is as expected with soil conductances.
-Inferred SMS conductance has no clear relationship with soil potential (Supp Fig \ref{supp:cond2}). 
+This is a result of the orders of magnitude response of PHS soil-to-root conductance to changes in soil potential, which is as expected with soil conductances,
+whereas inferred SMS conductance has no clear relationship with soil potential (Supp Fig \ref{supp:cond2}). 
 SMS root water uptake uses a heuristic to partition transpiration, but its dynamics end up a bit backwards. 
 It's a workaround that's necessary when you aren't modeling the gradient in water potential between vegetation and soil. 
 But now we are, which is a big benefit of modeling vegetation water potential.
@@ -658,13 +663,14 @@ But now we are, which is a big benefit of modeling vegetation water potential.
 Dry season water uptake Figure \ref{fig7} 
 ambient, 
 PHS more surface extraction (Fig \ref{fig7}a)
-SMS a bit more extraction from beyond 2 meters, but quite a bit more between 0.5 and 2 meters.
+SMS comparable extraction from beyond 3 meters, but quite a bit more than PHS in the intermediate zone.
 PHS surface extraction (Fig \ref{fig7}b, black/solid) responds to precip (Fig \ref{fig7}d),
 SMS does not.
 
-tfe,
-curves flip in Figure \ref{fig7}a, now PHS has about twice the extraction from beyond 2m.
-note how surface extraction decreases substantially for PHS (Fig \ref{fig7}b),
+With tfe,
+Neither PHS nor SMS, extracts much from between 1 and 4m.
+Both compensate by increasing extraction from below 4m, but PHS to a much larger extent.
+Surface extraction decreases substantially for PHS (Fig \ref{fig7}b),
 but increases slightly for SMS.
 PHS continues to respond to precip.
 SMS now has a slight response to precip.
@@ -673,15 +679,15 @@ Wet season Figure \ref{fig8}
 A lot more precip, steadier precip.
 
 ambient,
-PHS more surface extraction. net extraction is zero beyond about 85 centimeters
-SMS gets more than half its water from beyond 1 meter in depth.
+PHS more surface extraction, with net extraction zero beyond about 38 centimeters.
+SMS extracts more than half its water from beyond 1 meter in depth.
 
 tfe,
-PHS surface extraction increases, in service of some downward HR.
-note that HR is not going to depth, but rather to between 0.32 and 4.64m in depth.
-there is actually extraction beyond 4.64 meters (albeit minimal, 6.7 mm over the 89 days)
-SMS surface extraction increases 3.33 to 4.75 cm
-SMS deep extraction decreases 21.6 to 17.2 cm
+PHS surface extraction increases further, in service of more HR.
+HR is not going to depth, but rather to between 0.32 and 4.64m in depth.
+There is extraction beyond 4.64 meters (albeit minimal, 6.7 mm over the 89 days)
+SMS surface extraction increases 3.33 to 4.75 cm, from ambient to TFE.
+SMS deep extraction decreases 21.6 to 17.2 cm, from ambient to TFE.
 deep roots \citep{nepstad1994}
 
 HR has been observed in the field \citep{oliveira2005}, and has been highlighted as an important missing feature from CLM \citep{lee2005}.
@@ -700,7 +706,7 @@ Likewise it's clear that we'll have more work to constrain the degrees of freedo
 While there are advantages to both, it seems there is a lot we can learn more from the PHS style of implementation.
 Root water extraction is a critical component of vegetation hydrodynamics and merits continued research.
 PHS makes inroads into a better representation of root water extraction.
-I'm interested in seeing this parameterization studied further. 
+I'm interested in seeing this straight Darcy style parameterization studied further. 
 It's probably also worth investigating alternative heuristic approaches that improve upon SMS.
 Either way, we should also find new ways to constrain root water uptake with observations.
 
@@ -763,11 +769,17 @@ Noting of course that $\psi_c$=-2.5MPa.
 PHS has more flexibility, with the dynamic root water potential, and so there is not the same tendency to dry out to a certain level.
 Note how the minimum smp for PHS gets lower each dry season.
 
-My feeling is that the value for $\psi_c$ is really just tuned to get the photosynthesis/transpiration in range, 
-and the soil moisture dynamics, with scarce observational constraints, are allowed to miss.
-
-
-
+The big point here is that soil water dynamics are very much sensitive to the representation of root water uptake.
+My feeling is that the value for $\psi_c$ is really only tuned to get the photosynthesis/transpiration in range, 
+with no attention to the soil moisture dynamics, which, having scarce observational constraints, is allowed to miss.
+Here, because we're modeling vegetation water potential, we can utilize the Darcy framework, which gives us a well-established physical basis and a clear improvement in model structure.
+SMS has problematic model structure, seemingly no empirical basis, and intuitively does not look good on soil water dynamics.
+PHS improves model structure and it adds some new observational data, but it also adds many degrees of freedom to the RWU vector. 
+Given the large uncertainties in the model parameters and scarce observational constraints on the vertically-resolved states or fluxes, 
+it becomes hard to justify all the added degrees of freedom in the PHS RWU vector.
+But PHS is exciting because it opens a frontier for actually getting better at this, and for learning about the system along the way.
+In parallel, I do think pursuing an improved heuristic, with somewhat limited DOF, is very worthwhile.
+The clear takeaway is that this process is starved for observations, and is a really interesting thread for ecohydrological research.
 
 
     
@@ -950,11 +962,12 @@ and the soil moisture dynamics, with scarce observational constraints, are allow
      \centering
      \includegraphics[width=30pc]{../figs2/fig10.pdf}
      \caption{PHS, nighttime (6pm to 6am) average root water uptake profiles with depth. 
+     Showing nighttime serves to emphasize the profile of hydraulic redistribution.
      Panel (a) shows cumulative (starting at depth) root water uptake (mm/s) for ambient (solid line) and 60\% throughfall exclusion (dotted line)
      during the wet (FMA, cyan color) and dry (SON, brown color) seasons. 
      Panels (b)-(e) present the information from (a) in non-cumulative form. 
      Note that for panels (b)-(e) negative root water uptake is shaded red, and also that for panel (a), 
-     when the positive slopes indicate water uptake, and negative slopes indicate water deposited.
+     positive slope indicates water uptake, and negative slope indicates water deposited.
      Note also that SMS is not shown, because hydraulic redistribution is precluded.}
      \label{supp:hr}
   \end{figure}
