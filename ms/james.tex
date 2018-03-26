@@ -348,6 +348,12 @@ lay out vpd methodology
 define inferred k, averaging and standard deviation
 define HR
 say predawn root wp ~= rootfr-weighted average
+
+    In Figure \ref{fig:cond}, we compare conductance values derived from the PHS and SMS implementations.
+    With SMS, $k$ is not explicitly modeled, so instead we infer $k$, 
+    by dividing $q_i$ by $\Delta\psi$ as defined in Equation \ref{kb}.
+    Furthermore, we interpret the constraint that $\Delta\psi$ be greater than or equal to zero to mean 
+    that conductance is zero in non-conforming cases. As such, we say $k=0$ when $\Delta\psi<\text{1 kPa}$.
     
 %====================
 %  BTRAN
@@ -442,12 +448,6 @@ say predawn root wp ~= rootfr-weighted average
     \end{cases}
     \end{aligned}\end{equation}
     \end{linenomath*}
-    
-    In Figure \ref{fig:cond}, we compare conductance values derived from the PHS and SMS implementations.
-    With SMS, $k$ is not explicitly modeled, so instead we infer $k$, 
-    by dividing $q_i$ by $\Delta\psi$ as defined in Equation \ref{kb}.
-    Furthermore, we interpret the constraint that $\Delta\psi$ be greater than or equal to zero to mean 
-    that conductance is zero in non-conforming cases. As such, we say $k=0$ when $\Delta\psi<\text{1 kPa}$.
     
     Issues with the SMS representation of the soil transpiration sink: 
     
@@ -610,6 +610,7 @@ Drier soil potentials are associated with lower values of $f_w$, which correspon
 With PHS, there is a clear dependence of $f_w$ on VPD, with higher VPD associated with more stress.
 Under ambient throughfall conditions (Fig\ref{fig:vpd}a), the soil water potential has minimal influence.
 In Figure \ref{fig:vpd}c, TFE yields drier soils, showing the combined dependence of PHS $f_w$ on VPD and soil water.
+Similar effects are shown in response to downwelling solar radiation (Supp Fig \ref{supp:fsds}).
 
 What is the stress factor? An acknowledgment that optimizing $A-\lambda E$ is not the full story of vegetation water use.
 For example, plants must also manage the risk of cavitation associated with increasing xylem tension.
