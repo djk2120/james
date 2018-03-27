@@ -96,15 +96,18 @@ Our goal:
     following \citet{farquhar1980} and \citet{harley1992}.The implementation extends \citet{sellers1996a,sellers1996b} with 
     colimitation following \citet{collatz1991}. 
     
-    CLM5 photosynthesis, in its default configuration, is a two-big-leaf model, with a sunlit and shaded leaf per PFT per gridcell \citep{thornton2007, 
-    dai2004, oleson2013}. The canopy fluxes module iterates for leaf surface energy balance.
+    CLM5 photosynthesis, in its default configuration, is a two-big-leaf model, with a sunlit and shaded leaf per PFT per gridcell \citep{thornton2007, dai2004, oleson2013}. 
+    The canopy fluxes module iterates for leaf surface energy balance.
     Within this, the photosynthesis module iterates to solve for intercellular CO$_2$ concentration, balancing stomatal flux of 
     CO2 with photosynthetic assimilation flux of CO2.
     
-    Vegetation water stress is implemented via the vegetation water stress factor ($f_w$, dimensionless, 0 to 1, formerly 
-    $\beta_t$). This factor multiplies the rate of maximum carboxylation ($V_{\text{cmax}}$) as described in \citet{oleson2013} and first implemented in \citet{sellers1996a,sellers1996b}.
-     Say here that there can be multiple choices but \cite{lin2018} seems to suggest that not a good idea to multiply the whole conductance as not sensitive to soil moisture. 
-    Also some field studies suggest Vcmax is not changing with drought, but model Vcmax implicitly accounts for mesophyll conductance changes.
+    Vegetation water stress is implemented via the vegetation water stress factor ($f_w$, dimensionless, 0 to 1, formerly $\beta_t$). 
+    Many different approaches for how to apply stress \citep{zhou2013,novick2016a}.
+    In CLM $f_w$ multiplies the rate of maximum carboxylation ($V_{\text{cmax}}$) as described in \citet{oleson2013}.
+    While many models opt for soil-moisture based stomatal limitation (linking Medlyn slope to soil moisture),
+    \cite{lin2018} found that only g0 was sensitive to soil moisture (and not g1).
+    \cite{zhou2013} suggests that changes in assimilation tend to exceed those predicted by a g1 connected to soil moisture, but could be captured by changing vcmax.
+    Some field studies suggest Vcmax is not changing with drought, whereby model Vcmax instead may implicitly account for mesophyll conductance changes.
     
     With PHS, $f_w$ replaces the CLM4.5 transpiration beta function ($\beta_t$). 
     These factors are used by the photosynthesis model in the same way, but calculated differently. 
