@@ -102,7 +102,9 @@ Our goal:
     CO2 with photosynthetic assimilation flux of CO2.
     
     Vegetation water stress is implemented via the vegetation water stress factor ($f_w$, dimensionless, 0 to 1, formerly 
-    $\beta_t$). This factor multiplies the rate of maximum carboxylation ($V_{\text{cmax}}$) as described in \citet{oleson2013} and first implemented in \citet{sellers1996a,sellers1996b}. Say here that there can be multiple choices but Lin et al. 2018 seems to suggest that not a good idea to multiply the whold conductance as not sensitive to soil moisture. ALso some field studies suggest Vcmax is not cahnging with drought, but model Vcmax implicitly accounts for mesophyl conductance changes.
+    $\beta_t$). This factor multiplies the rate of maximum carboxylation ($V_{\text{cmax}}$) as described in \citet{oleson2013} and first implemented in \citet{sellers1996a,sellers1996b}.
+     Say here that there can be multiple choices but \cite{lin2018} seems to suggest that not a good idea to multiply the whole conductance as not sensitive to soil moisture. 
+    Also some field studies suggest Vcmax is not changing with drought, but model Vcmax implicitly accounts for mesophyll conductance changes.
     
     With PHS, $f_w$ replaces the CLM4.5 transpiration beta function ($\beta_t$). 
     These factors are used by the photosynthesis model in the same way, but calculated differently. 
@@ -222,7 +224,7 @@ Our goal:
     which we adjust for water stress with $f_w$, the PHS water stress factor. 
     The water stress factor attenuates stomatal conductance indirectly, multiplying $V_{\text{cmax}}$.
     We calculate the water stress factor based on leaf water potential, such that 
-    as leaf water potentials decrease (cite Klein study showing that plants seem to have relatively nice behavior in repsonse to psi_l), stress increases.
+    as leaf water potentials decrease (cite Klein study showing that plants seem to have relatively nice behavior in repsonse to $psi_l$), stress increases.
     The PHS stress factor is different from the CLM4.5 stress function, because that one 
     is calculated based on soil potential.
     The PHS stress factor is the same as the CLM4.5 stress function in that, once calculated, they are used
@@ -271,7 +273,7 @@ Our goal:
      Likewise CLM4.5 had two empirical stomatal control parameters, which were the soil matric potentials 
      corresponding to stomates fully closed and stomates fully open (see Section \ref{sect:btran}).
      The functional form of stomatal control is not generally agreed upon, and as such, 
-     should be investigated farther. Recent modeling studies have proposded differnt forms sperry,xu,christo. However observations (lin et al. 2018) seem to suggest that psi_l mainly affects the GPP compeonent of gs and thus Vc,max and not the other comeopnents (g1 and g0 in the Medlyn paramterization).
+     should be investigated farther. Recent modeling studies have proposded differnt forms sperry,xu,christo. However observations (lin et al. 2018) seem to suggest that $psi_l$ mainly affects the GPP compeonent of gs and thus Vc,max and not the other comeopnents (g1 and g0 in the Medlyn paramterization).
 
 %PHS solution
     \subsubsection{PHS solution}
