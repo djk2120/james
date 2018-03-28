@@ -36,13 +36,14 @@ Pierre Gentine\affil{1}
 
 \section{Introduction}
 
- - droughts are increasing (I am not sure about this, I am not a fan of this statement as Sheffield et al showed the opposite, there is no change)
-      . \citep{cook2015}
-      . \citep{dai2013}
-      . amazon dry season lengthening \citep{fu2013}
-      . increase in freqeuncy of El Nino
+Trees face emerging climate change risk globally \citep{allen2010,anderegg2013b}.
+Amazon facing increasing frequency of El Nino \citep{cai2014}.
+Amazon dry season lengthening \citep{fu2013}
+
+
+\citep{cook2015}
      
-There are uncertainies in soil msoiture projections but VPD is going to icnrease for sure
+There are uncertainies in soil msoiture projections globally (sheffield) but VPD is going to icnrease for sure
 
  - vapor pressure deficit 
       . \citep{mcdowell2015}
@@ -518,41 +519,36 @@ Vegetation water potential is modeled at four locations within the plant: at the
 Figure \ref{fig:vwp} shows the average diurnal cycle of vegetation water potential for the 2003 dry season at Caxiuana for two experiments:
 the first with ambient throughfall, and the second with 60\% of throughfall excluded. 
 Both panels show the characteristic drop in water potential around midday and the expected sequencing with 
-the leaf water potentials more negative than the stem, which is more negative than the root water potential.
+the leaf water potentials more negative than the stem, which is more negative than the root.
 
-The sequencing is difficult to distinguish from the plot, where stem, sunlit, shaded nearly overlap for both experiments. 
+The sequencing is difficult to distinguish from the plot, where the stem, sunlit, and shaded leaf water potential curves nearly overlap for both experiments. 
 In the ambient simulation (Fig \ref{fig:vwp}a), midday (1p.m.) water potentials are -1.98, -1.97, -1.96 MPa 
 for sunlit leaf, shaded leaf, and stem, respectively.
 With throughfall exclusion (Fig \ref{fig:vwp}b) midday (1p.m.) water potentials decrease to -2.77, -2.76, -2.75 MPa, respectively.
-The small difference between leaf and stem water potentials results from minimal resistance to water flow across this segment. 
 
-Throughfall exclusion (TFE) lowers midday sunlit leaf water potential by 0.79 MPa compared to the ambient simulation.
+
+Throughfall exclusion (TFE) lowers average midday sunlit leaf water potential by 0.79 MPa compared to the ambient simulation, during SON-2003 (dry season).
 This drop in water potential can be partitioned among the segments of water flow from soil to leaf.
-In the ambient simulation, predawn (5am) root water potential is -0.075 MPa. 
-With TFE, it falls to -0.36 MPa, resulting in a drop in predawn root water potential of 0.28 MPa relative to the ambient simulation. 
-The potential drop from predawn to midday root water potential increases by 1.06 MPa with TFE 
-(from 0.058 MPa, ambient, to 1.12 MPA, TFE).
-The drop from root to stem acts in the opposite direction, decreasing from 1.85 MPa in the ambient simulation
-to 1.29 MPa with TFE, attenuating the drop in water potential by 0.55 MPa.
+In the ambient simulation, predawn (5am) root water potential (a measure of average soil water potential) is -0.075 MPa. 
+With TFE, it falls to -0.36 MPa, resulting in a decrease in predawn root water potential of 0.28 MPa relative to the ambient simulation. 
+The difference between midday and predawn root water potential lowers by 1.06 MPa with TFE 
+(from -0.058 MPa, ambient, to -1.12 MPA, TFE).
+The difference between sunlit leaf and stem water potential at midday acts in the opposite direction, changing from
+-1.85 MPa in the ambient simulation to -1.29 MPa with TFE, attenuating the drop in water potential by 0.55 MPa.
 
-\cite{fisher2006}
-predicted water potential values are in range, average dry season observation = -2.47 MPa, 
-with no statistically significant difference between AMB and TFE.
-For us, LWP drop due to TFE is -0.79MPa, which can be partitioned into -0.28 MPa predawn, -1.06 soil-to-root drop, +0.55 root-to-leaf drop.
+Predicted water potential values are comparable with field observations, where average dry season leaf water potential was measured as -2.47 MPa \citep{fisher2006}.
+With PHS, modeled LWP drop due to TFE is -0.79MPa, which can be partitioned into -0.28 MPa predawn root water potential, -1.06 soil-to-root drop, +0.55 root-to-leaf drop.
 Stem drop abates, smaller because though PLC increases, transpiration decreases to larger effect.
-Consistent with findings in \cite{fisher2006} of 
-1) isohydric behavior (deinfe isohydricity)
-and
-2) that most of the resistance is above ground, but that the added resistance from drying is predominately below ground.
+This is consistent with findings in \cite{fisher2006} of 
+1) that most of the resistance is above ground, but that
+2) the added resistance from drying is predominately below ground.
+3) isohydric behavior (deinfe isohydricity).
+However, where our experiment features declines in LWP due to TFE, \cite{fisher2006} found no significant difference between ambient and TFE dry season.
+This could indicate that our out-of-the-box parameters do not result in sufficiently isohydric behavior.
 
-\cite{fisher2006} report dry season soil potential as -0.17 MPa in the ambient plot and -0.66 MPa in the TFE plot.
-These are drier than predawn root water potential in our simulations.
-Likewise the difference between TFE and AMB is more than 3x larger in the observations than in our simulations.
-This indicates that our simulations underestimate the forcing from throughfall exclusion, likely due to an overestimation of the 
-soil column's ability to buffer drying.
-
-The current PHS parameterization of stem-to-leaf resistance is relatively simple compared to the literature \citep{franks2007}
-and could be improved in future versions. However, in a model set to run at the global scale, there is always a tradeoff between added complexity and parameter reduction.
+The small difference between leaf and stem water potentials results from minimal resistance to water flow across these segments. 
+The current PHS parameterization of stem-to-leaf resistance is relatively simple compared to the literature \citep{franks2007} and could be improved in future versions. 
+However, in a model set to run at the global scale, there is always a tradeoff between added complexity and parameter reduction.
 
 This results in little difference between stem, shaded, and sunlit leaf water potentials.
 Likewise the current PHS parameterization eschews vegetation capacitance. \citep{meinzer2004}
@@ -603,6 +599,11 @@ Why can't we match TFE (PHS)?
 Could we get closer by editing those parameters?
 Difference in sensitivity to TFE is largely attributable to differences in root water uptake (see section zqz).
 
+\cite{fisher2006} report dry season soil potential as -0.17 MPa in the ambient plot and -0.66 MPa in the TFE plot.
+These are drier than predawn root water potential in our simulations.
+Likewise the difference between TFE and AMB is more than 3x larger in the observations than in our simulations.
+This indicates that our simulations underestimate the forcing from throughfall exclusion, likely due to an overestimation of the 
+soil column's ability to buffer drying.
 
 Talk about sensitivity to VPD, physical.
 PHS does look nice compared to ambient sap flux.
@@ -947,13 +948,6 @@ The clear takeaway is that this process is starved for observations, and is a re
      Note that color axes are different. }
      \label{fig11}
   \end{figure}
-  
-  
-  
-
-
-
-  
 
 
 \clearpage
@@ -1127,7 +1121,7 @@ The soil conductance ($k_{s,i}$) is the result of scaling the conductivity by $d
 The challenge here is obviously getting your head around all the parameters.
 
 % Details on water demand
-\subsection{Details of Water Supply}
+\subsection{Details of Water Demand}
 
 % Details on phs solution
 \subsection{Details of Solution}
