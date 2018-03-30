@@ -75,7 +75,7 @@ ff = [0,0,0,0,0,...  %1
     0,0,0,0,0,...    %5
     0,0,0,0,0,...    %6
     0,0,0,0,0,...    %7
-    1];
+    0,1];
 
 %2  = water potential
 %3  = timeseries
@@ -97,6 +97,7 @@ ff = [0,0,0,0,0,...  %1
 %21 = ibid
 %22 = rootfraction
 %25 = soil-to-leaf for phs
+%26 = root water uptake
 %27 = vpd, fsds
 %28 = conductance diurnal
 %29 = comparing resistances
@@ -2656,3 +2657,48 @@ title('SMS')
     
 end
     
+if ff(37)>0
+    ix_dry  = (month==9|month==10|month==11)&year==2003;
+    x=sum(qrootsink(21:40,ix_dry),2);
+    subplot(2,1,1)
+    bar(x)
+    x=sum(qrootsink(61:80,ix_dry),2);
+    subplot(2,1,2)
+    bar(x)
+    
+    ct = 0;
+    out = zeros(4,1);
+    for ss=[0,20,40,60]
+        ct = ct+1;
+        i = 0;
+        go = 1;
+        zz = 0;
+        tot = 0;
+        while go
+            i = i+1;
+            
+            if zs(i+1)>0.5
+                if zs(i)<0.5
+                    fr = (zs(i+1)-0.5)/(zs(i+1)-zs(i));
+                    tot = tot+fr*sum(qrootsink(ss+i,ix_dry));
+                elseif zs(i+1)>4
+                    fr = (4-zs(i))/(zs(i+1)-zs(i));
+                    tot = tot+fr*sum(qrootsink(ss+i,ix_dry));
+                elseif zs(i+1)
+                    zz = zz+(zs(i+1)-zs(i));
+                    tot = tot+sum(qrootsink(ss+i,ix_dry));
+                end
+            end
+            
+            
+            if zs(i+1)>4
+                go = 0;
+            end
+        end
+        
+        out(ct) = 1800*tot;
+    end
+        
+    
+    
+end

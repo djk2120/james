@@ -2,16 +2,32 @@ clear
 close all
 
 
-p = -0.1:-0.1:-5;
+f = '../data/k4g7.nc';
+f = '../data/clm5_params.c171117.nc';
 
-p50 = -2.5;
-ck  = 4.95;
-a   = 6
+aa= ncinfo(f);
+
+pft = ncread(f,'pftname')';
 
 
-f1 = 2.^-((p/p50).^ck);
-plot(p,f1)
+kmax = ncread(f,'kmax');
+kmax(5,:)
+kmax(7,:)
 
-hold on
-f2 = 1./(1+(p/p50).^a)
-plot(p,f2)
+krmax = ncread(f,'krmax');
+krmax(5,:)
+krmax(7,:)
+
+p50 = ncread(f,'psi50');
+p50(5,:)
+p50(7,:)
+
+
+g1 = ncread(f,'medlynslope');
+g1(5,:)
+g1(7,:)
+
+
+g0 = ncread(f,'medlynintercept');
+g0(5,:)
+g0(7,:)

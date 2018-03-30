@@ -127,12 +127,18 @@ Our goal:
     \begin{equation}
     g_s=g_0+\left(1+\dfrac{g_1}{\sqrt{D}}\right)\dfrac{A}{C_a}
     \end{equation}
-    The model features two parameters $g_0$ ($\mu$mol / m2 / s) and $g_1$ (kPa$^{0.5}$). The $g_0$ parameter is
-    minimum stomatal conductance, representing cuticular and peidermal losses (small). The $g_1$ parameter relates to the marginal water cost guiding the optimization of carbon assimilation.
+    The model features two parameters $g_0$ ($\mu$mol / m2 / s) and $g_1$ (kPa$^{0.5}$). 
+    The $g_0$ parameter is minimum stomatal conductance, representing cuticular and epidermal losses (small). 
+    The $g_1$ parameter relates to the marginal water cost guiding the optimization of carbon assimilation.
     
-    The attenuation of stomatal conductance due to water stress follows the CLM4.5 formulation as described in 
-    \citet{oleson2013} and \citet{bonan2011}. Prognostic water stress ($f_w$, ranging from 0-1) attenuates stomatal 
-    conductance indirectly via multiplication of $V_{\text{cmax}}$. Discuss the differnt possible choices such as 
+    The Medlyn model optimizes carbon gain versus water ``costs'', but does not resolve concurrent limitations to stomatal conductance
+    associated with drought conditions.
+    Most implementations include a drought stress factor that attenuates $g_1$ with drying or some form of non-stomatal limitation.
+    For PHS, the attenuation of stomatal conductance due to water stress follows the CLM4.5 formulation as described in \citet{oleson2013} and \citet{bonan2011}. 
+    Prognostic water stress ($f_w$, ranging from 0-1) attenuates stomatal conductance indirectly via multiplication of $V_{\text{cmax}}$.
+    Water stress lowers assimilation, which is coupled to stomatal conductance.
+    
+    Discuss the differnt possible choices such as 
 
 % Plant Hydaulics
 \subsection{Plant Hydraulic Stress (PHS)}
@@ -344,10 +350,36 @@ Our goal:
 %  EXP DESCRIPTION
 %====================
 \section{Experiment Description}
-Need:
-site description,
-model configuration and parameter values,
-simulation description,
+CLM5 (development version) 
+https://github.com/ESCOMP/ctsm/releases/tag/clm4
+\textunderscore 5\textunderscore 18\textunderscore r270
+satellite phenology (lai)
+gap-filled tower meteorology (fisher)
+
+kmax =  4e-7 m/s
+krmax = 6.31e-9 m/s (7.94e-9 mm/s)
+p50 = -2.5e5 mm (-2.4e5 mm)
+
+g0 = 100
+g1 = 7
+
+changes from out-of-the-box
+double kmax (was 2e-7)
+almost double g1 (was 4.12, 4.45)
+others same
+
+need to figure how much of which PFTs these runs have
+
+Informed by \cite{fisher2008}, we tuned soil parameters to get in range of 
+\cite{fisher2007} Figure 4, is top 3m soil water, with our results shown in Supp Fig \ref{top3m}.
+We also increased throughfall exclusion to 60\%, which is higher than reported, in order to better match sap flux obs.
+
+n = 0.42 (-)
+bsw = 6 (-)
+sucsat = 47 (mm)
+hksat = .015 (mm/s)
+60\% throughfall exclusion
+
 sapflux observation description
 
 \section{Analysis Details}  
@@ -637,7 +669,6 @@ However it doesn't capture the dual effects of supply and demand on xylem tensio
 Note that we aren't "double-counting" VPD, but expressing to modes of limitation Medlyn optimization vs. cavitation avoidance.
 So we couple Medlyn to vcmax attenuated based on leaf water potential as suggested by Lin et al. 2018.
 
-
 Water stress factors (in our case, $f_w$), are used to model so-called non-stomatal limitation. 
 
 No one answer is accepted within the field for how to apply water stress to photosynthesis and stomatal conductance.
@@ -648,29 +679,31 @@ so-called non-stomatal limitation, attenuating vcmax or mesophyl conductance
 (which feeds back through photosynthesis to lower stomatal conductance) \citep{egea2011,novick2016a}.
 We opt for a simplified form of this last approach, which seems to be consistent with field observations \citep{lin2018}.
 
-
-
-\subsection{Conductance}
+\subsection{Hydraulic conductance}
 
 PHS introduces prognostic vegetation water potential to CLM.
-The vegetation water potential has two interfaces with the model.
-As above, leaf water potential is used to affect drought stress for the photosynthesis/stomatal conductance routines.
-Secondly, we use root water potential to calculate the soil transpiration sink term in Richard's equation.
-PHS represents root water uptake via the Darcy framework where $q=k\Delta\psi$.
+In CLM5 vegetation water potential has two distinct interfaces with the greater model.
+As above, leaf water potential is used to effect water stress for the photosynthesis/stomatal conductance routines.
+Secondly, we use root water potential to calculate root water uptake.
+Root water uptake is synonymous with the soil transpiration sink term in Richard's equation for unsaturated subsurface flow of water.
+PHS represents root water uptake via the Darcy framework ($q=-k\Delta\psi$).
+Though this representation best conforms with our physical understanding of root water uptake, it is not often implemented in land-surface models.
 More typically, a heuristic is used to partition the transpiration sink throughout the soil column (need ref).
-CLM (with SMS) based this on root fraction and a soil wilting factor, which can be recast into the hydraulic framework (Section \ref{sect:btran}).
-Looking at the conductance values associated with root water uptake from SMS vs. PHS serves to highlight the differences between paradigms.
+CLM (with SMS) employs such a heuristic, based on root fraction and a soil wilting factor. 
+By recasting this heuristic into the hydraulic framework (Section \ref{sect:btran}), it is possible to
+compare hydraulic conductance values associated with root water uptake from SMS vs. PHS.
 
-Soil-to-root conductance ($k_{sr}$) is modeled in PHS and is used to calculate root water uptake (see zqz).
-With SMS, $k_{sr}$ is not explicitly modeled, but it can be inferred, by dividing the root water uptake by the SMS extraction gradient (see Section \ref{sect:btran}).
+Soil-to-root conductance ($k_{sr}$) is explicitly represented in PHS, modeled as a function of soil potential (zqz).
+With SMS, $k_{sr}$ is not explicitly modeled, but it can be inferred, by dividing root water uptake by the gradient in water potential (see Section \ref{sect:btran}).
 In Figure \ref{fig:cond}, we plot the time-series of conductance values from Soil Layer 3 (spans from 6 to 12 centimeters below the surface) under ambient throughfall conditions during 2003.
 
-Well-watered values are very different, two orders of magnitude. 
-Dynamics also very different, PHS conductance is relatively steady through the wet season (Fig \ref{fig:cond}a).
-Through the dry season, the conductance generally declines with short resurgence episodes associated with rain events.
+During the wet season, PHS conductance is greater than SMS by more than two orders of magnitude (Fig \ref{fig:cond}a,b).
+In addition to absolute differences, the relative dynamics are very different between paradigms.
+PHS conductance is relatively steady through the wet season (Fig \ref{fig:cond}a), followed by 
+a steady decline over the dry season with short resurgence episodes associated with rain events.
 SMS is highly dynamic with more variability relative to the mean (Fig \ref{fig:cond}b).
-During FMA-2003, mean intra-day standard deviation of Layer 3 conductance is 4.6e-12 s$^{-1}$ with PHS
-and 9.9e-12 s$^{-1}$ with SMS, whereby in an absolute sense SMS standard deviation is about twice as large.
+During FMA-2003, average intra-day standard deviation of Layer 3 conductance is 4.6e-12 s$^{-1}$ with PHS and 9.9e-12 s$^{-1}$ with SMS. 
+In an absolute sense the SMS standard deviation is about twice as large as PHS.
 The difference is larger in a relative sense, as that standard deviation is 0.08\% of the mean FMA conductance with PHS
 and 62.9\% of the mean FMA conductance with SMS.
 
@@ -695,17 +728,20 @@ SMS root water uptake uses a heuristic to partition transpiration, but its dynam
 It's a workaround that's necessary when you aren't modeling the gradient in water potential between vegetation and soil. 
 But now we are, which is a big benefit of modeling vegetation water potential.
 
-\subsection{Extraction via hydraulic gradient}
+\subsection{Root Water Uptake}
+
+Hydraulic conductance is used to model root water uptake, which is calculated as a flux of water ($q_i$) extracted from each of the vertically discretized soil layers ($i=\left[1,2,...,n\right]$).
+These fluxes are used as the soil transpiration sink terms within the Richards equation and, summed over the soil column, are equivalent to the transpiration flux.
+PHS adopts a new framework for root water uptake, resulting in altered root water uptake dynamics.
 
 Dry season water uptake Figure \ref{fig7} 
 ambient, 
 PHS more surface extraction (Fig \ref{fig7}a)
-SMS comparable extraction from beyond 3 meters, but quite a bit more than PHS in the intermediate zone.
 PHS surface extraction (Fig \ref{fig7}b, black/solid) responds to precip (Fig \ref{fig7}d),
 SMS does not.
 
 With tfe,
-Neither PHS nor SMS, extracts much from between 1 and 4m.
+Neither PHS nor SMS, extracts much from between 0.5 and 4m, (3.18 cm and 0.56 cm, respectively, over three months).
 Both compensate by increasing extraction from below 4m, but PHS to a much larger extent.
 Surface extraction decreases substantially for PHS (Fig \ref{fig7}b),
 but increases slightly for SMS.
@@ -730,6 +766,9 @@ deep roots \citep{nepstad1994}
 HR has been observed in the field \citep{oliveira2005}, and has been highlighted as an important missing feature from CLM \citep{lee2005}.
 This functionality is precluded with SMS, which sets root water uptake to zero if the gradient in water potential is negative. 
 The PHS implementation allows hydraulic redistribution and is discussed in the next section.
+
+why surface extraction?
+roots are densest, less root tissue resistance, don't have to overcome gravity
 
 The advantage of the SMS type of heuristic is that it sets up guardrails.
 Hydraulic redistribution is precluded and extraction is capped.
