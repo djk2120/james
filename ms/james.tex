@@ -184,23 +184,20 @@ Our goal:
     Water supply is modeled via Darcy's Law where flow is proportional to the gradient in water potential. 
     Flow of water ($q$) is the product of the path hydraulic conductance ($k$) and 
     the gradient in water potential (accounting for change in gravitational potential). 
-    Equation \ref{eq:darcy} represents the flow from node 1 to node 2. 
+    Equation \ref{eq:darcy} represents the flow from a generic node 1 to node 2. 
     
      \begin{linenomath*}
      \begin{equation}
      \label{eq:darcy}
-     q = k\left(\psi_1 - \psi_2 - \rho g \Delta z\right)
+     q = -k\left(\psi_2 - \psi_1 - \rho g \Delta z\right)
      \end{equation}
      \end{linenomath*}
     
     PHS does not represent plant tissue water storage (by circuit analogy: capacitance). 
-    Capacitance significantly complicates the water potential solution \citep{celia1990}
-    and is challenging to parameterize \citep{bartlett2016}. "Capacitive water release and internal leaf water relocation delay drought-induced cavitation in African Maesopsis eminii" Steppe
-    However, buffering of water stress provided by tissue water storage could potentially be important
-    especially on sub-daily timescales \citep{meinzer2009}, "Capacitive water release and internal leaf water relocation delay drought-induced cavitation in African Maesopsis eminii" whereby its inclusion may be warranted 
-    in future model generations.
+    Capacitance significantly complicates the water potential solution \citep{celia1990} and is challenging to parameterize \citep{bartlett2016}.   
+     However, buffering of water stress provided by tissue water storage could potentially be important especially on sub-daily timescales \citep{meinzer2009,epila2017}, whereby its inclusion may be warranted in future model generations.
 
-     Vegetation segment conductance is modeled with empirical xylem vulnerability curves \citep{tyree1989}, 
+     Vegetation segment conductance is modeled following empirical xylem vulnerability curves \citep{tyree1989}, 
      where segments lose conductance with increasing xylem tension related to 
      cavitation and embolism \citep{holbrook2001}.
      The vulnerability curves model loss of conductance relative to maximum conductance using two parameters: 
@@ -208,8 +205,8 @@ Our goal:
      $p_{50}$, the water potential at 50\% loss of segment conductance (following \cite{gentine2016}). 
      These parameters can be estimated from field experiments \citep{sack2002}, 
      and $p_{50}$ is available in the TRY trait database \citep{kattge2011}.
-     Parameterization based on $p_{50}$ is especially attractive in light of the call for transition to
-     a trait-based model paradigm \citep{anderegg2015a}.
+     Parameterization based on $p_{50}$ aligns with the call for a transition to a
+     trait-based model paradigm \citep{anderegg2015a}.
      The loss of xylem conductivity is based on lower terminus water potential ($\psi_1$)
      as is typical in other simplified models \citep{xu2016}, but 
      may underestimate the integrated loss of conductivity \citep{sperry2015}. 
@@ -221,12 +218,12 @@ Our goal:
      \end{equation}
      \end{linenomath*}
      
-     PHS models root, stem, and leaf conductances according to equation \ref{eq:vulnerability}.
-     The parameterization of $k_{\text{max}}$ varies by hydraulic segment (see details in Appendix zqz).
-     The conductance across the matrix from soil to root follows \citet{williams2001} and \citet{bonan2014} 
-     to estimate the distance between roots for the length-scaling of soil conductance.
+     PHS models root, stem, and leaf tissue conductances according to equation \ref{eq:vulnerability}.
+     The parameterization of $k_{\text{max}}$ varies by hydraulic segment (see details in Appendix B1).
+     The conductance across the soil matrix to the root surface follows \citet{williams2001} and \citet{bonan2014} 
+     to estimate a characteristic distance between roots for the length-scaling of soil conductivity.
      Bulk soil resistivity is based on \citet{clapp1978} as described in \citet{oleson2013}.
-     For a more complete description see Appendix zqz.
+     Further details are provided in Appendix B1.
     
 %Water demand
     \subsubsection{Water demand}
