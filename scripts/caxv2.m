@@ -75,7 +75,7 @@ ff = [0,0,0,0,0,...  %1
     0,0,0,0,0,...    %5
     0,0,0,0,0,...    %6
     0,0,0,0,0,...    %7
-    0,1];
+    0,0,1];
 
 %2  = water potential
 %3  = timeseries
@@ -2698,7 +2698,45 @@ if ff(37)>0
         
         out(ct) = 1800*tot;
     end
-        
+ 
+end
+
+
+if ff(38)>0
+    %delta soil water?
+    out = zeros(4,1);
+    i = 0;
+    for ss=0:20:60
+        i=i+1;
+    dz = zs(2:end)-zs(1:end-1);
+    out(i) = dz*(h2osoi((1:20)+ss,end)-h2osoi((1:20)+ss,1));
+    end
     
+    %cumulative ET?
+    targ = fctr+fcev+fgev;
+    4e-7*1800*sum(targ,2)
+    
+    %rootfr weighted PHS smp
+    ix = year==2003&month==11;
+    zr(2:end)*mean(smp(62:80,ix),2)
+    
+    out = zeros(20,1);
+    for ss=1:20
+        out(ss) = sum(zr(ss:20));
+    end
+    
+    [zs(1:end-1)',out];
+    
+    fr=(zs(15)-3)/(zs(15)-zs(14));
+    out(15)+fr*zr(14);
+    
+    out = zeros(12,1);
+    xv  = [0,cumsum(eomday(2001,1:12))];
+    oneto = [zeros(1,365)-10,1:365]';
+    for mm=1:12
+        ix = oneto>xv(mm)&oneto<=xv(mm+1);
+        out(mm) = mean(p(ix&p(:,2)>0,2));
+    end
+    totsap = eomday(2001,1:12)*out;
     
 end
