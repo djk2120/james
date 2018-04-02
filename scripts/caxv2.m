@@ -2708,8 +2708,45 @@ if ff(38)>0
     i = 0;
     for ss=0:20:60
         i=i+1;
+        dz = zs(2:end)-zs(1:end-1);
+        out(i) = dz*(h2osoi((1:20)+ss,end)-h2osoi((1:20)+ss,1));
+    end
+    
+    %delta soil water, by year?
     dz = zs(2:end)-zs(1:end-1);
-    out(i) = dz*(h2osoi((1:20)+ss,end)-h2osoi((1:20)+ss,1));
+    out2 = zeros(4,3);
+    for yy=1:3
+    i = 0;
+    ix1 = year==(2000+yy)&doy==1&mcsec==diurn(10);
+    ix2 = year==(2000+yy)&doy==365&mcsec==diurn(30);
+    for ss=0:20:60
+        i=i+1;
+        
+        out2(i,yy) = dz*(h2osoi((1:20)+ss,ix2)-h2osoi((1:20)+ss,ix1));
+    end
+    end
+    
+    xdk = figure;
+    plot(dz*(h2osoi(21:40,:)-h2osoi(1:20,:)),'k','LineWidth',2)
+    hold on
+    plot(dz*(h2osoi(61:80,:)-h2osoi(41:60,:)),'LineWidth',2,'Color',0.5*ones(1,3))
+    set(gca,'xtick',0:365*48:365*48*3)
+    set(gca,'xticklabel',2001:2004)
+    xlim([0,365*48*3])
+    ylim([-1.4,0])
+    grid on
+    box off
+    legend('PHS','SMS')
+    xlabel('Year')
+    ylabel('TFE-AMB total soil water (m)')
+    
+    xdk.Units = 'inches';
+    xdk.Position = [2,2,7,4];
+    xdk.PaperSize = [7,4];
+    xdk.PaperPosition = [0,0,7,4];
+    
+    if ff(38)>0
+        print(xdk,'../figs2/suppsoilwater','-dpdf')
     end
     
     %cumulative ET?
