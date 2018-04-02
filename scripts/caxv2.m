@@ -2782,4 +2782,7 @@ if ff(39)>0
     ix = year==2003&month>1&month<5;
     1800*4e-7*sum(fctr([1,3],ix),2)
     
+    1800*sum(sum(qrootsink(1:4,ix)))
+    ix2 = year==2003&month>8&month<12;
+    1800*sum(sum(qrootsink(1:4,ix2)))
 end

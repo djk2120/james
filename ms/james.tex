@@ -730,37 +730,29 @@ But now we are, which is a big benefit of modeling vegetation water potential.
 
 \subsection{Root Water Uptake}
 
-Hydraulic conductance is used to model root water uptake, which is calculated as a flux of water ($q_i$) extracted from each of the vertically discretized soil layers ($i=\left[1,2,...,n\right]$).
+Hydraulic conductance is used to model root water uptake, which is calculated as a flux of water ($q_i$) 
+extracted from each of the vertically discretized soil layers ($i=\left[1,2,...,n\right]$).
 These fluxes are used as the soil transpiration sink terms within the Richards equation and, summed over the soil column, are equivalent to the transpiration flux.
-PHS adopts a new framework for root water uptake, resulting in altered root water uptake dynamics.
+As described above (and in Section \ref{sect:btran}), PHS adopts a new framework for root water uptake. 
+This section examines the consequences of this new framework on the dynamics of root water uptake.
 
-Dry season water uptake Figure \ref{fig7} 
-ambient, 
-PHS more surface extraction (Fig \ref{fig7}a)
-PHS surface extraction (Fig \ref{fig7}b, black/solid) responds to precip (Fig \ref{fig7}d),
-SMS does not.
+The vertical profile of root water uptake is presented in Figure \ref{fig7}a, averaged over the 2003 dry season (SON). 
+PHS simulations (black color), feature more surface extraction, especially under ambient throughfall conditions (Fig\ref{fig7}a).
+Likewise, PHS cumulative extraction from near-surface soil (Fig\ref{fig7}b), clearly responds to precipitation, with increased surface extraction after rain events.
+Under ambient conditions the SMS partitioning of extraction between near-surface and depth is not sensitive to precipitation.
+The responses of near-surface extraction to TFE are opposing for PHS and SMS.
+PHS near-surface extraction decreases with TFE, while SMS increases.
 
-With tfe,
-Neither PHS nor SMS, extracts much from between 0.5 and 4m, (3.18 cm and 0.56 cm, respectively, over three months).
-Both compensate by increasing extraction from below 4m, but PHS to a much larger extent.
-Surface extraction decreases substantially for PHS (Fig \ref{fig7}b),
-but increases slightly for SMS.
-PHS continues to respond to precip.
-SMS now has a slight response to precip.
+Under TFE, both PHS and SMS extract minimal water from between 0.5 and 4m, (3.18 cm and 0.56 cm, respectively, over the three months).
+They compensate by increasing extraction from below 4m, but PHS to a much larger extent, which corresponds to overall significantly more root water uptake during TFE.
 
-Wet season Figure \ref{fig8}
-A lot more precip, steadier precip.
-
-ambient,
-PHS more surface extraction, with net extraction zero beyond about 38 centimeters.
-SMS extracts more than half its water from beyond 1 meter in depth.
-
-tfe,
-PHS surface extraction increases further, in service of more HR.
-HR is not going to depth, but rather to between 0.32 and 4.64m in depth.
-There is extraction beyond 4.64 meters (albeit minimal, 6.7 mm over the 89 days)
-SMS surface extraction increases 3.33 to 4.75 cm, from ambient to TFE.
-SMS deep extraction decreases 21.6 to 17.2 cm, from ambient to TFE.
+The same curves are presented for the 2003 wet season (Figure \ref{fig8}).
+These months (FMA) feature much more and much steadier rain.
+PHS responds with an increase in the proportion of water extraction from near the surface.
+Under ambient conditions net extraction is zero beyond about 38 centimeters.
+In comparison, SMS extracts more than half its water from beyond 1 meter in depth.
+With TFE, PHS extraction is negative beyond 20 centimeters.
+This is HR.
 deep roots \citep{nepstad1994}
 
 HR has been observed in the field \citep{oliveira2005}, and has been highlighted as an important missing feature from CLM \citep{lee2005}.
