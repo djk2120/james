@@ -75,7 +75,7 @@ ff = [0,0,0,0,0,...  %1
     0,0,0,0,0,...    %5
     0,0,0,0,0,...    %6
     0,0,0,0,0,...    %7
-    0,0,1];
+    0,0,0,1];
 
 %2  = water potential
 %3  = timeseries
@@ -2745,7 +2745,7 @@ if ff(38)>0
     xdk.PaperSize = [7,4];
     xdk.PaperPosition = [0,0,7,4];
     
-    if ff(38)>0
+    if ff(38)>1
         print(xdk,'../figs2/suppsoilwater','-dpdf')
     end
     
@@ -2775,5 +2775,11 @@ if ff(38)>0
         out(mm) = mean(p(ix&p(:,2)>0,2));
     end
     totsap = eomday(2001,1:12)*out;
+    
+end
+
+if ff(39)>0
+    ix = year==2003&month>1&month<5;
+    1800*4e-7*sum(fctr([1,3],ix),2)
     
 end

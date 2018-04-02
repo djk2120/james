@@ -686,24 +686,24 @@ We opt for a simplified form of this last approach, which seems to be consistent
 PHS introduces prognostic vegetation water potential to CLM.
 In CLM5 vegetation water potential has two distinct interfaces with the greater model.
 As above, leaf water potential is used to effect water stress for the photosynthesis/stomatal conductance routines.
-Secondly, we use root water potential to calculate root water uptake.
-Root water uptake is synonymous with the soil transpiration sink term in Richard's equation for unsaturated subsurface flow of water.
+Secondly, root water potential is used to calculate root water uptake.
 PHS represents root water uptake via the Darcy framework ($q=-k\Delta\psi$).
-Though this representation best conforms with our physical understanding of root water uptake, it is not often implemented in land-surface models.
+This flux is used as the soil transpiration sink term in Richards equation for unsaturated subsurface flow of water.
+Though this representation reflects our physical understanding of root water uptake, it is not often implemented in land-surface models.
 More typically, a heuristic is used to partition the transpiration sink throughout the soil column (need ref).
 CLM (with SMS) employs such a heuristic, based on root fraction and a soil wilting factor. 
-By recasting this heuristic into the hydraulic framework (Section \ref{sect:btran}), it is possible to
-compare hydraulic conductance values associated with root water uptake from SMS vs. PHS.
+In Section \ref{sect:btran}, we recast this heuristic into a hydraulic framework, making it easier to compare the two paradigms for root water uptake.
+In this section, we compare hydraulic conductance values associated with root water uptake from SMS vs. PHS.
 
 Soil-to-root conductance ($k_{sr}$) is explicitly represented in PHS, modeled as a function of soil potential (zqz).
 With SMS, $k_{sr}$ is not explicitly modeled, but it can be inferred, by dividing root water uptake by the gradient in water potential (see Section \ref{sect:btran}).
-In Figure \ref{fig:cond}, we plot the time-series of conductance values from Soil Layer 3 (spans from 6 to 12 centimeters below the surface) under ambient throughfall conditions during 2003.
+In Figure \ref{fig:cond}, we plot the time-series of conductance values from Soil Layer 3 (spanning from 6 to 12 centimeters below the surface) under ambient throughfall conditions during 2003.
 
 During the wet season, PHS conductance is greater than SMS by more than two orders of magnitude (Fig \ref{fig:cond}a,b).
-In addition to absolute differences, the relative dynamics are very different between paradigms.
-PHS conductance is relatively steady through the wet season (Fig \ref{fig:cond}a), followed by 
+The relative dynamics are likewise very different between paradigms.
+PHS conductance is generally steady through the wet season (Fig \ref{fig:cond}a), followed by 
 a steady decline over the dry season with short resurgence episodes associated with rain events.
-SMS is highly dynamic with more variability relative to the mean (Fig \ref{fig:cond}b).
+SMS conductance features more variability relative to the mean (Fig \ref{fig:cond}b).
 During FMA-2003, average intra-day standard deviation of Layer 3 conductance is 4.6e-12 s$^{-1}$ with PHS and 9.9e-12 s$^{-1}$ with SMS. 
 In an absolute sense the SMS standard deviation is about twice as large as PHS.
 The difference is larger in a relative sense, as that standard deviation is 0.08\% of the mean FMA conductance with PHS
@@ -711,16 +711,19 @@ and 62.9\% of the mean FMA conductance with SMS.
 
 The SMS inferred conductance is tethered to transpiration (see Section \ref{sect:btran}), which leads to the high variance.
 This leads to SMS having a clear diurnal cycle in the inferred Layer 3 conductance (Supp Fig \ref{supp:cond}). 
-Instead PHS uses brooks-corey and root xylem vulnerability to calculate conductance, which better reflects our understanding of the physical process and the temporal dynamics.
+Instead PHS calculates $k_{sr}$ based on soil hydraulic properties and root xylem vulnerability, 
+which better reflects our understanding of the physical process and the temporal dynamics.
 As a result conductance is less variable, with the expected responses to drydown (loss of conductance) and re-wetting (increased conductance).
-This is demonstrated in Figure 7, where we plot the daily mean conductance from Soil Layer 3.
+This is further demonstrated in Figure 7, where we plot the daily mean conductance from Soil Layer 3.
 With 60\% throughfall exclusion (Fig7a, dotted line), PHS conductance decreases, whereas with SMS, the daily mean conductance increases (Fig7b).
+The latter conflicts with extensive literature demonstrating loss of conductivity with drying.
 
-The average SMS and PHS Layer 3 conductance for well-watered conditions (i.e. wet season, ambient throughfall) differ by about two orders of magnitude.
+Why are the conductance values so different. >2 orders of magnitude for amb-FMA-2003, is quite a difference. 
+Given $q=-k\Delta\psi$, and transpiration not so different (23.4 PHS vs. 24.9 cm SMS), the result is much different gradient in water potential.
 The SMS extraction gradient is measured relative to $\psi_c$ (a parameter defining soil potential with stomates fully closed), which equals -2.5MPa for BET.
 The PHS extraction gradient is relative to root water potential which during 2003 (ambient throughfall) varies between -0.02 and -0.23 MPa.
-Even as a leaf pull -2.5 MPa is too large during the wet season, but it really doesn't make sense to pull from the leaves, because the soil layers aren't in parallel to the leaves. 
-Near surface $\psi$, before stem pressure drop is the more appropriate driving force, and it varies seasonally, way lower than -2.5 wet season.
+SMS $k_{sr}$ is inferred, and is a direct consequence of $\psi_c$.
+\citet{fisher2006} found ``stem'' water potential consistently higher (less negative) than -0.5MPa.
 
 With TFE, PHS Layer 3 conductance can approach the values seen in SMS. 
 The average Layer 3 conductance with PHS for August 2003 (60\%TFE) is 4.75e-11 s$^{-1}$ as compared to 3.89e-11 s$^{-1}$ for SMS.
