@@ -768,23 +768,30 @@ Either way, we should also find new ways to constrain root water uptake with obs
 \subsection{Hydraulic redistribution}
 
 Hydraulic redistribution (HR) refers to reverse fluxes of water through vegetation root tissue, enabling redistribution of soil water from moist to dry regions within the soil column.
-With PHS, reversed flux into a soil layer will arise if the soil water potential is more negative than $\psi_{\text{root}}$ (adjusting for gravity).
+With PHS, reversed flux (into a soil layer) will arise if the soil water potential in the given soil layer is more negative than $\psi_{\text{root}}$ (adjusting for gravity).
 The vertical redistribution can occur in both directions, typically downward after a rain event, and upward during dry episodes \citep{burgess1998}.
 
-Figure \ref{fig9} shows the total hydraulic redistribution by month for 2003. 
+Figure \ref{fig9} shows the total hydraulic redistribution (summing all negative root water uptake) by month for 2003. 
 The darker shading shows the portion of HR that occurs at night [6pm,6am). 
-Note that only PHS is simulations are shown, because SMS disallows hydraulic redistribution.
+Note that only the PHS simulations are shown, because SMS disallows hydraulic redistribution.
 
 Under ambient conditions HR totals to 41.3 cm (10.3 day, 31.0 night). 
 HR declines slightly to 37.0 cm (11.5 day, 25.5 night) with TFE.
 For reference, transpiration over the same time period was 120 and 99 cm for ambient and TFE conditions, respectively.
-The TFE simulation has less HR overall in 2003, but more HR during wet months, Feb-June.
+More HR occurs over night, due to root water potential drops associated with transpiration.
+The TFE simulation has less HR overall, but more HR during wet months, Feb-June, 
+associated with the drier TFE soils and larger gradients in moisture from surface to depth.
+
+HR is predominately downwards during the wet season (FMA), serving to diminish the gradient between the newly-wetted surface and still-dry depths.
+Redistribution occurs in both directions during the dry season (SON), downwards after rain events, and upwards with drying.
+Only with TFE, and only during the dry season, is there significant extraction beyond 6 meters.
+There is very little water deposited at depths beyond 6 meters at any point in either simulation.
+We opted to nullify the hydraulic conductance in the uppermost soil layer to prevent excessive HR.
 
 
-
-HR predominately downwards during wet season (FMA)
-HR in both directions during dry season (SON)
 Supp Figures \ref{supp:hr} and \ref{supp:hr2}
+
+The dynamics are as expected.
 
 Flows out of layer2 can be fast, and can run round the clock, which leads to faster draining after rain events as compared to SMS.
 Supp Figure \ref{supp:layer2}
