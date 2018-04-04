@@ -274,7 +274,7 @@ Our goal:
     
     PHS solves for the set of vegetation water potential values ($\psi$) that matches water supply
     (root water uptake) to water demand (transpiration), while satisfying continuity across the four water flow
-    segments (soil-to-root, root-to-stem, stem-to-leaf, and leaf-to-transpiration). 
+    segments (soil-to-root, root-to-stem, stem-to-leaf, and leaves-to-transpiration). 
     We compute the flux divergence $f$ (representing the mismatch of flow in and out of each segment)
     for a given set of vegetation water potential values $\psi_i$, and iteratively update $\psi$ until $f\to0$.
     
@@ -321,13 +321,10 @@ Our goal:
     (a 4x4 matrix with six null entries) is easy to invert when well-conditioned. 
     Supply and demand converge, because transpiration demand decreases with more negative 
     leaf water potentials and supply increases with more negative leaf water potentials.
-    
-    Furthermore several simplifications were made that decrease the numerical complexity.
-    For the purposes of the PHS solution, soil potentials are assumed constant during each timestep.
-    During each PHS iteration (\ref{eq:iter}), transpiration is assumed to be linear with $f_w$,
-    which precludes updating leaf temperature and intercellular CO$_2$.
-    Plant tissue water storage (capacitance) is not represented, whereby the solution does not
-    depend on the previous timestep and has no time derivatives.
+    Within a set of PHS iterations (\ref{eq:iter}), transpiration is assumed to be linear with $f_w$.
+    PHS is nested within iterations for intercellular CO$_2$ concentration and leaf temperature.
+    The non-linear relationship between $f_w$ and transpiration is resolved through iteration for converging $f_w$ alongside intercellular CO$_2$.
+    Details on the numerical implementation are provided in Appendix Section B.1.
 
 %====================
 %  EXP DESCRIPTION
@@ -1356,6 +1353,11 @@ We use the transpiration solution (corresponding to the final solution for $\psi
 The $\beta_t$ values are used in the Photosynthesis module (see section \ref{sect:A}) to apply water stress. 
 The solution for $\psi$ is saved as a new variable (vegetation water potential) and is indicative of plant water status.
 The soil-to-root fluxes $\left( q_{3,1},q_{3,2},\text{...},q_{3,n}\right)$ are used as the soil transpiration sink in the Richards' equation subsurface flow equations.
+
+    Furthermore several simplifications were made that decrease the numerical complexity.
+    For the purposes of the PHS solution, soil potentials are assumed constant during each timestep.
+    Plant tissue water storage (capacitance) is not represented, whereby the solution does not
+    depend on the previous timestep and has no time derivatives.
 
 \acknowledgments
  = enter acknowledgments here =
