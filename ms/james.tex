@@ -640,45 +640,50 @@ PHS suppresses variability of GPP.
 
 \subsection{Stress factor, diurnal cycle}
 
-PHS introduces a diurnal cycle to $f_w$, the CLM water stress factor (Fig \ref{fig4}a). 
-The SMS version of $f_w$ has no diurnal cycle because it depends only on soil potential (Fig \ref{fig4}b).
-Instead, PHS uses leaf water potential (e.g. Fig \ref{fig:vwp}a,b) to model water stress, which imparts a sensitivity to transpiration demand.
+In addition to changes in the annual cycle, PHS introduces a diurnal cycle to $f_w$, the CLM water stress factor (Fig \ref{fig4}a). 
+The SMS version of $f_w$ has little diurnal variability (Fig \ref{fig4}b), because it is a function of soil water potential, which lacks a significant diurnal cycle.
+Instead, PHS uses a function of leaf water potential (e.g. Fig \ref{fig:vwp}a,b) to model water stress, which imparts a sensitivity to transpiration demand.
 Leaf water potential declines with decreasing soil potential, but also with increasing transpiration demand.
-Transpiration demand is a function of VPD, solar radiation (via photosynthesis), and other variables.
+Transpiration demand is a function of VPD, solar radiation (via photosynthesis), and other variables, which impart a diurnal cycle.
 
-The relationship with VPD and soil potential is shown in Figure \ref{fig:vpd}, where we plot a subset of $f_w$ data from the four simulations. 
+The relationship with VPD and soil potential is shown in Figure \ref{fig:vpd}, where we plot a subset of $f_w$ data for each of the four simulations. 
 To emphasize the relationship with VPD, data are subsetted for a small window in downwelling solar radiation (between 400 and 425 W/m2).
 For the TFE simulations (panels $c$ and $d$), we also subset for years 2002 and 2003, because TFE was not active during most of 2001.
-Points are colored based on soil potential, splitting the data from each plot into terciles, blue points are wettest, red points driest, and yellow points intermediate (see zqz).
+Points are colored based on soil potential, splitting the data from each plot into terciles, blue points are wettest, red points driest, and yellow points intermediate.
+For details on the soil water classification and radiation subsetting see Section zqz.
 
 As expected the SMS version of $f_w$ has a clear dependence on soil potential, but no relationship with VPD (Fig \ref{fig:vpd}b,d). 
 Drier soil potentials are associated with lower values of $f_w$, which corresponds to more stress.
 With PHS, there is a clear dependence of $f_w$ on VPD, where higher VPD results in more stress (Fig\ref{fig:vpd}a,c).
 Under ambient throughfall conditions (Fig\ref{fig:vpd}a), the soil water potential has minimal influence.
-In Figure \ref{fig:vpd}c, TFE leads to drier soils, and a combined dependence of PHS $f_w$ on VPD and soil water.
+In Figure \ref{fig:vpd}c, TFE leads to drier soils and a combined dependence of PHS $f_w$ on VPD and soil water.
 Similar effects are shown in response to downwelling solar radiation (Supp Fig \ref{supp:fsds}).
 
-
 Stomatal optimization theory predicts stomatal conductance to maximize assimilation relative to water costs ($A-\lambda E$).
-Much recent work has focused on concurrent limitations on plant hydrodynamics, especially in response to drying soils.
-For example, plants must also manage the risk of cavitation associated with increasing xylem tension.
+Much recent work has focused on concurrent limitations on plant hydrodynamics, especially in response to drying soils \citep{manzoni2013b,novick2016a,zhou2014}.
+For example, plants must also manage the risk of cavitation associated with increasing xylem tension \citep{sperry1998}.
 
-We are taking the point of view that Medlyn well-watered makes sense, but it does need a water status factor.
-We are not changing the Medlyn parameters with drying, similarly to observations (Lin et al. 2018).
-Soil water is a viable option for measuring water status \citep{drake2017}, which supports an SMS type approach.
+Water stress factors (in our case, $f_w$), are used to model so-called non-stomatal limitation. 
+Uncertainty remains within the literature for how to apply water stress to photosynthesis and stomatal conductance.
+One line of reasoning eschews the optimization of $A-\lambda E$ in favor of hydraulic costs \citep{sperry2017},
+Studies also explore soil water adjustments to the marginal water cost, implemented by adjusting $\lambda$ or Medlyn's $g1$ based on soil water \citep{manzoni2013b}.
+However, this may underestimate drought effects on photosynthesis \citep{zhou2013,lin2018}.
+Yet other groups take a hybrid approach, combining Medlyn stomatal conductance, with hydraulic constraints and/or 
+so-called non-stomatal limitation, attenuating $V_{\text{cmax}}$ or mesophyll conductance
+(which feeds back through photosynthesis to lower stomatal conductance) \citep{egea2011,novick2016a}.
+We opt for a simplified form of this last approach, which seems to be consistent with field observations \citep{lin2018}.
+
+The PHS implementation couples stomatal optimization theory (via the Medlyn model) with 
+non-stomatal limitation applied by a water stress factor ($f_w$).
+We opt not to change the Medlyn parameters with drying, but rather apply stress to $V_{\text{cmax}}$
+Though there is limited evidence of down-regulation of $V_{\text{cmax}}$, this was the best option within CLM 
+for applying stress through the GPP term of the stomatal conductance model, in accordance with field observations \citep{lin2018,zhou2013}.
+If in future versions of CLM, mesophyll conductance is represented, it may be a more appropriate avenue for achieving the same effect.
+Stress is applied with declining water status.
+Soil water is a common option for measuring water status \citep{drake2017}, which is in line with an SMS type approach.
 However it doesn't capture the dual effects of supply and demand on xylem tension.
 Note that we aren't "double-counting" VPD, but expressing to modes of limitation Medlyn optimization vs. cavitation avoidance.
 So we couple Medlyn to vcmax attenuated based on leaf water potential as suggested by Lin et al. 2018.
-
-Water stress factors (in our case, $f_w$), are used to model so-called non-stomatal limitation. 
-
-No one answer is accepted within the field for how to apply water stress to photosynthesis and stomatal conductance.
-One line of reasoning eschews the optimization of $A-\lambda E$ in favor of hydraulic costs \citep{sperry2017},
-Studies also explore soil water adjustments to lambda \citep{manzoni2013b}, though this may underestimate drought effects \citep{zhou2013}.
-Yet other groups take a hybrid approach, combining Medlyn stomatal conductance, with hydraulic constraints and/or 
-so-called non-stomatal limitation, attenuating vcmax or mesophyl conductance
-(which feeds back through photosynthesis to lower stomatal conductance) \citep{egea2011,novick2016a}.
-We opt for a simplified form of this last approach, which seems to be consistent with field observations \citep{lin2018}.
 
 \subsection{Hydraulic conductance}
 
