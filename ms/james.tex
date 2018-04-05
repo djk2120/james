@@ -605,8 +605,8 @@ coupled via the stomatal conductance model and the intercellular CO$_2$ concentr
 
 Previously (SMS) $f_w$ was an empirical function of root-zone soil matric potential (see Section \ref{sect:btran}).
 With PHS, it is modeled as a function of leaf water potential (Section \ref{sect:demand}).
-Once calculated, the implementation of the stress factor are the same (in either case, $f_w$ multiplies $v_{\text{cmax}}$).
-However the dynamics of the two formulations are quite different
+Once calculated, the implementations of the stress factor are the same (in either case, $f_w$ multiplies $v_{\text{cmax}}$),
+however the dynamics of the two formulations are quite different.
 With SMS $f_w$ only responds to changes in soil potential,
 whereas with PHS the stress factor also responds to transpiration demand.
 
@@ -614,25 +614,23 @@ Figure \ref{fig:mm} shows monthly mean values of the water stress factor, gross 
 over the three-year simulation for PHS versus SMS under ambient and 60\% throughfall exclusion conditions.
 Under ambient throughfall conditions, the SMS simulation features less stress (Fig \ref{fig:mm}b), with
 no stress ($f_w$>0.99) in 24 out of 36 months.
-PHS predicts more stress (Fig \ref{fig:mm}a), with stress clearly in sync with the evolution of midday leaf water potential (Figure \ref{fig:vwp}).
-As a result, with PHS, $f_w$ is generally lowest in September, which is associated with high transpiration demand (Fig \ref{fig:mm}e).
-Under ambient conditions, SMS predicts no stress ($f_w$>0.99) during September for each of the three years of the simulation.
+PHS predicts more stress (Fig \ref{fig:mm}a), with stress in sync with the evolution of midday leaf water potential (Figure \ref{fig:vwp}).
+As a result, $f_w$ is generally lowest in September, which is associated with high transpiration demand (Fig \ref{fig:mm}e).
+Alternatively, SMS predicts no stress ($f_w$>0.99) during any of the three Septembers of the ambient simulation.
 Instead $f_w$ is generally lowest in December, which is associated with lower soil moisture (Supp Fig \ref{supp:smp})
 
-The effect of TFE accumulates.
-With PHS, TFE adds 30\% and 47\% in Nov 2002 and Nov 2003, for example.
-With SMS, TFE adds 60\% and 88\% in Oct 2002 and Sept 2003, for example.
+Throughfall exclusion (which initiates on November 1, 2001) adds stress in both SMS and PHS.
+The added stress is greater and onset faster with SMS.
+In both cases, the effect of TFE accumulates in time, with less photosynthesis and transpiration in 2003 compared to 2002.
+This is not reflected in the sap flux observations, which features a faster onset of reduced transpiration, and similar transpiration between 2002 and 2003.
 
-Neither really gets TFE (even with soil parameter tinkering), especially the quick onset.
-Difference in sensitivity to TFE is at least partly attributable to differences in root water uptake (see section zqz).
-PHS and SMS parameters are out-of-the-box.
-Maybe we could get closer by editing those parameters?
-
-\cite{fisher2006} report dry season soil potential as -0.17 MPa in the ambient plot and -0.66 MPa in the TFE plot.
-These are drier than predawn root water potential in our simulations.
-May indicate we need to increase krmax, to decrease access to deep water, which would dry the simulation a bit.
-Likewise \cite{fisher2006} report no difference between TFE and AMB lwp, but we had a drop of 0.79MPa.
-This could indicate that our trees are not sufficiently isohydric, could look at lower p50 and/or increasing ck.
+In both SMS and PHS, soil water is used to buffer shortfalls in precipitation versus transpiration (Supp Fig \ref{supp:buff}).
+Difference in sensitivity to TFE is at least partly attributable to differences in root water uptake (see Section \ref{sect:rwu}), 
+where PHS utilizes more deep soil water to mitigate declines in root-zone soil moisture.
+Significant uncertainty in soil and root distribution parameters, though we did tune them for this simulation.
+Observations indicate the trees here adopt an isohydric behavior, where declines in soil moisture 
+are tightly coupled with reduced transpiration, which mitigates decreases in leaf water potential \citep{fisher2006}.
+As such, the default parameter values for both stress implementations may be insufficiently isohydric.
 
 Talk about sensitivity to VPD, physical.
 PHS does look nice compared to ambient sap flux.
@@ -736,6 +734,7 @@ It's a workaround that's necessary when you aren't modeling the gradient in wate
 But now we are, which is a big benefit of modeling vegetation water potential.
 
 \subsection{Root Water Uptake}
+\label{sect:rwu}
 
 Hydraulic conductance is used to model root water uptake, which is calculated as a flux of water ($q_i$) 
 extracted from each of the vertically discretized soil layers ($i=\left[1,2,...,n\right]$).
@@ -1113,7 +1112,7 @@ The clear takeaway is that this process is starved for observations, and is a re
      \centering
      \includegraphics[width=30pc]{../figs2/suppsoilwater.pdf}
      \caption{Delta soil water}
-     \label{supp:soilwater}
+     \label{supp:buff}
   \end{figure}
   
   

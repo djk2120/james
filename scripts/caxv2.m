@@ -75,7 +75,7 @@ ff = [0,0,0,0,0,...  %1
     0,0,0,0,0,...    %5
     0,0,0,0,0,...    %6
     0,0,0,0,0,...    %7
-    0,0,0,1];
+    0,0,1,0];
 
 %2  = water potential
 %3  = timeseries
@@ -2775,6 +2775,15 @@ if ff(38)>0
         out(mm) = mean(p(ix&p(:,2)>0,2));
     end
     totsap = eomday(2001,1:12)*out;
+    
+    
+    figure
+    ot = (1:730)';
+    ix = ot<366&p(:,2)>0;
+    plot(ot(ix),p(ix,2),'rx')
+    hold on
+    ix = ot>365&p(:,2)>0;
+    plot(ot(ix)-365,p(ix,2),'bx')
     
 end
 
