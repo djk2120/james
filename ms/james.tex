@@ -43,19 +43,18 @@ In addition to stress from soil moisture drought, vegetation are susceptible to 
 Increases in vapor pressure deficit (VPD) are expected \citep{ficklin2017,seager2015}, with associated impacts on vegetation \citep{williams2013,mcdowell2015}.
 However, significant uncertainty remains regarding how vegetation will respond to changes in hydroclimate within large-scale Earth System Models \citep{dekauwe2017,friedlingstein2014}.
 
-Much work has been 
+Plant hydrodynamic parameterizations are important in Earth System Models, as
+they define a notion of vegetation water status that is used to modulate transpiration, photosynthesis, and root water uptake. 
+This has broad effects on critical land surface process.
+On diurnal timescales this will influence partitioning of latent versus sensible heat with effects on temperature.
+On longer timescales this will affect the global carbon and water cycles, as well as subsurface hydrology.
+Representation in CLM and other models is known deficiency, with implications for the representation of the dry/wet season in tropical rainforests \citep{powell2013,ukkola2016}.
 
-SPAC representation is important, defines:
-  - vegetation water status
-  - atmospheric carbon sink
-  - hydrologic transpiration sink
-  - magnitude and timing of transpiration
-  - more importantly can connect atmopsheric dryness to soil water status
-
-Representation in CLM is known deficiency, with implications for the rpresentation of the dry/wet season in tropical rainforests
-  - also in other models
-      . \citep{powell2013,ukkola2016}
-
+Many recent studies have worked to advance the representation of water flow through the Soil-Plant-Atmosphere continuum in models \citep{xu2016,christoffersen2016,sperry2017}.
+We pick up this thread, installing a simplified plant hydraulic representation into CLM5.
+Our model introduces prognostic vegetation water potential, which is used to define plant water status for the purposes of modeling root water uptake and drought stress attenuation of photosynthesis and transpiration.
+Utilizing a plant hydraulic framework extends the vegetation hydrodynamics parameterization, by explicitly modeling the flow of water through vegetation substrate.
+This allows for a better representation differing water use strategies, and, very importantly, connects the notion of vegetation water status with atmospheric dryness.
 
 Adds complexity, is it worth it, tractable? I think it might be off topic here, discuss in the discussion sectin
        . hydraulic traits too hard \citep{drake2017}?, but people are doing it \citep{xu2016,christoffersen2016}
