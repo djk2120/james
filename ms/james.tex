@@ -337,24 +337,22 @@ Our goal:
     Throughout this paper we refer to the CLM4.5 plant hydrodynamics framework as SMS (soil moisture stress), 
     as compared to the newer implementation, PHS (plant hydraulic stress).
     We adopt this terminology (in lieu of CLM4.5 vs. CLM5), because SMS is still deployable with CLM5. 
-    All simulations in this paper use the same development version of CLM5, changing only the plant hydrodynamics model and the throughfall forcing.
     In this section we present the SMS version of $f_w$ and outline the differences as compared to PHS.
     
     With SMS, $f_w$ is calculated based on soil matric potential, as a root-fraction weighted average of a soil layer wilting factor (Equation \ref{bt:1}).
-    This value multiplies $v_{\text{cmax}}$, effecting attenuation of photosynthesis and transpiration with drought.
+    This value multiplies $V_{\text{cmax}}$, attenuating photosynthesis and transpiration with drought.
     Recent studies suggest that the SMS parameterization introduces model bias in turbulent fluxes \citep{bonan2014}
     and contributes to unrealistic drought response of photosynthesis and stomatal conductance \citep{powell2013}.
-    Furthermore, if $f_w$ represents a plant hydraulic safety mechanism, attenuating stomatal conductance to avoid
+    Furthermore, given that $f_w$ represents a drought safety mechanism, attenuating stomatal conductance to avoid
     dangerously low leaf water potentials, it makes sense to represent more of the hydraulic architecture (a la SPA or PHS)
     and assess hydraulic safety based on prognostic leaf water potential.
     
-    With SMS, $f_w$ also sets the framework for vegetation soil water extraction. 
-    Each timestep, $f_w$ is calculated and used to solve for photosynthesis and transpiration.
-    The transpiration flux must then be distributed among the vertically discretized soil layers.
-    In the SMS framework, the transpiration sink is partitioned by layer according to the layer wilting factor and root fraction.
-    This framework leaves out several key physical attributes of soil water extraction, which are addressed in the PHS implementation.
+    This parameterization is also used to define vegetation soil water extraction. 
+    Each timestep, the transpiration flux solution must be distributed among the vertically discretized soil layers.
+    In the SMS framework, the transpiration sink is partitioned by layer according to the soil layer wilting factor and root fraction.
+    This framework lacks several key physical attributes of soil water extraction, which are addressed in the PHS implementation.
     
-    $f_w$ is unitless, ranging from 0 to 1, with 1 corresponding to no water stress, and 0 corresponding to fully water stressed. 
+    The variable $f_w$ is unitless, ranging from 0 to 1, with 1 corresponding to no water stress, and 0 corresponding to fully water stressed. 
     It is calculated based on a root-fraction weighted average of soil layer wilting factor ($w_i$), which is a bounded linear 
     function of soil water potential ($\psi_i$) relative to PFT parameters defining the soil potential with stomates fully open ($
     \psi_{o}$) and fully closed ($\psi_{c}$). Note that root fraction ($r_i$) must sum to 1.
@@ -369,11 +367,11 @@ Our goal:
     \end{equation}
     \end{linenomath*}
     
-    SMS uses $f_w$ to attenuate photosynthesis and stomatal conductance with soil water stress. 
-    It is also used for modeling vegetation water extraction from the soil column. 
-    The total transpiration ($T$) is partitioned among the soil layers, based on the $f_w$ framework of soil water availability. 
+    In both stress parameterizations, $f_w$ multiplies $V_{\text{cmax}}$ to attenuate photosynthesis and stomatal conductance with soil water stress. 
+    With SMS, it is also directly used for modeling vegetation water extraction from the soil column. 
+    The total transpiration ($T$) is partitioned among the soil layers, based on the $f_w$ wilting factor. 
     For each soil layer ($i$), the flux to transpiration ($q_i$) is calculated as the layer root fraction times the layer wilting factor, normalized by $f_w$. 
-    This guarantees that the total soil water extraction equals the transpiration.
+
     \begin{linenomath*}
     \begin{equation}
     \label{bt:4}
@@ -387,16 +385,15 @@ Our goal:
     \begin{linenomath*}
     \begin{equation}
         \begin{aligned}
-    q_i &= k_i \Delta\psi \\
-    \Delta\psi &= \left(\psi_{i}-\psi_{\text{root}}-\Delta\psi_{\rho g,i} \right)
+    q_i &= -k_i \Delta\psi \\
+    \Delta\psi &= \left(\psi_{\text{root}}-\psi_{i}-\rho g \Delta z\right)
     \label{phs:sink}
     \end{aligned}
     \end{equation}
     \end{linenomath*}
     
-    With some manipulation, we recast (\ref{bt:4}) into the hydraulic framework. We define $T_{\text{max}}$, such that: $T = 
-    f_w T_{\text{max}}$ and use this expression to replace $T$ in (\ref{bt:4}).  Likewise we replace $w_i$ in (\ref{bt:4}) with the 
-    formula from (\ref{bt:2}).
+    With some manipulation, we recast (\ref{bt:4}) into the hydraulic framework: defining $T_{\text{max}}$, such that: $T = 
+    f_w T_{\text{max}}$ to replace $T$ in (\ref{bt:4}), and replacing $w_i$ in (\ref{bt:4}) with the formula from (\ref{bt:2}).
     
     \begin{linenomath*}
     \begin{equation} 
@@ -404,32 +401,24 @@ Our goal:
     \end{equation}
     \end{linenomath*}
     
-    This yields SMS analogs for the two terms of Equation \ref{phs:sink}.
+    This yields SMS analogs for the hydraulic conductance and gradient terms of Equation \ref{phs:sink}.
     \begin{linenomath*}
     \begin{equation} \begin{aligned}
     k_i &= r_i \, \dfrac{T_{max}}{\psi_{o}-\psi_{c}} \\
-    \Delta\psi &= \psi_i - \psi_{c} \\
+    \Delta\psi &=  \psi_{c}-\psi_i \\
     \mbox{constrained by:} \qquad
     \Delta\psi &=
     \begin{cases}
     0                          & \text{if } \psi_i<\psi_{c}  \\
-    \psi_{o}-\psi_{c} & \text{if } \psi_i>\psi_{o}
+    \psi_{c}-\psi_{o} & \text{if } \psi_i>\psi_{o}
     \label{kb}
     \end{cases}
     \end{aligned}\end{equation}
     \end{linenomath*}
 
-    Issues with the SMS representation of the soil transpiration sink: 
-
-    In Figure \ref{fig:cond}, we compare conductance values derived from the PHS and SMS implementations.
-    With SMS, $k$ is not explicitly modeled, so instead we infer $k$, 
-    by dividing $q_i$ by $\Delta\psi$ as defined in Equation \ref{kb}.
-    Furthermore, we interpret the constraint that $\Delta\psi$ be greater than or equal to zero to mean 
-    that conductance is zero in non-conforming cases. As such, we say $k=0$ when $\Delta\psi<\text{1 kPa}$.
+    Here we discuss some of the unphysical implications for root water uptake from the former parameterization of water stress (Equation 15).
     
-    Here we dsicuss some of the unphysical implications fof the former parametwriaztion of water sterss. Issues with the SMS representation of the soil transpiration sink: 
-    
-    (1) Constant pulling potential \\
+    \subsection{Constant pulling potential}
     Darcy's Law governs the flow of water through the soil-plant-atmosphere continuum, 
     with fluxes proportional to the gradient in water potential. 
     With SMS, that gradient is defined for each soil layer as 
@@ -439,21 +428,21 @@ Our goal:
     Using a constant wilting point is inconsistent with extensive evidence from the field of dynamic vegetation water potential, and cohesion tension theory diving the transpiration flow.
     Likewise the values for $\psi_{c}$ are quite negative, (-2.5 MPa for broadleaf evergreen tropical). 
     
-    (2) Conductance dynamics \\
+    \subsection{Conductance dynamics}
     In lieu of dynamic vegetation water potential, intra-day SMS soil sink dynamics derive from a highly variable conductance.
     As inferred in Equation \ref{kb}, SMS conductance is modeled as a function of $T_{max}$, and three constant parameters.
     $T_{max}$ is highly dynamic, responding to the diurnal course in transpiration demand.
     This is inconsistent with general principles of porous media flow, where conductivity is a function of the hydraulic architecture and its wetted status.
     Likewise, this representation of conductance does not represent the characteristic phenomenon where vessels lose conductance with drying.
       
-    (3) No dependence on absolute root biomass \\
+    \subsection{No dependence on absolute root biomass}
     As is typical, the SMS conductance is scaled by layer using an area basis.
     In this case the relative root fraction is used.
     With PHS, an absolute measure of root biomass is used (see Appendix Equation \ref{eq:rai}) so that the belowground water cycle interacts with carbon allocation to the roots.
     An absolute measure better conforms with the physics of porous media flow and better responds to varying carbon allocation strategies.
     For example, with SMS, if root mass double in every soil layer, the root access to water remains unchanged.
 
-    (4) Lacks penalties for extraction from depth \\
+    \subsection{Lacks penalties for extraction from depth}
     PHS implements two penalties for extracting water from deep in the soil column that are missing from SMS.
     The first is minor, but water extracted from depth must overcome gravity. 
     This amounts to about 0.01 MPa per meter in depth. 
@@ -463,7 +452,7 @@ Our goal:
     in the conductance governing the flux across the soil matrix to the root surface.
     Both PHS and SMS account for the effect of decreasing root area with depth (PHS, root area; SMS, root fraction).
     
-    (5) Constraints \\
+    \subsection{Constraints}
     With SMS, the gradient in water potential is constrained between 0 and 
     the range of soil potential between parameters for stomata fully open and closed (Equation \ref{kb}). 
     The upper constraint caps the gradient in water potential when soil potential reaches the value for stomata fully open.
@@ -476,6 +465,7 @@ Our goal:
 %  EXP DESCRIPTION
 %====================
 \section{Experiment Description}
+    All simulations in this paper use the same development version of CLM5, changing only the plant hydrodynamics model and the throughfall forcing.
 CLM5 (development version) 
 https://github.com/ESCOMP/ctsm/releases/tag/clm4
 \textunderscore 5\textunderscore 18\textunderscore r270
@@ -532,6 +522,13 @@ SMS does not represent hydraulic conductance, but instead defines a heuristic fo
 In Section \ref{sect:btran}, we recast this heuristic into the hydraulic framework.
 This establishes a definition of $\Delta\psi_i$, from which we can infer an SMS version of $k_i$ from standard output, by dividing $q_i$ by $-\Delta\psi_i$.
 
+
+
+    In Figure \ref{fig:cond}, we compare conductance values derived from the PHS and SMS implementations.
+    With SMS, $k$ is not explicitly modeled, so instead we infer $k$, 
+    by dividing $q_i$ by $\Delta\psi$ as defined in Equation \ref{kb}.
+    Furthermore, we interpret the constraint that $\Delta\psi$ be greater than or equal to zero to mean 
+    that conductance is zero in non-conforming cases. As such, we say $k=0$ when $\Delta\psi<\text{1 kPa}$.
 
 \subsection{Hydraulic redistribution}
 define HR
