@@ -56,28 +56,24 @@ On longer timescales vegetation water use strategies regulate the global carbon 
 Representation of vegetation water stress in CLM and other models is a known deficiency, with implications for the representation of the dry/wet season in tropical rainforests \citep{powell2013,ukkola2016}.
 
 Many recent studies have worked to advance the representation of water flow through the Soil-Plant-Atmosphere continuum in models \citep{xu2016,christoffersen2016,sperry2017}.
-Why is that attractive?
- - Model structure follows straightforward physics, darcy's law
- - While parameter estimation is challenging, trait information is available \citep{kattge2011,anderegg2015a} and valuable \citep{choat2012}
+SPAC adds complexity, but is in line with evidence of complex regulation of water use in response to both soil and atmospheric drying \citep{sperry2015}.
+ - Model structure grounded in strong physical basis, darcy's law
+ - Parameter estimation is challenging \citep{drake2017}, but trait information is available \citep{kattge2011,anderegg2015a} and valuable \citep{choat2012}
  - Likewise vegetation water status available at a scale that is relevant to model developement \citep{konings2016,grant2016} and valuable \citep{momen2017,konings2017b}
- - eschews bad empirical RWU
- - easy avenue to represent HR
- - can advance the modeled connection between allocation decisions and water access
- - evidence of complex regulation of water use in response to both soil and atmospheric drying
- - vegwp ends up being a really nice metric for water status
+Allows you to model vegetation water potential, subject to a range of plant water use strategies
+ - with vwp we can eschew bad empirical RWU and unphysical constraints 
+ - vegwp ends up being a really nice metric for water status, because it reflects vegetation sensitivity to both soil and atmospheric drying
+ - can be used to couple non-stomatal drought stress to the Medlyn stomatal conductance model
+ - advances the modeled connection between allocation decisions and water availability
 
-
-We pick up this thread, installing a simplified plant hydraulic representation into CLM5.
-Our model introduces prognostic vegetation water potential, which is used to define plant water status for the purposes of modeling root water uptake and drought stress attenuation of photosynthesis and transpiration.
-Utilizing a plant hydraulic framework extends the vegetation hydrodynamics parameterization, by explicitly modeling the flow of water through the vegetation substrate.
-This allows for a better representation of differing water use strategies, and, very importantly, connects the notion of vegetation water status with atmospheric dryness.
-
-
-  
 Our goal:
   - simplified plant hydraulic implementation
-  - setting a framework to represent vegetation water potential, which
-  (1) is pretty appealing as the functional argument for several land surface processes, limits some of the discrepancies observed in terms of water stress repsonse
+  - setting a framework to represent vegetation water potential, which is a very cool state variable
+  - use vegwp to improve parameterization of drought stress and root water uptake
+
+This study:
+  - looking at a critical biome subject to experimental throughfall exclusion
+  - demonstrating improved model dynamics achieved through modeling vegetation water potential
 
 
 %====================
