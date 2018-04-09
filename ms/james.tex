@@ -481,35 +481,47 @@ This study:
 %  EXP DESCRIPTION
 %====================
 \section{Experiment Description}
-    All simulations in this paper use the same development version of CLM5, changing only the plant hydrodynamics model and the throughfall forcing.
-CLM5 (development version) 
-https://github.com/ESCOMP/ctsm/releases/tag/clm4
-\textunderscore 5\textunderscore 18\textunderscore r270
-satellite phenology (lai)
-gap-filled tower meteorology (fisher)
+All four simulations in this paper use the same development version of CLM5
+(development version r270, https://github.com/ESCOMP/ctsm/releases/tag/clm4
+\textunderscore 5\textunderscore 18\textunderscore r270). 
+Simulations differ in only the plant hydrodynamics model (PHS vs. SMS) and throughfall forcing (Ambient vs. 60\% throughfall excluded).
+Simulations are run offline, spanning from 2001 through 2003, utilizing the satellite phenology mode of CLM5.
+All simulations start from the same initial conditions, which are the results of a 9-year spin-up repeating the PHS/Ambient simulation forcing three times.
+For descriptions of site characteristics, forcing data, and observational sap flux, please see \cite{fisher2007}.
 
-kmax =  4e-7 m/s
-krmax = 6.31e-9 m/s (7.94e-9 mm/s)
-p50 = -2.5e5 mm (-2.4e5 mm)
+\subsection{Parameter Values and Throughfall Exclusion}
 
-g0 = 100
-g1 = 7
+\begin{table}
+\caption{Select parameter values}
+\centering
+\begin{tabular}{c c c c}
+CLM name & Full Name & Symbol &  Value \\
+\hline
+kmax(1) & Maximum Sun Branch Conductance & $k_{1a,\text{max}}$ &  4e-7 s$^{-1}$ \\
+kmax(2) & Maximum Shade Branch Conductance & $k_{1b,\text{max}}$ &  4e-7 s$^{-1}$ \\
+kmax(3) & Maximum Stem Conductivity & $k_{2,\text{max}}$ &  4e-7 m/s \\
+krmax & Maximum Root Conductivity & $k_{r,\text{max}}$ &  6.3e-9 m/s \\
+psi50 & Water potential at 50\% loss of conductivity & $\psi_{50}$ &  -2.45 MPa \\
+ck & Vulnerability shape parameter & $c_k$ &  3.95 \\
+smpso & Soil Potential with stomata fully open & $\psi_o$ & -0.647 MPa \\
+smpsc & Soil Potential with stomata fully closed & $\psi_c$ & -2.5 MPa \\
+medlyn\textunderscore intercept & Medlyn intercept & $g_0$ &  100 $\mu$mol / m2 / s \\
+medlyn\textunderscore slope & Medlyn slope & $g_1$ &  7 kPa$^{0.5}$ \\
+n & Soil porosity & $n$ & 0.42 \\
+hksat & Saturated soil hydraulic conductivity & $k_{\text{s,max}}$ & 1.5e-5 m/s \\
+sucsat & Saturated soil matric potential & $\psi_{\text{sat}}$ & 461 Pa \\
+bsw & Brooks-Corey parameter & $b$ & 6 \\
+\hline
+\multicolumn{2}{l}{$^{a}$Table note text here.}
+\end{tabular}
+\end{table}
 
-changes from out-of-the-box
-double kmax (was 2e-7)
-almost double g1 (was 4.12, 4.45)
-others same
-
-need to figure how much of which PFTs these runs have
 
 Informed by \cite{fisher2008}, we tuned soil parameters to get in range of 
 \cite{fisher2007} Figure 4, is top 3m soil water, with our results shown in Supp Fig \ref{top3m}.
 We also increased throughfall exclusion to 60\%, which is higher than reported, in order to better match sap flux obs.
 
-n = 0.42 (-)
-bsw = 6 (-)
-sucsat = 47 (mm)
-hksat = .015 (mm/s)
+
 60\% throughfall exclusion
 
 sapflux observation description
