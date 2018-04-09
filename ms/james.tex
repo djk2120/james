@@ -92,24 +92,24 @@ Our goal:
     following \citet{farquhar1980} and \citet{harley1992}.The implementation extends \citet{sellers1996a,sellers1996b} with 
     colimitation following \citet{collatz1991}. 
     
-    CLM5 photosynthesis, in its default configuration, is a two-big-leaf model, with a sunlit and shaded leaf per PFT per gridcell \citep{thornton2007, dai2004, oleson2013}. 
+    CLM5 photosynthesis, in its default configuration, is a two-big-leaf model, with a sunlit and shaded leaf for each plant functional type \citep{thornton2007, dai2004, oleson2013}. 
     The canopy fluxes module iterates for leaf surface energy balance.
     Within this, the photosynthesis module iterates to solve for intercellular CO$_2$ concentration, balancing stomatal flux of 
     CO2 with photosynthetic assimilation flux of CO2.
     
     Vegetation water stress is implemented via the vegetation water stress factor ($f_w$, dimensionless, 0 to 1, formerly $\beta_t$). 
-    Many different approaches for how to apply stress \citep{zhou2013,novick2016a}.
-    In CLM $f_w$ multiplies the rate of maximum carboxylation ($V_{\text{cmax}}$) as described in \citet{oleson2013}.
-    While many models opt for soil-moisture based stomatal limitation (linking Medlyn slope to soil moisture),
-    \cite{lin2018} found that only g0 was sensitive to soil moisture (and not g1).
-    \cite{zhou2013} suggests that changes in assimilation tend to exceed those predicted by a g1 connected to soil moisture, but could be captured by changing vcmax.
-    Some field studies suggest Vcmax is not changing with drought, whereby model Vcmax instead may implicitly account for mesophyll conductance changes.
+    There are many different approaches for how to apply stress \citep{zhou2013,novick2016a,sperry2015}.
+    In CLM, $f_w$ multiplies the rate of maximum carboxylation ($V_{\text{cmax}}$) as described in \citet{oleson2013}.
+    While many models opt for soil-moisture based stomatal limitation (linking the stomatal conductance model slope parameter to soil moisture),
+    \cite{lin2018} found that only $g_0$ was sensitive to soil moisture (and not $g_1$).
+    \cite{zhou2013} suggests that changes in assimilation tend to exceed those predicted by modulating $g_1$ with soil moisture, but could be captured by changing $V_{\text{cmax}}$.
+    Some field studies suggest $V_{\text{cmax}}$ is not changing with drought, whereby model $V_{\text{cmax}}$ instead may implicitly account for mesophyll conductance changes.
     
     With PHS, $f_w$ replaces the CLM4.5 transpiration beta function ($\beta_t$). 
     These factors are used by the photosynthesis model in the same way, but calculated differently. 
-    The parameterization for $f_w$ is based on leaf water potential (see Section \ref{sect:demand}) . 
-    For $\beta_t$, the parameterization is based on soil water potential (see Section \ref{sect:btran}).
-    The switch to leaf water potential adopts the framework where stomatal conductance optimized for carbon gain is concurrently limited by hydraulic constraints \citep{novick2016a}
+    The PHS parameterization for $f_w$ is based on leaf water potential (see Section \ref{sect:demand}) . 
+    Previously the parameterization was based on soil water potential (see Section \ref{sect:btran}).
+    Utilizing leaf water potential adopts a framework where stomatal conductance optimized for carbon gain is concurrently limited by hydraulic constraints \citep{novick2016a}.
 
 
 %Stomatal Conductance
@@ -117,7 +117,7 @@ Our goal:
 \label{sect:gs}
     CLM5 uses the Medlyn stomatal conductance model, which reconciles the empirical and optimal approaches to modeling 
     stomatal conductance \citep{medlyn2011}. 
-    Stomatal conductance of CO2 is related to net photosynthesis ($A_n$), atmospheric CO2 concentration at the leaf surface 
+    Stomatal conductance of CO2 is related to net photosynthesis ($A_n$), CO2 concentration at the leaf surface 
     ($C_a$), and the square root of the vapor pressure deficit near the leaf surface ($\sqrt{D}$).
     \begin{equation}
     g_s=g_0+\left(1+\dfrac{g_1}{\sqrt{D}}\right)\dfrac{A}{C_a}
@@ -126,14 +126,27 @@ Our goal:
     The $g_0$ parameter is minimum stomatal conductance, representing cuticular and epidermal losses (small). 
     The $g_1$ parameter relates to the marginal water cost guiding the optimization of carbon assimilation.
     
-    The Medlyn model optimizes carbon gain versus water ``costs'', but does not resolve concurrent limitations to stomatal conductance
-    associated with drought conditions.
-    Most implementations include a drought stress factor that attenuates $g_1$ with drying or some form of non-stomatal limitation.
+    The Medlyn model, derived from stomatal optimization theory, predicts stomatal conductance to maximize assimilation relative to water costs ($A-\lambda E$), 
+    but does not resolve concurrent limitations to stomatal conductance associated with drought conditions.
+    Much recent work has focused on concurrent limitations on plant hydrodynamics, especially in response to drying soils \citep{manzoni2013b,novick2016a,zhou2014}.
+    For example, plants must also manage the risk of cavitation associated with increasing xylem tension \citep{sperry1998}.
+    Stomatal representation within land surface models typically include a drought stress factor, with various approaches for where to apply stress.
+    
+    Drought stress factors (in our case, $f_w$), are used to model stomatal and non-stomatal limitation associated with water stress.
+    Uncertainty remains within the literature for how to apply water stress to photosynthesis and stomatal conductance.
+    One line of reasoning eschews the optimization of $A-\lambda E$ in favor of hydraulic costs \citep{sperry2017},
+    Studies also explore soil water adjustments to the marginal water cost, implemented by adjusting $\lambda$ or Medlyn's $g1$ based on soil water \citep{manzoni2013b}.
+    However, this may underestimate drought effects on photosynthesis \citep{zhou2013,lin2018}.
+    Yet other groups take a hybrid approach, combining optimal stomatal conductance, with hydraulic constraints and/or
+    so-called non-stomatal limitation, attenuating $V_{\text{cmax}}$ or mesophyll conductance
+    (which feeds back through photosynthesis to lower stomatal conductance) \citep{egea2011,novick2016a}.
+    
+    We opt for a simplified form of this last approach, which seems to be consistent with field observations \citep{lin2018}.
     For PHS, the attenuation of stomatal conductance due to water stress follows the CLM4.5 formulation as described in \citet{oleson2013} and \citet{bonan2011}. 
     Prognostic water stress ($f_w$, ranging from 0-1) attenuates stomatal conductance indirectly via multiplication of $V_{\text{cmax}}$.
     Water stress lowers assimilation, which is coupled to stomatal conductance.
     
-    Discuss the differnt possible choices such as 
+
 
 % Plant Hydaulics
 \subsection{Plant Hydraulic Stress (PHS)}
@@ -664,20 +677,6 @@ With PHS, there is a clear dependence of $f_w$ on VPD, where higher VPD results 
 Under ambient throughfall conditions (Fig\ref{fig:vpd}a), the soil water potential has minimal influence.
 In Figure \ref{fig:vpd}c, TFE leads to drier soils and a combined dependence of PHS $f_w$ on VPD and soil water.
 Similar effects are shown in response to downwelling solar radiation (Supp Fig \ref{supp:fsds}).
-
-Stomatal optimization theory predicts stomatal conductance to maximize assimilation relative to water costs ($A-\lambda E$).
-Much recent work has focused on concurrent limitations on plant hydrodynamics, especially in response to drying soils \citep{manzoni2013b,novick2016a,zhou2014}.
-For example, plants must also manage the risk of cavitation associated with increasing xylem tension \citep{sperry1998}.
-
-Water stress factors (in our case, $f_w$), are used to model so-called non-stomatal limitation. 
-Uncertainty remains within the literature for how to apply water stress to photosynthesis and stomatal conductance.
-One line of reasoning eschews the optimization of $A-\lambda E$ in favor of hydraulic costs \citep{sperry2017},
-Studies also explore soil water adjustments to the marginal water cost, implemented by adjusting $\lambda$ or Medlyn's $g1$ based on soil water \citep{manzoni2013b}.
-However, this may underestimate drought effects on photosynthesis \citep{zhou2013,lin2018}.
-Yet other groups take a hybrid approach, combining Medlyn stomatal conductance, with hydraulic constraints and/or 
-so-called non-stomatal limitation, attenuating $V_{\text{cmax}}$ or mesophyll conductance
-(which feeds back through photosynthesis to lower stomatal conductance) \citep{egea2011,novick2016a}.
-We opt for a simplified form of this last approach, which seems to be consistent with field observations \citep{lin2018}.
 
 The PHS implementation couples stomatal optimization theory (via the Medlyn model) with 
 non-stomatal limitation applied by a water stress factor ($f_w$).
