@@ -37,25 +37,25 @@ Pierre Gentine\affil{1}
 \section{Introduction}
 
 Trees face emerging climate change risk globally \citep{allen2010,anderegg2013b}.
+Capturing vegetation response is a high priority, especially within Amazonia.
 While there are disagreements about soil moisture trends globally \citep{dai2013,sheffield2012}, 
 Amazonia is facing increasing frequency of El Nino \citep{cai2014} and a lengthening dry season \citep{fu2013}.
 In addition to stress from soil moisture drought, vegetation are susceptible to increasing atmospheric transpiration demand \citep{restaino2016,novick2016b}.
 Increases in vapor pressure deficit (VPD) are expected \citep{ficklin2017,seager2015}, with associated impacts on vegetation \citep{williams2013,mcdowell2015}.
-However, significant uncertainty remains regarding how vegetation will respond to changes in hydroclimate within large-scale Earth System Models \citep{dekauwe2017,friedlingstein2014}.
+However, significant uncertainty remains regarding how vegetation will respond to changes in hydroclimate within Earth System Models \citep{dekauwe2017,friedlingstein2014}.
+In this study, we update the CLM plant hydrodynamic parameterization based on hydraulic theory, 
+analyzing its dynamics with a set of point simulations set within the Caxiuan\~a throughfall exclusion experiment \citep{fisher2006}.
 
-Plant hydrodynamic parameterizations are important in Earth System Models, as
-they define a notion of vegetation water status that is used to modulate transpiration, photosynthesis, and root water uptake. 
+Plant hydrodynamic parameterizations are important in Earth System Models, calculating water use through time.
+Vegetation water use strategies modulate carbon uptake, creating a critical coupling between the Earth System's carbon and hydrological cycles.
+Within models drought stress parameterizations are used to define a notion of vegetation water status 
+that is used to modulate transpiration, photosynthesis, and root water uptake. 
 This has broad effects on critical land surface process.
 On diurnal timescales this will influence partitioning of latent versus sensible heat with effects on temperature.
 On longer timescales this will affect the global carbon and water cycles, as well as subsurface hydrology.
-Representation in CLM and other models is known deficiency, with implications for the representation of the dry/wet season in tropical rainforests \citep{powell2013,ukkola2016}.
+Representation of vegetation water stress in CLM and other models is a known deficiency, with implications for the representation of the dry/wet season in tropical rainforests \citep{powell2013,ukkola2016}.
 
 Many recent studies have worked to advance the representation of water flow through the Soil-Plant-Atmosphere continuum in models \citep{xu2016,christoffersen2016,sperry2017}.
-We pick up this thread, installing a simplified plant hydraulic representation into CLM5.
-Our model introduces prognostic vegetation water potential, which is used to define plant water status for the purposes of modeling root water uptake and drought stress attenuation of photosynthesis and transpiration.
-Utilizing a plant hydraulic framework extends the vegetation hydrodynamics parameterization, by explicitly modeling the flow of water through vegetation substrate.
-This allows for a better representation differing water use strategies, and, very importantly, connects the notion of vegetation water status with atmospheric dryness.
-
 Adds complexity, is it worth it, tractable? I think it might be off topic here, discuss in the discussion sectin
        . hydraulic traits too hard \citep{drake2017}?, but people are doing it \citep{xu2016,christoffersen2016}
   - Trait information is available \citep{kattge2011,anderegg2015a} and valuable \citep{choat2012}
@@ -64,12 +64,19 @@ Adds complexity, is it worth it, tractable? I think it might be off topic here, 
 Model structural information
   - there are some reasons to believe PHS offers better model structure,
   e.g. medlyn wants a hydraulic constraint, opens up darcy root water uptake, connect atmospheric dryness to plant water status
+
+
+We pick up this thread, installing a simplified plant hydraulic representation into CLM5.
+Our model introduces prognostic vegetation water potential, which is used to define plant water status for the purposes of modeling root water uptake and drought stress attenuation of photosynthesis and transpiration.
+Utilizing a plant hydraulic framework extends the vegetation hydrodynamics parameterization, by explicitly modeling the flow of water through the vegetation substrate.
+This allows for a better representation of differing water use strategies, and, very importantly, connects the notion of vegetation water status with atmospheric dryness.
+
+
   
 Our goal:
   - simplified plant hydraulic implementation
   - setting a framework to represent vegetation water potential, which
-  (1) is pretty appealing as the functional argument for several land surface processes, limits osome of the discrepancies observed in terms of water stress repsonse
-  (2) generates an interface to trait data, in situ observations of water potential, and satellite VOD \citep{momen2017} (remove - this will be in discssion)
+  (1) is pretty appealing as the functional argument for several land surface processes, limits some of the discrepancies observed in terms of water stress repsonse
 
 
 %====================
