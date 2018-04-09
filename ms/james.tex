@@ -46,24 +46,25 @@ However, significant uncertainty remains regarding how vegetation will respond t
 In this study, we update the CLM plant hydrodynamic parameterization based on hydraulic theory, 
 analyzing its dynamics with a set of point simulations set within the Caxiuan\~a throughfall exclusion experiment \citep{fisher2006}.
 
-Plant hydrodynamic parameterizations are important in Earth System Models, calculating water use through time.
-Vegetation water use strategies modulate carbon uptake, creating a critical coupling between the Earth System's carbon and hydrological cycles.
-Within models drought stress parameterizations are used to define a notion of vegetation water status 
-that is used to modulate transpiration, photosynthesis, and root water uptake. 
-This has broad effects on critical land surface process.
-On diurnal timescales this will influence partitioning of latent versus sensible heat with effects on temperature.
-On longer timescales this will affect the global carbon and water cycles, as well as subsurface hydrology.
+Plant hydrodynamic parameterizations are important in Earth System Models, defining vegetation regulation of latent heat flux.
+Vegetation water use strategies also modulate carbon uptake, creating a critical coupling between the Earth System's carbon and hydrological cycles.
+Typically drought stress parameterizations are used to define a notion of vegetation water status 
+that is used to attenuate transpiration, photosynthesis, and root water uptake with drying.
+The dynamics of water stress in models have broad effects on critical land surface process.
+On diurnal timescales drought parameterizations influence partitioning of latent versus sensible heat with effects on surface temperature.
+On longer timescales vegetation water use strategies regulate the global carbon and water cycles, as well as subsurface hydrology.
 Representation of vegetation water stress in CLM and other models is a known deficiency, with implications for the representation of the dry/wet season in tropical rainforests \citep{powell2013,ukkola2016}.
 
 Many recent studies have worked to advance the representation of water flow through the Soil-Plant-Atmosphere continuum in models \citep{xu2016,christoffersen2016,sperry2017}.
-Adds complexity, is it worth it, tractable? I think it might be off topic here, discuss in the discussion sectin
-       . hydraulic traits too hard \citep{drake2017}?, but people are doing it \citep{xu2016,christoffersen2016}
-  - Trait information is available \citep{kattge2011,anderegg2015a} and valuable \citep{choat2012}
-  - Water status information available at a scale that is relevant to model developement \citep{konings2016,grant2016} and valuable \citep{momen2017,konings2017b}
-
-Model structural information
-  - there are some reasons to believe PHS offers better model structure,
-  e.g. medlyn wants a hydraulic constraint, opens up darcy root water uptake, connect atmospheric dryness to plant water status
+Why is that attractive?
+ - Model structure follows straightforward physics, darcy's law
+ - While parameter estimation is challenging, trait information is available \citep{kattge2011,anderegg2015a} and valuable \citep{choat2012}
+ - Likewise vegetation water status available at a scale that is relevant to model developement \citep{konings2016,grant2016} and valuable \citep{momen2017,konings2017b}
+ - eschews bad empirical RWU
+ - easy avenue to represent HR
+ - can advance the modeled connection between allocation decisions and water access
+ - evidence of complex regulation of water use in response to both soil and atmospheric drying
+ - vegwp ends up being a really nice metric for water status
 
 
 We pick up this thread, installing a simplified plant hydraulic representation into CLM5.
