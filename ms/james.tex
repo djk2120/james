@@ -326,80 +326,6 @@ Our goal:
     Details on the numerical implementation are provided in Appendix Section B.1.
 
 %====================
-%  EXP DESCRIPTION
-%====================
-\section{Experiment Description}
-CLM5 (development version) 
-https://github.com/ESCOMP/ctsm/releases/tag/clm4
-\textunderscore 5\textunderscore 18\textunderscore r270
-satellite phenology (lai)
-gap-filled tower meteorology (fisher)
-
-kmax =  4e-7 m/s
-krmax = 6.31e-9 m/s (7.94e-9 mm/s)
-p50 = -2.5e5 mm (-2.4e5 mm)
-
-g0 = 100
-g1 = 7
-
-changes from out-of-the-box
-double kmax (was 2e-7)
-almost double g1 (was 4.12, 4.45)
-others same
-
-need to figure how much of which PFTs these runs have
-
-Informed by \cite{fisher2008}, we tuned soil parameters to get in range of 
-\cite{fisher2007} Figure 4, is top 3m soil water, with our results shown in Supp Fig \ref{top3m}.
-We also increased throughfall exclusion to 60\%, which is higher than reported, in order to better match sap flux obs.
-
-n = 0.42 (-)
-bsw = 6 (-)
-sucsat = 47 (mm)
-hksat = .015 (mm/s)
-60\% throughfall exclusion
-
-sapflux observation description
-
-
-%====================
-%  ANALYSIS DESCRIPTION
-%====================
-\section{Analysis Details}  
-\subsection{Water potential}
-
-define midday and predawn, point to meaningful stress indicator/soil moisture
-
-\subsection{Diurnal stress forcing}
-lay out vpd methodology
-
-\subsection{Hydraulic conductance}
-PHS introduces a new paradigm for root water uptake to CLM.
-Comparing the dynamics in soil-to-root hydraulic conductance between PHS and SMS serves to highlight key differences.
-In a Darcy hydraulic framework, root water uptake from a given soil layer, $q_i$, is the product of hydraulic conductance and the gradient in water potential.
-\begin{equation}
-q_i = -k_i\Delta\psi_i
-\end{equation}
-PHS explicitly models $k_i$ as a function of soil potential, defined by soil and xylem hydraulic properties.
-SMS does not represent hydraulic conductance, but instead defines a heuristic for partitioning root water uptake among the soil layers.
-In Section \ref{sect:btran}, we recast this heuristic into the hydraulic framework.
-This establishes a definition of $\Delta\psi_i$, from which we can infer an SMS version of $k_i$ from standard output, by dividing $q_i$ by $-\Delta\psi_i$.
-
-
-\subsection{Hydraulic redistribution}
-define HR
-
-\subsection{Soil moisture}
-say predawn root wp ~= rootfr-weighted average
-
-
-    In Figure \ref{fig:cond}, we compare conductance values derived from the PHS and SMS implementations.
-    With SMS, $k$ is not explicitly modeled, so instead we infer $k$, 
-    by dividing $q_i$ by $\Delta\psi$ as defined in Equation \ref{kb}.
-    Furthermore, we interpret the constraint that $\Delta\psi$ be greater than or equal to zero to mean 
-    that conductance is zero in non-conforming cases. As such, we say $k=0$ when $\Delta\psi<\text{1 kPa}$.
-    
-%====================
 %  BTRAN
 %====================
 
@@ -545,6 +471,82 @@ say predawn root wp ~= rootfr-weighted average
     The lower constraint caps the gradient in water potential at zero, disallowing negative gradients.
     However, reversed water fluxes, caused by negative gradients in water potential, have been observed in the field.
     Both constraints are eschewed with PHS.     
+
+%====================
+%  EXP DESCRIPTION
+%====================
+\section{Experiment Description}
+CLM5 (development version) 
+https://github.com/ESCOMP/ctsm/releases/tag/clm4
+\textunderscore 5\textunderscore 18\textunderscore r270
+satellite phenology (lai)
+gap-filled tower meteorology (fisher)
+
+kmax =  4e-7 m/s
+krmax = 6.31e-9 m/s (7.94e-9 mm/s)
+p50 = -2.5e5 mm (-2.4e5 mm)
+
+g0 = 100
+g1 = 7
+
+changes from out-of-the-box
+double kmax (was 2e-7)
+almost double g1 (was 4.12, 4.45)
+others same
+
+need to figure how much of which PFTs these runs have
+
+Informed by \cite{fisher2008}, we tuned soil parameters to get in range of 
+\cite{fisher2007} Figure 4, is top 3m soil water, with our results shown in Supp Fig \ref{top3m}.
+We also increased throughfall exclusion to 60\%, which is higher than reported, in order to better match sap flux obs.
+
+n = 0.42 (-)
+bsw = 6 (-)
+sucsat = 47 (mm)
+hksat = .015 (mm/s)
+60\% throughfall exclusion
+
+sapflux observation description
+
+
+%====================
+%  ANALYSIS DESCRIPTION
+%====================
+\section{Analysis Details}  
+\subsection{Water potential}
+
+define midday and predawn, point to meaningful stress indicator/soil moisture
+
+\subsection{Diurnal stress forcing}
+lay out vpd methodology
+
+\subsection{Hydraulic conductance}
+PHS introduces a new paradigm for root water uptake to CLM.
+Comparing the dynamics in soil-to-root hydraulic conductance between PHS and SMS serves to highlight key differences.
+In a Darcy hydraulic framework, root water uptake from a given soil layer, $q_i$, is the product of hydraulic conductance and the gradient in water potential.
+\begin{equation}
+q_i = -k_i\Delta\psi_i
+\end{equation}
+PHS explicitly models $k_i$ as a function of soil potential, defined by soil and xylem hydraulic properties.
+SMS does not represent hydraulic conductance, but instead defines a heuristic for partitioning root water uptake among the soil layers.
+In Section \ref{sect:btran}, we recast this heuristic into the hydraulic framework.
+This establishes a definition of $\Delta\psi_i$, from which we can infer an SMS version of $k_i$ from standard output, by dividing $q_i$ by $-\Delta\psi_i$.
+
+
+\subsection{Hydraulic redistribution}
+define HR
+
+\subsection{Soil moisture}
+say predawn root wp ~= rootfr-weighted average
+
+
+    In Figure \ref{fig:cond}, we compare conductance values derived from the PHS and SMS implementations.
+    With SMS, $k$ is not explicitly modeled, so instead we infer $k$, 
+    by dividing $q_i$ by $\Delta\psi$ as defined in Equation \ref{kb}.
+    Furthermore, we interpret the constraint that $\Delta\psi$ be greater than or equal to zero to mean 
+    that conductance is zero in non-conforming cases. As such, we say $k=0$ when $\Delta\psi<\text{1 kPa}$.
+    
+
     
 \section{Results and Discussion}
 \subsection{Modeling vegetation water potential}
