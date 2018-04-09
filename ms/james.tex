@@ -104,7 +104,7 @@ Our goal:
     While many models opt for soil-moisture based stomatal limitation (linking the stomatal conductance model slope parameter to soil moisture),
     \cite{lin2018} found that only $g_0$ was sensitive to soil moisture (and not $g_1$).
     \cite{zhou2013} suggests that changes in assimilation tend to exceed those predicted by modulating $g_1$ with soil moisture, but could be captured by changing $V_{\text{cmax}}$.
-    Some field studies suggest $V_{\text{cmax}}$ is not changing with drought, whereby model $V_{\text{cmax}}$ instead may implicitly account for mesophyll conductance changes.
+    Some field studies suggest $V_{\text{cmax}}$ is not changing with drought, whereby model $V_{\text{cmax}}$ instead may implicitly account for mesophyll conductance changes \citep{flexas2004}.
     
     With PHS, $f_w$ replaces the CLM4.5 transpiration beta function ($\beta_t$). 
     These factors are used by the photosynthesis model in the same way, but calculated differently. 
@@ -151,17 +151,15 @@ Our goal:
 
 % Plant Hydaulics
 \subsection{Plant Hydraulic Stress (PHS)}
-  In this study, we implemented a simplified plant hydraulic framework into CLM5.
-  The combined water supply and demand implementations are being called Plant Hydraulic Stress (PHS).
-  Using hydraulic laws and the corresponding circuit analogy, we model the 
-  flow of water through the soil-plant-atmosphere continuum. 
-  The hydraulic framework is used to prognose water stress associated with increasing xylem tension
+  In this study, we implemented a simplified plant hydraulic framework into CLM5 to calculate root water uptake and water stress attenuation of photosynthesis and transpiration.
+  Using hydraulic laws and the corresponding circuit analogy, we model the flow of water through the soil-plant-atmosphere continuum. 
+  The hydraulic framework is used to diagnose water stress associated with increasing xylem tension
   and to calculate the root water uptake in each of (in this case) 20 vertically discretized soil layers.
-  In this way, PHS affects plant hydrodynamics from both the demand and supply sides.
-
-  On the demand side, PHS redefines $f_w$, the CLM water stress factor, switching the basis for measuring plant water status from soil water potential to leaf water potential.
-  On the supply side, PHS uses Darcy's Law to model root water uptake, replacing a soil-wilting-factor heuristic used to partition transpiration among the soil layers.
-  By modeling vegetation water potential, we are able to advance the physical basis of the CLM5 representation of plant water use, and improve the dynamics of turbulent fluxes and root water uptake in response to water stress. 
+  The combined water supply and demand implementations governing vegetation hydrodynamics is called Plant Hydraulic Stress (PHS).
+  On the demand side, PHS redefines $f_w$, the CLM water stress factor, utilizing leaf water potential as its indicator for plant water status in lieu of soil potential.
+  On the supply side, PHS adopts Darcy's Law to model root water uptake, replacing a soil-wilting-factor heuristic.
+  By modeling vegetation water potential, we advance the physical basis plant water use, 
+  improving the dynamics of turbulent fluxes and root water uptake in response to water stress. 
 
   \begin{figure}[h]
      \centering
@@ -177,22 +175,23 @@ Our goal:
   that matches water supply (root water uptake) to water demand (transpiration), 
   while maintaining continuity of water flow throughout the soil-plant-atmosphere continuum.
   The PHS circuit analogy is presented in Figure \ref{circuit}.
-    Design decisions followed a preference for a simplified implementation that,
-  whenever possible, conformed to existing CLM architecture.
+   Segmentation and other model design decisions followed a preference for a simplified implementation that,
+  whenever possible, conformed to existing CLM model structure.
   
-  At each node, we resolve water potential, and, between nodes, we resolve the flux of water.
+  At each node in the circuit diagram, we model water potential, and, between nodes, we resolve the flux of water.
   The segmentation is designed to take advantage of field-measured hydraulic traits and to allow for differences
   in segment parameterizations \citep{simonin2015, sperry2015}.
-  From CLM, we inherit the vertically discretized soil layers and the two-layer (sunlit vs. shaded) canopy.
+  Following from CLM, we utilize vertically discretized soil layers and a two-layer (sunlit vs. shaded) canopy.
+  Soil layers are assumed to operate in parallel, which is a typical assumption justified by higher resistance in lateral versus central roots.
   Based on Darcy's law, we additionally segment the resistance across the soil matrix from the resistance through the root tissue \citep{williams1996}. 
   Specifics on the parameterization of conductance for each segment are provided in Appendix B.1.
 
 %Water Supply
     \subsubsection{Water supply}
     \label{sect:supply}
-    Water supply is modeled via Darcy's Law where flow is proportional to the gradient in water potential. 
+    Water supply is modeled via Darcy's Law, where flow is proportional to the gradient in water potential. 
     Flow of water ($q$) is the product of the path hydraulic conductance ($k$) and 
-    the gradient in water potential (accounting for change in gravitational potential). 
+    the gradient in water potential (accounting for changes in gravitational potential). 
     Equation \ref{eq:darcy} represents the flow from a generic node 1 to node 2. 
     
      \begin{linenomath*}
