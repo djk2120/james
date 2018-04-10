@@ -37,7 +37,7 @@ Pierre Gentine\affil{1}
 \section{Introduction}
 
 Trees face emerging climate change risk globally \citep{allen2010,anderegg2013b}.
-Capturing vegetation response is a high priority, especially within Amazonia.
+Understanding vegetation response is a high priority, especially within Amazonia.
 While there are disagreements about soil moisture trends globally \citep{dai2013,sheffield2012}, 
 Amazonia is facing increasing frequency of El Nino \citep{cai2014} and a lengthening dry season \citep{fu2013}.
 In addition to stress from soil moisture drought, vegetation are susceptible to increasing atmospheric transpiration demand \citep{restaino2016,novick2016b}.
@@ -51,16 +51,18 @@ Vegetation water use strategies also modulate carbon uptake, creating a critical
 Typically drought stress parameterizations are used to define a notion of vegetation water status 
 that is used to attenuate transpiration, photosynthesis, and root water uptake with drying.
 The dynamics of water stress in models have broad effects on critical land surface process.
-On diurnal timescales drought parameterizations influence partitioning of latent versus sensible heat with effects on surface temperature.
-On longer timescales vegetation water use strategies regulate the global carbon and water cycles, as well as subsurface hydrology.
+On diurnal timescales drought parameterizations influence partitioning of latent versus sensible heat with effects on surface temperature \citep{bonan2014}.
+On longer timescales vegetation water use strategies regulate the global carbon and water cycles, as well as subsurface hydrology \citep{dekauwe2015}
 Representation of vegetation water stress in CLM and other models is a known deficiency, with implications for the representation of the dry/wet season in tropical rainforests \citep{powell2013,ukkola2016}.
 
-Many recent studies have worked to advance the representation of water flow through the Soil-Plant-Atmosphere continuum in models \citep{xu2016,christoffersen2016,sperry2017}.
-SPAC adds complexity, but is in line with evidence of complex regulation of water use in response to both soil and atmospheric drying \citep{sperry2015}.
- - Model structure grounded in strong physical basis, darcy's law
- - Parameter estimation is challenging \citep{drake2017}, but trait information is available \citep{kattge2011,anderegg2015a} and valuable \citep{choat2012}
- - Likewise vegetation water status available at a scale that is relevant to model developement \citep{konings2016,grant2016} and valuable \citep{momen2017,konings2017b}
-Allows you to model vegetation water potential, subject to a range of plant water use strategies
+Many recent studies have worked to advance the representation of water flow through the Soil-Plant-Atmosphere continuum (SPAC) in models \citep{xu2016,christoffersen2016,sperry2017}.
+Modeling water flow through the SPAC adds complexity, but is in line with evidence of dynamic regulation of vegetation water use in response to both soil and atmospheric drying \citep{sperry2015}.
+Furthermore, via Darcy's Law, SPAC models have a robust physical basis.
+Parameter estimation is challenging \citep{drake2017}, but hydraulic trait information is available \citep{kattge2011,anderegg2015a} and has been associated with forest vulnerability to drought \citep{choat2012}.
+Likewise vegetation water status observations are available at a scale that is directly relevant to model development \citep{konings2016,grant2016} and can be used to validate model results \citep{momen2017,konings2017b}.
+
+Advancing the representation of the SPAC introduces a new state variable to models, vegetation water potential.
+
  - with vwp we can eschew bad empirical RWU and unphysical constraints 
  - vegwp ends up being a really nice metric for water status, because it reflects vegetation sensitivity to both soil and atmospheric drying
  - can be used to couple non-stomatal drought stress to the Medlyn stomatal conductance model
