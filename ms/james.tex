@@ -568,7 +568,14 @@ This establishes a definition of $\Delta\psi_i$, from which we can infer an SMS 
     that conductance is zero in non-conforming cases. As such, we say $k=0$ when $\Delta\psi<\text{1 kPa}$.
 
 \subsection{Hydraulic redistribution}
-define HR
+Hydraulic redistribution refers to flows of water between soil layers through vegetation substrate.
+With PHS, this occurs when soil potential in a given soil layer ($\psi_i$) is more negative that root water potential ($\psi_{\text{root}}$), resulting in a negative root water uptake ($q_i$) in that soil layer.
+To calculate total HR, we sum all negative root water uptake fluxes.
+For Figure \ref{fig:hr} we partition by month and by local time: at night (summing from 6p.m. to 6a.m.), and during the day (6a.m. to 6p.m.).
+Note that total HR can occur without net negative root water uptake.
+For example, hydraulic lift may occur at night, depositing deep water near the surface.
+If this water is transpired during the day, there could be a certain amount of HR, but no net positive root water uptake.
+This is evident in Figure \ref{fig7}, where there is net positive root water uptake throughout the soil column over the 2003 dry season, alongside significant HR (Fig \ref{fig:hr}).
 
 \subsection{Soil moisture}
 say predawn root wp ~= rootfr-weighted average
@@ -676,36 +683,40 @@ PHS suppresses variability of GPP.
 
 \subsection{Stress factor, diurnal cycle}
 
-In addition to changes in the annual cycle, PHS introduces a diurnal cycle to $f_w$, the CLM water stress factor (Fig \ref{fig4}a). 
-The SMS version of $f_w$ has little diurnal variability (Fig \ref{fig4}b), because it is a function of soil water potential, which lacks a significant diurnal cycle.
-Instead, PHS uses a function of leaf water potential (e.g. Fig \ref{fig:vwp}a,b) to model water stress, which imparts a sensitivity to transpiration demand.
+In addition to changes in the annual cycle, PHS introduces a diurnal cycle to $f_w$ (Fig \ref{fig4}a). 
+The SMS version of $f_w$ has little diurnal variability (Fig \ref{fig4}b).
+The difference between paradigms follows from the functional inputs.
+SMS models water stress a function of soil water potential, which lacks a diurnal cycle.
+Instead, PHS uses a function of leaf water potential (e.g. Fig \ref{fig:vwp}a,b) to model water stress.
 Leaf water potential declines with decreasing soil potential, but also with increasing transpiration demand.
 Transpiration demand is a function of VPD, solar radiation (via photosynthesis), and other variables, which impart a diurnal cycle.
 
-The relationship with VPD and soil potential is shown in Figure \ref{fig:vpd}, where we plot a subset of $f_w$ data for each of the four simulations. 
+The relationship of water stress with VPD and soil potential is shown in Figure \ref{fig:vpd}. 
 To emphasize the relationship with VPD, data are subsetted for a small window in downwelling solar radiation (between 400 and 425 W/m2).
 For the TFE simulations (panels $c$ and $d$), we also subset for years 2002 and 2003, because TFE was not active during most of 2001.
-Points are colored based on soil potential, splitting the data from each plot into terciles, blue points are wettest, red points driest, and yellow points intermediate.
+Points are colored based on soil potential, partitioning the data from each plot into terciles, blue points are wettest, red points driest, and yellow points intermediate.
 For details on the soil water classification and radiation subsetting see Section zqz.
 
-As expected the SMS version of $f_w$ has a clear dependence on soil potential, but no relationship with VPD (Fig \ref{fig:vpd}b,d). 
-Drier soil potentials are associated with lower values of $f_w$, which corresponds to more stress.
-With PHS, there is a clear dependence of $f_w$ on VPD, where higher VPD results in more stress (Fig\ref{fig:vpd}a,c).
-Under ambient throughfall conditions (Fig\ref{fig:vpd}a), the soil water potential has minimal influence.
-In Figure \ref{fig:vpd}c, TFE leads to drier soils and a combined dependence of PHS $f_w$ on VPD and soil water.
+The SMS version of $f_w$ has a clear dependence on soil potential, but no relationship with VPD (Fig \ref{fig:vpd}b,d). 
+Drier soil potentials are associated with lower values of $f_w$ (which corresponds to more stress).
+With PHS, higher VPD results in more stress (Fig\ref{fig:vpd}a,c).
+Under ambient throughfall conditions (Fig\ref{fig:vpd}a), soil water potential has minimal influence.
+With TFE, stress responds to both VPD and soil water (Figure \ref{fig:vpd}c).
 Similar effects are shown in response to downwelling solar radiation (Supp Fig \ref{supp:fsds}).
 
-The PHS implementation couples stomatal optimization theory (via the Medlyn model) with 
-non-stomatal limitation applied by a water stress factor ($f_w$).
-We opt not to change the Medlyn parameters with drying, but rather apply stress to $V_{\text{cmax}}$
-Though there is limited evidence of down-regulation of $V_{\text{cmax}}$, this was the best option within CLM 
+Water stress is applied to capture limitations with declining water status that are not reflected within stomatal optimization theory.
+CLM implements non-stomatal limitation by multiplying $V_{\text{cmax}}$ by $f_w$.
+Though there is limited evidence of down-regulation of $V_{\text{cmax}}$ \citep{flexas2006}, this was the best option within CLM 
 for applying stress through the GPP term of the stomatal conductance model, in accordance with field observations \citep{lin2018,zhou2013}.
 If in future versions of CLM, mesophyll conductance is represented, it may be a more appropriate avenue for achieving the same effect.
-Stress is applied with declining water status.
-Soil water is a common option for measuring water status \citep{drake2017}, which is in line with an SMS type approach.
-However it doesn't capture the dual effects of supply and demand on xylem tension.
-Note that we aren't "double-counting" VPD, but expressing to modes of limitation Medlyn optimization vs. cavitation avoidance.
-So we couple Medlyn to vcmax attenuated based on leaf water potential as suggested by Lin et al. 2018.
+
+Soil water content is a typical basis for diagnosing water status \citep{drake2017}, which is in line with an SMS-type approach.
+While capturing supply limitations, this framework neglects effects of transpiration demand on xylem tension.
+Given constant stomatal conductance, xylem tension increases with declining soil water, but also with increasing vapor pressure deficit.
+While VPD sensitivity is included in the Medlyn model, it serves to mitigate increasing water costs, without consideration of cavitation.
+Evidence suggests that vegetation employ water use strategies to mitigate the risk of cavitation associated with increasing xylem tension \citep{sperry1998,fisher2006,choat2012}.
+Utilizing leaf water potential as the basis for water status reflects this constraint.
+This may be especially important given projected increases in VPD associated with warming.
 
 \subsection{Hydraulic conductance}
 
@@ -817,7 +828,7 @@ Hydraulic redistribution (HR) refers to reverse fluxes of water through vegetati
 With PHS, reversed flux (into a soil layer) will arise if the soil water potential in the given soil layer is more negative than $\psi_{\text{root}}$ (adjusting for gravity).
 The vertical redistribution can occur in both directions, typically downward after a rain event, and upward during dry episodes \citep{burgess1998}.
 
-Figure \ref{fig9} shows the total hydraulic redistribution (summing all negative root water uptake) by month for 2003. 
+Figure \ref{fig:hr} shows the total hydraulic redistribution (summing all negative root water uptake) by month for 2003. 
 The darker shading shows the portion of HR that occurs at night [6pm,6am). 
 Note that only the PHS simulations are shown, because SMS disallows hydraulic redistribution.
 
@@ -1036,7 +1047,7 @@ The clear takeaway is that this process is starved for observations, and is a re
      \includegraphics[width=30pc]{../figs2/fig9.pdf}
      \caption{Total hydraulic redistribution (mm) by month in 2003. For (a) ambient throughfall conditions, and (b) 60\% throughfall exclusion. 
      Darker shading shows portion of HR at night [6pm,6am), lighter shading shows portion of HR during day [6am,6pm).}
-     \label{fig9}
+     \label{fig:hr}
   \end{figure}
 
   
