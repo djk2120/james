@@ -37,9 +37,9 @@ Pierre Gentine\affil{1}
 \section{Introduction}
 
 Trees face emerging climate change risk globally \citep{allen2010,anderegg2013b}.
-Understanding vegetation response is a high priority, especially within Amazonia.
+Understanding vegetation response is a high priority, both for discerning climate impacts and for modeling feedbacks to the carbon and hydrological cycles.
 While there are disagreements about soil moisture trends globally \citep{dai2013,sheffield2012}, 
-Amazonia is facing increasing frequency of El Nino \citep{cai2014} and a lengthening dry season \citep{fu2013}.
+Amazonia has experienced increasing frequency of El Nino \citep{cai2014} and a lengthening dry season \citep{fu2013}.
 In addition to stress from soil moisture drought, vegetation are susceptible to increasing atmospheric transpiration demand \citep{restaino2016,novick2016b}.
 Increases in vapor pressure deficit (VPD) are expected \citep{ficklin2017,seager2015}, with associated impacts on vegetation \citep{williams2013,mcdowell2015}.
 However, significant uncertainty remains regarding how vegetation will respond to changes in hydroclimate within Earth System Models \citep{dekauwe2017,friedlingstein2014}.
@@ -494,13 +494,21 @@ This site features a critical biome subject to experimental throughfall exclusio
 \section{Experiment Description}
 All four simulations in this paper use the same development version of CLM5
 (development version r270, https://github.com/ESCOMP/ctsm/releases/tag/clm4
-\textunderscore 5\textunderscore 18\textunderscore r270). 
-Simulations differ in only the plant hydrodynamics model (PHS vs. SMS) and throughfall forcing (Ambient vs. 60\% throughfall excluded).
+\textunderscore 5\textunderscore 18\textunderscore r270).
+The four simulations are used to vary the plant hydrodynamics model (PHS vs. SMS) and throughfall forcing (Ambient vs. 60\% throughfall excluded), with all other model components and forcing shared.
 Simulations are run offline, spanning from 2001 through 2003, utilizing the satellite phenology mode of CLM5.
-All simulations start from the same initial conditions, which are the results of a 9-year spin-up repeating the PHS/Ambient simulation forcing three times.
-For descriptions of site characteristics, forcing data, and observational sap flux, please see \cite{fisher2007}.
+All simulations start from the same initial conditions, which are the results of a 9-year spin-up repeating the PHS/Ambient simulation three times.
+To avoid duplication, descriptions of site characteristics, forcing data, and observational sap flux, can be found in \cite{fisher2007}.
 
 \subsection{Parameter Values and Throughfall Exclusion}
+
+Select parameter values concerning vegetation hydrodynamics are presented in Table 1.
+All other parameters use the default values associated with the r270 version of CLM5.
+Informed by \cite{fisher2008}, we tuned soil hydraulic parameters and throughfall exclusion to better capture observational soil water dynamics (\cite{fisher2007} Figure 4), with our results shown in Supplementary Figure \ref{top3m}.
+Likewise, we tuned $k_{max}$ and $g_1$ parameters to improve the fit to sap flux observations in the ambient simulation.
+The object of this paper is to present the dynamics of this model instance in depth, to clearly describe model functionality without specific comment on model skill.
+Model skill and parameter sensitivity will be assessed in follow-up studies.
+
 
 \begin{table}
 \caption{Select parameter values}
@@ -514,8 +522,8 @@ kmax(3) & Maximum Stem Conductivity & $k_{2,\text{max}}$ &  4e-7 m/s \\
 krmax & Maximum Root Conductivity & $k_{r,\text{max}}$ &  6.3e-9 m/s \\
 psi50 & Water potential at 50\% loss of conductivity & $\psi_{50}$ &  -2.45 MPa \\
 ck & Vulnerability shape parameter & $c_k$ &  3.95 \\
-smpso & Soil Potential with stomata fully open & $\psi_o$ & -0.647 MPa \\
-smpsc & Soil Potential with stomata fully closed & $\psi_c$ & -2.5 MPa \\
+smpso & Soil potential with stomata fully open & $\psi_o$ & -0.647 MPa \\
+smpsc & Soil potential with stomata fully closed & $\psi_c$ & -2.5 MPa \\
 medlyn\textunderscore intercept & Medlyn intercept & $g_0$ &  100 $\mu$mol / m2 / s \\
 medlyn\textunderscore slope & Medlyn slope & $g_1$ &  7 kPa$^{0.5}$ \\
 n & Soil porosity & $n$ & 0.42 \\
@@ -526,16 +534,6 @@ bsw & Brooks-Corey parameter & $b$ & 6 \\
 \multicolumn{2}{l}{$^{a}$Table note text here.}
 \end{tabular}
 \end{table}
-
-
-Informed by \cite{fisher2008}, we tuned soil parameters to get in range of 
-\cite{fisher2007} Figure 4, is top 3m soil water, with our results shown in Supp Fig \ref{top3m}.
-We also increased throughfall exclusion to 60\%, which is higher than reported, in order to better match sap flux obs.
-
-
-60\% throughfall exclusion
-
-sapflux observation description
 
 
 %====================
