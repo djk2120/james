@@ -39,12 +39,12 @@ Pierre Gentine\affil{1}
 Trees face emerging climate change risk globally \citep{allen2010,anderegg2013b}.
 Understanding vegetation response is a high priority, both for discerning climate impacts and for modeling feedbacks to the carbon and hydrological cycles.
 While there are disagreements about soil moisture trends globally \citep{dai2013,sheffield2012}, 
-Amazonia has experienced increasing frequency of El Nino \citep{cai2014} and a lengthening dry season \citep{fu2013}.
+Amazonia has experienced and a lengthening dry season \citep{fu2013} and faces projections of increasing frequency of extreme El Ni\~no events \citep{cai2014}.
 In addition to stress from soil moisture drought, vegetation are susceptible to increasing atmospheric transpiration demand \citep{restaino2016,novick2016b}.
-Increases in vapor pressure deficit (VPD) are expected \citep{ficklin2017,seager2015}, with associated impacts on vegetation \citep{williams2013,mcdowell2015}.
+Increases in vapor pressure deficit (VPD) have occurred with warming \citep{ficklin2017,seager2015}, and are associated with impacts on vegetation \citep{williams2013,mcdowell2015}.
 However, significant uncertainty remains regarding how vegetation will respond to changes in hydroclimate within Earth System Models \citep{dekauwe2017,friedlingstein2014}.
-In this study, we update the CLM plant hydrodynamic parameterization based on hydraulic theory, 
-analyzing its dynamics with a set of point simulations set within the Caxiuan\~a throughfall exclusion experiment \citep{fisher2006}.
+In this study, we update the CLM water stress parameterization based on hydraulic theory and
+analyze its dynamics with a set of point simulations set within the Caxiuan\~a throughfall exclusion experiment \citep{fisher2006}.
 
 Plant hydrodynamic parameterizations are important in Earth System Models, defining vegetation regulation of latent heat flux.
 Vegetation water use strategies also modulate carbon uptake, creating a critical coupling between the Earth System's carbon and hydrological cycles.
@@ -52,38 +52,33 @@ Typically drought stress parameterizations are used to define a notion of vegeta
 that is used to attenuate transpiration, photosynthesis, and root water uptake with drying.
 The dynamics of water stress in models have broad effects on critical land surface process.
 On diurnal timescales drought parameterizations influence partitioning of latent versus sensible heat with effects on surface temperature \citep{bonan2014}.
-On longer timescales vegetation water use strategies regulate the global carbon and water cycles, as well as subsurface hydrology \citep{dekauwe2015}
+On longer timescales vegetation water use strategies regulate the global carbon and water cycles \citep{dekauwe2015}.
 Representation of vegetation water stress in CLM and other models is a known deficiency, with implications for the representation of the dry/wet season in tropical rainforests \citep{powell2013,ukkola2016}.
 
 Many recent studies have worked to advance the representation of water flow through the Soil-Plant-Atmosphere continuum (SPAC) in models \citep{xu2016,christoffersen2016,sperry2017}.
 Modeling water flow through the SPAC adds complexity, but is in line with evidence of dynamic regulation of vegetation water use in response to both soil and atmospheric drying \citep{sperry2015}.
 Furthermore, via Darcy's Law, SPAC models have a robust physical basis.
-Parameter estimation is challenging \citep{drake2017}, but hydraulic trait information is available \citep{kattge2011,anderegg2015a} and has been associated with forest vulnerability to drought \citep{choat2012}.
+Parameter estimation is challenging \citep{drake2017}, but hydraulic trait information is available \citep{kattge2011,anderegg2015a} and can be informative of forest vulnerability to drought \citep{choat2012}.
 Likewise vegetation water status observations are available at a scale that is directly relevant to model development \citep{konings2016,grant2016} and can be used to validate model results \citep{momen2017,konings2017b}.
 
-Advancing the representation of the SPAC introduces a new state variable to CLM, vegetation water potential.
-1) Allows physical representation of water supply
- - can incorporate a range of water use strategies
- - can eschew bad empirical RWU and unphysical constraints
- - allows for hydraulic redistribution
- - better model connection between allocation decisions and water availability
-2) Serves as an allternative metric for water status, in lieu of soil water or soil matric potential.
- - reflects vegetation sensitivity to both soil and atmospheric drying
- - diagnostic for excessive xylem tension, cavitation risk
- - captures dynamic vegetation water use regulation
- - we use it to couple non-stomatal drought stress to the Medlyn optimal stomatal conductance model
+Advancing the representation of the SPAC introduces a new state variable to CLM, vegetation water potential, 
+which is valuable for modeling both vegetation water supply and transpiration demand.
+Modeling vegetation water potential, allows for a physical representation of water supply, from the soil through the vegetation substrate.
+This can incorporate a range of water use strategies, and improves the model connection between allocation decisions and water availability.
+Likewise, root water uptake can be based on Darcy's law, in lieu of an empirical transpiration partitioning heuristic.
+Modeling vegetation water potential also creates a framework for representing hydraulic redistribution \citep{lee2005}.
+Water demand is typically attenuated with drought stress, according to vegetation water status, capturing dynamic vegetation water use regulation.
+Leaf water potential serves as an improved metric for water status, in lieu of soil water or soil matric potential.
+This reflects vegetation sensitivity to both soil and atmospheric drying, while serving as a diagnostic for excessive xylem tension and cavitation risk.
 
-Our goal:
-  - simplified plant hydraulic implementation
-  - setting a framework to represent vegetation water potential
-  - use vegwp to improve parameterizations of drought stress and root water uptake
-  - called PHS.
-This study:
-To assess the new model formulation, we carried out point simulations at Caxiuan\~a National Forest in Brazil, 
-with PHS and the hydrodynamics model it replaces. 
+This provides a basis for the objectives of this study.
+We developed a simplified plant hydraulic implementation within CLM5, Plant Hydraulic Stress (PHS).
+This sets a framework to represent vegetation water potential, which is used to improve model vegetation hydrodynamics.
+Leaf water potential replaces soil potential, as the functional basis for drought stress attenuation of transpiration and photosynthesis.
+Root water potential is used to model gradient-based root water uptake in lieu of a soil wilting factor heuristic.
+To assess the new model formulation, we carried out point simulations at Caxiuan\~a National Forest in Brazil.
 This site features a critical biome subject to experimental throughfall exclusion, where we expect vegetation regulation of turbulent fluxes.
-
-
+We compare PHS with the former CLM hydrodynamics model, analyzing the dynamics of modeled water stress and root water uptake.
 
 %====================
 %  MODEL DESCRIPTION
@@ -714,34 +709,22 @@ This may be especially important given projected increases in VPD associated wit
 
 \subsection{Hydraulic conductance}
 
-PHS introduces prognostic vegetation water potential to CLM.
-In CLM5 vegetation water potential has two distinct interfaces with the greater model.
-As above, leaf water potential is used to effect water stress for the photosynthesis/stomatal conductance routines.
-Secondly, root water potential is used to calculate root water uptake.
-PHS represents root water uptake via the Darcy framework ($q=-k\Delta\psi$).
-This flux is used as the soil transpiration sink term in Richards equation for unsaturated subsurface flow of water.
-Though this representation reflects our physical understanding of root water uptake, it is not often implemented in land-surface models.
-More typically, a heuristic is used to partition the transpiration sink throughout the soil column (need ref).
-CLM (with SMS) employs such a heuristic, based on root fraction and a soil wilting factor. 
-In Section \ref{sect:btran}, we recast this heuristic into a hydraulic framework, making it easier to compare the two paradigms for root water uptake.
-In this section, we compare hydraulic conductance values associated with root water uptake from SMS vs. PHS.
-
 Soil-to-root conductance ($k_{sr}$) is explicitly represented in PHS, modeled as a function of soil potential (zqz).
-With SMS, $k_{sr}$ is not explicitly modeled, but it can be inferred, by dividing root water uptake by the gradient in water potential (see Section \ref{sect:btran}).
-In Figure \ref{fig:cond}, we plot the time-series of conductance values from Soil Layer 3 (spanning from 6 to 12 centimeters below the surface) under ambient throughfall conditions during 2003.
+With SMS, $k_{sr}$ is not explicitly modeled, but it can be inferred, by dividing root water uptake by the gradient in water potential (see Section zqz).
+Comparing conductance under these two paradigms serves to highlight differences in how water supply is modeled.
+In Figure \ref{fig:cond}, we plot the time-series of conductance values from Soil Layer 3 (spanning from 6 to 12 centimeters below the surface) under ambient throughfall conditions during 2003, along with precipitation over the same period.
 
 During the wet season, PHS conductance is greater than SMS by more than two orders of magnitude (Fig \ref{fig:cond}a,b).
-The relative dynamics are likewise very different between paradigms.
 PHS conductance is generally steady through the wet season (Fig \ref{fig:cond}a), followed by 
 a steady decline over the dry season with short resurgence episodes associated with rain events.
 SMS conductance features more variability relative to the mean (Fig \ref{fig:cond}b).
 During FMA-2003, average intra-day standard deviation of Layer 3 conductance is 4.6e-12 s$^{-1}$ with PHS and 9.9e-12 s$^{-1}$ with SMS. 
 In an absolute sense the SMS standard deviation is about twice as large as PHS.
-The difference is larger in a relative sense, as that standard deviation is 0.08\% of the mean FMA conductance with PHS
+The difference is larger in a relative sense, as this corresponds to 0.08\% of the mean FMA conductance with PHS
 and 62.9\% of the mean FMA conductance with SMS.
 
-The SMS inferred conductance is tethered to transpiration (see Section \ref{sect:btran}), which leads to the high variance.
-This leads to SMS having a clear diurnal cycle in the inferred Layer 3 conductance (Supp Fig \ref{supp:cond}). 
+The SMS inferred conductance is tethered to transpiration (see Section \ref{sect:btran}), 
+which leads to the high variance and a clear diurnal cycle (Supp Fig \ref{supp:cond}). 
 Instead PHS calculates $k_{sr}$ based on soil hydraulic properties and root xylem vulnerability, 
 which better reflects our understanding of the physical process and the temporal dynamics.
 As a result conductance is less variable, with the expected responses to drydown (loss of conductance) and re-wetting (increased conductance).
@@ -749,20 +732,17 @@ This is further demonstrated in Figure 7, where we plot the daily mean conductan
 With 60\% throughfall exclusion (Fig7a, dotted line), PHS conductance decreases, whereas with SMS, the daily mean conductance increases (Fig7b).
 The latter conflicts with extensive literature demonstrating loss of conductivity with drying.
 
-Why are the conductance values so different. >2 orders of magnitude for amb-FMA-2003, is quite a difference. 
-Given $q=-k\Delta\psi$, and transpiration not so different (23.4 PHS vs. 24.9 cm SMS), the result is much different gradient in water potential.
+Despite two orders of magnitude difference in conductances, total root water uptake during FMA2003 is not very different (23.4 cm PHS vs. 24.9 cm SMS).
+Differences in extraction gradient compensate for the differences in conductance.
 The SMS extraction gradient is measured relative to $\psi_c$ (a parameter defining soil potential with stomates fully closed), which equals -2.5MPa for BET.
 The PHS extraction gradient is relative to root water potential which during 2003 (ambient throughfall) varies between -0.02 and -0.23 MPa.
-SMS $k_{sr}$ is inferred, and is a direct consequence of $\psi_c$.
-\citet{fisher2006} found ``stem'' water potential consistently higher (less negative) than -0.5MPa.
+\citet{fisher2006} measured stem water potential consistently higher (less negative) than -0.5MPa.
 
 With TFE, PHS Layer 3 conductance can approach the values seen in SMS. 
 The average Layer 3 conductance with PHS for August 2003 (60\%TFE) is 4.75e-11 s$^{-1}$ as compared to 3.89e-11 s$^{-1}$ for SMS.
-This is a result of the orders of magnitude response of PHS soil-to-root conductance to changes in soil potential, which is as expected with soil conductances,
-whereas inferred SMS conductance has no clear relationship with soil potential (Supp Fig \ref{supp:cond2}). 
-SMS root water uptake uses a heuristic to partition transpiration, but its dynamics end up a bit backwards. 
-It's a workaround that's necessary when you aren't modeling the gradient in water potential between vegetation and soil. 
-But now we are, which is a big benefit of modeling vegetation water potential.
+This is a result of the orders of magnitude response of PHS soil-to-root conductance to changes in soil potential (Supp Fig \ref{supp:cond2}). 
+This conforms with typical soil hydraulics, where large changes in conductance occur with drying.
+SMS conductance has no clear relationship with soil potential (Supp Fig \ref{supp:cond2}). 
 
 \subsection{Root Water Uptake}
 \label{sect:rwu}
@@ -814,6 +794,18 @@ PHS makes inroads into a better representation of root water extraction.
 I'm interested in seeing this straight Darcy style parameterization studied further. Not clear what you mean here? 
 It's probably also worth investigating alternative heuristic approaches that improve upon SMS.
 Either way, we should also find new ways to constrain root water uptake with observations. You can menion isotopes even if they are trickyu. For instance cite reent work of INez Fung and Eel creek.
+
+PHS introduces prognostic vegetation water potential to CLM.
+In CLM5 vegetation water potential has two distinct interfaces with the greater model.
+As above, leaf water potential is used to effect water stress for the photosynthesis/stomatal conductance routines.
+Secondly, root water potential is used to calculate root water uptake.
+PHS represents root water uptake via the Darcy framework ($q=-k\Delta\psi$).
+This flux is used as the soil transpiration sink term in Richards equation for unsaturated subsurface flow of water.
+Though this representation reflects our physical understanding of root water uptake, it is not often implemented in land-surface models.
+More typically, a heuristic is used to partition the transpiration sink throughout the soil column (need ref).
+CLM (with SMS) employs such a heuristic, based on root fraction and a soil wilting factor. 
+In Section \ref{sect:btran}, we recast this heuristic into a hydraulic framework, making it easier to compare the two paradigms for root water uptake.
+In this section, we compare hydraulic conductance values associated with root water uptake from SMS vs. PHS.
 
 
 \subsection{Hydraulic redistribution}
