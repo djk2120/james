@@ -68,14 +68,14 @@ p = [p,a(:,2)];
 %************************************************************************
 %------------------------------------------------------------------------
 
-ff = [0,0,0,0,0,...  %1
+ff = [0,2,0,0,0,...  %1
     0,0,0,0,0,...    %2
     0,0,0,0,0,...    %3
     0,0,0,0,0,...    %4
     0,0,0,0,0,...    %5
     0,0,0,0,0,...    %6
     0,0,0,0,0,...    %7
-    0,0,1,0];
+    0,0,0,0];
 
 %2  = water potential
 %3  = timeseries
@@ -130,7 +130,7 @@ end
 
 if ff(2)>0
     
-    %figure 2, SON2013 diurnal mean of veg water potential
+    %figure 2, SON2003 diurnal mean of veg water potential
     
     % calculate monthly mean midday lwp
     tt=25;
@@ -190,7 +190,7 @@ if ff(2)>0
         set(gca,'xtick',3:3:36)
     %set(gca,'xticklabel',repmat(3:3:12,1,3))
     xlabel('Month')
-    ylabel({'Midday Leaf Water Potential';'(MPa)'})
+    ylabel({'Midday Sun Leaf Water';'Potential (MPa)'})
     legend('AMB','TFE','Location','Southwest')
     text(33.8,-1.3,'(c)','FontSize',14,'FontWeight','bold')
     
@@ -1350,7 +1350,7 @@ if ff(18)>0
     out = zeros(80,3);
     kon = nan*smp(1:80,:);
     ix  = year==2003&fctr(1,:)>4;
-    kon(1:40,:) = ksr(1:40,:);
+    kon(1:40,ix) = ksr(1:40,ix);
     
     
     for ss = 41:80
@@ -1416,7 +1416,7 @@ if ff(19)>0
     out = zeros(80,3);
     kon = nan*smp(1:80,:);
     ix  = year==2003&fctr(1,:)>4;
-    kon(1:40,:) = ksr(1:40,:);
+    kon(1:40,ix) = ksr(1:40,ix);
     
     
     for ss = 41:80

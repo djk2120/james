@@ -537,30 +537,37 @@ bsw & Brooks-Corey parameter & $b$ & 6 \\
 \section{Analysis Details}  
 \subsection{Water potential}
 
-define midday and predawn, point to meaningful stress indicator/soil moisture
+Annual and diurnal cycles of vegetation water potential are presented.
+For the diurnal cycle, we average by timestep over the 91 days of SON, 2003, reporting curves for root, stem, shade-leaf, and sun-leaf water potential.
+For the annual cycle, we plot monthly mean midday (local time 12:00 to 14:00) sun-leaf water potential.
 
-\subsection{Diurnal stress forcing}
+
+\subsection{Stress factor, annual cycle}
+    Monthly means are reported for transpiration, gross photosynthesis, and $f_w$, the water stress factor \ref{fig:mm}.
+    For the water stress factor, we opt to report the midday water stress averaging over local time 12:00 to 14:00.
+    Monthly mean observational sap flow is also shown, courtesy of \cite{fisher2007}, which reports details on scaling observations to stand level.
+    Months were dropped that featured fewer than 5 days of data.
+
+\subsection{Stress factor, diurnal cycle}
 lay out vpd methodology
 
 \subsection{Hydraulic conductance}
-PHS introduces a new paradigm for root water uptake to CLM.
-Comparing the dynamics in soil-to-root hydraulic conductance between PHS and SMS serves to highlight key differences.
-In a Darcy hydraulic framework, root water uptake from a given soil layer, $q_i$, is the product of hydraulic conductance and the gradient in water potential.
-\begin{equation}
-q_i = -k_i\Delta\psi_i
-\end{equation}
-PHS explicitly models $k_i$ as a function of soil potential, defined by soil and xylem hydraulic properties.
-SMS does not represent hydraulic conductance, but instead defines a heuristic for partitioning root water uptake among the soil layers.
-In Section \ref{sect:btran}, we recast this heuristic into the hydraulic framework.
-This establishes a definition of $\Delta\psi_i$, from which we can infer an SMS version of $k_i$ from standard output, by dividing $q_i$ by $-\Delta\psi_i$.
 
-
-
-    In Figure \ref{fig:cond}, we compare conductance values derived from the PHS and SMS implementations.
+    In Figures \ref{fig:cond} and \ref{fig:cond2}, we compare conductance values derived from the PHS and SMS implementations.
     With SMS, $k$ is not explicitly modeled, so instead we infer $k$, 
-    by dividing $q_i$ by $\Delta\psi$ as defined in Equation \ref{kb}.
-    Furthermore, we interpret the constraint that $\Delta\psi$ be greater than or equal to zero to mean 
-    that conductance is zero in non-conforming cases. As such, we say $k=0$ when $\Delta\psi<\text{1 kPa}$.
+    by dividing root water uptake $q_i$, by $\Delta\psi$ as defined in Equation \ref{kb}.
+    We interpret the constraint that $\Delta\psi$ be greater than or equal to zero to mean 
+    that conductance is zero in non-conforming cases, which we extend to $k=0$ when $\Delta\psi<\text{1 kPa}$.
+    For our analyses, we consider only points when transpiration is greater than 4 W/m2, which improves the tractability of inferring conductance,
+    given that SMS root water uptake is precluded absent transpiration. 
+    
+    For Figure \ref{fig:cond}a,b, conductance is plotted from Soil Layer 3 (spans from 6 to 12 cm below ground),
+     for all points during 2003 when transpiration is greater than 4 W/m2 (n=7752).
+    For Figure \ref{fig:cond2}a,b, conductance is averaged daily, subject to the same restrictions.
+    Average intra-day standard deviation is reported for FMA, by which we calculate a daily standard deviation of complying points, and report the average of the 89 days.
+
+
+\subsection{Root water uptake}
 
 \subsection{Hydraulic redistribution}
 Hydraulic redistribution refers to flows of water between soil layers through vegetation substrate.
@@ -920,8 +927,8 @@ The clear takeaway is that this process is starved for observations, and is a re
      \centering
      \includegraphics[width=30pc]{../figs2/fig2.pdf}
      \caption{Modeled vegetation water potential at  Caxiuan\~a, Brazil.
-     (a) Dry season (SON) diurnal mean, ambient throughfall conditions,
-     (b) Dry season (SON) diurnal mean, with 60\% throughfall excluded.
+     (a) 2003 Dry season (SON) diurnal mean, ambient throughfall conditions,
+     (b) 2003 Dry season (SON) diurnal mean, with 60\% throughfall excluded.
      Curves are drawn for sunlit leaf, shaded leaf, stem, and root water potentials. Note that the first three mostly overlap.
      (c) Monthly mean midday leaf water potential, under ambient (solid line) and 60\% throughfall exclusion (dotted line) conditions.
      Note that throughfall exclusion begins in month 11 (Nov 1, 2001).
