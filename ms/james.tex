@@ -20,9 +20,9 @@ Pierre Gentine\affil{1}
 \correspondingauthor{Daniel Kennedy}{djk2120@columbia.edu}
 
 \begin{keypoints}
-\item = enter point 1 here = 
-\item = enter point 2 here = 
-\item = enter point 3 here = 
+\item A simplified soil-plant-atmosphere continuum model is implemented in CLM5
+\item Prognostic leaf water potential replaces soil matric potential as the functional basis for water stress, reflecting xylem tension constraints and vegetation sensitivity to atmosphere drying. 
+\item Prognostic root water potential is used to implement gradient-based root water uptake, replacing a soil wilting factor heuristic.
 \end{keypoints}
 
 
@@ -501,7 +501,7 @@ All simulations start from the same initial conditions, which are the results of
 To avoid duplication, descriptions of site characteristics, forcing data, and observational sap flux, can be found in \cite{fisher2007}.
 
 \subsection{Parameter Values and Throughfall Exclusion}
-
+\label{sect:param}
 Select parameter values concerning vegetation hydrodynamics are presented in Table 1.
 All other parameters use the default values associated with the r270 version of CLM5.
 Informed by \cite{fisher2008}, we tuned soil hydraulic parameters and throughfall exclusion to better capture observational soil water dynamics (\cite{fisher2007} Figure 4), with our results shown in Supplementary Figure \ref{top3m}.
@@ -713,7 +713,7 @@ Utilizing leaf water potential as the basis for water status reflects this const
 This may be especially important given projected increases in VPD associated with warming.
 
 \subsection{Hydraulic conductance}
-
+\label{sect:cond}
 PHS introduces prognostic vegetation water potential to CLM.
 In CLM5 vegetation water potential has two distinct interfaces with the greater model.
 As above, leaf water potential is used to effect water stress for the photosynthesis/stomatal conductance routines.
@@ -859,16 +859,24 @@ Likewise it would be interesting to see the effects of stem capacitance, and/or 
 
 
 \subsection{Soil profile}
+The column total soil water in all four simulations is initialized at 2.66 meters (over an 8.6-meter soil column).
+The change in total soil water is small under ambient conditions, decreasing by 0.3cm with PHS and 9.6cm with SMS over the three-year simulations.
+Root zone soil potential is lower with SMS, with a root-fraction-weighted average soil potential of -0.42 MPa during November 2003.
+The equivalent metric from PHS, average predawn root water potential, is -0.08 MPa.
+Under 60\% throughfall exclusion, the change in soil water is -1.12 meters with PHS and -0.94 meters with SMS, relative to the ambient simulations (Supp Fig \ref{supp:buff} zqz double-check numbers).
+With SMS, this corresponds to a rootfr-weighted average soil potential of -2.18MPa, whereas 
+PHS average predawn root water potential is -0.37MPa (November 2003).
+Observations of root-zone potential based on gravity-corrected predawn leaf water potential are -0.17 +/- 0.10 MPa under ambient conditions, and -0.71 +/- 0.31 MPa with throughfall exclusion \citep{fisher2007}.
 
-The four simulations presented in this study use common initial conditions, which are the result of a 9-year spin-up (ambient conditions, using PHS).
-The column total soil water begins at 2.66 meters, which, over an 8.6-meter soil column, corresponds to an average volumetric soil moisture of 0.31.
-The change in total soil water is small under ambient conditions, decreasing by 0.3cm with PHS and 9.6cm with SMS.
-With throughfall exclusion, soil water is used to buffer the precipitation deficit.
-The change in total soil water is -1.12 meters with PHS and -1.04 meters with SMS.
+Both SMS simulations achieve more negative root-zone soil potential than with PHS.
+With 60\% TFE, SMS is 1.81 MPa drier, despite having a slightly moister soil column (1.61m total water vs. 1.54m for PHS).
+This is associated with differences in the parameterization of root water uptake.
+SMS operates with a larger gradient for water extraction (see Section \ref{sect:cond}), which allows for more negative water potential in active soil layers.
+PHS has more access to deep soil water under dry conditions (Fig \ref{fig7}), which mitigates declines in soil potential near the surface.
+While PHS better matches observations of root-zone soil potential, we hesitate to make conclusions about model skill.
+This due to parameter uncertainty and tuning (see Section \ref{sect:param}) as well as the fact that both models feature significant high biases in transpiration relative to observations.
 
-
-
-Cumulative ET, three years \\
+Cumulative ET, three years (move to buffering?) \\
     4.13, phs-amb,
     3.82, phs-tfe,
     4.39, sms-amb,
@@ -877,19 +885,6 @@ Cumulative ET, three years \\
 For comparison, total ambient precip is 6.7 meters
 For reference, root fraction beyond 3 meters in depth is 0.12 (out of 1).
 
-Common soil water initialization, 2.66m total water. Change in total soil water, over 8.6m soil column, three years \\
-   -0.003, phs-amb,
-   -1.12, phs-tfe,
-   -0.096, sms-amb,
-   -1.04, sms-tfe.
-
-SMSamb Nov-03 rootfr-weighted average smp is -0.42MPa
-SMStfe Nov-03 rootfr-weighted average smp is -2.18MPa
-PHSamb Nov-03 average predawn root water potential is -0.08MPa
-PHStfe Nov-03 average predawn root water potential is -0.37MPa
-
-Fisher2007 quotes dry amb smp based on predawn leaf = -0.17 +/- 0.10
-dry tfe smp based on predawn leaf = -0.71 +/- 0.31
 
 SMS-tfe achieves much more negative root-zone smp than PHS-tfe.
 This despite, compared to PHS, SMS-tfe has less ET, and overall a slightly moister soil column 1.61m total water vs. 1.54m for PHS.
@@ -921,6 +916,8 @@ The clear takeaway is that this process is starved for observations, and is a re
 \subsection{Caveats}
 
 \subsection{Utility of modeling vegetation water potential}
+
+\section{Acknowledgments}
 
 \clearpage    
 
