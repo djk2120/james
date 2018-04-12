@@ -75,7 +75,7 @@ ff = [0,2,0,0,0,...  %1
     0,0,0,0,0,...    %5
     0,0,0,0,0,...    %6
     0,0,0,0,0,...    %7
-    0,0,0,0];
+    0,0,0,0,0];
 
 %2  = water potential
 %3  = timeseries
@@ -130,11 +130,11 @@ end
 
 if ff(2)>0
     
-    %figure 2, SON2003 diurnal mean of veg water potential
+    %figure 2, SON2003 diurnal and monthly mean of veg water potential
     
     % calculate monthly mean midday lwp
     tt=25;
-    ixd = mcsec >diurn(tt)&mcsec<diurn(tt+4);
+    ixd = mcsec>=diurn(tt)&mcsec<=diurn(tt+3);
     
     for i=1:2
     lwp(i,:) = 1/101972*splitapply(@mean,vegwp(1+(i-1)*4,ixd),month(ixd)+(year(ixd)-2001)*12);
@@ -207,10 +207,10 @@ if ff(2)>0
     out         = xf*out;
     
     disp('AMB MIDDAY')
-    disp(out(1:3,27)')
+    disp(mean(out(1:3,25:28),2)')
     
     disp('TFE MIDDAY')
-    disp(out(5:7,27)')
+    disp(mean(out(5:7,25:28),2)')
     
     disp('AMB PREDAWN ROOT')
     disp(out(4,11))
@@ -222,25 +222,25 @@ if ff(2)>0
     disp(out(4,11)-out(8,11))
     
     disp('AMB MD ROOT & drop')
-    disp([out(4,27),out(4,27)-out(4,11)])
+    disp([mean(out(4,25:28)),mean(out(4,25:28))-out(4,11)])
     
     disp('TFE MD ROOT & drop')
-    disp([out(8,27),out(8,27)-out(8,11)])
+    disp([mean(out(8,25:28)),mean(out(8,25:28))-out(8,11)])
     
     disp('delta drop')
-    disp(out(4,27)-out(4,11)-(out(8,27)-out(8,11)))
+    disp(mean(out(4,25:28))-out(4,11)-(mean(out(8,25:28))-out(8,11)))
     
     disp('AMB MD SUN & drop')
-    disp([out(1,27),out(4,27)-out(1,27)])
+    disp([mean(out(1,25:28)),mean(out(4,25:28))-mean(out(1,25:28))])
     
     disp('TFE MD SUN & drop')
-    disp([out(5,27),out(8,27)-out(5,27)])
+    disp([mean(out(5,25:28)),mean(out(8,25:28))-mean(out(5,25:28))])
     
     disp('delta drop')
-    disp(out(4,27)-out(1,27)-(out(8,27)-out(5,27)))
+    disp(mean(out(4,25:28))-mean(out(1,25:28))-(mean(out(8,25:28))-mean(out(5,25:28))))
     
     disp('net leaf drop')
-    disp(out(1,27)-out(5,27))
+    disp(mean(out(1,25:28))-mean(out(5,25:28)))
     
 end
 
@@ -476,6 +476,8 @@ if ff(5)>0
     z       = tmp(1:length(fsds));
     q       = quantile(z(ffix),[1/3,2/3]);
     
+    q/101972
+    
     ix1(ee,:) = z<q(1)&ffix;
     ix2(ee,:) = z>=q(1)&z<q(2)&ffix;
     ix3(ee,:) = z>=q(2)&ffix;
@@ -491,6 +493,8 @@ if ff(5)>0
     ix      = ffix&year>2001;
     q       = quantile(z(ix),[1/3,2/3]);
     
+    q/101972
+    
     ix1(ee,:) = z<q(1)&ix;
     ix2(ee,:) = z>=q(1)&z<q(2)&ix;
     ix3(ee,:) = z>=q(2)&ix;
@@ -505,7 +509,7 @@ if ff(5)>0
     z = zr*smp(ll,:);
     q = quantile(z(ffix),[1/3,2/3]);
     
-    
+    q/101972
     ix1(ee,:) = z<q(1)&ffix;
     ix2(ee,:) = z>=q(1)&z<q(2)&ffix;
     ix3(ee,:) = z>=q(2)&ffix;
@@ -520,6 +524,8 @@ if ff(5)>0
     ix1(ee,:) = z<q(1)&ix;
     ix2(ee,:) = z>=q(1)&z<q(2)&ix;
     ix3(ee,:) = z>=q(2)&ix;
+    
+    q/101972
     
     %plotting
     xdk = figure;
@@ -2795,3 +2801,22 @@ if ff(39)>0
     ix2 = year==2003&month>8&month<12;
     1800*sum(sum(qrootsink(1:4,ix2)))
 end
+
+if ff(40)>0
+    yy = 2003;
+    
+    for t1=24:27
+        out = zeros(12,1);
+    for mm=1:12
+    ix = year==yy&month==mm&mcsec>=diurn(t1)&mcsec<=diurn(t1+3);
+    out(mm) = mean(vegwp(1,ix))/101972;
+    end
+    plot(out)
+    hold on
+    end
+    ylim([-3,-1.5])
+    legend(num2str((24:27)'))
+    
+    
+end
+
