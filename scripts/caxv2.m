@@ -249,7 +249,8 @@ if ff(3)>0
     out = nan(14,36);
     
     % look at timeseries of btran
-    % for vegwp, average 12-2 (i.e. 5 timesteps)
+    % for vegwp, average 12-2 (i.e. 4 timesteps)
+    
     ix  = mcsec>=diurn(25)&mcsec<diurn(29);
     targ = 2.^-((vegwp(1,:)/-250000).^3.95);
     out(1,:) = splitapply(@mean,targ(ix),month(ix)+(year(ix)-2001)*12);

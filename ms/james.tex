@@ -549,7 +549,8 @@ For the annual cycle, we plot monthly mean midday (local time 12:00 to 14:00) su
     To highlight the response of stress to VPD, we subsetted data according to downwelling solar radiation, which also influences stress.
     Data are selected with downwelling solar radiation between 400 and 425 W/m2, which corresponds to 775 half-hour timesteps.
     For the TFE simulations, (Figure \ref{fig:vpd}c,d), we additionally exclude data from 2001, because TFE was not initiated until November 2001, leaving 515 points.
-    
+    Data are subdivided into terciles based on soil water (within each plot), and colored accordingly.
+    The terciles are defined for each simulation in Table 2.
 \begin{table}
 \caption{Root-zone soil potential terciles for Figure \ref{fig:vpd}}
 \centering
@@ -617,7 +618,7 @@ Both panels show the characteristic drop in water potential around midday and th
 the leaf water potentials more negative than the stem, which is more negative than the root.
 
 The sequencing is difficult to distinguish from the plot, where the stem, sunlit, and shaded leaf water potential curves nearly overlap for both experiments. 
-In the ambient simulation (Fig \ref{fig:vwp}a), midday (1p.m.) water potentials are -1.98, -1.97, -1.96 MPa 
+In the ambient simulation (Fig \ref{fig:vwp}a), midday (1p.m.) water potentials are -1.98, -1.97, -1.96 MPa (zqz double-check values)
 for sunlit leaf, shaded leaf, and stem, respectively.
 With throughfall exclusion (TFE)  midday water potentials decrease to -2.77, -2.76, -2.75 MPa, respectively (Fig \ref{fig:vwp}b).
 
@@ -661,7 +662,7 @@ over the three-year simulation for PHS versus SMS under ambient and 60\% through
 Under ambient throughfall conditions, the SMS simulation features less stress (Fig \ref{fig:mm}b), with
 no stress ($f_w$>0.99) in 24 out of 36 months.
 PHS predicts more stress (Fig \ref{fig:mm}a), with stress in sync with the evolution of midday leaf water potential (Figure \ref{fig:vwp}).
-As a result, $f_w$ is generally lowest in September (Fig \ref{fig:mm}e).
+As a result, $f_w$ is generally lowest in September (Fig \ref{fig:mm}e). ZQZ need to go back and output btran proper.
 Alternatively, SMS predicts no stress ($f_w$>0.99) during any of the three Septembers of the ambient simulation.
 Instead $f_w$ is generally lowest in December.
 
