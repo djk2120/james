@@ -68,12 +68,12 @@ p = [p,a(:,2)];
 %************************************************************************
 %------------------------------------------------------------------------
 
-ff = [0,2,0,0,0,...  %1
+ff = [0,0,0,0,0,...  %1
     0,0,0,0,0,...    %2
     0,0,0,0,0,...    %3
     0,0,0,0,0,...    %4
     0,0,0,0,0,...    %5
-    0,0,0,0,0,...    %6
+    2,0,0,0,0,...    %6
     0,0,0,0,0,...    %7
     0,0,0,0,0];
 
@@ -2008,9 +2008,9 @@ if ff(26)>0
     end
     set(gca,'yticklabel',9:-1:0)
     ylabel('Depth (m)')
-    xlabel({'Cumulative Root Water Uptake';'(mm/s)'})
+    xlabel({'Cumulative Rate of';'Root Water Uptake (mm/s)'})
     legend(tlab,'location','Southeast')
-    text(0.9e-4,-0.5,'(a)','FontWeight','bold','FontSize',14)
+    text(25/5.5e5,-0.5,'(a)','FontWeight','bold','FontSize',14)
     box off
     ix = year==2003&month>8&month<12;
     n  = sum(ix);
@@ -2060,11 +2060,12 @@ if ff(26)>0
             'LineStyle',s{i},'Color',c(i,:),'LineWidth',2)
         hold on
     end
+    xlim([-2e-5,3.5e-5])
     set(gca,'yticklabel',9:-1:0)
     ylabel('Depth (m)')
-    xlabel({'Cumulative Root Water Uptake';'(mm/s)'})
+    xlabel({'Cumulative Rate of';'Root Water Uptake (mm/s)'})
     legend(tlab,'location','Southeast')
-    text(0.7e-4,-0.5,'(a)','FontWeight','bold','FontSize',14)
+    text(3e-5,-0.5,'(a)','FontWeight','bold','FontSize',14)
     box off
     ix = year==2003&month>1&month<5;
     n  = sum(ix);

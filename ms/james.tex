@@ -22,7 +22,7 @@ Pierre Gentine\affil{1}
 \begin{keypoints}
 \item A simplified soil-plant-atmosphere continuum model is implemented in CLM5
 \item Prognostic leaf water potential replaces soil matric potential as the functional basis for water stress, reflecting xylem tension constraints and vegetation sensitivity to atmosphere drying. 
-\item Prognostic root water potential is used to implement gradient-based root water uptake, replacing a soil wilting factor heuristic.
+\item Prognostic root water potential is used to implement hydraulic root water uptake, replacing a soil wilting factor heuristic.
 \end{keypoints}
 
 
@@ -581,11 +581,21 @@ SMS, TFE & -0.6474 MPa & -1.8467 MPa \\
     For Figure \ref{fig:cond}a,b, conductance is plotted from Soil Layer 3 (spans from 6 to 12 cm below ground),
      for all points during 2003 when transpiration is greater than 4 W/m2 (n=7752).
     For Figure \ref{fig:cond2}a,b, conductance is averaged daily, subject to the same restrictions.
-    Average intra-day standard deviation is reported for FMA, by which we calculate a daily standard deviation of complying points, and report the average of the 89 days.
+    Average intra-day standard deviation is reported for FMA, by which we calculate a daily standard deviation of complying points, and report the average over the 89 days.
 
 
 \subsection{Root water uptake}
 
+    Vertical profiles of the rate of root water uptake are presented in Figures \ref{fig7}a and \ref{fig8}a, averaged over SON and FMA, respectively.
+    This is plotted as average cumulative rate of root water uptake, starting at depth (8.6 meters).
+    Time series of total root water uptake are also provided (Figs \ref{fig7}b,c, \ref{fig8}b,c).
+    We plot total cumulative water extracted from near the surface over time in Figures \ref{fig7}b and \ref{fig8}b, 
+    accompanied by that extracted from depths beyond 20 centimeters in Figures \ref{fig7}c and \ref{fig8}d.
+    We chose 20 centimeters as the break point based on the vertical profiles of root water uptake, and with a preference for not splitting any of the discrete soil layers.
+    Soil Layers 1-4 span 0 to 0.2 meters, and Soil Layers 5-20 span 0.2 to 8.6 meters.
+    Time series of total cumulative ambient precipitation are shown for comparison (Figs \ref{fig7}b and \ref{fig8}b).
+    
+        
 \subsection{Hydraulic redistribution}
 Hydraulic redistribution refers to flows of water between soil layers through vegetation substrate.
 With PHS, this occurs when soil potential in a given soil layer ($\psi_i$) is more negative that root water potential ($\psi_{\text{root}}$), resulting in a negative root water uptake ($q_i$) in that soil layer.
