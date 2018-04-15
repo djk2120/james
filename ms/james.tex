@@ -43,18 +43,19 @@ While there are disagreements about soil moisture trends globally \citep{dai2013
 Amazonia has experienced and a lengthening dry season \citep{fu2013} and faces projections of increasing frequency of extreme El Ni\~no events \citep{cai2014}.
 In addition to stress from soil moisture drought, vegetation are susceptible to increasing atmospheric transpiration demand \citep{restaino2016,novick2016b}.
 Increases in vapor pressure deficit (VPD) have occurred with warming \citep{ficklin2017,seager2015}, and are associated with impacts on vegetation \citep{williams2013,mcdowell2015}.
-However, significant uncertainty remains regarding how vegetation will respond to changes in hydroclimate within Earth System Models \citep{dekauwe2017,friedlingstein2014}.
-In this study, we update the CLM water stress parameterization based on hydraulic theory and
-analyze its dynamics with a set of point simulations set within the Caxiuan\~a throughfall exclusion experiment \citep{fisher2006}.
+Significant uncertainty remains regarding how vegetation will respond to changes in hydroclimate within Earth System Models \citep{dekauwe2017,friedlingstein2014}.
 
-Plant hydrodynamic parameterizations are important in Earth System Models, defining vegetation regulation of latent heat flux.
+
+Plant hydrodynamic parameterizations are important in Earth System Models, as they define vegetation regulation of latent heat flux.
 Vegetation water use strategies also modulate carbon uptake, creating a critical coupling between the Earth System's carbon and hydrological cycles.
-Typically drought stress parameterizations are used to define a notion of vegetation water status 
+Drought stress parameterizations are used to define a notion of vegetation water status 
 that is used to attenuate transpiration, photosynthesis, and root water uptake with drying.
-The dynamics of water stress in models have broad effects on critical land surface process.
+The dynamics of water stress in models have broad effects on critical land surface processes.
 On diurnal timescales drought parameterizations influence partitioning of latent versus sensible heat with effects on surface temperature \citep{bonan2014}.
 On longer timescales vegetation water use strategies regulate the global carbon and water cycles \citep{dekauwe2015}.
 Representation of vegetation water stress in CLM and other models is a known deficiency, with implications for the representation of the dry/wet season in tropical rainforests \citep{powell2013,ukkola2016}.
+In this study, we update the CLM vegetation hydrodynamics parameterization based on hydraulic theory and
+analyze its dynamics using point simulations set within the Caxiuan\~a throughfall exclusion experiment \citep{fisher2006}.
 
 Many recent studies have worked to advance the representation of water flow through the Soil-Plant-Atmosphere continuum (SPAC) in models \citep{xu2016,christoffersen2016,sperry2017}.
 Modeling water flow through the SPAC adds complexity, but is in line with evidence of dynamic regulation of vegetation water use in response to both soil and atmospheric drying \citep{sperry2015}.
@@ -63,12 +64,14 @@ Parameter estimation is challenging \citep{drake2017}, but hydraulic trait infor
 Likewise vegetation water status observations are available at a scale that is directly relevant to model development \citep{konings2016,grant2016} and can be used to validate model results \citep{momen2017,konings2017b}.
 
 Advancing the representation of the SPAC introduces a new state variable to CLM, vegetation water potential, 
-which is valuable for modeling both vegetation water supply and transpiration demand.
-Modeling vegetation water potential, allows for a physical representation of water supply, from the soil through the vegetation substrate.
-This can incorporate a range of water use strategies, and improves the model connection between allocation decisions and water availability.
-Likewise, root water uptake can be based on Darcy's law, in lieu of an empirical transpiration partitioning heuristic.
+which is valuable for modeling vegetation hydrodynamics.
+Modeling vegetation water potential allows for an explicit representation of water supply, from the soil through the vegetation substrate.
+This can incorporate a range of water use strategies and improves the model connection between allocation decisions and water availability.
+Root water uptake can be based on Darcy's law, in lieu of an empirical transpiration partitioning heuristic.
 Modeling vegetation water potential also creates a framework for representing hydraulic redistribution \citep{lee2005}.
-Water demand is typically attenuated with drought stress, according to vegetation water status, capturing dynamic vegetation water use regulation.
+
+Vegetation water potential also improves the modeling of water demand.
+Transpiration is typically attenuated with drought stress according to vegetation water status, capturing dynamic vegetation water use regulation.
 Leaf water potential serves as an improved metric for water status, in lieu of soil water or soil matric potential.
 This reflects vegetation sensitivity to both soil and atmospheric drying, while serving as a diagnostic for excessive xylem tension and cavitation risk.
 
@@ -130,23 +133,24 @@ We compare PHS with the former CLM hydrodynamics model, analyzing the dynamics o
     
     The Medlyn model, derived from stomatal optimization theory, predicts stomatal conductance to maximize assimilation relative to water costs ($A-\lambda E$), 
     but does not resolve concurrent limitations to stomatal conductance associated with drought conditions.
-    Much recent work has focused on concurrent limitations on plant hydrodynamics, especially in response to drying soils \citep{manzoni2013b,novick2016a,zhou2014}.
-    For example, plants must also manage the risk of cavitation associated with increasing xylem tension \citep{sperry1998}.
-    Stomatal representation within land surface models typically include a drought stress factor, with various approaches for where to apply stress.
+    Much recent work has focused on alternative constraints on plant hydrodynamics, especially in response to drying soils \citep{manzoni2013b,novick2016a,zhou2014}.
+    This includes how plants manage the risk of cavitation associated with increasing xylem tension \citep{sperry1998}.
+    Reflecting drought limitations on diffusive fluxes, land surface models typically include a water stress factor, with various approaches for where to apply stress.
     
-    Drought stress factors (in our case, $f_w$), are used to model stomatal and non-stomatal limitation associated with water stress.
+    These water stress factors (in our case, $f_w$), are used to represent stomatal and non-stomatal limitation not captured by the base stomatal conductance model.
     Uncertainty remains within the literature for how to apply water stress to photosynthesis and stomatal conductance.
     One line of reasoning eschews the optimization of $A-\lambda E$ in favor of hydraulic costs \citep{sperry2017},
-    Studies also explore soil water adjustments to the marginal water cost, implemented by adjusting $\lambda$ or Medlyn's $g1$ based on soil water \citep{manzoni2013b}.
+    Studies also explore soil water adjustments to the marginal water cost, implemented by adjusting $\lambda$ or Medlyn $g_1$ based on soil water \citep{manzoni2013b}.
     However, this may underestimate drought effects on photosynthesis \citep{zhou2013,lin2018}.
-    Yet other groups take a hybrid approach, combining optimal stomatal conductance, with hydraulic constraints and/or
-    so-called non-stomatal limitation, attenuating $V_{\text{cmax}}$ or mesophyll conductance
-    (which feeds back through photosynthesis to lower stomatal conductance) \citep{egea2011,novick2016a}.
+    Yet other groups take a hybrid approach, combining stomatal optimization, with hydraulic constraints and/or
+    so-called non-stomatal limitation, with stress attenuating $V_{\text{cmax}}$ or mesophyll conductance 
+    (both of which feed back through photosynthesis to lower stomatal conductance) \citep{egea2011,novick2016a}.
     
     We opt for a simplified form of this last approach, which seems to be consistent with field observations \citep{lin2018}.
-    For PHS, the attenuation of stomatal conductance due to water stress follows the CLM4.5 formulation as described in \citet{oleson2013} and \citet{bonan2011}. 
     Prognostic water stress ($f_w$, ranging from 0-1) attenuates stomatal conductance indirectly via multiplication of $V_{\text{cmax}}$.
     Water stress lowers assimilation, which is coupled to stomatal conductance.
+    Water stress is modeled as a function of leaf water potential (see Section \ref{sect:demand}), with stress accumulating as leaf water potentials become more negative.
+    This reflects a notion of hydraulic safety, with vegetation avoiding excessive xylem tension associated with risk of cavitation.
     
 % Plant Hydaulics
 \subsection{Plant Hydraulic Stress (PHS)}
