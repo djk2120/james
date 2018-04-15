@@ -68,14 +68,14 @@ p = [p,a(:,2)];
 %************************************************************************
 %------------------------------------------------------------------------
 
-ff = [0,1,0,0,0,...  %1
+ff = [0,0,0,0,0,...  %1
     0,0,0,0,0,...    %2
     0,0,0,0,0,...    %3
     0,0,0,0,0,...    %4
     0,0,0,0,0,...    %5
     0,0,0,0,0,...    %6
     0,0,0,0,0,...    %7
-    0,0,0,0,0];
+    0,0,0,0,1];
 
 %2  = water potential
 %3  = timeseries
@@ -2805,20 +2805,13 @@ if ff(39)>0
 end
 
 if ff(40)>0
-    yy = 2003;
-    
-    for t1=24:27
-        out = zeros(12,1);
-    for mm=1:12
-    ix = year==yy&month==mm&mcsec>=diurn(t1)&mcsec<=diurn(t1+3);
-    out(mm) = mean(vegwp(1,ix))/101972;
-    end
-    plot(out)
-    hold on
-    end
-    ylim([-3,-1.5])
-    legend(num2str((24:27)'))
-    
+    ix = year==2003&month>8&month<12;
+    a=180*sum(sum(qrootsink(1:4,ix)))
+    t=180*sum(sum(qrootsink(21:24,ix)))
+    t/a
+    a=180*sum(sum(qrootsink(41:44,ix)))
+    t=180*sum(sum(qrootsink(61:64,ix)))
+    t/a
     
 end
 
