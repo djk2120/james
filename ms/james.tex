@@ -421,7 +421,8 @@ We compare PHS with the former CLM hydrodynamics model, analyzing the dynamics o
     f_w T_{\text{max}}$ to replace $T$ in (\ref{bt:4}), and replacing $w_i$ in (\ref{bt:4}) with the formula from (\ref{bt:2}).
     
     \begin{linenomath*}
-    \begin{equation} 
+    \begin{equation}
+    \label{eq:btrwu}
     q_i = \dfrac{T_{\text{max}}}{\psi_{o}-\psi_{c}} r_i \left(\psi_i-\psi_{c} \right)
     \end{equation}
     \end{linenomath*}
@@ -573,7 +574,6 @@ SMS, TFE & -0.6474 MPa & -1.8467 MPa \\
     
 
 \subsection{Hydraulic conductance}
-
     In Figures \ref{fig:cond} and \ref{fig:cond2}, we compare conductance values derived from the PHS and SMS implementations.
     With SMS, $k$ is not explicitly modeled, so instead we infer $k$, 
     by dividing root water uptake $q_i$, by $\Delta\psi$ as defined in Equation \ref{kb}.
@@ -589,7 +589,6 @@ SMS, TFE & -0.6474 MPa & -1.8467 MPa \\
 
 
 \subsection{Root water uptake}
-
     Vertical profiles of the rate of root water uptake are presented in Figures \ref{fig7}a and \ref{fig8}a, averaged over SON and FMA, respectively.
     This is plotted as average cumulative rate of root water uptake, starting at depth (8.6 meters).
     Time series of total root water uptake are also provided (Figs \ref{fig7}b,c, \ref{fig8}b,c).
@@ -601,26 +600,22 @@ SMS, TFE & -0.6474 MPa & -1.8467 MPa \\
     
         
 \subsection{Hydraulic redistribution}
-Hydraulic redistribution refers to flows of water between soil layers through vegetation substrate.
-With PHS, this occurs when soil potential in a given soil layer ($\psi_i$) is more negative that root water potential ($\psi_{\text{root}}$), resulting in a negative root water uptake ($q_i$) in that soil layer.
-To calculate total HR, we sum all negative root water uptake fluxes.
-For Figure \ref{fig:hr} we partition by month and by local time: at night (summing from 6p.m. to 6a.m.), and during the day (6a.m. to 6p.m.).
-Note that total HR can occur without net negative root water uptake.
-For example, hydraulic lift may occur at night, depositing deep water near the surface.
-If this water is transpired during the day, there could be a certain amount of HR, but no net positive root water uptake.
-This is evident in Figure \ref{fig7}, where there is net positive root water uptake throughout the soil column over the 2003 dry season, alongside significant HR (Fig \ref{fig:hr}).
+    Hydraulic redistribution refers to flows of water between soil layers through vegetation substrate, resulting in water deposition in lieu of water uptake.
+    To calculate total HR, we take the sum across all soil layers of only negative root water uptake fluxes (multiplied by the model timestep duration, 1800 seconds).
+    For Figure \ref{fig:hr} we partition by month and by local time: at night (summing from 6p.m. to 6a.m.), and during the day (6a.m. to 6p.m.).
+    Note that, over the course of a day or season, HR can occur without net negative root water uptake.
+    For example, hydraulic lift may occur at night, depositing deep water near the surface, which is then transpired during the day,
+    resulting in HR alongside net positive root water uptake.
+    This is evident in Figure \ref{fig7}, where there is net positive root water uptake throughout the soil column over the 2003 dry season, alongside significant HR (Fig \ref{fig:hr}).
 
 \subsection{Soil moisture}
-say predawn root wp ~= rootfr-weighted average
-
-
-    In Figure \ref{fig:cond}, we compare conductance values derived from the PHS and SMS implementations.
-    With SMS, $k$ is not explicitly modeled, so instead we infer $k$, 
-    by dividing $q_i$ by $\Delta\psi$ as defined in Equation \ref{kb}.
-    Furthermore, we interpret the constraint that $\Delta\psi$ be greater than or equal to zero to mean 
-    that conductance is zero in non-conforming cases. As such, we say $k=0$ when $\Delta\psi<\text{1 kPa}$.
-    
-
+    The vertical profile soil water potential under 60\% TFE is plotted in Figure \ref{fig:sm}.
+    The range in soil potential is much larger within the SMS paradigm, which made it difficult to plot both panels with the same color scale.
+    In order to preserve information in the PHS plot, we opt for a scale of 0 to -1 MPa, as compared to 0 to -3 MPa for SMS.
+    When comparing column average soil potential, we use separate definitions, which reflect each paradigm's representation of soil water availability.
+    With SMS, we opt for a root-fraction weighted average, following from Equation \ref{eq:btrwu}.
+    This is a poor measure for PHS, because it neglects gravitational contributions and the appropriate root area basis. 
+    Instead we opt for predawn (5 a.m.) root water potential, which, given minimal transpiration, is in equilibrium with the soil column. 
     
 \section{Results and Discussion}
 \subsection{Modeling vegetation water potential}
@@ -804,8 +799,8 @@ They compensate by increasing extraction from below 4m, but PHS to a much larger
 
 40\% reduction in surface extraction (8.12 vs 13.51 cm)
 24\% increase in surface extraction (5.28 vs 6.55 cm)
-How are the extraction physics different?
 Conductances that respond to drying.
+
 Water potential can pull harder.
 
 
@@ -1085,7 +1080,7 @@ The clear takeaway is that this process is starved for observations, and is a re
      (a) PHS, and 
      (b) SMS.
      Note that color axes are different. }
-     \label{fig11}
+     \label{fig:sm}
   \end{figure}
 
 
