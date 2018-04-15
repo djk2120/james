@@ -620,51 +620,51 @@ say predawn root wp ~= rootfr-weighted average
     
 \section{Results and Discussion}
 \subsection{Modeling vegetation water potential}
-
-The new plant hydraulics module (PHS) introduces a representation of vegetation water potential to CLM.
-Vegetation water potential is modeled at four nodes within the plant: at the root, stem, shaded, and sunlit leaf levels.
-Figure \ref{fig:vwp} shows the average diurnal cycle of vegetation water potential for the 2003 dry season at Caxiuana for two experiments:
-the first with ambient throughfall, and the second with 60\% of throughfall excluded. 
-Both panels show the characteristic drop in water potential around midday and the expected sequencing with 
-the leaf water potentials more negative than the stem, which is more negative than the root.
-
-The sequencing is difficult to distinguish from the plot, where the stem, sunlit, and shaded leaf water potential curves nearly overlap for both experiments. 
-In the ambient simulation (Fig \ref{fig:vwp}a), midday (1p.m.) water potentials are -1.98, -1.97, -1.96 MPa (zqz double-check values)
-for sunlit leaf, shaded leaf, and stem, respectively.
-With throughfall exclusion (TFE)  midday water potentials decrease to -2.77, -2.76, -2.75 MPa, respectively (Fig \ref{fig:vwp}b).
-
-Throughfall exclusion (TFE) lowers average midday sunlit leaf water potential by 0.79 MPa compared to the ambient simulation, during SON-2003 (dry season).
-This change in water potential can be partitioned among the segments of water flow from soil to leaf.
-In the ambient simulation, predawn (5am) root water potential (a measure of average soil water potential) is -0.075 MPa. 
-With TFE, it falls to -0.36 MPa, resulting in a decrease in predawn root water potential of 0.28 MPa relative to the ambient simulation. 
-The difference between midday and predawn root water potential lowers by 1.06 MPa with TFE 
-(from -0.058 MPa, ambient, to -1.12 MPA, TFE).
-The difference between sunlit leaf and stem water potential at midday acts in the opposite direction, changing from
--1.85 MPa in the ambient simulation to -1.29 MPa with TFE, attenuating the drop in water potential by 0.55 MPa.
-
-Predicted water potential values are comparable with field observations, where average dry season leaf water potential was measured as -2.47 MPa \citep{fisher2006}.
-With PHS, modeled change in leaf water potential due to TFE is -0.79MPa, which can be partitioned into -0.28 MPa predawn root water potential, -1.06 soil-to-root drop, +0.55 root-to-leaf drop.
-The drop in water potential across the stem partially abates the change in the soil and roots due to TFE. 
-Though stem conductance decreases with drying, transpiration also decreases, yielding a net effect of a smaller drop in water potential across the stem.
-
-This is consistent with findings in \cite{fisher2006} that most of the whole-plant resistance is above ground, but that added resistance from drying is predominately below ground.
-Likewise \cite{fisher2006} found evidence of isohydric behavior, where plants manage water loss through stomata to regulate leaf water potential, 
-which is consistent with results here of reduction in potential drop across the stem.
-However, where our experiment features declines in LWP due to TFE, \cite{fisher2006} found no significant difference between ambient and TFE dry season.
-This could indicate that our parameters do not result in sufficiently isohydric behavior.
-
-The small difference between leaf and stem water potentials results from minimal resistance to water flow across these segments. 
-The current PHS parameterization of stem-to-leaf resistance is relatively simple compared to the literature \citep{franks2007} and could be advanced in future versions. 
-Many facets of the hydraulic representation are simplified relative to the literature, reflecting that, in a model set to run at the global scale, 
-there is always a tradeoff between added complexity and parameter reduction.
-
-Likewise the current PHS parameterization eschews vegetation capacitance. 
-This leads to instantaneous equilibration of water potential with soil moisture and atmospheric forcing, and may .
-Furthermore, hydraulic conductance hysteresis is absent from the PHS vulnerability parameterization, 
-whereby xylem segments fully regain conducting capacity upon re-wetting.
-This limits the influence of drought legacy, which has been shown to be significant for forest mortality \citep{anderegg2013}.
-Our objective was to simplify the plant hydraulic representation for this first implementation, 
-allowing that it will be of interest to investigate more extended process representation in future versions.
+    
+    The new plant hydraulics module (PHS) introduces a representation of vegetation water potential to CLM.
+    Vegetation water potential is modeled at four nodes within the plant: at the root, stem, shaded, and sunlit leaf levels.
+    Figure \ref{fig:vwp} shows the average diurnal cycle of vegetation water potential for the 2003 dry season (SON)
+    at Caxiuana for two experiments: the first with ambient throughfall, and the second with 60\% of throughfall excluded. 
+    In the ambient simulation (Fig \ref{fig:vwp}a), average midday water potentials are -1.96, -1.95, -1.94 MPa for sunlit leaf, shaded leaf, and stem, respectively.
+    With throughfall exclusion (TFE), midday water potentials decrease to -2.77, -2.76, -2.75 MPa, respectively (Fig \ref{fig:vwp}b).
+    
+    Both panels show the characteristic drop in water potential around midday and the expected sequencing with 
+    the leaf water potentials more negative than the stem potential, which is more negative than the root potential.
+    The sequencing is difficult to distinguish from the plot, where the stem, sunlit, and shaded leaf water potential curves nearly overlap for both experiments. 
+    The small difference between leaf and stem water potentials results from minimal resistance to water flow across these segments. 
+    The current PHS parameterization of stem-to-leaf resistance is relatively simple compared to the literature \citep{franks2007} and could be advanced in future versions. 
+    
+    TFE lowers average midday sunlit leaf water potential by 0.81 MPa compared to the ambient simulation, during SON-2003 (dry season).
+    This change in water potential can be partitioned among: change in soil potential, change in potential drop from soil-to-root, and change in potential drop from root-to-leaf. 
+    In the ambient simulation, average predawn (5am) root water potential (an integrated measure of soil water potential) is -0.075 MPa. 
+    With TFE, it falls to -0.36 MPa, resulting in a decrease in predawn root water potential of 0.28 MPa relative to the ambient simulation. 
+    The difference between midday and predawn root water potential (which stands in for potential drop from soil-to-root) 
+    lowers by 1.06 MPa with TFE (from -0.06 MPa, ambient, to -1.12 MPA, TFE).
+    The difference between sunlit leaf and stem water potential at midday acts in the opposite direction, changing from
+    -1.83 MPa in the ambient simulation to -1.29 MPa with TFE, attenuating the drop in leaf water potential by 0.54 MPa.
+    
+    Predicted water potential values are comparable with field observations, where average dry season leaf water potential was measured as -2.47 MPa \citep{fisher2006}.
+    With PHS, modeled change in leaf water potential due to TFE is -0.81MPa, which can be partitioned into -0.28 MPa predawn root water potential, -1.06 soil-to-root drop, +0.53 root-to-leaf drop.
+    The drop in water potential across the stem partially abates the change in the soil and roots due to TFE. 
+    Though stem conductance decreases with drying, transpiration also decreases, yielding a net effect of a smaller drop in water potential across the stem.
+    This is consistent with findings in \cite{fisher2006} that most of the whole-plant resistance is above ground, but that added resistance from drying is predominately below ground.
+    Likewise \cite{fisher2006} found evidence of isohydric behavior, where plants manage water loss through stomata to regulate leaf water potential, 
+    which is consistent with results here of reduction in potential drop across the stem.
+    However, where our experiment features declines in leaf water potential due to TFE, \cite{fisher2006} found no significant difference between ambient and TFE dry season.
+    This could indicate that our parameters do not result in sufficiently isohydric behavior.
+    
+    Many facets of the hydraulic representation are simplified relative to the literature, reflecting that, in a model set to run at the global scale, 
+    there is always a tradeoff between added complexity and parameter reduction.
+    The current PHS parameterization eschews vegetation capacitance, 
+    which may be important for accurately modeling the diurnal cycle of water stress for some species \citep{meinzer2009}.
+    Hydraulic conductance hysteresis is absent from the PHS vulnerability parameterization, 
+    whereby xylem segments fully regain conducting capacity upon re-wetting.
+    This limits the influence of drought legacy, which has been shown to be significant for forest mortality \citep{anderegg2013}.
+    Similar to other simplified models \citep{xu2016}, loss of conductance is based on lower terminus water potential, 
+    which may underestimate integrated loss of conductivity \citep{sperry2015}.
+    These simplifications each serve to lessen the parameter and/or computational burden of PHS.
+    Our objective was to simplify the plant hydraulic representation for this first implementation, 
+    allowing that it will be of interest to investigate more extended process representation in future versions.
 
 \subsection{Stress factor, annual cycle}
 
@@ -1037,11 +1037,10 @@ The clear takeaway is that this process is starved for observations, and is a re
      \centering
      \includegraphics[width=30pc]{../figs2/fig7.pdf}
      \caption{2003 dry season (SON) root water uptake. 
-     Panel (a) shows the average cumulative profile of root water uptake (mm/s) for the four simulations during SON-2003.
-     Panel (b) shows total water uptake from above 0.2m for the four simulations during SON-2003.
-     Panel (c) shows total water uptake from below 0.2m for the four simulations during SON-2003. 
-     Panel (d) shows total ambient precipitation during SON-2003.
-     Note that these curves are the net of transpiration sink and hydraulic redistribution.
+     Panel (a) shows the average cumulative profile of root water uptake rate (mm/s) for the four simulations over SON-2003.
+     Panel (b) shows cumulative total  water uptake from above 0.2m for the four simulations during SON-2003.
+     Panel (c) shows cumulative total water uptake from below 0.2m for the four simulations during SON-2003. 
+     Panel (d) shows cumulative total ambient precipitation during SON-2003.
      }
      \label{fig7}
   \end{figure}
@@ -1051,11 +1050,10 @@ The clear takeaway is that this process is starved for observations, and is a re
      \centering
      \includegraphics[width=30pc]{../figs2/fig8.pdf}
      \caption{2003 wet season (FMA) root water uptake. 
-     Panel (a) shows the average cumulative profile of root water uptake (mm/s) for the four simulations during FMA-2003.
-     Panel (b) shows total water uptake from above 0.2m for the four simulations during FMA-2003.
-     Panel (c) shows total water uptake from below 0.2m for the four simulations during FMA-2003. 
-     Panel (d) shows total ambient precipitation during FMA-2003. 
-     Note that these curves are the net of transpiration sink and hydraulic redistribution.
+     Panel (a) shows the average cumulative profile of root water uptake rate (mm/s) for the four simulations over FMA-2003.
+     Panel (b) shows cumulative total water uptake from above 0.2m for the four simulations during FMA-2003.
+     Panel (c) shows cumulative total water uptake from below 0.2m for the four simulations during FMA-2003. 
+     Panel (d) shows cumulative total ambient precipitation during FMA-2003. 
      }
      \label{fig8}
   \end{figure}
