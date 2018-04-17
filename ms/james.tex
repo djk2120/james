@@ -951,21 +951,25 @@ The clear takeaway is that this process is starved for observations, and is a re
 
 \subsection{Caveats}
 
-Big changes: introduce a new mode of variability to water stress, and upend the model for root water uptake.
-This has significant effects on diffusive fluxes and soil moisture.
-Modeling stomatal conductance and photosynthesis, especially subject to water stress, is an area of ongoing research.
-We use the Medlyn model coupled to a hydraulic stress function that attenuates $V_{\text{cmax}}$.
-
-
-
-
-Follow-up work will be geared towards parameter estimation and assessing model skill.
-Parameter uncertainty is significant.
-Field measurements of hydraulic traits will help, but mostly only aboveground.
-Flux observations can help to tune stress parameters.
-But what's challenging is the underground parameterization.
-We don't have a lot of hydraulic trait data, and we don't have a lot of vertically resolved soil moisture.
-
+    Modeling stomatal conductance and photosynthesis, especially subject to water stress, is an area of ongoing research.
+    We use the Medlyn model coupled to a hydraulic stress function that attenuates $V_{\text{cmax}}$.
+    This complies with observations \citep{lin2018,zhou2013} that stress applied through $g_1$ underestimates attenuation of photosynthesis.
+    However, there is no direct evidence of declines in $V_{\text{cmax}}$ with drought \citep{flexas2006}, whereby future work may seek to represent mesophyll conductance in CLM.
+    
+    The model hydraulic supply representation is simplified, to reduce the model parameter and computational burdens.
+    No capacitance.
+    No integration of xylem or soil conductances vulnerability, instead based on lower node.
+    No hysteresis in loss of conductance, xylem instantly regain conductance upon re-wetting.
+    Leaf conductance simplified.
+    Soil layers fully parallel, soil potential constant each time step.
+    
+    Parameter uncertainty is significant.
+    Notions of hydraulic architecture will never perfectly fit on this modeling scale, especially in a PFT paradigm.
+    Field measurements of hydraulic traits will help constrain parameter ranges, but mostly only aboveground.
+    Flux observations can help to tune stress parameters.
+    Parameter estimation for root functioning is significantly more challenging, given the difficulty in underground trait observations.
+    Likewise observational constraints of vertically-resolved states and fluxes underground are scarce.
+    Follow-up work will be geared towards parameter estimation and assessing model skill.
 
 \subsection{Utility of modeling vegetation water potential}
 
