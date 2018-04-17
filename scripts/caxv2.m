@@ -1,15 +1,15 @@
 close all
 
-dir = '../data/mar6/';
+dir  = '../data/mar6/';
+dir2 = '../data/apr17/'; 
 
 files = {...
 %    [dir,'BR-CAX_I1PTCLM50_r270.clm2.h1.2001-01-01-00000.nc'];...
 %    [dir,'BR-CAX_I1PTCLM50_r270_on_tfe.clm2.h1.2001-01-01-00000.nc'];...
 %    [dir,'BR-CAX_I1PTCLM50_r270_off_amb.clm2.h1.2001-01-01-00000.nc'];...
 %    [dir,'BR-CAX_I1PTCLM50_r270_off_tfe.clm2.h1.2001-01-01-00000.nc']};
-[dir,'BR-CAX_I1PTCLM50_r270v3_phs_amb.clm2.h1.2001-01-01-00000.nc'];...
-[dir,'BR-CAX_I1PTCLM50_r270v3_phs_tfe_60.clm2.h1.2001-01-01-00000.nc'];...
-%[dir,'alt.nc'];...
+[dir2,'BR-CAX_I1PTCLM50_r270v3_phs_amb.clm2.h1.2001-01-01-00000.nc'];...
+[dir2,'BR-CAX_I1PTCLM50_r270v3_phs_tfe_60.clm2.h1.2001-01-01-00000.nc'];...
 [dir,'BR-CAX_I1PTCLM50_r270v3_sms_amb.clm2.h1.2001-01-01-00000.nc'];...
 [dir,'BR-CAX_I1PTCLM50_r270v3_sms_tfe_60.clm2.h1.2001-01-01-00000.nc']...
 };
@@ -28,7 +28,7 @@ if ~exist('fctr','var')
         'FCEV','FSH','KSR','GSSUN','GSSHA','ELAI','FGEV','H2OSOI'};
     %     7      8      9     10      11     12     13      14
     vard       = ones(length(varlist),length(files));
-    vard(3,:)  = [0,0,1,1];
+    vard(3,:)  = [1,1,1,1];
     vard(4,:)  = [4,4,0,0];
     vard(5,:)  = ns;
     vard(6,:)  = ns;
@@ -75,7 +75,7 @@ ff = [0,0,0,0,0,...  %1
     0,0,0,0,0,...    %5
     0,0,0,0,0,...    %6
     0,0,0,0,0,...    %7
-    0,0,0,0,1];
+    0,0,0,0,0];
 
 %2  = water potential
 %3  = timeseries
@@ -249,18 +249,14 @@ if ff(3)>0
     out = nan(14,36);
     
     % look at timeseries of btran
-    % for vegwp, average 12-2 (i.e. 4 timesteps)
-    
+    % for PHS, average 12-2 (i.e. 4 timesteps)
     ix  = mcsec>=diurn(25)&mcsec<diurn(29);
-    targ = 2.^-((vegwp(1,:)/-250000).^3.95);
-    out(1,:) = splitapply(@mean,targ(ix),month(ix)+(year(ix)-2001)*12);
-    ix  = mcsec>=diurn(25)&mcsec<diurn(29);
-    targ = 2.^-((vegwp(5,:)/-250000).^3.95);
-    out(2,:) = splitapply(@mean,targ(ix),month(ix)+(year(ix)-2001)*12);
+    out(1,:) = splitapply(@mean,btran(1,ix),month(ix)+(year(ix)-2001)*12);
+    out(2,:) = splitapply(@mean,btran(2,ix),month(ix)+(year(ix)-2001)*12);
     
-    % for btran, straight average
-    out(3,:) = splitapply(@mean,btran(1,:),month+(year-2001)*12);
-    out(4,:) = splitapply(@mean,btran(2,:),month+(year-2001)*12);
+    % for SMS, straight average
+    out(3,:) = splitapply(@mean,btran(3,:),month+(year-2001)*12);
+    out(4,:) = splitapply(@mean,btran(4,:),month+(year-2001)*12);
     
     % GPP
     gppxf = 86400*12/1e6; %umol/m2/s->g/m2/d
@@ -301,7 +297,7 @@ if ff(3)>0
     ylim([0 1])
     xlim([0 36])
     grid on
-    ylabel('Stress function')
+    ylabel('Stress factor')
     set(gca,'xtick',3:3:36)
     set(gca,'xticklabel',[])
     text(2,0.167,'(a)','FontSize',14,'FontWeight','bold')
@@ -397,21 +393,10 @@ if ff(4)>0
     
     out = zeros(48,4);
     
-    targ = 0*smp(1:4,:);
-    targ(1,:) = 2.^-((vegwp(1,:)/-250000).^3.95);
-    targ(2,:) = 2.^-((vegwp(5,:)/-250000).^3.95);
-    targ(3,:) = btran(1,:);
-    targ(4,:) = btran(2,:);
-    
     g = findgroups(mcsec);
     for ee=1:4
         ix = (month==9|month==10|month==11) & year==2003;
-        %       if ee==2||ee==4
-        %           ix = (month==9|month==10|month==11) & year>2001;
-        %       else
-        %           ix = (month==9|month==10|month==11);
-        %       end
-        out(:,ee) = splitapply(@mean,targ(ee,ix),g(ix));
+        out(:,ee) = splitapply(@mean,btran(ee,ix),g(ix));
     end
     
     xdk = figure;
@@ -423,7 +408,7 @@ if ff(4)>0
     set(gca,'ytick',0:0.25:1)
     set(gca,'xtick',0:6:24)
     xlabel('Hour')
-    ylabel('Stress function')
+    ylabel('Stress factor')
     legend('AMB','TFE','Location','SouthEast')
     text(1.2,0.1,'(a)','FontSize',14,'FontWeight','bold')
     ylim([0 1])
@@ -449,13 +434,7 @@ if ff(4)>0
         print(xdk,'../figs2/fig4','-dpdf')
     end
     
-    % don't time average!
-    ix = (month==9|month==10|month==11) & year==2003;
-    x = mean(targ(:,ix),2);
-    gppxf = 86400*12*1e-6; %umol/m2/s -> g/m2/day
-    y = gppxf*mean(fpsn(:,ix),2);
-    e = mean(fctr(:,ix)+fgev(:,ix)+fcev(:,ix),2);
-    z = targ(:,ix)*fpsn(3,ix)'/sum(fpsn(3,ix));
+
 
 end
 
@@ -472,23 +451,19 @@ if ff(5)>0
     
     %phs-on, amb
     ee      = 1;
-    y(ee,:) = 2.^-((vegwp(1,:)/-250000).^3.95);
+    y(ee,:) = btran(1,:);
     tmp     = repmat(vegwp(4,mcsec==diurn(10)),48,1);
     z       = tmp(1:length(fsds));
     q       = quantile(z(ffix),[1/3,2/3]);
-    
-    q/101972
     
     ix1(ee,:) = z<q(1)&ffix;
     ix2(ee,:) = z>=q(1)&z<q(2)&ffix;
     ix3(ee,:) = z>=q(2)&ffix;
     
-    subplot(1,2,1)
-    plot(z(ffix),y(1,ffix),'.')
     
     %phs-on, tfe
     ee      = 2;
-    y(ee,:) = 2.^-((vegwp(5,:)/-250000).^3.95);
+    y(ee,:) = btran(2,:);
     tmp     = repmat(vegwp(8,mcsec==diurn(10)),48,1);
     z       = tmp(1:length(fsds));
     ix      = ffix&year>2001;
@@ -500,13 +475,22 @@ if ff(5)>0
     ix2(ee,:) = z>=q(1)&z<q(2)&ix;
     ix3(ee,:) = z>=q(2)&ix;
     
-    subplot(1,2,2)
-    plot(z(ffix),y(2,ffix),'.')
+
+    ixo=(vpd>1.4&vpd<1.5&fsds>400&fsds<425&btran(2,:)>0.54&btran(2,:)<0.55);
+    zz = z(z>=q(2)&ix);
+    zz = sort(zz);
+    ot = 1:length(zz);
+    zo = z(ixo);
+    ot(zz==zo)
     
+    fff = fsds(z>=q(2)&ix);
+    fff = sort(fff);
+    fo  = fsds(ixo);
+    ot(fff==fo)
     
     %phs-off, amb
     ll = 41:60;ee=3;
-    y(ee,:) = btran(1,:);
+    y(ee,:) = btran(3,:);
     z = zr*smp(ll,:);
     q = quantile(z(ffix),[1/3,2/3]);
     
@@ -517,7 +501,7 @@ if ff(5)>0
     
     %phs-off, amb
     ll = 61:80;ee=4;
-    y(ee,:) = btran(2,:);
+    y(ee,:) = btran(4,:);
     z = zr*smp(ll,:);
     ix = ffix&year>2001;
     q = quantile(z(ix),[1/3,2/3]);
@@ -529,9 +513,7 @@ if ff(5)>0
     q/101972
     
     %plotting
-    xdk = figure;
-    
-    
+    xdk=figure;
     subplot('position',[0.08, 0.56, 0.43, 0.39])
     ee  = 1;
     hold on
@@ -2796,12 +2778,8 @@ if ff(38)>0
 end
 
 if ff(39)>0
-    ix = year==2003&month>1&month<5;
-    1800*4e-7*sum(fctr([1,3],ix),2)
-    
-    1800*sum(sum(qrootsink(1:4,ix)))
-    ix2 = year==2003&month>8&month<12;
-    1800*sum(sum(qrootsink(1:4,ix2)))
+
+        
 end
 
 if ff(40)>0

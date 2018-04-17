@@ -242,10 +242,16 @@ We compare PHS with the former CLM hydrodynamics model, analyzing the dynamics o
     
     Vegetation water demand and stomatal regulation is based on the Medlyn stomatal conductance model (see Section \ref{sect:gs}), 
     which we adjust for water stress with $f_w$, the CLM water stress factor. 
-    The water stress factor multiplies $V_{\text{cmax}}$, which indirectly attenuates stomatal conductance.
+    The water stress factor multiplies $V_{\text{cmax}}$, which attenuating photosynthesis, which feeds back to lower stomatal conductance and transpiration.
     We calculate the water stress factor based on leaf water potential, which has been shown to correspond to stomatal sensitivity \citep{klein2014}.
     This is an update to CLM4.5, which bases $f_w$ on soil water potential \citep{oleson2013}.
     However, once calculated, $f_w$ is deployed in the same way across versions of CLM (multiplies $V_{\text{cmax}}$).
+
+     As leaf water potential declines and xylem tension increases, transpiration is attenuated relative to maximal values.
+     The maximum transpiration ($E_{\text{sun,max}}$, $E_{\text{shade,max}}$) is that resulting from Medlyn stomatal conductance absent water stress (achieved by setting $f_w=1$).
+     The fraction of maximum transpiration is modeled with a two-parameter sigmoidal function (Equation \ref{eq:demand}). 
+     The parameters are $\psi_{50}$, the leaf water potential at 50\% loss of transpiration and 
+     $c_k$ a sigmoidal shape-fitting parameter.
 
      \begin{linenomath*}
      \begin{eqnarray}
@@ -257,6 +263,13 @@ We compare PHS with the former CLM hydrodynamics model, analyzing the dynamics o
      \end{eqnarray}
      \end{linenomath*}
     
+    The value of $f_w$ is based on the solution for attenuated transpiration.
+    We define $f_w$ as the ratio of attenuated to maximal stomatal conductance (Equation \ref{eq:stress}).
+    Maximum stomatal conductance ($g_{\text{s,sun,max}}$, $g_{\text{s,shade,max}}$) is the stomatal conductance when calculated with $f_w=1$
+    (i.e. without water stress). 
+    The attenuated stomatal conductance ($g_{\text{s,sun}}$, $g_{\text{s,shade}}$) is the stomatal conductance associated with the PHS module
+    water flow solution, which matches vegetation water supply with vegetation water demand 
+    (Section \ref{sect:solution}).
     
      \begin{linenomath*}
      \begin{eqnarray}
@@ -268,27 +281,13 @@ We compare PHS with the former CLM hydrodynamics model, analyzing the dynamics o
      \end{eqnarray}
      \end{linenomath*}
     
-     As leaf water potential declines and xylem tension increases, transpiration is attenuated relative to maximal values.
-     The maximum transpiration ($E_{\text{sun,max}}$, $E_{\text{shade,max}}$) is that resulting from Medlyn stomatal conductance absent water stress (achieved by setting $f_w=1$)
-     The fraction of maximum transpiration is modeled with a two-parameter sigmoidal function (Equation \ref{eq:demand}). 
-     The parameters are $\psi_{50}$, the leaf water potential at 50\% loss of transpiration and 
-     $c_k$ a sigmoidal shape-fitting parameter.
-    
-    The value of $f_w$ is based on the solution for attenuated transpiration.
-    We define $f_w$ as the ratio of attenuated to maximal stomatal conductance (Equation \ref{eq:stress}).
-    Maximum stomatal conductance ($g_{\text{s,sun,max}}$, $g_{\text{s,shade,max}}$) is the stomatal conductance when calculated with $f_w=1$
-    (i.e. without water stress). 
-    The attenuated stomatal conductance ($g_{\text{s,sun}}$, $g_{\text{s,shade}}$) is the stomatal conductance associated with the PHS module
-    water flow solution, which matches vegetation water supply with vegetation water demand 
-    (Section \ref{sect:solution}).
-    
      Whereas the water supply parameters (see Section \ref{sect:supply}) relate to hydraulic traits often measured in the field, 
      the hydraulic demand parameters $\psi_{50}$ and $c_k$ reflect the emergent property of hydraulic limitations to transpiration and must be empirically derived. 
-     Likewise CLM4.5 had two empirical stomatal control parameters, which were the soil matric potentials 
+     Similarly, CLM4.5 features two empirical stomatal control parameters, which are the soil matric potentials 
      corresponding to stomates fully closed and stomates fully open (see Section \ref{sect:btran}).
-     The functional form of stomatal control is not generally agreed upon, and as such, should be investigated further. 
-     Recent modeling studies have proposded differnt forms sperry,xu,christo. 
-     However observations (lin et al. 2018) seem to suggest that $psi_l$ mainly affects the GPP compeonent of gs and thus Vc,max and not the other comeopnents (g1 and g0 in the Medlyn paramterization).
+     The representation of stomatal regulation with water stress is not generally agreed upon, and as such, should be investigated further. 
+     Recent modeling studies have proposed different forms \citep{sperry2017,xu2016,christoffersen2016}. 
+     Observations \citep{lin2018} seem to suggest that water stress mainly affects the GPP component of the stomatal conductance model, guiding our choice to modulate $V_{\text{cmax}}$ based on vegetation water status and not the other components (e.g. g1 and g0 in the Medlyn model).
 
 %PHS solution
     \subsubsection{PHS solution}
