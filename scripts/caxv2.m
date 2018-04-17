@@ -2802,27 +2802,43 @@ plot(lm3.Fitted)
 end
 
 if ff(40)>0
-    ct = 0;
-    
-    for mm=[2:7]
-        ct = ct+1;
-        subplot(2,3,ct)
-        ix = year==2003&month==mm;
-        plot(mean(smp(2:20,ix),2),-2:-1:-20)
-        hold on
-        plot(mean(smp(22:40,ix),2),-2:-1:-20)
-        title(mm)
+    ix = year==2003;
+    nt = sum(ix);
+    for ee=[2,0]
+    xdk = figure;
+    for ss=1:16
+        subplot(4,4,ss)
+        plot((1:nt)/48,smp(ss+20+ee*20,ix)/101972,'k-','LineWidth',1.5)
+        xlim([0,366])
+        set(gca,'xtick',0:180:360)
+        if ss<=12
+            set(gca,'xticklabel',[])
+        end
+        if ss>1
+            ylim([-3,0])
+        end
+        title(ss,'FontSize',10,'FontWeight','Normal')
+        box off
     end
-    ct = 0;
-    figure
-    for mm=[1,8:12]
-        ct = ct+1;
-        subplot(2,3,ct)
-        ix = year==2003&month==mm;
-        plot(mean(smp(2:20,ix),2),-2:-1:-20)
-        hold on
-        plot(mean(smp(22:40,ix),2),-2:-1:-20)
-        title(mm)
+    ax1 = axes('Position',[0 0 1 1],'Visible','off');
+    t   = text(0.07,0.39,'Soil Potential (MPa)',...
+        'FontSize',11,'Rotation',90);
+    t   = text(0.46,0.03,'Day of 2003',...
+        'FontSize',11);
+    if ee==1
+    t   = text(0.305,0.97,'SMS Soil Potential by Soil Layer (AMB)',...
+        'FontSize',11,'FontWeight','Bold');
+    else
+          t   = text(0.315,0.97,'SMS Soil Potential by Soil Layer (TFE)',...
+        'FontSize',11,'FontWeight','Bold');  
+    end
+    xdk.Units = 'inches';
+    xdk.Position = [2,2,7,5];
+    xdk.PaperSize = [7,5];
+    xdk.PaperPosition = [0,0,7,5];
+    if ff(40)>1
+    print(xdk,'../figs2/supp_smlayer','-dpdf')
+    end
     end
     
 end

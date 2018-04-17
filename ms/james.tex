@@ -895,57 +895,51 @@ Future studies might test the effect of turning it off on soil moisture dynamics
 Likewise HR is likely sensitive to the representation of vegetation tissue capacitance and below-ground hydraulic segmentation.
 
 \subsection{Soil profile}
-The column total soil water in all four simulations is initialized at 2.66 meters (over an 8.6-meter soil column).
-The change in total soil water is small under ambient conditions, decreasing by 0.3cm with PHS and 9.6cm with SMS over the three-year simulations.
-Root zone soil potential is lower with SMS, with a root-fraction-weighted average soil potential of -0.42 MPa during November 2003.
-The equivalent metric from PHS, average predawn root water potential, is -0.08 MPa.
-Under 60\% throughfall exclusion, the change in soil water is -1.12 meters with PHS and -0.94 meters with SMS, relative to the ambient simulations (Supp Fig \ref{supp:buff} zqz double-check numbers).
-With SMS, this corresponds to a rootfr-weighted average soil potential of -2.18MPa, whereas 
-PHS average predawn root water potential is -0.37MPa (November 2003).
-Observations of root-zone potential based on gravity-corrected predawn leaf water potential are -0.17 +/- 0.10 MPa under ambient conditions, and -0.71 +/- 0.31 MPa with throughfall exclusion \citep{fisher2007}.
 
-Both SMS simulations achieve more negative root-zone soil potential than with PHS.
-With 60\% TFE, SMS is 1.81 MPa drier, despite having a slightly moister soil column (1.61m total water vs. 1.54m for PHS).
-This is associated with differences in the parameterization of root water uptake.
-SMS operates with a larger gradient for water extraction (see Section \ref{sect:cond}), which allows for more negative water potential in active soil layers.
-PHS has more access to deep soil water under dry conditions (Fig \ref{fig7}), which mitigates declines in soil potential near the surface.
-While PHS better matches observations of root-zone soil potential, we hesitate to make conclusions about model skill.
-This due to parameter uncertainty and tuning (see Section \ref{sect:param}) as well as the fact that both models feature significant high biases in transpiration relative to observations.
-
-Cumulative ET, three years (move to buffering?) \\
-    4.13, phs-amb,
-    3.82, phs-tfe,
-    4.39, sms-amb,
-    3.74, sms-tfe.
-
-For comparison, total ambient precip is 6.7 meters
-For reference, root fraction beyond 3 meters in depth is 0.12 (out of 1).
-
-
-SMS-tfe achieves much more negative root-zone smp than PHS-tfe.
-This despite, compared to PHS, SMS-tfe has less ET, and overall a slightly moister soil column 1.61m total water vs. 1.54m for PHS.
-Likewise SMS-tfe soil potential is much more negative than observations, though the model run does have more transpiration than observed in sap flux.
-
-2003 TFE sap flux is 
-SMS is pulling way too hard.
-
-Likewise SMS hydrology is very sensitive to the parameter $\psi_c$. 
-Scanning in time at a certain depth, you can see soil dry down to -2.5MPa and hang there, never falling to -3.
-Noting of course that $\psi_c$=-2.5MPa.
-PHS has more flexibility, with the dynamic root water potential, and so there is not the same tendency to dry out to a certain level.
-Note how the minimum smp for PHS gets lower each dry season.
-
-The big point here is that soil water dynamics are very much sensitive to the representation of root water uptake.
-My feeling is that the value for $\psi_c$ is really only tuned to get the photosynthesis/transpiration in range, 
-with no attention to the soil moisture dynamics, which, having scarce observational constraints, is allowed to miss.
-Here, because we're modeling vegetation water potential, we can utilize the Darcy framework, which gives us a well-established physical basis and a clear improvement in model structure.
-SMS has problematic model structure, seemingly no empirical basis, and intuitively does not look good on soil water dynamics.
-PHS improves model structure and it adds some new observational data, but it also adds many degrees of freedom to the RWU vector. 
-Given the large uncertainties in the model parameters and scarce observational constraints on the vertically-resolved states or fluxes, 
-it is clear that the increased DOF need to be carefully studied and managed (e.g. is the HR reasonable and/or how can we constrain it).
-But PHS is exciting because it opens a frontier for actually getting better at this, and for learning a lot about the system along the way.
-In parallel, I do think pursuing an improved heuristic, blending better model structure with limited DOF, is very worthwhile.
-The clear takeaway is that this process is starved for observations, and is a really interesting thread for ecohydrological research.
+    The column total soil water in all four simulations is initialized at 2.66 meters (over an 8.6-meter soil column).
+    The change in total soil water is small under ambient conditions, decreasing by 0.3cm with PHS and 9.6cm with SMS over the three-year simulations.
+    Root zone soil potential is lower with SMS, with a root-fraction-weighted average soil potential of -0.42 MPa during November 2003.
+    The equivalent metric from PHS, average predawn root water potential, is -0.08 MPa.
+    Under 60\% throughfall exclusion, the change in soil water is -1.12 meters with PHS and -0.94 meters with SMS, relative to the ambient simulations (Supp Fig \ref{supp:buff}).
+    With SMS, this corresponds to a root-fraction-weighted average soil potential of -2.18MPa during November 2003, whereas 
+    PHS average predawn root water potential is -0.37MPa (Figure \ref{fig:sm}).
+    Observations of root-zone potential based on gravity-corrected predawn leaf water potential are -0.17 +/- 0.10 MPa under ambient conditions, and -0.71 +/- 0.31 MPa with throughfall exclusion \citep{fisher2007}.
+    
+    SMS simulations achieve more negative root-zone soil potential than with PHS.
+    With 60\% TFE, the SMS root-zone is 1.81 MPa drier, despite having a slightly moister soil column overall (1.61m total water vs. 1.54m for PHS).
+    This is associated with differences in the parameterization of root water uptake.
+    SMS operates with a larger gradient for water extraction (see Section \ref{sect:cond}), which allows for more negative water potential in active soil layers.
+    PHS has more access to deep soil water under dry conditions (Fig \ref{fig7}), which mitigates declines in soil potential near the surface.
+    While PHS better matches observations of root-zone soil potential, we hesitate to make conclusions about model skill.
+    This due to parameter uncertainty and tuning (see Section \ref{sect:param}), as well as the fact that both models feature significant high biases in transpiration relative to observations.
+    
+    Darcy's Law establishes that water flow is proportional to the gradient in total water potential. 
+    With PHS, this gradient is measured relative to dynamic $\psi_{\text{root}}$.
+    With SMS, this gradient is measure relative to a constant parameter, $\psi_c$, the soil potential with stomates fully closed.
+    This approach is required without prognostic vegetation water potential, but yields unsatisfactory dynamics that do not comply with the physics of porous media flow (see Section \ref{sect:cond}).
+    Furthermore, it seems that $\psi_c$ has historically been tuned for its effects on diffusive fluxes, without specific attention to the effect on soil moisture dynamics 
+    (Can someone else back me up on this? Is there a way to cite this?).
+    
+    This is problematic, because soil moisture dynamics are very sensitive to $\psi_c$.
+    Root water uptake halts when soil potential reaches $\psi_c$ (Section \ref{sect:btran}), setting an effective minimum soil potential.
+    This is visible in Figure \ref{fig:sm}, where, much of the plot features soil potential at -2.5 MPa, the value of $\psi_c$.
+    This is clearer in Figure \ref{supp:sm2}, where soil layers can be seen to dry out quickly, but not beyond -2.5 MPa 
+    (with the exception of Soil Layers 1 and 2, which are influenced by bare soil evaporation).
+    The effect of $\psi_c$ extends to ambient throughfall conditions (Fig \ref{supp:sm}), but over a smaller spatial and temporal domain.
+    PHS has more flexibility, due to dynamic root water potential, so there is not the same tendency to dry out to a certain level.
+    Instead minimum soil potential for PHS gets lower each dry season throughout the TFE simulation (Fig \ref{fig:sm}a).
+    
+    The big point here is that soil water dynamics are very much sensitive to the representation of root water uptake.
+    My feeling is that the value for $\psi_c$ is really only tuned to get the photosynthesis/transpiration in range, 
+    with no attention to the soil moisture dynamics, which, having scarce observational constraints, is allowed to miss.
+    Here, because we're modeling vegetation water potential, we can utilize the Darcy framework, which gives us a well-established physical basis and a clear improvement in model structure.
+    SMS has problematic model structure, seemingly no empirical basis, and intuitively does not look good on soil water dynamics.
+    PHS improves model structure and it adds some new observational data, but it also adds many degrees of freedom to the RWU vector. 
+    Given the large uncertainties in the model parameters and scarce observational constraints on the vertically-resolved states or fluxes, 
+    it is clear that the increased DOF need to be carefully studied and managed (e.g. is the HR reasonable and/or how can we constrain it).
+    But PHS is exciting because it opens a frontier for actually getting better at this, and for learning a lot about the system along the way.
+    In parallel, I do think pursuing an improved heuristic, blending better model structure with limited DOF, is very worthwhile.
+    The clear takeaway is that this process is starved for observations, and is a really interesting thread for ecohydrological research.
 
 \section{Conclusion}
 
@@ -1206,9 +1200,19 @@ The clear takeaway is that this process is starved for observations, and is a re
      (a) PHS, and 
      (b) SMS.
      Note that color axes are different. }
-     \label{supp:smp}
+     \label{supp:sm}
   \end{figure}
+  
 
+    \begin{figure}[h]
+     \centering
+     \includegraphics[width=30pc]{../figs2/supp_smlayer.pdf}
+     \caption{Time series of soil potential by soil layer, with SMS, under 60\% throughfall exclusion. 
+     This duplicates the information in Figure \ref{fig:sm}a to highlight the the sensitivity of soil moisture dynamics to the SMS parameter, $\psi_c$ (soil potential with stomates fully closed, -2.5 MPa).
+     Soil Layers 17-20, which do not dry out completely (similar to Soil Layer 16), are not shown.}
+     \label{supp:sm2}
+  \end{figure}
+          \clearpage
 
 
 \section{Appendix to Model Description}
