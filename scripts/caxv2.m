@@ -75,7 +75,7 @@ ff = [0,0,0,0,0,...  %1
     0,0,0,0,0,...    %5
     0,0,0,0,0,...    %6
     0,0,0,0,0,...    %7
-    0,0,0,1,0];
+    0,0,0,0,1];
 
 %2  = water potential
 %3  = timeseries
@@ -2802,13 +2802,28 @@ plot(lm3.Fitted)
 end
 
 if ff(40)>0
-    ix = year==2003&month>8&month<12;
-    a=180*sum(sum(qrootsink(1:4,ix)))
-    t=180*sum(sum(qrootsink(21:24,ix)))
-    t/a
-    a=180*sum(sum(qrootsink(41:44,ix)))
-    t=180*sum(sum(qrootsink(61:64,ix)))
-    t/a
+    ct = 0;
+    
+    for mm=[2:7]
+        ct = ct+1;
+        subplot(2,3,ct)
+        ix = year==2003&month==mm;
+        plot(mean(smp(2:20,ix),2),-2:-1:-20)
+        hold on
+        plot(mean(smp(22:40,ix),2),-2:-1:-20)
+        title(mm)
+    end
+    ct = 0;
+    figure
+    for mm=[1,8:12]
+        ct = ct+1;
+        subplot(2,3,ct)
+        ix = year==2003&month==mm;
+        plot(mean(smp(2:20,ix),2),-2:-1:-20)
+        hold on
+        plot(mean(smp(22:40,ix),2),-2:-1:-20)
+        title(mm)
+    end
     
 end
 

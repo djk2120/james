@@ -865,32 +865,34 @@ The TFE simulation has less HR overall, but more HR during wet months, Feb-June.
 More HR occurs at night, in accordance with observations and theory \citep{oliveira2005,lee2005}.
 For HR to occur into a soil layer, the soil potential must be more negative than the $\psi_{\text{root}}$ (see Figure .
 During the day, transpiration requires a gradient in water potential from soil-to-root, which lowers $\psi_{\text{root}}$, decreasing the amount of HR.
-associated with the drier TFE soils and larger gradients in moisture from surface to depth.
+Increased HR with TFE occurs in Feb-June, associated with the drier TFE soils and larger gradients in soil potential from surface to depth.
+HR is lower in January, and July-December with TFE.
+Similar to during the wet months the gradient in soil potential (in this case from depth to surface) is larger with TFE.
+However, the soils overall are so dry with TFE during the dry months, that loss of conductance from soil-to-root counteracts the large gradient, resulting in lower HR.
 
-HR is predominately downwards during the wet season (FMA), serving to diminish the gradient between the newly-wetted surface and still-dry depths.
+HR is predominately downwards during the wet season (FMA), serving to diminish the gradient between the newly-wetted surface and still-dry depths (Supp Figs A.5,A.6).
 Redistribution occurs in both directions during the dry season (SON), downwards after rain events, and upwards with drying.
-Only with TFE, and only during the dry season, is there significant extraction beyond 6 meters.
+Only with TFE, and only during the dry season, is there significant extraction beyond 6 meters (Fig 8, Fig 9).
 There is very little water deposited at depths beyond 6 meters at any point in either simulation.
-We opted to nullify the hydraulic conductance in the uppermost soil layer to prevent excessive HR.
 
+HR has been observed in the field \citep{oliveira2005} and has been shown to modify seasonal climate \citep{lee2005}.
+The SMS paradigm, precludes the occurrence of HR \citep{oleson2013}.
+The dynamics of HR with PHS align with observations, with more HR at night, and HR occurring in both directions vertically \citep{burgess1998}.
+The absolute values of HR are difficult to assess, given limited observations.
+Allowing HR to occur into the top layer of the soil column significantly degraded modeled soil evaporation (not shown).
+We opted to nullify the Layer 1 (spanning 0 to 2 cm below ground) soil-to-root hydraulic conductance, to prevent HR from over-supplying water for soil evaporation.
 
-Supp Figures \ref{supp:hr} and \ref{supp:hr2}
-
-The dynamics are as expected.
-
-Flows out of layer2 can be fast, and can run round the clock, which leads to faster draining after rain events as compared to SMS.
-Supp Figure \ref{supp:layer2}
-
-Difficult to say whether the total amount, or the layer 2 throughput are reasonable.
-HR may be more of a liability than a feature, but it is a consequence of the Darcy physics.
-Seems unfair to just turn it off, though most groups do.
-Most literature models force with a single $\psi_s$, which nullifies HR \citep{fisher2007,bonan2014,sperry2017}.
-\cite{christoffersen2016} expands beyond a single $\psi_s$, resolving horizontally (concenctric), but has a single soil layer in the vertical.
+Is hydraulic redistribution a feature or a liability?
+HR is a natural consequence of using Darcy's Law to model root water uptake - when gradients are reversed, HR should occur.
+Still, HR is not represented in many models, even when based in hydraulic theory \citep{xu2016,christoffersen2016}.
+Most literature models force with a single $\psi_s$, which precludes HR \citep{fisher2007,bonan2014,sperry2017}.
+\cite{christoffersen2016} expand beyond a single $\psi_s$ horizontally, but still feature a single soil layer in the vertical.
 However, in ESMs, soil moisture is typically resolved vertically to some extent.
-Others constrain root water uptake to be positive \citep{xu2016}.
-Follow up studies could test the effect of turning it off.
-Likewise it would be interesting to see the effects of stem capacitance, and/or better resolved soil water physics.
-
+Other models, similar to the SMS paradigm, disallow HR by constraining root water uptake to be positive \citep{xu2016}.
+We opt to model HR, as it has been highlighted as an important missing process in CLM \citep{lee2005}, 
+and because it is the direct consequence of our root water uptake paradigm.
+Future studies might test the effect of turning it off on soil moisture dynamics and diffusive fluxes.
+Likewise HR is likely sensitive to the representation of vegetation tissue capacitance and below-ground hydraulic segmentation.
 
 \subsection{Soil profile}
 The column total soil water in all four simulations is initialized at 2.66 meters (over an 8.6-meter soil column).
@@ -948,6 +950,22 @@ The clear takeaway is that this process is starved for observations, and is a re
 \section{Conclusion}
 
 \subsection{Caveats}
+
+Big changes: introduce a new mode of variability to water stress, and upend the model for root water uptake.
+This has significant effects on diffusive fluxes and soil moisture.
+Modeling stomatal conductance and photosynthesis, especially subject to water stress, is an area of ongoing research.
+We use the Medlyn model coupled to a hydraulic stress function that attenuates $V_{\text{cmax}}$.
+
+
+
+
+Follow-up work will be geared towards parameter estimation and assessing model skill.
+Parameter uncertainty is significant.
+Field measurements of hydraulic traits will help, but mostly only aboveground.
+Flux observations can help to tune stress parameters.
+But what's challenging is the underground parameterization.
+We don't have a lot of hydraulic trait data, and we don't have a lot of vertically resolved soil moisture.
+
 
 \subsection{Utility of modeling vegetation water potential}
 
