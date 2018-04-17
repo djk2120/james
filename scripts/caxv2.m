@@ -75,7 +75,7 @@ ff = [0,0,0,0,0,...  %1
     0,0,0,0,0,...    %5
     0,0,0,0,0,...    %6
     0,0,0,0,0,...    %7
-    0,0,0,0,0];
+    0,0,0,1,0];
 
 %2  = water potential
 %3  = timeseries
@@ -2778,8 +2778,27 @@ if ff(38)>0
 end
 
 if ff(39)>0
+    %assuage convergence fear
+    
+ixo=(vpd>1.4&vpd<1.5&fsds>400&fsds<425&btran(2,:)>0.54&btran(2,:)<0.55);
+dd = doy(ixo);
+ix = year==2003&doy==dd&mcsec>diurn(16)&mcsec<diurn(36);
+plot(btran(2,ix))
+figure
+plot(fsds(ix),btran(2,ix),'.')
+figure
+plot(vpd(ix),btran(2,ix),'.')
 
-        
+fitlm(vpd(ix),btran(2,ix))
+fitlm(fsds(ix),btran(2,ix))
+x=[vpd(ix)',fsds(ix)'];
+y=btran(2,ix)';
+lm3 = fitlm(x,y)
+figure
+plot(btran(2,ix))
+hold on
+plot(lm3.Fitted)
+
 end
 
 if ff(40)>0
