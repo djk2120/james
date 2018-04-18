@@ -45,7 +45,7 @@ As a result, significant uncertainty remains regarding how vegetation will respo
 
 
 Plant water stress parameterizations are important in Earth System Models, as they define vegetation regulation of surface fluxes (photosynthesis, transpiration) to water fluctiations.
-Vegetation water use strategies also modulate carbon uptake, creating a critical coupling between the Earth System's carbon and hydrological cycles (Green et al. 2017).
+Vegetation water use strategies also modulate carbon uptake, creating a critical coupling between the Earth System's carbon and hydrological cycles \citep{green2017}.
 Drought stress parameterizations are used to define the response of stomtal conductance to vegetation water status that is used to attenuate transpiration, photosynthesis, and root water uptake with drying.
 The dynamics of water stress in models have broad effects on critical land surface processes.
 On diurnal timescales drought parameterizations influence the partitioning of latent versus sensible heat with effects on surface temperature \citep{bonan2014}.
@@ -56,9 +56,6 @@ Modeling water flow through the SPAC adds complexity, but is in line with eviden
 Furthermore, via Darcy's Law, SPAC models have a robust physical basis.
 Parameter estimation is challenging \citep{drake2017}, but hydraulic trait information is available \citep{kattge2011,anderegg2015a} and can be informative of forest vulnerability to drought \citep{choat2012}.
 Likewise vegetation water status observations are available at a scale that is directly relevant to model development \citep{konings2016,grant2016} and can be used to validate model results \citep{momen2017,konings2017b}.
-
-
-
 
 Representation of vegetation water stress in CLM and other models is a known deficiency, with implications for the representation of the dry/wet season in tropical rainforests \citep{powell2013,ukkola2016}.
 In this study, we update the CLM vegetation hydrodynamics parameterization based on hydraulic theory and
@@ -72,7 +69,7 @@ Root water uptake can be based on Darcy's law, in lieu of an empirical transpira
 Vegetation water potential also improves the modeling of water demand.
 Transpiration is typically attenuated with drought stress according to vegetation water status, capturing dynamic vegetation water use regulation.
 Leaf water potential serves as an improved metric for water status, in lieu of soil water or soil matric potential.
-This reflects vegetation sensitivity to both soil and atmospheric drying, while serving as a diagnostic for excessive xylem tension and cavitation risk. Modeling vegetation water potential also creates a framework for representing hydraulic redistribution \citep{lee2005} and connecting to remote sensing observations (e.g. Vegetation Opitcal Depth) (Cite Konings et al.)
+This reflects vegetation sensitivity to both soil and atmospheric drying, while serving as a diagnostic for excessive xylem tension and cavitation risk. Modeling vegetation water potential also creates a framework for representing hydraulic redistribution \citep{lee2005} and connecting to remote sensing observations (e.g. Vegetation Opitcal Depth) \citep{konings206}.
 
 In this study, we developed a simplified plant hydraulic implementation within CLM5, called Plant Hydraulic Stress (PHS).
 SAY IN WHICH SECTION WE WILL FINE EACH PART
