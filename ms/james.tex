@@ -247,8 +247,8 @@ We compare PHS with the former CLM hydrodynamics model, analyzing the dynamics o
     This is an update to CLM4.5, which bases $f_w$ on soil water potential \citep{oleson2013}.
     However, once calculated, $f_w$ is deployed in the same way across versions of CLM (multiplies $V_{\text{cmax}}$).
 
-     As leaf water potential declines and xylem tension increases, transpiration is attenuated relative to maximal values.
-     The maximum transpiration ($E_{\text{sun,max}}$, $E_{\text{shade,max}}$) is that resulting from Medlyn stomatal conductance absent water stress (achieved by setting $f_w=1$).
+     As leaf water potential declines (because of transpiration) and xylem tension increases, transpiration is attenuated relative to its maximal value.
+     The maximum transpiration ($E_{\text{sun,max}}$, $E_{\text{shade,max}}$) is defined as the value that resulting from Medlyn stomatal conductance absent water stress (achieved by setting $f_w=1$).
      The fraction of maximum transpiration is modeled with a two-parameter sigmoidal function (Equation \ref{eq:demand}). 
      The parameters are $\psi_{50}$, the leaf water potential at 50\% loss of transpiration and 
      $c_k$ a sigmoidal shape-fitting parameter.
@@ -263,11 +263,10 @@ We compare PHS with the former CLM hydrodynamics model, analyzing the dynamics o
      \end{eqnarray}
      \end{linenomath*}
     
-    The value of $f_w$ is based on the solution for attenuated transpiration.
+    The value of $f_w$ is based on the solution for attenuated transpiration (CLARIFY).
     We define $f_w$ as the ratio of attenuated to maximal stomatal conductance (Equation \ref{eq:stress}).
-    Maximum stomatal conductance ($g_{\text{s,sun,max}}$, $g_{\text{s,shade,max}}$) is the stomatal conductance when calculated with $f_w=1$
-    (i.e. without water stress). 
-    The attenuated stomatal conductance ($g_{\text{s,sun}}$, $g_{\text{s,shade}}$) is the stomatal conductance associated with the PHS module
+    Maximum stomatal conductance ($g_{\text{s,sun,max}}$, $g_{\text{s,shade,max}}$) is copmuted as the stomatal conductance in the absence of water stress, i.e. $f_w=1$.
+    The attenuated stomatal conductance ($g_{\text{s,sun}}$, $g_{\text{s,shade}}$) is then the stomatal conductance associated with the PHS module
     water flow solution, which matches vegetation water supply with vegetation water demand 
     (Section \ref{sect:solution}).
     
@@ -295,8 +294,8 @@ We compare PHS with the former CLM hydrodynamics model, analyzing the dynamics o
     PHS solves for the set of vegetation water potential values ($\psi$) that matches water supply
     (root water uptake) to water demand (transpiration), while satisfying continuity across the four water flow
     segments (soil-to-root, root-to-stem, stem-to-leaf, and leaves-to-transpiration). 
-    We compute the flux divergence $f$ (representing the mismatch of flow in and out of each segment)
-    for a given set of vegetation water potential values $\psi_i$, and iteratively update $\psi$ until $f\to0$.
+    At each time step, we compute the flux divergence $f$ (representing the mismatch of flow in and out of each segment)
+    for a given set of vegetation water potential values $\psi_i$, and iteratively update $\psi$ until convergence is reached in terms of divergence, $f\to0$.
     
     \begin{linenomath*}
     \begin{equation} 
@@ -337,12 +336,12 @@ We compare PHS with the former CLM hydrodynamics model, analyzing the dynamics o
     \end{aligned} \end{equation}
     \end{linenomath*}    
     
-    The numerics are especially tractable because $f$ has analytical derivatives and $A$ 
+    The numerics are tractable because $f$ has analytical derivatives and $A$ 
     (a 4x4 matrix with six null entries) is easy to invert when well-conditioned. 
     Supply and demand converge, because transpiration demand decreases with more negative 
     leaf water potentials and supply increases with more negative leaf water potentials.
     Within a set of PHS iterations (\ref{eq:iter}), transpiration is assumed to be linear with $f_w$.
-    PHS is nested within iterations for intercellular CO$_2$ concentration and leaf temperature.
+    The PHS loop is nested within iterations for intercellular CO$_2$ concentration and leaf temperature.
     The non-linear relationship between $f_w$ and transpiration is resolved through iteration for converging $f_w$ alongside intercellular CO$_2$.
     Details on the numerical implementation are provided in Appendix Section B.1.
 
@@ -352,9 +351,9 @@ We compare PHS with the former CLM hydrodynamics model, analyzing the dynamics o
 
 \section{Water stress factor, SMS vs. PHS}
 \label{sect:btran}
-    PHS alters the transpiration beta function ($\beta_t$, colloquially BTRAN), 
+    PHS alters the transpiration beta function ($\beta_t$, colloquially BTRAN), SAY WAHT IT IS 
     which is the phenomenological soil water stress function in CLM2-CLM4.5, as described in \citet{oleson2013}.
-    Because the name $\beta_t$ is associated with this specific plant hydrodynamics representation, we opt to rename the variable to $f_w$ (water stress factor).
+    Because the name $\beta_t$ is associated with this specific plant hydrodynamics representation, we opt to rename the variable to the water stress factor $f_w$.
     Throughout this paper we refer to the CLM4.5 plant hydrodynamics framework as SMS (soil moisture stress), 
     as compared to the newer implementation, PHS (plant hydraulic stress).
     We adopt this terminology (in lieu of CLM4.5 vs. CLM5), because SMS is still deployable with CLM5. 
@@ -362,20 +361,20 @@ We compare PHS with the former CLM hydrodynamics model, analyzing the dynamics o
     With PHS, we interpret $f_w$ as a drought safety mechanism, attenuating stomatal conductance to avoid
     excessive xylem tension associated with very negative leaf water potential.
     As such, $f_w$ is parameterized as a function of prognostic leaf water potential.
-    With SMS, $f_w$ is calculated based on soil matric potential, 
-    as a root-fraction weighted average of an empirical soil layer wilting factor (Equation \ref{bt:1}).
+    With SMS, $f_w$ was calculated based on soil matric potential, 
+    as a root-fraction weighted average potential departure from an empirical soil layer wilting factor (Equation \ref{bt:1}).
     In both parameterizations, $f_w$ multiplies $V_{\text{cmax}}$, attenuating photosynthesis and transpiration with drought.
     Recent studies suggest that the SMS parameterization introduces model bias in turbulent fluxes \citep{bonan2014}
     and contributes to unrealistic drought response of photosynthesis and stomatal conductance \citep{powell2013}.
 
     
-    Such parameterizations have primarily been examined with application to stomatal conductance, but they are also used to define vegetation soil water extraction. 
+    Such parameterizations (WHICH ONES?) have primarily been examined with application to stomatal conductance, but they are also used to define vegetation soil water extraction. 
     Each timestep, the transpiration flux solution must be distributed among the vertically discretized soil layers.
     In the SMS framework, the transpiration sink is partitioned by layer according to the soil layer wilting factor and root fraction.
     This framework lacks several key physical attributes of soil water extraction, which are addressed in the PHS implementation.
     In this section we present the SMS version of $f_w$ and outline the differences as compared to PHS.
     
-    The variable $f_w$ is unitless, ranging from 0 to 1, with 1 corresponding to no water stress, and 0 corresponding to fully water stressed. 
+    In SMS, the variable $f_w$ is unitless, ranging from 0 to 1, with 1 corresponding to no water stress, and 0 corresponding to fully water stressed. 
     It is calculated based on a root-fraction weighted average of soil layer wilting factor ($w_i$), which is a bounded linear 
     function of soil water potential ($\psi_i$) relative to PFT parameters defining the soil potential with stomates fully open ($
     \psi_{o}$) and fully closed ($\psi_{c}$), among the soil layers $i=1,...\,,n$. Note that root fraction ($r_i$) sums to 1, by definition.
@@ -393,7 +392,7 @@ We compare PHS with the former CLM hydrodynamics model, analyzing the dynamics o
     In both stress parameterizations, $f_w$ multiplies $V_{\text{cmax}}$ to attenuate photosynthesis and stomatal conductance with soil water stress. 
     With SMS, it is also directly used for modeling vegetation water extraction from the soil column. 
     The total transpiration ($T$) is partitioned among the soil layers based on the $f_w$ wilting factor. 
-    Within each soil layer, the flux to transpiration ($q_i$) depends on the layer root fraction and wilting factor, normalized by $f_w$.
+    Within each soil layer, the contribution to total transpiration ($q_i$) depends on the layer root fraction and wilting factor, normalized by $f_w$:
 
     \begin{linenomath*}
     \begin{equation}
@@ -402,9 +401,9 @@ We compare PHS with the former CLM hydrodynamics model, analyzing the dynamics o
     \end{equation}
     \end{linenomath*}
     
-    The PHS implementation adopts a hydraulic framework, where the root water uptake ($q_i$) is 
-    the product of the hydraulic conductance ($k_i$) and the gradient in water potential (-$\Delta\psi$) driving the flow.
-    That gradient is the difference between the root water potential ($\psi_{\text{root}}$) and the layer soil water potential ($\psi_i$), less changes in gravitational potential.
+    Contrary to the heuristic SMS parameterization, the PHS implementation adopts a physically-based hydraulic framework, where the root water uptake ($q_i$) is 
+    the product of the hydraulic conductance ($k_i$) and the gradient in water potential (-$\Delta\psi$) driving the flow, i.e. obeying Darcy's law.
+    That gradient is the difference between the root water potential ($\psi_{\text{root}}$) and the layer soil water potential ($\psi_i$), minus changes in gravitational potential, following Darcy's law.
     \begin{linenomath*}
     \begin{equation}
         \begin{aligned}
@@ -415,7 +414,7 @@ We compare PHS with the former CLM hydrodynamics model, analyzing the dynamics o
     \end{equation}
     \end{linenomath*}
     
-    For comparison, we recast (\ref{bt:4}) into the hydraulic framework: defining $T_{\text{max}}$, such that: $T = 
+    For comparison between SMS and PHS, we recast (\ref{bt:4}) into the hydraulic framework: defining $T_{\text{max}}$, such that: $T = 
     f_w T_{\text{max}}$ to replace $T$ in (\ref{bt:4}), and replacing $w_i$ in (\ref{bt:4}) with the formula from (\ref{bt:2}).
     
     \begin{linenomath*}
@@ -440,29 +439,26 @@ We compare PHS with the former CLM hydrodynamics model, analyzing the dynamics o
     \end{aligned}\end{equation}
     \end{linenomath*}
 
-    Here we discuss some of the unphysical implications for root water uptake from the former parameterization of water stress (Equation 15).
+   We use this formulation to discuss some of the unphysical implications for root water uptake from the former SMS parameterization of water stress (Equation 15).
     
     \subsection{Constant pulling potential}
-    Darcy's Law governs the flow of water through the soil-plant-atmosphere continuum, 
-    with fluxes proportional to the gradient in water potential. 
     With SMS, that gradient is defined for each soil layer as 
     the difference between the soil water potential in that layer ($\psi_i$) 
     and a constant parameter, the soil water potential when stomata are fully closed ($\psi_{c}$).
     This parameter serves as the vegetation ``pulling'' potential for calculating the soil transpiration sink.
-    Using a constant wilting point is inconsistent with extensive evidence from the field of dynamic vegetation water potential, and cohesion tension theory driving the transpiration flow.
+    Using a constant wilting point is inconsistent with extensive evidence from the field of dynamic vegetation water potential, and cohesion tension theory (CITATIONS NEEDED) driving the transpiration flow.
     Likewise the values for $\psi_{c}$ are quite negative, (-2.5 MPa for broadleaf evergreen tropical, BET, forests). 
     \cite{fisher2006} measured midday stem potential consistently higher than -0.5 MPa during the wet season, and on average -1.69 and -1.53 MPa during the dry season in the control and exclusion plots, respectively.
     
     \subsection{Conductance dynamics}
-    In lieu of dynamic vegetation water potential, intra-day SMS soil sink dynamics derive from a highly variable conductance.
+    In SMS, in lieu of dynamic vegetation water potential, intra-day SMS soil sink dynamics derive from a highly variable conductance (CLARIFY).
     As inferred in Equation \ref{kb}, SMS conductance is modeled as a function of $T_{max}$, and three constant parameters.
     $T_{max}$ is highly dynamic, responding to the diurnal course in transpiration demand.
     This is inconsistent with general principles of porous media flow, where conductivity is a function of the hydraulic architecture and its wetted status.
     Likewise, this representation of conductance does not represent the characteristic phenomenon where vessels lose conductance with drying.
       
-    \subsection{No dependence on absolute root biomass}
-    As is typical, the SMS conductance is scaled by layer using an area basis.
-    In this case the relative root fraction is used.
+    \subsection{No dependence on belowground carbon allocation}
+    As is typical in water stress parameterizations, the SMS conductance is scaled by layer using an area basis, here using the relative vertical root fraction is used.
     With PHS, an absolute measure of root biomass is used (see Appendix Equation \ref{eq:rai}), so that the belowground water cycle interacts with carbon allocation to the roots.
     An absolute measure better conforms with the physics of porous media flow and better responds to varying carbon allocation strategies.
     For example, with SMS, if root mass doubles in every soil layer, the root access to water remains unchanged.
@@ -472,9 +468,9 @@ We compare PHS with the former CLM hydrodynamics model, analyzing the dynamics o
     PHS implements two other penalties for extracting water from deep in the soil column that are missing from SMS.
     The first is minor, but water extracted from depth must overcome gravity, amounting to about 0.01 MPa per meter in depth. 
     This is missing from SMS and included with PHS. 
-    Likewise SMS ignores that hydraulic conductance is generally taken to scale with the inverse of conducting length.
+    Likewise, SMS ignores the fact that hydraulic conductance is generally taken to scale with the inverse of conducting length.
     Deeper roots feature longer root tissue conducting length, and root spacing within the soil is less dense, requiring longer conducting distances across the soil matrix.
-    In PHS, both these processes result in diminished hydraulic conductance.
+    In PHS, both these processes result in diminished hydraulic conductance (UNCLEAR).
 
     \subsection{Constraints}
     With SMS, the gradient in water potential is constrained between 0 and 
@@ -492,7 +488,7 @@ We compare PHS with the former CLM hydrodynamics model, analyzing the dynamics o
 All four simulations in this paper use the same development version of CLM5
 (development version r270, https://github.com/ESCOMP/ctsm/releases/tag/clm4
 \textunderscore 5\textunderscore 18\textunderscore r270).
-The four simulations are used to vary the plant hydrodynamics model (PHS vs. SMS) and throughfall forcing (Ambient vs. 60\% throughfall excluded), with all other model components and forcing shared.
+The four simulations are used to assess the impact of the plant hydrodynamics model (PHS vs. SMS) on a throughfall experiment (i.e., with either ambient or 60\% throughfall excluded), with all other model components and forcing shared.
 Simulations are run offline, spanning from 2001 through 2003, utilizing the satellite phenology mode of CLM5.
 All simulations start from the same initial conditions, which are the results of a 9-year spin-up repeating the PHS/Ambient simulation three times.
 To avoid duplication, descriptions of site characteristics, forcing data, and observational sap flux, can be found in \cite{fisher2007}.
@@ -526,10 +522,9 @@ bsw & Brooks-Corey parameter & $b$ & 6 \\
 
 Select parameter values concerning vegetation hydrodynamics are presented in Table 1.
 All other parameters use the default values associated with the r270 version of CLM5.
-Informed by \cite{fisher2008}, we tuned soil hydraulic parameters and throughfall exclusion to better capture observational soil water dynamics (\cite{fisher2007} Figure 4), with our results shown in Supplementary Figure \ref{top3m}.
+Informed by \cite{fisher2008}, we tuned soil hydraulic parameters and throughfall exclusion to better capture the observational soil water dynamics (\cite{fisher2007} Figure 4), Supplementary Figure \ref{top3m}.
 Likewise, we tuned $k_{max}$ and $g_1$ parameters to improve the fit to sap flux observations in the ambient simulation.
-The object of this paper is to present the dynamics of this model instance in depth, to clearly describe model functionality without specific comment on model skill.
-Model skill and parameter sensitivity will be assessed in follow-up studies.
+The object of this paper is to present the dynamical impact of PHS to clearly describe model functionality. Model skill and parameter sensitivity will be assessed in follow-up studies.
 
 %====================
 %  ANALYSIS DESCRIPTION
@@ -548,11 +543,11 @@ For the annual cycle, we plot monthly mean midday (local time 12:00 to 14:00) su
     Months were dropped that featured fewer than 5 days of data.
 
 \subsection{Stress factor, diurnal cycle}
-    In Figure \ref{fig4}, we plot the diurnal cycle of the stress factor averaged over the 2003 dry season (SON).
+    In Figure \ref{fig4}, we plot the diurnal cycle of the stress factor averaged over the 2003 dry season (SON) (I am not a big fan of sentences in Figure we show, better to say what ahppens and then refer to figure).
     Drivers of the stress function are examined in Figure \ref{fig:vpd}.
     To highlight the response of stress to VPD, we subsetted data according to downwelling solar radiation, which also influences stress.
     Data are selected with downwelling solar radiation between 400 and 425 W/m2, which corresponds to 775 half-hour timesteps.
-    For the TFE simulations, (Figure \ref{fig:vpd}c,d), we additionally exclude data from 2001, because TFE was not initiated until November 2001, leaving 515 points.
+    For the TFE simulations, (Figure \ref{fig:vpd}c,d), we additionally exclude data from 2001, because TFE was not initiated until November 2001, leaving 515  timsteps.
     Data are subdivided into terciles based on soil water (within each plot), and colored accordingly.
     The terciles are defined for each simulation in Table 2.
 \begin{table}
@@ -578,7 +573,7 @@ SMS, TFE & -0.6474 MPa & -1.8467 MPa \\
     We interpret the constraint that $\Delta\psi$ be greater than or equal to zero to mean 
     that conductance is zero in non-conforming cases, which we extend to $k=0$ when $\Delta\psi<\text{1 kPa}$.
     For our analyses, we consider only points when transpiration is greater than 4 W/m2, which improves the tractability of inferring conductance,
-    given that SMS root water uptake is precluded absent transpiration. 
+    given that SMS root water uptake is precluded absent transpiration (REPHRASE). 
     
     For Figure \ref{fig:cond}a,b, conductance is plotted from Soil Layer 3 (spans from 6 to 12 cm below ground),
      for all points during 2003 when transpiration is greater than 4 W/m2 (n=7752).
