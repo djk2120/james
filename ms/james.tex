@@ -790,7 +790,7 @@ SMS, TFE & -0.6474 MPa & -1.8467 MPa \\
     Under TFE, both PHS and SMS extract minimal water from between 0.5 and 4m, (3.18 cm and 0.56 cm, respectively, over the three months).
     Both compensate by increasing extraction from below 4m, but PHS to a much larger extent, which corresponds to overall significantly more root water uptake during TFE.
     
-    In these simulations, PHS is more sensitive to changes in soil water potential, with decreases in root water uptake in response to drying within a soil layer.
+    In these simulations, PHS is more sensitive to changes in soil water potential, with decreases in root water uptake in response to drying within a soil layer (Supp Fig \ref{supp:rwu}.
     40\% reduction in surface extraction (8.12 vs 13.51 cm)
     24\% increase in surface extraction (5.28 vs 6.55 cm)
     Conductances that respond to drying.
@@ -858,9 +858,9 @@ SMS, TFE & -0.6474 MPa & -1.8467 MPa \\
     Similar to during the wet months the gradient in soil potential (in this case from depth to surface) is larger with TFE.
     However, the soils overall are so dry with TFE during the dry months, that loss of conductance from soil-to-root counteracts the large gradient, resulting in lower HR.
     
-    HR is predominately downwards during the wet season (FMA), serving to diminish the gradient between the newly-wetted surface and still-dry depths (Supp Figs A.5,A.6).
+    HR is predominately downwards during the wet season (FMA), serving to diminish the gradient between the newly-wetted surface and still-dry depths (Supp Figs A.6,A.7).
     Redistribution occurs in both directions during the dry season (SON), downwards after rain events, and upwards with drying.
-    Only with TFE, and only during the dry season, is there significant extraction beyond 6 meters (Fig 8, Fig 9).
+    Only with TFE, and only during the dry season, is there significant extraction beyond 6 meters (Figs 8, 9).
     There is very little water deposited at depths beyond 6 meters at any point in either simulation.
     
     HR has been observed in the field \citep{oliveira2005} and has been shown to modify seasonal climate \citep{lee2005}.
@@ -868,23 +868,20 @@ SMS, TFE & -0.6474 MPa & -1.8467 MPa \\
     The dynamics of HR with PHS align with observations, with more HR at night, and HR occurring in both directions vertically \citep{burgess1998}.
     The absolute values of HR are difficult to assess, given limited observations.
     Allowing HR to occur into the top layer of the soil column significantly degraded modeled soil evaporation (not shown).
-    We opted to nullify the Layer 1 (spanning 0 to 2 cm below ground) soil-to-root hydraulic conductance, to prevent HR from over-supplying water for soil evaporation.
+    We opted to omit the first top Layer (spanning 0 to 2 cm below ground) soil-to-root hydraulic conductance, to prevent HR from over-supplying water for soil evaporation.
     
     Is hydraulic redistribution a feature or a liability?
-    HR is a natural consequence of using Darcy's Law to model root water uptake - when gradients are reversed, HR should occur.
+    HR is a natural consequence of using Darcy's Law to model root water uptake - when gradients are reversed, HR should occur. as such it is naturally included within a plant hydraulics model with multiple soil layers and is an emergent behavior of respecting hydrauc flow down gradient of potentials. 
     Still, HR is not represented in many models, even when based in hydraulic theory \citep{xu2016,christoffersen2016}.
-    Most literature models force with a single $\psi_s$, which precludes HR \citep{fisher2007,bonan2014,sperry2017}.
+    Most literature models force the model with a single soil water potential $\psi_s$, which precludes HR \citep{fisher2007,bonan2014,sperry2017}, which we have shown can substantially affect the seasonl cycle of water fluxes.
     \cite{christoffersen2016} expand beyond a single $\psi_s$ horizontally, but still feature a single soil layer in the vertical.
-    However, in ESMs, soil moisture is typically resolved vertically to some extent.
+    However, in ESMs, soil moisture is typically resolved vertically and thus interfacing the plant hydrulics with a multi-layer soil naturally account sfor HR.
     Other models, similar to the SMS paradigm, disallow HR by constraining root water uptake to be positive \citep{xu2016}.
-    We opt to model HR, as it has been highlighted as an important missing process in CLM \citep{lee2005}, 
-    and because it is the direct consequence of our root water uptake paradigm.
-    Future studies might test the effect of turning it off on soil moisture dynamics and diffusive fluxes.
-    Likewise HR is likely sensitive to the representation of vegetation tissue capacitance and below-ground hydraulic segmentation.
+    Likewise HR is likely sensitive to the representation of vegetation tissue capacitance and below-ground hydraulic segmentation (CITAIONS NEEDED).
 
 \subsection{Soil profile}
 
-    The column total soil water in all four simulations is initialized at 2.66 meters (over an 8.6-meter soil column).
+    The column total soil water in all four simulations is initialized at 2.66 meters (over an 8.6-meter soil column) (SAY WHY).
     The change in total soil water is small under ambient conditions, decreasing by 0.3cm with PHS and 9.6cm with SMS over the three-year simulations.
     Root zone soil potential is lower with SMS, with a root-fraction-weighted average soil potential of -0.42 MPa during November 2003.
     The equivalent metric from PHS, average predawn root water potential, is -0.08 MPa.
@@ -899,7 +896,7 @@ SMS, TFE & -0.6474 MPa & -1.8467 MPa \\
     SMS operates with a larger gradient for water extraction (see Section \ref{sect:cond}), which allows for more negative water potential in active soil layers.
     PHS has more access to deep soil water under dry conditions (Fig \ref{fig7}), which mitigates declines in soil potential near the surface.
     While PHS better matches observations of root-zone soil potential, we hesitate to make conclusions about model skill.
-    This due to parameter uncertainty and tuning (see Section \ref{sect:param}), as well as the fact that both models feature significant high biases in transpiration relative to observations.
+    This is due to parameter uncertainty and tuning (see Section \ref{sect:param}), as well as the fact that both models feature high biases in transpiration relative to observations.
     
     Darcy's Law establishes that water flow is proportional to the gradient in total water potential. 
     With PHS, this gradient is measured relative to dynamic $\psi_{\text{root}}$.
@@ -1148,8 +1145,8 @@ SMS, TFE & -0.6474 MPa & -1.8467 MPa \\
   
     \begin{figure}[h]
      \centering
-     \includegraphics[width=30pc]{../figs2/suppfig2.pdf}
-     \caption{Log of conductance versus soil potential for Soil Layer 3 (2003).}
+     \includegraphics[width=30pc]{../figs2/supp_rwu.pdf}
+     \caption{Root water uptake versus soil potential for Soil Layer 3 (SON-2003).}
      \label{supp:rwu}
   \end{figure}
   \clearpage
