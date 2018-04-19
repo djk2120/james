@@ -2887,7 +2887,7 @@ if ff(42)>0
     xdk.Position = [2,2,7,5];
     xdk.PaperSize = [7,5];
     xdk.PaperPosition = [0,0,7,5];
-    if ff(41)>0
+    if ff(42)>0
     print(xdk,'../figs2/supp_rwu','-dpdf')
     end
     
