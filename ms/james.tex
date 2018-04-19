@@ -20,7 +20,7 @@ Pierre Gentine\affil{1}
 \correspondingauthor{Daniel Kennedy}{djk2120@columbia.edu}
 
 \begin{keypoints}
-\item A simplified soil-plant-atmosphere continuum model is implemented in CLM5
+\item A simplified soil-plant-atmosphere continuum model based on hydraulic theory is implemented in CLM5.
 \item Prognostic leaf water potential replaces soil matric potential as the functional basis for water stress, reflecting xylem tension constraints and vegetation sensitivity to atmosphere drying. 
 \item Prognostic root water potential is used to implement hydraulic root water uptake, replacing a soil wilting factor heuristic.
 \end{keypoints}
@@ -779,8 +779,6 @@ SMS, TFE & -0.6474 MPa & -1.8467 MPa \\
 \subsection{Root Water Uptake}
 \label{sect:rwu}
 
-    Finishing this section currently .....
-    
     Hydraulic conductance is used to model root water uptake, the flux of water ($q_i$, mm/s) 
     extracted from each of the vertically discretized soil layers ($i=\left[1,2,...,n\right]$).
     These fluxes are used as the soil transpiration sink terms within the Richards equation and, summed over the soil column, are equivalent to the transpiration flux.
@@ -796,6 +794,7 @@ SMS, TFE & -0.6474 MPa & -1.8467 MPa \\
     Under TFE, both PHS and SMS extract minimal water from between 0.5 and 4m, (3.18 cm and 0.56 cm, respectively, over the three months).
     Both compensate by increasing extraction from below 4m, but PHS to a much larger extent, which corresponds to overall significantly more root water uptake during TFE.
     
+    In these simulations, PHS is more sensitive to changes in soil water potential, with decreases in root water uptake in response to drying within a soil layer.
     40\% reduction in surface extraction (8.12 vs 13.51 cm)
     24\% increase in surface extraction (5.28 vs 6.55 cm)
     Conductances that respond to drying.

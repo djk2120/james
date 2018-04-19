@@ -76,7 +76,7 @@ ff = [0,0,0,0,0,...  %1
     0,0,0,0,0,...    %6
     0,0,0,0,0,...    %7
     0,0,0,0,0,...
-    1];
+    0,1];
 
 %2  = water potential
 %3  = timeseries
@@ -2849,18 +2849,47 @@ if ff(41)>0
    1800*sum(sum(qrootsink(21:24,ix)))
    1800*sum(sum(qrootsink(61:64,ix)))
    
-   subplot(2,1,1)
+   subplot(2,2,1)
    dz = zs(2:5)-zs(1:4);
    x=dz*100*h2osoi(21:24,ix);
    plot(x)
    hold on
    x=dz*100*h2osoi(61:64,ix);
    plot(x)
-   subplot(2,1,2)
+   subplot(2,2,2)
    plot((zs(6)-zs(5))*100*h2osoi(25,ix))
    hold on
    plot((zs(6)-zs(5))*100*h2osoi(65,ix))
     
+    
+end
+
+if ff(42)>0
+    xdk = figure;
+    ix = year==2003&month>8&month<12;
+    tstr = {'PHSamb','PHStfe','SMSamb','SMStfe'};
+    ymx   = [5e-5,10e-5,1e-5,1.5e-5];
+    ymn   = [-1e-5,-1e-5,0,0];    
+    for i=1:4
+        subplot(2,2,i)
+        plot(smp(3+(i-1)*20,ix)/101972,qrootsink(3+(i-1)*20,ix),'.')
+        title(tstr{i})
+        ylim([ymn(i),ymx(i)])
+        xlabel('Soil Potential (MPa)')
+        ylabel('RWU rate (mm/s)')
+        if i==1
+            xlim([-0.16,0])
+            set(gca,'ytick',0:2.5e-5:5e-5)
+        end
+    end
+    
+        xdk.Units = 'inches';
+    xdk.Position = [2,2,7,5];
+    xdk.PaperSize = [7,5];
+    xdk.PaperPosition = [0,0,7,5];
+    if ff(41)>0
+    print(xdk,'../figs2/supp_rwu','-dpdf')
+    end
     
 end
 
