@@ -16,13 +16,13 @@ Pierre Gentine\affil{1}
 
 
 \affiliation{1}{Columbia}
-\affiliation{2}{NCAR}
+\affiliation{2}{National Center for Atmospheric Research, Table Mesa Drive, Boulder, Colorado, USA}
 \correspondingauthor{Daniel Kennedy}{djk2120@columbia.edu}
 
 \begin{keypoints}
-\item A simplified soil-plant-atmosphere continuum model based on hydraulic theory is implemented in CLM5.
-\item Prognostic leaf water potential replaces soil matric potential as the functional basis for water stress, reflecting xylem tension constraints and vegetation sensitivity to atmosphere drying. 
-\item Prognostic root water potential is used to implement hydraulic root water uptake, replacing a soil wilting factor heuristic.
+\item A simplified soil-plant-atmosphere continuum model based on hydraulic theory is implemented in the Community Land Model (version 5).
+\item Prognostic leaf water potential replaces soil matric potential as the functional basis for water stress, thus reflecting how the leaf water supply (via the xylem network) and evaporative demand act in concert to determine plant water status and thus  stomatal conductance and leaf gas exchange. 
+\item Prognostic root water potential is used to implement hydraulic root water uptake, replacing the heuristic soil 'wilting' factor .
 \end{keypoints}
 
 
@@ -39,15 +39,15 @@ Pierre Gentine\affil{1}
 
 Trees face emerging climate change risk globally \citep{allen2010,anderegg2013b}.
 Understanding vegetation response is a high priority, both for discerning climate impacts and for modeling feedbacks to the carbon and hydrological cycles.
-In addition to stress from soil moisture drought, vegetation are susceptible to increasing atmospheric transpiration demand \citep{restaino2016,novick2016b}.
+In addition to stress from soil moisture drought, vegetation is susceptible to increasing atmospheric transpiration demand \citep{restaino2016,novick2016b}.
 Increases in vapor pressure deficit (VPD) have occurred with warming \citep{ficklin2017,seager2015}, and are associated with impacts on vegetation \citep{williams2013,mcdowell2015}.
-As a result, significant uncertainty remains regarding how vegetation will respond to changes in hydroclimate within Earth System Models, feeding back onto the carbon cycle as vegetation mediates carbon uptake from continents \citep{dekauwe2017,friedlingstein2014}.
+Significant uncertainty remains regarding how vegetation will respond to changes in hydroclimate within Earth System Models, feeding back onto the carbon cycle as vegetation mediates carbon uptake from continents \citep{dekauwe2017,friedlingstein2014}.
 
 
-Plant water stress parameterizations are important in Earth System Models, as they define vegetation regulation of surface fluxes (photosynthesis, transpiration) to water fluctiations.
+Plant water stress parameterizations are important in Earth System Models, as they define vegetation regulation of surface fluxes (photosynthesis, transpiration) to water fluctuations.
 Vegetation water use strategies also modulate carbon uptake, creating a critical coupling between the Earth System's carbon and hydrological cycles \citep{green2017}.
-Drought stress parameterizations are used to define the response of stomtal conductance to vegetation water status that is used to attenuate transpiration, photosynthesis, and root water uptake with drying.
-The dynamics of water stress in models have broad effects on critical land surface processes.
+Drought stress parameterizations (functions which relate simple metric of soil moisture status to leaf gas exchange) are widely used to define the response of stomatal conductance to vegetation water status that is used to attenuate transpiration, photosynthesis, and root water uptake with drying.
+The dynamics of water stress in models have broad effects on critical land surface processes. (Joetzjer et al. 2014)
 On diurnal timescales drought parameterizations influence the partitioning of latent versus sensible heat with effects on surface temperature \citep{bonan2014}.
 On longer timescales vegetation water use strategies regulate the global carbon and water cycles \citep{dekauwe2015}.
 
@@ -57,9 +57,9 @@ Furthermore, via Darcy's Law, SPAC models have a robust physical basis.
 Parameter estimation is challenging \citep{drake2017}, but hydraulic trait information is available \citep{kattge2011,anderegg2015a} and can be informative of forest vulnerability to drought \citep{choat2012}.
 Likewise vegetation water status observations are available at a scale that is directly relevant to model development \citep{konings2016,grant2016} and can be used to validate model results \citep{momen2017,konings2017b}.
 
-Representation of vegetation water stress in CLM and other models is a known deficiency, with implications for the representation of the dry/wet season in tropical rainforests \citep{powell2013,ukkola2016}.
+Representation of vegetation water stress in the Community Land Model (CLM) and other land surface models is a known deficiency, with implications for the representation of the dry/wet season in tropical rainforests \citep{powell2013,ukkola2016}.
 In this study, we update the CLM vegetation hydrodynamics parameterization based on hydraulic theory and
-analyze its dynamics using point simulations set within the Caxiuan\~a throughfall exclusion experiment \citep{fisher2006}.
+analyze its dynamics using point simulations set within the Caxiuan\~a through-fall exclusion experiment \citep{fisher2006}.
 Advancing the representation of the SPAC introduces a new state variable to CLM, vegetation water potential, 
 which is valuable for modeling vegetation hydrodynamics.
 Modeling vegetation water potential allows for an explicit representation of water supply, from the soil through the vegetation substrate.
@@ -71,13 +71,14 @@ Transpiration is typically attenuated with drought stress according to vegetatio
 Leaf water potential serves as an improved metric for water status, in lieu of soil water or soil matric potential.
 This reflects vegetation sensitivity to both soil and atmospheric drying, while serving as a diagnostic for excessive xylem tension and cavitation risk. Modeling vegetation water potential also creates a framework for representing hydraulic redistribution \citep{lee2005} and connecting to remote sensing observations (e.g. Vegetation Opitcal Depth) \citep{konings206}.
 
-In this study, we developed a simplified plant hydraulic implementation within CLM5, called Plant Hydraulic Stress (PHS).
+In this study, we developed a simplified plant hydraulic implementation within CLM5, which we refer to as the 'Plant Hydraulic Stress' (PHS) configuration.
 SAY IN WHICH SECTION WE WILL FINE EACH PART
-This sets a framework to represent vegetation water potential, which is used to improve model vegetation hydrodynamics.
+PHS creates a framework to represent vegetation water potential, which is used to improve model vegetation hydrodynamics.
 Leaf water potential replaces soil potential as the functional basis for drought stress attenuation of transpiration and photosynthesis.
 Root water potential is used to model gradient-based root water uptake in lieu of a soil wilting factor heuristic function.
+
 To assess the new model formulation, we carried out point simulations at Caxiuan\~a National Forest in Brazil.
-This site features a critical biome subject to experimental throughfall exclusion, where we expect vegetation regulation of turbulent fluxes.
+This site features a critical biome (terra-firme moist tropical evergreen forest) subject to experimental throughfall exclusion, where we expect vegetation regulation of turbulent fluxes.
 We compare PHS with the former CLM hydrodynamics model, analyzing the dynamics of modeled water stress and root water uptake.
 
 %====================
@@ -88,15 +89,15 @@ We compare PHS with the former CLM hydrodynamics model, analyzing the dynamics o
 %Photosynthesis
 \subsection{Photosynthesis}
 \label{sect:A}
-    The CLM5 photosynthesis model is inherited from CLM4.5 as described in \citet{bonan2011}, \citet{thornton2007},
+    The CLM5 photosynthesis model is derived from the CLM4.5 as described in \citet{bonan2011}, \citet{thornton2007},
     and \citet{oleson2013}.Photosynthesis is defined in three regimes: Rubisco-limited, light-limited, and export-limited 
     following \citet{farquhar1980} and \citet{harley1992}.The implementation extends \citet{sellers1996a,sellers1996b} with 
-    colimitation following \citet{collatz1991}. 
+    co-limitation following \citet{collatz1991}. 
     
     CLM5 photosynthesis, in its default configuration, is a two-big-leaf model, with a sunlit and shaded leaf for each plant functional type \citep{thornton2007, dai2004, oleson2013}. 
-    The canopy fluxes module iterates to satisfy the leaf surface energy balance, while environmtal conditions are evolving.
-    Within this, the photosynthesis module iterates to solve for intercellular CO$_2$ concentration, balancing stomatal flux of 
-    CO2 with photosynthetic assimilation flux of CO2.
+    The canopy fluxes module iterates the solution for leaf temperature to satisfy the leaf surface energy balance, while environmental conditions are evolving.
+    Within this, the photosynthesis module further iterates to solve for inter-cellular CO$_2$ concentration, balancing stomatal flux of 
+    CO$_2$ with photosynthetic assimilation flux of CO$_2$.
     
 
 %Stomatal Conductance
@@ -104,7 +105,7 @@ We compare PHS with the former CLM hydrodynamics model, analyzing the dynamics o
 \label{sect:gs}
     CLM5 implents the Medlyn stomatal conductance model, which reconciles the empirical and optimal approaches to modeling 
     stomatal conductance \citep{medlyn2011}. 
-    Stomatal conductance of CO2 is related to net photosynthesis ($A_n$), CO2 concentration at the leaf surface 
+    Stomatal conductance of CO$_2$ is thus directly related to net photosynthesis ($A_n$), CO$_2$ concentration at the leaf surface 
     ($C_a$), and the square root of the vapor pressure deficit near the leaf surface ($\sqrt{D}$).
     \begin{equation}
     g_s=g_0+\left(1+\dfrac{g_1}{\sqrt{D}}\right)\dfrac{A}{C_a}
@@ -112,7 +113,7 @@ We compare PHS with the former CLM hydrodynamics model, analyzing the dynamics o
     The model features two parameters $g_0$ ($\mu$mol / m2 / s) and $g_1$ (kPa$^{0.5}$). 
     The $g_0$ parameter is minimum stomatal conductance, representing cuticular and epidermal losses (small). 
     The $g_1$ parameter relates to the marginal water cost guiding the optimization of carbon assimilation.
-    Those parameters are made plant function type dependent.
+    Those parameters are plant functional type dependent.
     
     The Medlyn model, derived from stomatal optimization theory, predicts stomatal conductance to maximize assimilation relative to water costs ($A-\lambda E$), 
     but does not resolve concurrent limitations to stomatal conductance associated with drought conditions.
