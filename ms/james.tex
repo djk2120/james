@@ -779,31 +779,27 @@ SMS, TFE & -0.6474 MPa & -1.8467 MPa \\
 
     Hydraulic conductance is used to model root water uptake, the flux of water ($q_i$, mm/s) 
     extracted from each of the vertically discretized soil layers ($i=\left[1,2,...,n\right]$).
-    These fluxes are used as the soil transpiration sink terms within the Richards' equation (CITATION NEEDED) and, summed over the soil column, are equivalent to the transpiration flux.
+    These fluxes are used as the soil transpiration sink terms within the Richards' equation \citep{oleson2013} and, summed over the soil column, are equivalent to the transpiration flux.
     As described above (and in Section \ref{sect:btran}), PHS adopts a hydraulic framework for root water uptake. 
-    . 
+
     PHS simulations (black color), feature more surface extraction than with SMS, especially under ambient throughfall conditions (Fig\ref{fig7}a), during the 2003 dry season.
     The time-series of PHS total cumulative extraction (cm) from near-surface soil (Fig\ref{fig7}b) responds to precipitation (Fig\ref{fig7}d), 
     with increased surface extraction after rain events.
     Under ambient conditions the SMS partitioning of extraction between near-surface and depth is not sensitive to precipitation.
-    The responses of total near-surface extraction to TFE are opposing for PHS and SMS.
-    PHS near-surface extraction decreases with TFE, while, with SMS, it increases (Fig \ref{fig7}b).
+    PHS near-surface extraction decreases by 40\% with TFE (8.12 vs 13.51 cm), while, SMS features a 24\% increase (5.28 vs 6.55 cm, Fig \ref{fig7}b).
     Under TFE, both PHS and SMS extract minimal water from between 0.5 and 4m, (3.18 cm and 0.56 cm, respectively, over the three months).
     Both compensate by increasing extraction from below 4m, but PHS to a much larger extent, which corresponds to overall significantly more root water uptake during TFE.
     
-    In these simulations, PHS is more sensitive to changes in soil water potential, with decreases in root water uptake in response to drying within a soil layer (Supp Fig \ref{supp:rwu}.
-    40\% reduction in surface extraction (8.12 vs 13.51 cm)
-    24\% increase in surface extraction (5.28 vs 6.55 cm)
-    Conductances that respond to drying.
+    PHS and SMS feature very different root water uptake dynamics.
+    PHS is more sensitive to changes in soil water potential, with stronger decreases in root water uptake in response to drying within a soil layer (Supp Fig \ref{supp:rwu}).
+    This explains the response in near-surface water uptake to rain events and to TFE.
+    PHS features increases in near-surface water uptake after rain and decreases with TFE.
+    SMS near-surface water uptake is less sensitive to rain events and increases with TFE.
+    Root water potential is not so negative as \psi_c.
+    PHS conductances decrease with drying.
+    PHS has more access to water at depth under TFE, associate with higher conductance values.
     
-    Main discussion points:
-    
-    PHS responds to rain.
-    Opposite surface response to TFE
-    PHS has more access to water at depth.
-    
-    The same curves are presented for the 2003 wet season (Fig \ref{fig8}).
-    This period (FMA) feature more and steadier rain (Fig \ref{fig8}d).
+    The wet season (FMA-2003), features more and steadier rain (Fig \ref{fig8}d).
     PHS responds with an increase in the proportion of water extraction from near the surface relative to SON.
     Under ambient conditions net extraction is zero beyond about 38 centimeters (Fig \ref{fig8}a, solid black line).
     In comparison, SMS extracts more than half its water from beyond 1 meter in depth (Fig \ref{fig8}a, solid gray line).
@@ -819,8 +815,8 @@ SMS, TFE & -0.6474 MPa & -1.8467 MPa \\
     The highest rates of root water uptake (relative to layer size) occur from Soil Layer 2, after rain events during the dry season (Supp Fig A.7).
     Lowering maximum conductance can attenuate high rates of extraction, if observations conflict with model output.
 
-    During the wet season surface extraction supplies transpiration, but also is used for hydraulic redistribution into lower soil layers. 
-    HR has been observed in the field \citep{oliveira2005}, and has been highlighted as an important missing feature from CLM \citep{lee2005}.
+    During the wet season surface extraction supplies transpiration, but also is also redistributed into lower soil layers. 
+    Hydraulic redistribution has been observed in the field \citep{oliveira2005}, and is an important missing feature from CLM \citep{lee2005}.
     This functionality is precluded with SMS, which sets root water uptake to zero if the gradient in water potential is negative. 
     Hydraulic redistribution with PHS is discussed further in the next section.
     
@@ -830,19 +826,8 @@ SMS, TFE & -0.6474 MPa & -1.8467 MPa \\
         Modeling vwp allows for more realistic physics
         Both are difficult to parameterize and have many DOF.
         Observations of states and fluxes are sparse.
-
-    
-    The advantage of the SMS type of heuristic is that it sets up guardrails.
-    Hydraulic redistribution is precluded and extraction is capped.
-    However the consequent dynamics and drought response are not in agreement with expectations.
-    PHS offers improved model structure, with a more reasonable drought response.
-    PHS also offers a process connection between soil potential and leaf water potential.
-    This is attractive, because it exposes the vegetation water dynamics representation to new streams of observational data, 
-    namely in-situ leaf water potential and remotely-sensed vegetation optical depth.
-    However, scale mismatch, parallel assumptions and parameter uncertainty may add up to hydraulics no more realistic than the heuristic.
-    While there are advantages to both, it seems there is a lot we can learn more from the PHS style of implementation.
-    PHS makes inroads into a better representation of root water extraction.
-    Clear we need better ways to constrain root water uptake with observations. You can menion isotopes even if they are trickyu. For instance cite reent work of INez Fung and Eel creek.
+        PHS also offers a process connection between soil potential and leaf water potential.
+        Clear we need better ways to constrain root water uptake with observations. You can menion isotopes even if they are trickyu. For instance cite reent work of INez Fung and Eel creek.
 
 \subsection{Hydraulic redistribution}
 
