@@ -58,24 +58,19 @@ Parameter estimation is challenging \citep{drake2017}, but hydraulic trait infor
 Likewise vegetation water status observations are available at a scale that is directly relevant to model development \citep{konings2016,grant2016} and can be used to validate model results \citep{momen2017,konings2017b}.
 
 Representation of vegetation water stress in the Community Land Model (CLM) and other land surface models is a known deficiency, with implications for the representation of the dry/wet season in tropical rainforests \citep{powell2013,ukkola2016}.
-In this study, we update the CLM vegetation hydrodynamics parameterization based on hydraulic theory and
-analyze its dynamics using point simulations set within the Caxiuan\~a through-fall exclusion experiment \citep{fisher2006}.
-Advancing the representation of the SPAC introduces a new state variable to CLM, vegetation water potential, 
-which is valuable for modeling vegetation hydrodynamics.
-Modeling vegetation water potential allows for an explicit representation of water supply, from the soil through the vegetation substrate.
-This can incorporate a range of water use strategies and improves the model connection between allocation decisions and water availability.
-Root water uptake can be based on Darcy's law, in lieu of an empirical transpiration partitioning heuristic.
+
+In this study, we develop a  plant hydraulic implementation within CLM5, based on hydraulic theory, which we refer to as the 'Plant Hydraulic Stress' (PHS) configuration. We analyse the dynamics of the new PHS model  using point simulations set within the Caxiuan\~a through-fall exclusion experiment \citep{fisher2006}.
+
+Advancing the representation of the SPAC introduces the representation of vegetation water potential, (discretized into leaf, stem and root elements) into the CLM, as well as . an explicit representation of water supply, from the soil through the vegetation substrate.
 
 Vegetation water potential also improves the modeling of water demand.
 Transpiration is typically attenuated with drought stress according to vegetation water status, capturing dynamic vegetation water use regulation.
-Leaf water potential serves as an improved metric for water status, in lieu of soil water or soil matric potential.
-This reflects vegetation sensitivity to both soil and atmospheric drying, while serving as a diagnostic for excessive xylem tension and cavitation risk. Modeling vegetation water potential also creates a framework for representing hydraulic redistribution \citep{lee2005} and connecting to remote sensing observations (e.g. Vegetation Opitcal Depth) \citep{konings206}.
+Leaf water potential serves as an improved metric for water status, in lieu of soil water or soil matric potential, since it reflects vegetation sensitivity to both soil and atmospheric drying, while serving as a diagnostic for excessive xylem tension and cavitation risk. Modeling vegetation water potential and plant hydrodynamics also provides a framework for representing hydraulic redistribution \citep{lee2005} and connecting to remote sensing observations (e.g. Vegetation Opitcal Depth) \citep{konings206}. Further, root water potential is used to model gradient-based root water uptake based on Darcy;s law, providing the means to vary, for example, the mean depth of extraction with changing soil water conditions and replacing the previous empirical transpiration partitioning heuristic.  The new model can incorporate a range of water use strategies, improving the connection between allocation decisions and water availability.
 
-In this study, we developed a simplified plant hydraulic implementation within CLM5, which we refer to as the 'Plant Hydraulic Stress' (PHS) configuration.
+
 SAY IN WHICH SECTION WE WILL FINE EACH PART
-PHS creates a framework to represent vegetation water potential, which is used to improve model vegetation hydrodynamics.
 Leaf water potential replaces soil potential as the functional basis for drought stress attenuation of transpiration and photosynthesis.
-Root water potential is used to model gradient-based root water uptake in lieu of a soil wilting factor heuristic function.
+
 
 To assess the new model formulation, we carried out point simulations at Caxiuan\~a National Forest in Brazil.
 This site features a critical biome (terra-firme moist tropical evergreen forest) subject to experimental through-fall exclusion, where we expect vegetation regulation of transpiration and photosynthesis.
