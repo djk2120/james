@@ -2887,9 +2887,15 @@ if ff(42)>0
     xdk.Position = [2,2,7,5];
     xdk.PaperSize = [7,5];
     xdk.PaperPosition = [0,0,7,5];
-    if ff(42)>0
+    if ff(42)>1
     print(xdk,'../figs2/supp_rwu','-dpdf')
     end
+    
+    
+    
+    figure
+    ix = year==2003&month>8&month<12&fsds>50;
+    plot(smp(23,ix),smp(23,ix)-vegwp(8,ix),'.')
     
 end
 

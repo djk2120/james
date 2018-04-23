@@ -47,7 +47,7 @@ Significant uncertainty remains regarding how vegetation will respond to changes
 Plant water stress parameterizations are important in Earth System Models, as they define vegetation regulation of surface fluxes (photosynthesis, transpiration) to water fluctuations.
 Vegetation water use strategies also modulate carbon uptake, creating a critical coupling between the Earth System's carbon and hydrological cycles \citep{green2017}.
 Drought stress parameterizations (functions which relate simple metric of soil moisture status to leaf gas exchange) are widely used to define the response of stomatal conductance to vegetation water status that is used to attenuate transpiration, photosynthesis, and root water uptake with drying.
-The dynamics of water stress in models have broad effects on critical land surface processes. (Joetzjer et al. 2014)
+The dynamics of water stress in models have broad effects on critical land surface processes \citep{joetzjer2014}.
 On diurnal timescales drought parameterizations influence the partitioning of latent versus sensible heat with effects on surface temperature \citep{bonan2014}.
 On longer timescales vegetation water use strategies regulate the global carbon and water cycles \citep{dekauwe2015}.
 
@@ -78,7 +78,7 @@ Leaf water potential replaces soil potential as the functional basis for drought
 Root water potential is used to model gradient-based root water uptake in lieu of a soil wilting factor heuristic function.
 
 To assess the new model formulation, we carried out point simulations at Caxiuan\~a National Forest in Brazil.
-This site features a critical biome (terra-firme moist tropical evergreen forest) subject to experimental throughfall exclusion, where we expect vegetation regulation of transpiration and photosynthesis.
+This site features a critical biome (terra-firme moist tropical evergreen forest) subject to experimental through-fall exclusion, where we expect vegetation regulation of transpiration and photosynthesis.
 We compare PHS with the former CLM hydrodynamics configuration, analyzing the dynamics of modeled water stress and root water uptake.
 
 %====================
@@ -489,12 +489,12 @@ We compare PHS with the former CLM hydrodynamics configuration, analyzing the dy
 All four simulations in this paper use the same development version of CLM5
 (development version r270, https://github.com/ESCOMP/ctsm/releases/tag/clm4
 \textunderscore 5\textunderscore 18\textunderscore r270).
-The four simulations are used to assess the impact of the plant hydrodynamics model (PHS vs. SMS) on a throughfall experiment (i.e., with either ambient or 60\% throughfall excluded), with all other model components and forcing shared.
+The four simulations are used to assess the impact of the plant hydrodynamics model (PHS vs. SMS) on a through-fall experiment (i.e., with either ambient or 60\% through-fall excluded), with all other model components and forcing shared.
 Simulations are run offline, spanning from 2001 through 2003, utilizing the satellite phenology mode of CLM5.
 All simulations start from the same initial conditions, which are the results of a 9-year spin-up repeating the PHS/Ambient simulation three times.
 To avoid duplication, descriptions of site characteristics, forcing data, and observational sap flux, can be found in \cite{fisher2007}.
 
-\subsection{Parameter Values and Throughfall Exclusion}
+\subsection{Parameter Values and through-fall Exclusion}
 \label{sect:param}
 \begin{table}
 \caption{Select parameter values}
@@ -523,7 +523,7 @@ bsw & Brooks-Corey parameter & $b$ & 6 \\
 
 Select parameter values concerning vegetation hydrodynamics are presented in Table 1.
 All other parameters use the default values associated with the r270 version of CLM5.
-Informed by \cite{fisher2008}, we tuned soil hydraulic parameters and throughfall exclusion to better capture the observational soil water dynamics (\cite{fisher2007} Figure 4), Supplementary Figure \ref{top3m}.
+Informed by \cite{fisher2008}, we tuned soil hydraulic parameters and through-fall exclusion to better capture the observational soil water dynamics (\cite{fisher2007} Figure 4), Supplementary Figure \ref{top3m}.
 Likewise, we tuned $k_{max}$ and $g_1$ parameters to improve the fit to sap flux observations in the ambient simulation.
 The object of this paper is to present the dynamical impact of PHS to clearly describe model functionality. Model skill and parameter sensitivity will be assessed in follow-up studies.
 
@@ -617,7 +617,7 @@ SMS, TFE & -0.6474 MPa & -1.8467 MPa \\
     The models are compared during for the 2003 dry season (SON)
     at Caxiuana for two experiments: the first with ambient rainfall, and the second with 60\% of rainfall excluded, Figure \ref{fig:vwp}. 
     In the ambient simulation (Fig \ref{fig:vwp}a), average midday water potentials are -1.96, -1.95, -1.94 MPa for sunlit leaf, shaded leaf, and stem, respectively.
-    With throughfall exclusion (TFE), midday water potentials decrease to -2.77, -2.76, -2.75 MPa, respectively (Fig \ref{fig:vwp}b).
+    With through-fall exclusion (TFE), midday water potentials decrease to -2.77, -2.76, -2.75 MPa, respectively (Fig \ref{fig:vwp}b).
     
     Both panels show the characteristic drop in water potential around midday and the expected sequencing with 
     the leaf water potentials more negative than the stem potential, which is more negative than the root potential.
@@ -660,8 +660,8 @@ SMS, TFE & -0.6474 MPa & -1.8467 MPa \\
 \subsection{Stress factor, annual cycle}
     
     Figure \ref{fig:mm} shows monthly mean values of the water stress factor, gross primary productivity, and transpiration
-    over the three-year simulations for PHS versus SMS under ambient and 60\% throughfall exclusion conditions.
-    Under ambient throughfall conditions, the SMS simulation features less stress (Fig \ref{fig:mm}b), with
+    over the three-year simulations for PHS versus SMS under ambient and 60\% through-fall exclusion conditions.
+    Under ambient through-fall conditions, the SMS simulation features less stress (Fig \ref{fig:mm}b), with
     no stress ($f_w$>0.99) in 24 out of 36 months.
     PHS predicts more stress (Fig \ref{fig:mm}a), with stress in sync with the evolution of midday leaf water potential (Figure \ref{fig:vwp}).
     As a result, $f_w$ is generally lowest in September (Fig \ref{fig:mm}e). ZQZ need to go back and output btran proper.
@@ -684,7 +684,7 @@ SMS, TFE & -0.6474 MPa & -1.8467 MPa \\
     The strength of this feedback is subject to parameters controlling maximum conductance and the stomatal response to leaf water potential.
     Quantifying variability in diffusive fluxes with PHS as compared to SMS and observations is an important topic for future studies.
     
-    Throughfall exclusion (which initiates on November 1, 2001) adds stress in both the SMS and PHS simulations (Fig\ref{fig:mm}c,d) .
+    through-fall exclusion (which initiates on November 1, 2001) adds stress in both the SMS and PHS simulations (Fig\ref{fig:mm}c,d) .
     The added stress is greater and onset faster with SMS.
     In both cases, the effect of TFE accumulates in time, with less photosynthesis and transpiration in 2003 compared to 2002.
     This is not reflected in the sap flux observations, which feature a more rapid onset of reduced transpiration, and similar transpiration between 2002 and 2003.
@@ -717,7 +717,7 @@ SMS, TFE & -0.6474 MPa & -1.8467 MPa \\
     The SMS version of $f_w$ has a clear dependence on soil potential, but no relationship with VPD (Fig \ref{fig:vpd}b,d), as expected. 
     Drier soil potentials are associated with lower values of $f_w$ (which corresponds to more stress).
     With PHS, higher VPD results in more stress (Fig\ref{fig:vpd}a,c).
-    Under ambient throughfall conditions (Fig\ref{fig:vpd}a), soil water potential has minimal influence.
+    Under ambient through-fall conditions (Fig\ref{fig:vpd}a), soil water potential has minimal influence.
     With TFE, stress responds to both VPD and soil water (Figure \ref{fig:vpd}c).
     Similar effects are shown in response to downwelling solar radiation (Supp Fig \ref{supp:fsds}).
     
@@ -742,7 +742,7 @@ SMS, TFE & -0.6474 MPa & -1.8467 MPa \\
     Soil-to-root conductance ($k_{sr}$) is explicitly represented in PHS, modeled as a function of soil potential (zqz).
     With SMS, $k_{sr}$ is not explicitly modeled, but it can be inferred, by dividing root water uptake by the gradient in water potential (see Section zqz).
     Comparing conductance under these two paradigms serves to highlight differences in how water supply is modeled.
-    In , we plot the time-series of conductance values from Soil Layer 3 (spanning from 6 to 12 centimeters below the surface) under ambient throughfall conditions during 2003, along with precipitation over the same period (PLUG IN CAPTION).
+    In , we plot the time-series of conductance values from Soil Layer 3 (spanning from 6 to 12 centimeters below the surface) under ambient through-fall conditions during 2003, along with precipitation over the same period (PLUG IN CAPTION).
     
     During the wet season, PHS conductance is greater than SMS by more than two orders of magnitude (Fig \ref{fig:cond}a,b).
     PHS conductance is generally steady through the wet season (Fig \ref{fig:cond}a), followed by 
@@ -759,13 +759,13 @@ SMS, TFE & -0.6474 MPa & -1.8467 MPa \\
     which better reflects the physics (flow has to be down water potential gradients) and the temporal dynamics of transpiration demand.
     As a result conductance is less variable, with the expected responses to drydown (loss of conductance) and re-wetting (increased conductance).
     This is further demonstrated in Figure 7, where we plot the daily mean conductance from Soil Layer 3.
-    With 60\% throughfall exclusion (Fig7a, dotted line), PHS conductance decreases, whereas with SMS, the daily mean conductance increases (Fig7b).
+    With 60\% through-fall exclusion (Fig7a, dotted line), PHS conductance decreases, whereas with SMS, the daily mean conductance increases (Fig7b).
     The latter SMS increase is unrealistic and conflicts with extensive literature demonstrating loss of conductivity with drying (CITATIONS).
     
     Despite two orders of magnitude difference in conductances, total root water uptake during FMA2003 is not very different (23.4 cm PHS vs. 24.9 cm SMS).
     The reason in these smaller differnces, is that extraction gradient compensate for the differences in conductance.
     The SMS extraction gradient is measured relative to $\psi_c$ (a parameter defining soil potential with stomates fully closed), which equals -2.5MPa for BET.
-    The PHS extraction gradient is relative to root water potential which during 2003 (ambient throughfall) varies between -0.02 and -0.23 MPa.
+    The PHS extraction gradient is relative to root water potential which during 2003 (ambient through-fall) varies between -0.02 and -0.23 MPa.
     \citet{fisher2006} measured stem water potential consistently higher (less negative) than -0.5MPa.
     
     With TFE, PHS Layer 3 conductance can approach the values seen in SMS. 
@@ -782,7 +782,7 @@ SMS, TFE & -0.6474 MPa & -1.8467 MPa \\
     These fluxes are used as the soil transpiration sink terms within the Richards' equation \citep{oleson2013} and, summed over the soil column, are equivalent to the transpiration flux.
     As described above (and in Section \ref{sect:btran}), PHS adopts a hydraulic framework for root water uptake. 
 
-    PHS simulations (black color), feature more surface extraction than with SMS, especially under ambient throughfall conditions (Fig\ref{fig7}a), during the 2003 dry season.
+    PHS simulations (black color), feature more surface extraction than with SMS, especially under ambient through-fall conditions (Fig\ref{fig7}a), during the 2003 dry season.
     The time-series of PHS total cumulative extraction (cm) from near-surface soil (Fig\ref{fig7}b) responds to precipitation (Fig\ref{fig7}d), 
     with increased surface extraction after rain events.
     Under ambient conditions the SMS partitioning of extraction between near-surface and depth is not sensitive to precipitation.
@@ -790,13 +790,13 @@ SMS, TFE & -0.6474 MPa & -1.8467 MPa \\
     Under TFE, both PHS and SMS extract minimal water from between 0.5 and 4m, (3.18 cm and 0.56 cm, respectively, over the three months).
     Both compensate by increasing extraction from below 4m, but PHS to a much larger extent, which corresponds to overall significantly more root water uptake during TFE.
     
-    PHS and SMS feature very different root water uptake dynamics.
+    Root water uptake dynamics respond to changes in hydraulic conductance and/or changes in the gradient in water potential.
+    With decreasing soil potential, hydraulic conductance decreases with PHS, but can increase with SMS (\ref{sect:cond}).
+    SMS is limited by the extraction gradient, with root water uptake declining to zero as soil potential approaches -2.5 MPa (Supp Fig \ref{supp:rwu}).
     PHS is more sensitive to changes in soil water potential, with stronger decreases in root water uptake in response to drying within a soil layer (Supp Fig \ref{supp:rwu}).
-    This explains the response in near-surface water uptake to rain events and to TFE.
     PHS features increases in near-surface water uptake after rain and decreases with TFE.
     SMS near-surface water uptake is less sensitive to rain events and increases with TFE.
-    Root water potential is not so negative as \psi_c.
-    PHS conductances decrease with drying.
+
     PHS has more access to water at depth under TFE, associate with higher conductance values.
     
     The wet season (FMA-2003), features more and steadier rain (Fig \ref{fig8}d).
@@ -807,7 +807,7 @@ SMS, TFE & -0.6474 MPa & -1.8467 MPa \\
     there is no net root water uptake beyond 20 centimeters, but rather deposition of about 10 cm of water.
     
     In both the wet and dry season, PHS features significantly more root water uptake from the near-surface layers (0 to 20cm in depth). 
-    Modeled surface extraction is especially high over the wet season under throughfall exclusion conditions, summing to 32.7 cm over 89 days.
+    Modeled surface extraction is especially high over the wet season under through-fall exclusion conditions, summing to 32.7 cm over 89 days.
     With a soil porosity of 0.42, the top 20 cm of soil hold only 8.2cm of water at saturation.
     By comparison SMS extracts 4.8 cm under the same conditions.
     Conductances are higher with PHS (see Section \ref{sect:cond}), which allows for higher rates of root water uptake, especially from moist soil layers.
@@ -871,10 +871,10 @@ SMS, TFE & -0.6474 MPa & -1.8467 MPa \\
     The change in total soil water is small under ambient conditions, decreasing by 0.3cm with PHS and 9.6cm with SMS over the three-year simulations.
     Root zone soil potential is lower with SMS, with a root-fraction-weighted average soil potential of -0.42 MPa during November 2003.
     The equivalent metric from PHS, average predawn root water potential, is -0.08 MPa.
-    Under 60\% throughfall exclusion, the change in soil water is -1.12 meters with PHS and -0.94 meters with SMS, relative to the ambient simulations (Supp Fig \ref{supp:buff}).
+    Under 60\% through-fall exclusion, the change in soil water is -1.12 meters with PHS and -0.94 meters with SMS, relative to the ambient simulations (Supp Fig \ref{supp:buff}).
     With SMS, this corresponds to a root-fraction-weighted average soil potential of -2.18MPa during November 2003, whereas 
     PHS average predawn root water potential is -0.37MPa (Figure \ref{fig:sm}).
-    Observations of root-zone potential based on gravity-corrected predawn leaf water potential are -0.17 +/- 0.10 MPa under ambient conditions, and -0.71 +/- 0.31 MPa with throughfall exclusion \citep{fisher2007}.
+    Observations of root-zone potential based on gravity-corrected predawn leaf water potential are -0.17 +/- 0.10 MPa under ambient conditions, and -0.71 +/- 0.31 MPa with through-fall exclusion \citep{fisher2007}.
     
     SMS simulations achieve more negative root-zone soil potential than with PHS.
     With 60\% TFE, the SMS root-zone is 1.81 MPa drier, despite having a slightly moister soil column overall (1.61m total water vs. 1.54m for PHS).
@@ -896,7 +896,7 @@ SMS, TFE & -0.6474 MPa & -1.8467 MPa \\
     This is visible in Figure \ref{fig:sm}, where, much of the plot features soil potential at -2.5 MPa, the value of $\psi_c$.
     This is clearer in Figure \ref{supp:sm2}, where soil layers can be seen to dry out quickly, but not beyond -2.5 MPa 
     (with the exception of Soil Layers 1 and 2, which are influenced by bare soil evaporation).
-    The effect of $\psi_c$ extends to ambient throughfall conditions (Fig \ref{supp:sm}), but over a smaller spatial and temporal domain.
+    The effect of $\psi_c$ extends to ambient through-fall conditions (Fig \ref{supp:sm}), but over a smaller spatial and temporal domain.
     PHS has more flexibility, due to dynamic root water potential, so there is not the same tendency to dry out to a certain level.
     Instead minimum soil potential for PHS gets lower each dry season throughout the TFE simulation (Fig \ref{fig:sm}a).
     
@@ -954,11 +954,11 @@ SMS, TFE & -0.6474 MPa & -1.8467 MPa \\
      \centering
      \includegraphics[width=30pc]{../figs2/fig2.pdf}
      \caption{Modeled vegetation water potential at  Caxiuan\~a, Brazil.
-     (a) 2003 Dry season (SON) diurnal mean, ambient throughfall conditions,
-     (b) 2003 Dry season (SON) diurnal mean, with 60\% throughfall excluded.
+     (a) 2003 Dry season (SON) diurnal mean, ambient through-fall conditions,
+     (b) 2003 Dry season (SON) diurnal mean, with 60\% through-fall excluded.
      Curves are drawn for sunlit leaf, shaded leaf, stem, and root water potentials. Note that the first three mostly overlap.
-     (c) Monthly mean midday leaf water potential, under ambient (solid line) and 60\% throughfall exclusion (dotted line) conditions.
-     Note that throughfall exclusion begins in month 11 (Nov 1, 2001).
+     (c) Monthly mean midday leaf water potential, under ambient (solid line) and 60\% through-fall exclusion (dotted line) conditions.
+     Note that through-fall exclusion begins in month 11 (Nov 1, 2001).
      }
      \label{fig:vwp}
   \end{figure}
@@ -970,7 +970,7 @@ SMS, TFE & -0.6474 MPa & -1.8467 MPa \\
      \caption{(a,b) Monthly mean water stress function. Note that the water stress function equals 1 when there is no stress and 0 when fully stressed.
      (c,d) Monthly mean transpiration (W/m$^2$).
      (e,f) Monthly mean gross primary productivity (g/m$^2$/d). 
-     Solid lines correspond to ambient throughfall conditions, and dotted lines feature 60\% throughfall exclusion.
+     Solid lines correspond to ambient through-fall conditions, and dotted lines feature 60\% through-fall exclusion.
      Black lines represent model output.
      Red lines show observational transpiration derived from sap flux (see zqz).
      PHS is on for (a), (c), and (e). PHS is off for (b), (d), and (f).
@@ -978,14 +978,14 @@ SMS, TFE & -0.6474 MPa & -1.8467 MPa \\
      \label{fig:mm}
   \end{figure}
   
-          \clearpage
+    \clearpage
     \begin{figure}[h]
      \centering
      \includegraphics[width=30pc]{../figs2/fig4.pdf}
      \caption{2003 Dry season (SON) diurnal mean water stress function for 
      (a) PHS on, and
      (b) PHS off.
-     Solid lines correspond to ambient throughfall conditions, and dotted lines feature 60\% throughfall exclusion.
+     Solid lines correspond to ambient through-fall conditions, and dotted lines feature 60\% through-fall exclusion.
      Note that the water stress function equals 1 when there is no stress and 0 when fully stressed.
      }
      \label{fig4}
@@ -996,14 +996,14 @@ SMS, TFE & -0.6474 MPa & -1.8467 MPa \\
      \centering
      \includegraphics[width=30pc]{../figs2/fig5.pdf}
      \caption{Water stress function versus vapor pressure deficit, for points with downwelling shortwave radiation between 400 and 425 W/m2.
-     (a) PHS, ambient throughfall
-     (b) SMS, ambient throughfall
-     (c) PHS, 60\% throughfall excluded
-     (d) SMS, 60\% throughfall excluded. 
+     (a) PHS, ambient through-fall
+     (b) SMS, ambient through-fall
+     (c) PHS, 60\% through-fall excluded
+     (d) SMS, 60\% through-fall excluded. 
      For (a) and (c) data are subdivided based on predawn root water potential.
      For (b) and (d) data are subdivided based on average soil matric potential, weighted by root fraction.
      Blue dots represent the wettest tercile, yellow dots represent the intermediate tercile, and red dots represent the driest tercile.
-     Note that panels (c) and (d) exclude data from 2001, when throughfall exclusion was not active.
+     Note that panels (c) and (d) exclude data from 2001, when CO$_2$ exclusion was not active.
      }
      \label{fig:vpd}
        \end{figure}
@@ -1013,7 +1013,7 @@ SMS, TFE & -0.6474 MPa & -1.8467 MPa \\
   \begin{figure}[h]
      \centering
      \includegraphics[width=30pc]{../figs2/fig6.pdf}
-     \caption{Soil Layer 3 conductance, under ambient throughfall conditions in 2003. 
+     \caption{Soil Layer 3 conductance, under ambient through-fall conditions in 2003. 
      (a) Time-series of PHS modeled soil-to-root conductance (s$^{-1}$) from Soil Layer 3 (spanning 6 to 12 centimeters in depth).
      (b) Time-series of SMS inferred conductance (s$^{-1}$) also from Soil Layer 3.
      (c) Concurrent precipitation forcing (mm/d).
@@ -1025,7 +1025,7 @@ SMS, TFE & -0.6474 MPa & -1.8467 MPa \\
   \begin{figure}[h]
      \centering
      \includegraphics[width=30pc]{../figs2/fig6a.pdf}
-     \caption{Daily mean Soil Layer 3 conductance, throughout 2003 under ambient (solid line) and 60\% throughfall exclusion (dotted line) conditions.
+     \caption{Daily mean Soil Layer 3 conductance, throughout 2003 under ambient (solid line) and 60\% through-fall exclusion (dotted line) conditions.
      (a) Daily mean of PHS modeled soil-to-root conductance (s$^{-1}$) from Soil Layer 3 (spanning 6 to 12 centimeters in depth).
      (b) Daily mean of SMS inferred conductance (s$^{-1}$) also from Soil Layer 3.
      }
@@ -1062,7 +1062,7 @@ SMS, TFE & -0.6474 MPa & -1.8467 MPa \\
     \begin{figure}[h]
      \centering
      \includegraphics[width=30pc]{../figs2/fig9.pdf}
-     \caption{Total hydraulic redistribution (mm) by month in 2003. For (a) ambient throughfall conditions, and (b) 60\% throughfall exclusion. 
+     \caption{Total hydraulic redistribution (mm) by month in 2003. For (a) ambient through-fall conditions, and (b) 60\% through-fall exclusion. 
      Darker shading shows portion of HR at night [6pm,6am), lighter shading shows portion of HR during day [6am,6pm).}
      \label{fig:hr}
   \end{figure}
@@ -1072,7 +1072,7 @@ SMS, TFE & -0.6474 MPa & -1.8467 MPa \\
     \begin{figure}[h]
      \centering
      \includegraphics[width=30pc]{../figs2/fig11.pdf}
-     \caption{Vertical profile of soil water potential (MPa) over time under 60\% throughfall exclusion, for
+     \caption{Vertical profile of soil water potential (MPa) over time under 60\% through-fall exclusion, for
      (a) PHS, and 
      (b) SMS.
      Note that color axes are different. }
@@ -1101,14 +1101,14 @@ SMS, TFE & -0.6474 MPa & -1.8467 MPa \\
      \centering
      \includegraphics[width=30pc]{../figs2/suppfsds.pdf}
      \caption{Water stress function versus downwelling shortwave radiation for points with vapor pressure deficit between 1 and 1.0559 kPa.
-     (a) PHS, ambient throughfall
-     (b) SMS, ambient throughfall
-     (c) PHS, 60\% throughfall excluded
-     (d) SMS, 60\% throughfall excluded. 
+     (a) PHS, ambient through-fall
+     (b) SMS, ambient through-fall
+     (c) PHS, 60\% through-fall excluded
+     (d) SMS, 60\% through-fall excluded. 
      For (a) and (c) data are subdivided based on predawn root water potential.
      For (b) and (d) data are subdivided based on average soil matric potential, weighted by root fraction.
      Blue dots represent the wettest tercile, yellow dots represent the intermediate tercile, and red dots represent the driest tercile.
-     Note that panels (c) and (d) exclude data from 2001, when throughfall exclusion was not active.
+     Note that panels (c) and (d) exclude data from 2001, when through-fall exclusion was not active.
      }
      \label{supp:fsds}
        \end{figure}
@@ -1142,7 +1142,7 @@ SMS, TFE & -0.6474 MPa & -1.8467 MPa \\
      \includegraphics[width=30pc]{../figs2/fig10.pdf}
      \caption{PHS, nighttime (6pm to 6am) average root water uptake profiles with depth. 
      Showing nighttime serves to emphasize the profile of hydraulic redistribution.
-     Panel (a) shows cumulative (starting at depth) root water uptake (mm/s) for ambient (solid line) and 60\% throughfall exclusion (dotted line)
+     Panel (a) shows cumulative (starting at depth) root water uptake (mm/s) for ambient (solid line) and 60\% through-fall exclusion (dotted line)
      during the wet (FMA, cyan color) and dry (SON, brown color) seasons. 
      Panels (b)-(e) present the information from (a) in non-cumulative form. 
      Note that for panels (b)-(e) negative root water uptake is shaded red, and also that for panel (a), 
@@ -1164,7 +1164,7 @@ SMS, TFE & -0.6474 MPa & -1.8467 MPa \\
     \begin{figure}[h]
      \centering
      \includegraphics[width=30pc]{../figs2/supplayer2.pdf}
-     \caption{Volumetric soil water content in Soil Layer 2 (which spans 2-6cm in depth), for SON-2003, featuring 60\% throughfall exclusion.
+     \caption{Volumetric soil water content in Soil Layer 2 (which spans 2-6cm in depth), for SON-2003, featuring 60\% through-fall exclusion.
      With PHS (black line), the soil layer can dry out much more quickly after rain events.}
      \label{supp:layer2}
   \end{figure}
@@ -1182,7 +1182,7 @@ SMS, TFE & -0.6474 MPa & -1.8467 MPa \\
     \begin{figure}[h]
      \centering
      \includegraphics[width=30pc]{../figs2/suppsmp.pdf}
-     \caption{Vertical profile of soil water potential (MPa) through time under ambient throughfall conditions, for
+     \caption{Vertical profile of soil water potential (MPa) through time under ambient through-fall conditions, for
      (a) PHS, and 
      (b) SMS.
      Note that color axes are different. }
@@ -1193,7 +1193,7 @@ SMS, TFE & -0.6474 MPa & -1.8467 MPa \\
     \begin{figure}[h]
      \centering
      \includegraphics[width=30pc]{../figs2/supp_smlayer.pdf}
-     \caption{Time series of soil potential by soil layer, with SMS, under 60\% throughfall exclusion. 
+     \caption{Time series of soil potential by soil layer, with SMS, under 60\% through-fall exclusion. 
      This duplicates the information in Figure \ref{fig:sm}a to highlight the the sensitivity of soil moisture dynamics to the SMS parameter, $\psi_c$ (soil potential with stomates fully closed, -2.5 MPa).
      Soil Layers 17-20, which do not dry out completely (similar to Soil Layer 16), are not shown.}
      \label{supp:sm2}
