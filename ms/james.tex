@@ -78,8 +78,13 @@ Advancing the representation of the SPAC introduces the representation of vegeta
 
 SAY IN WHICH SECTION WE WILL FINE EACH PART
 
-To assess the new model formulation, we carried out site-level simulations at Caxiuan\~a National Forest in Brazil, which features a critical biome (terra-firme moist tropical evergreen forest).  Starting in xxxx, a plot at this site was subjected to a x percent precipitation through-fall exclusion.  Due to the large drop in soil moisture at the precipitation exclusion site, we expect and observe (reference) significant vegetation regulation of transpiration and photosynthesis.
-We compare the PHS response to the existing CLM water stress configuration, analyzing the dynamics of modeled water stress and root water uptake.
+To assess the new model formulation, we carried out site-level simulations at Caxiuan\~a National Forest in Brazil, which features a critical biome (terra-firme moist tropical evergreen forest).  Starting in xxxx, a plot at this site was subjected to a x percent precipitation through-fall exclusion.  Due to the large drop in soil moisture at the precipitation exclusion site, we expect and observe (Fisher et al. 2007) significant vegetation regulation of transpiration and photosynthesis.
+
+In this paper we 
+1. Introduce the PHS theory and implemention in the CLM
+2. Analysis the dynamics of modeled water stress, root water uptake and soil moisture profiles. 
+3. Compare PHS to the behaviour of the default  CLM water stress configuration.
+4. Discuss the benefits and limitations of the new model. 
 
 %====================
 %  MODEL DESCRIPTION
@@ -467,9 +472,9 @@ SMS, TFE & -0.6474 MPa & -1.8467 MPa \\
         
 \subsection{Hydraulic redistribution}
     Hydraulic redistribution refers to flows of water between soil layers through vegetation substrate.
-    To calculate total HR, we take the sum across all soil layers of only negative root water uptake fluxes (multiplied by the model timestep duration, 1800 seconds).
-    For Figure \ref{fig:hr} we partition by month and by local time: at night (summing from 6p.m. to 6a.m.), and during the day (6a.m. to 6p.m.).
-    Note that, over the course of a day or season, HR can occur without net negative root water uptake.
+    To calculate total HR, we sum the negative root water uptake fluxes ((i.e., root to soil fluxes) across all soil layers.
+    Total HR, partitioned by month and by daytime versus nighttime is shown in Figure \ref{fig:hr}.
+    Note that over the course of a day or season, HR can occur without net negative root water uptake.
     For example, hydraulic lift may occur at night, moving water from deep in the soil column up to near the surface, which is then more readily available for transpiration during the following day.  This can 
     result in HR occurring even when there is net positive root water uptake.
     This type of feature is evident in Figure \ref{fig7}, where there is net positive root water uptake throughout the soil column over the 2003 dry season, even when there is significant HR into the near-surface layers (Fig \ref{fig:hr}).
@@ -604,53 +609,49 @@ SMS, TFE & -0.6474 MPa & -1.8467 MPa \\
     
     In PHS, Allowing HR to occur into the top layer of the soil column significantly degraded modeled soil evaporation (not shown). We opted to omit the first top Layer (spanning 0 to 2 cm below ground) soil-to-root hydraulic conductance, to prevent HR from over-supplying water for soil evaporation.
     
-\subsubsection{Hydraulic redistribution}    Is hydraulic redistribution a feature or a liability?
+\subsubsection{Is hydraulic redistribution a feature or a liability?}
    
-    HR is a natural consequence of using Darcy's Law to model root water uptake - when gradients are reversed, HR should occur. as such it is naturally included within a plant hydraulics model with multiple soil layers and is an emergent behavior of respecting hydrauc flow down gradient of potentials.  Still, HR is not represented in many models, even when based in hydraulic theory \citep{xu2016,christoffersen2016}. 
+    HR is a natural consequence of using Darcy's Law to model root water uptake - when hydraulic gradients are reversed, HR should occur. As such it is naturally included within a plant hydraulics model with multiple soil layers and is an emergent behavior of respecting hydraulic flow down gradient of potentials.  In ESMs, where soil moisture is typically resolved vertically, interfacing the plant hydrulics with a multi-layer soil naturally accounts for HR. Other models, similar to the SMS paradigm, disallow HR by constraining root water uptake to be positive \citep{xu2016}.
     
-    Most literature models force the model with a single soil water potential $\psi_s$, which precludes HR \citep{fisher2007,bonan2014,sperry2017}, which we have shown can substantially affect the seasonl cycle of water fluxes. \cite{christoffersen2016} expand beyond a single $\psi_s$ horizontally, but still feature a single soil layer in the vertical. However, in ESMs, soil moisture is typically resolved vertically and thus interfacing the plant hydrulics with a multi-layer soil naturally account sfor HR. Other models, similar to the SMS paradigm, disallow HR by constraining root water uptake to be positive \citep{xu2016}. Likewise HR is likely sensitive to the representation of vegetation tissue capacitance and below-ground hydraulic segmentation (CITAIONS NEEDED).
-
-\subsection{Soil profile}
-
-    The column total soil water in all four simulations is initialized at 2.66 meters (over an 8.6-meter soil column) (SAY WHY).
-    The change in total soil water is small under ambient conditions, decreasing by 0.3cm with PHS and 9.6cm with SMS over the three-year simulations.
-    Root zone soil potential is lower with SMS, with a root-fraction-weighted average soil potential of -0.42 MPa during November 2003.
-    The equivalent metric from PHS, average predawn root water potential, is -0.08 MPa.
-    Under 60\% through-fall exclusion, the change in soil water is -1.12 meters with PHS and -0.94 meters with SMS, relative to the ambient simulations (Supp Fig \ref{supp:buff}).
-    With SMS, this corresponds to a root-fraction-weighted average soil potential of -2.18MPa during November 2003, whereas 
-    PHS average predawn root water potential is -0.37MPa (Figure \ref{fig:sm}).
-    Observations of root-zone potential based on gravity-corrected predawn leaf water potential are -0.17 +/- 0.10 MPa under ambient conditions, and -0.71 +/- 0.31 MPa with through-fall exclusion \citep{fisher2007}.
+    Most literature models force the model with a single bulk soil water potential $\psi_s$, which precludes HR \citep{fisher2007,bonan2014,sperry2017}. \cite{christoffersen2016} expand beyond a single $\psi_s$ horizontally, representing soil elements at different charecteristic distances from the root surface,  but still feature a single soil layer in the vertical dimension.  
     
-    SMS simulations achieve more negative root-zone soil potential than with PHS.
-    With 60\% TFE, the SMS root-zone is 1.81 MPa drier, despite having a slightly moister soil column overall (1.61m total water vs. 1.54m for PHS).
-    This is associated with differences in the parameterization of root water uptake.
-    SMS operates with a larger gradient for water extraction (see Section \ref{sect:cond}), which allows for more negative water potential in active soil layers.
-    PHS has more access to deep soil water under dry conditions (Fig \ref{fig7}), which mitigates declines in soil potential near the surface.
-    While PHS better matches observations of root-zone soil potential, we hesitate to make conclusions about model skill.
-    This is due to parameter uncertainty and tuning (see Section \ref{sect:param}), as well as the fact that both models feature high biases in transpiration relative to observations.
+    Likewise HR is likely sensitive to the representation of vegetation tissue capacitance and below-ground hydraulic segmentation (CITAIONS NEEDED).
+    
+    Hydraulic redistribution has the impact of reducing the variance in the availability of water for plant transpiration, potentially at odds with observations of interannual variation (see Lawrence et al in prep. Tang et al. 2015) Observations of HR are extremely difficult, in unequivocal detection of HR involves the observation of reverse flow along transport roots, typically at rates close ot the detection threshold of sap flow monitoring systems. Therefore, the degree to which HR actually occurs in unclear. While there is some first-order benefit to plants of moving water from deep soil to surface layers to allow more transpiration, this water is then also available for competition with other shallow-rooted plants, and for evaporative processes. Further, cavitation of fine roots in shallow soils might explicitly act as a 'fuse' to prevent loss of water from the plant into dry soil layers (Kotowska et al. 2015) - a process not explicitly resolved here. Therefore we view this first implementation of HR into the default versions of the CLM as a 'null' hypothesis for the functioning of this process, and as a platform to allow further refinement from the plant hydraulics community. 
+    
+
+\subsection{Soil moisture profile}
+
+    The column total soil water in all four simulations is initialized at 2.66 meters (over an 8.6-meter soil column) (SAY WHY). The change in total soil water is small under ambient conditions, decreasing by 0.3cm with PHS and 9.6cm with SMS over the three-year simulations. Root zone soil potential is lower with SMS, with a root-fraction-weighted average soil potential of -0.42 MPa during November 2003. The equivalent metric from PHS, average predawn root water potential, is -0.08 MPa. 
+    
+    Under 60\% through-fall exclusion, the change in soil water is -1.12 meters with PHS and -0.94 meters with SMS, relative to the ambient simulations (Supp Fig \ref{supp:buff}). 
+    
+    With SMS, root-fraction-weighted average soil potential is -2.18MPa during November 2003, whereas  PHS average predawn root water potential is -0.37MPa (Figure \ref{fig:sm}). Observations of root-zone potential based on gravity-corrected predawn leaf water potential are -0.17 +/- 0.10 MPa under ambient conditions, and -0.71 +/- 0.31 MPa with through-fall exclusion (also in November 2003) \citep{fisher2007}.  The SMS root-weighted water potential is 1.81 MPa drier (from a soil water potential perspective) because the SMS continues to extract water from dry layers with high fractions of roots, further drying these layers and decreasing the root-weighted water potential (see Section \ref{sect:cond}).  Further, PHS has more access to deep soil water under dry conditions (Fig \ref{fig7}), which mitigates declines in soil potential near the surface.
+    
+    While PHS better matches observations of root-zone soil potential, we hesitate to make conclusions about model skill due to parameter uncertainty and due to the fact that these values may be sensitive to tuning (see Section \ref{sect:param}), as well as the fact that both models feature high biases in transpiration relative to observations.
     
     Darcy's Law establishes that water flow is proportional to the gradient in total water potential. 
     With PHS, this gradient is measured relative to dynamic $\psi_{\text{root}}$.
-    With SMS, this gradient is measure relative to a constant parameter, $\psi_c$, the soil potential with stomates fully closed.
+    With SMS, this gradient is measured relative to a constant parameter, $\psi_c$, the soil water potential at which stomates fully close.
     This approach is required without prognostic vegetation water potential, but yields unsatisfactory dynamics that do not comply with the physics of porous media flow (see Section \ref{sect:cond}).
     Furthermore, it seems that $\psi_c$ has historically been tuned for its effects on diffusive fluxes, without specific attention to the effect on soil moisture dynamics 
     (Can someone else back me up on this? Is there a way to cite this?).
     
-    This is problematic, because soil moisture dynamics are very sensitive to $\psi_c$.
-    Root water uptake halts when soil potential reaches $\psi_c$ (Section \ref{sect:btran}), setting an effective minimum soil potential.
-    This is visible in Figure \ref{fig:sm}, where, much of the plot features soil potential at -2.5 MPa, the value of $\psi_c$.
-    This is clearer in Figure \ref{supp:sm2}, where soil layers can be seen to dry out quickly, but not beyond -2.5 MPa 
-    (with the exception of Soil Layers 1 and 2, which are influenced by bare soil evaporation).
-    The effect of $\psi_c$ extends to ambient through-fall conditions (Fig \ref{supp:sm}), but over a smaller spatial and temporal domain.
-    PHS has more flexibility, due to dynamic root water potential, so there is not the same tendency to dry out to a certain level.
-    Instead minimum soil potential for PHS gets lower each dry season throughout the TFE simulation (Fig \ref{fig:sm}a).
+    This is problematic because soil moisture dynamics are very sensitive to $\psi_c$.    Root water uptake halts when soil potential reaches $\psi_c$ (Section \ref{sect:btran}), setting an effective minimum soil potential, a situation that is apparent in Figure \ref{fig:sm} where soil water potential for SMS  stays at approximately -2.5 MPa, which is the value of $\psi_c$ for evergreen tropical broadleaf trees (?.    This feature is clearer in Figure \ref{supp:sm2}, where soil layers can be seen to dry out quickly, but not beyond -2.5 MPa     (with the exception of Soil Layers 1 and 2, which are influenced by bare soil evaporation).    The effect of $\psi_c$ extends to ambient through-fall conditions (Fig \ref{supp:sm}), but over a smaller spatial and temporal domain.    PHS has more flexibility, due to dynamic root water potential, so there is not the same tendency to dry out quickly to a specific level.    Instead minimum soil water potential for PHS gets lower each dry season throughout the TFE simulation (Fig \ref{fig:sm}a).
     
-    Soil water dynamics in CLM are very sensitive to the representation of root water uptake.
+    [Add some material looking at the vertical profile of soil moisture in the models vs observations?] 
+    
+    
+    Soil water dynamics in CLM are sensitive to the representation of root water uptake, but due to the scarcity of observational constraints, vertically-resolved soil moisture predictions are challenging to evaluate.
+    
+    
+    
+    
     With PHS, because we're modeling vegetation water potential, we can utilize a hydraulic framework, 
     which offers a well-established physical basis and a clear improvement in model structure.
     SMS root water uptake has problematic model structure, seemingly no empirical basis, and intuitively does not look good on soil water dynamics.
     PHS improves model structure, but it also adds parameters that are difficult to constrain. 
-    Due to the scarcity of observational constraints, vertically-resolved soil moisture predictions are challenging to evaluate.
+
     PHS offers leaf and stem water potential observations, which are downstream of soil potential, and could be an exciting opportunity to interface with observations. 
     While PHS seems a clear improvement over SMS, which does not comport well with fundamental aspects of hydraulic theory, further work on the representation of root water uptake in models is needed to validate both soil water states and fluxes.
     
@@ -660,10 +661,7 @@ SMS, TFE & -0.6474 MPa & -1.8467 MPa \\
 
 \subsection{Caveats}
 
-    Modeling stomatal conductance and photosynthesis, especially subject to water stress, is an area of ongoing research.
-    We use the Medlyn model coupled to a hydraulic stress function that attenuates $V_{\text{cmax}}$.
-    This complies with observations \citep{lin2018,zhou2013} that stress applied through $g_1$ underestimates attenuation of photosynthesis.
-    However, there is no direct evidence of declines in $V_{\text{cmax}}$ with drought \citep{flexas2006}, whereby future work may seek to represent mesophyll conductance in CLM.
+    Modeling stomatal conductance and photosynthesis, especially subject to water stress, is an area of ongoing research. We use the Medlyn model coupled to a hydraulic stress function that attenuates $V_{\text{cmax}}$. This complies with observations \citep{lin2018,zhou2013} that stress applied through $g_1$ underestimates attenuation of photosynthesis. However, there is no direct evidence of declines in $V_{\text{cmax}}$ with drought \citep{flexas2006}, whereby future work may seek to represent mesophyll conductance in CLM.
     
     The model hydraulic supply representation is simplified, to reduce the model parameter and computational burdens.
     No capacitance.
@@ -682,13 +680,22 @@ SMS, TFE & -0.6474 MPa & -1.8467 MPa \\
 
 \subsection{Utility of modeling vegetation water potential}
 
+
+    The PHS configuration of the CLM5 is, to our knowledge, the first Earth System Model with a representation of plant water potential running in its default configuration. In this paper, we have described the model implementation, and illustrated a comparison of the model dynamics for a tropical rainforest site subjected to water limitation, given that prediction of rainforest responses to drought is one of the key uncertainties in the ESM predictions. Overall, the new model behaviour differs from the default configuration in ways that are expected, given its structural properties, and in many cases, provides better correspondance with the observations that the default structure. 
+    
+    In this paper, however, we do not undertake a comprehensive assessment of which model structure performs better, given the substantial parametric uncertainty in both models, and the dependence on numerous other features of the CLM external to water stress representation that contribute to model-observation divergences - in this case in particular, the overestimation of unstressed transpiration by both versions of the model compared to the observations. 
+    
+    In lieu of this type of assessment, we propose that the new PHS model structure 1) is more closely aligned with known plant hydraulics theory, 2) provides significantly improved connections to real-world observational data streams (of leaf and stem water status, sap flow, percent loss conductance) and 3) represents known features of ecohydrological function that the default model cannot capture, including hydraulic redistribution, changes in the depth of water uptake with drought stress, plant embolism impacts on gas exchange and responses of water uptake to changes in leaf:root rations. 
+    
+   
     This will be the final conclusions.
     Any comments on overall takeaways?
 
     PHS models vegetation water potential. 
     This offers structural improvements for stress and for root water uptake.
     Stress now functions with hydraulic limitation.
-    RWU now follows Darcy theory, incorporates HR, and responds appropriately to vegetation allometry.
+    
+    
 
 \section{Acknowledgments}
 
