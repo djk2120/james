@@ -68,7 +68,7 @@ Advancing the representation of the SPAC introduces the representation of vegeta
 
 2. Modeling  and plant hydrodynamics provides a framework for representing hydraulic redistribution \citep{lee2005} 
 
-3. Modeling vegetation water potential allows improved connection to remote sensing observations (e.g. Vegetation Optical Depth) \citep{konings206}. 
+3. Modeling vegetation water potential allows improved connection to remote sensing observations (e.g. Vegetation Optical Depth) \citep{konings2016}. 
 
 4. Further, root water potential can be used to predict gradient-based root water uptake based on Darcy's law, replacing the previous empirical transpiration partitioning heuristic.  This provides the means to vary, for example, the mean depth of extraction with changing soil water conditions.
 
@@ -543,7 +543,7 @@ SMS, TFE & -0.6474 MPa & -1.8467 MPa \\
     
     The SMS version of $f_w$ has a clear dependence on soil potential, but no relationship with VPD (Fig \ref{fig:vpd}b,d), as expected. Drier soil potentials are associated with lower values of $f_w$ (which corresponds to more stress). With PHS, higher VPD results in more stress (Fig\ref{fig:vpd}a,c). Under ambient through-fall conditions (Fig\ref{fig:vpd}a), soil water potential has minimal influence. With TFE, stress responds to both VPD and soil water (Figure \ref{fig:vpd}c). Similar effects are shown in response to downwelling solar radiation (Supp Fig \ref{supp:fsds}).
     
-    Water stress is applied to capture limitations with declining water status that are not reflected within the Medlyn stomatal optimization theory (which only optimizes \deltaE/\deltaA, and thus does not take water supply into account). CLM implements non-stomatal limitation by multiplying $V_{\text{cmax}}$ by $f_w$. Though there is limited evidence of down-regulation of $V_{\text{cmax}}$ \citep{flexas2006}, this was the best option within CLM  for applying stress through the GPP term of the stomatal conductance model, in accordance with field observations \citep{lin2018,zhou2013}.
+    Water stress is applied to capture limitations with declining water status that are not reflected within the Medlyn stomatal optimization theory (which only optimizes $\delta E / \delta A$, and thus does not take water supply into account). CLM implements non-stomatal limitation by multiplying $V_{\text{cmax}}$ by $f_w$. Though there is limited evidence of down-regulation of $V_{\text{cmax}}$ \citep{flexas2006}, this was the best option within CLM  for applying stress through the GPP term of the stomatal conductance model, in accordance with field observations \citep{lin2018,zhou2013}.
     If in future versions of CLM, mesophyll conductance is represented, it may be a more appropriate avenue for achieving the same effect. (MERGE WITH PREVIOUS DISCUSSION, TRY AVOIDING REPETITIONS A MUCH AS POSSIBLE)
     
     Total soil water content (or departure from saturation) is a typical basis for diagnosing water status and stress \citep{drake2017}, which is in line with an SMS-type approach.
