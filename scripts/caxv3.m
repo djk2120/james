@@ -69,7 +69,9 @@ dz = zs(2:end)-zs(1:end-1);
 %------------------------------------------------------------------------
 
 ff = [0,0,0,0,0,...
-    0,0,1];
+    0,0,0,0,0,...
+    0,0,0,0,0,...
+    1];
 
 
 if ff(7)>0
@@ -116,7 +118,7 @@ if ff(7)>0
 
     %first subplot
     xdk = figure;
-    subplot('Position',[0.06,0.13,0.42,0.83])
+    subplot('Position',[0.06,0.1,0.42,0.83])
     s = {'-',':','-',':'};
     c = [zeros(2,3);0.5*ones(2,3)];
     t = {'Extracted from 0-0.2m','Extracted from 0.2-8.6m','Ambient Precipitation'};
@@ -138,7 +140,7 @@ if ff(7)>0
     %other 3
     ix = year==2003&month>8&month<12;
     n  = sum(ix);
-    b = 0.71:-0.29:0.1;
+    b = 0.68:-0.29:0.1;
     ct = 0;
 
     for i=1:3
@@ -155,13 +157,16 @@ if ff(7)>0
         plot(doy(ix)+mcsec(ix)/max(diurn),180*cumsum(prec(ix)),'LineWidth',2)
         xlabel('Day of 2003')
         end
-        text(242,0.09*th(i),t{i},'FontWeight','bold')
+        %text(242,0.09*th(i),t{i},'FontWeight','bold')
+        text(242,0.09*th(i),t{i})
         text(330,0.01*th(i),p{i},'FontWeight','bold','FontSize',14)
     end
     
     ax1 = axes('Position',[0 0 1 1],'Visible','off');
     text(0.51,0.39,'Cumulative Water (cm)',...
         'FontSize',11,'Rotation',90);
+        text(0.5,0.97,'2003 Dry Season: Sept-Oct-Nov',...
+        'FontSize',14,'FontWeight','bold','HorizontalAlignment','center');
 
     
     xdk.Units = 'inches';
@@ -213,7 +218,7 @@ if ff(8)>0
     end
     
     xdk = figure;
-    subplot('Position',[0.06,0.13,0.42,0.83])
+    subplot('Position',[0.06,0.1,0.42,0.83])
     s = {'-',':','-',':'};
     c = [zeros(2,3);0.5*ones(2,3)];
     t = {'Extracted from 0-0.2m','Extracted from 0.2-8.6m','Ambient Precipitation'};
@@ -234,7 +239,7 @@ if ff(8)>0
     box off
     ix = year==2003&month>1&month<5;
     n  = sum(ix);
-    b = 0.71:-0.29:0.1;
+    b = 0.68:-0.29:0.1;
     ct = 0;
     for i=1:3
         subplot('Position',[0.56,b(i),0.42,0.25])
@@ -251,13 +256,15 @@ if ff(8)>0
             xlabel('Day of 2003')
         end
         xlim([31,121])
-        text(34,th(i),t{i},'FontWeight','bold')
+        text(34,th(i),t{i})
         text(90,th(i),p{i},'FontWeight','bold','FontSize',14)
     end
     ylim([0,110])
     ax1 = axes('Position',[0 0 1 1],'Visible','off');
     text(0.51,0.39,'Cumulative Water (cm)',...
         'FontSize',11,'Rotation',90);
+            text(0.5,0.97,'2003 Wet Season: Feb-Mar-Apr',...
+        'FontSize',14,'FontWeight','bold','HorizontalAlignment','center');
     
     
     xdk.Units = 'inches';
@@ -265,11 +272,16 @@ if ff(8)>0
     xdk.PaperSize = [7,5];
     xdk.PaperPosition = [0,0,7,5];
     
-    if ff(7)>1
-        print(xdk,'../figs3/fig7','-dpdf')
+    if ff(8)>1
+        print(xdk,'../figs3/fig8','-dpdf')
     end
     
     
 end
 
+
+if ff(16)>0
+    
+    'hello'
+end
 
