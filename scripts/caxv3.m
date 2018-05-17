@@ -1,18 +1,18 @@
 close all
 
 dir  = '../data/mar6/';
-dir2 = '../data/apr17/'; 
+dir2 = '../data/apr17/';
 
 files = {...
-%    [dir,'BR-CAX_I1PTCLM50_r270.clm2.h1.2001-01-01-00000.nc'];...
-%    [dir,'BR-CAX_I1PTCLM50_r270_on_tfe.clm2.h1.2001-01-01-00000.nc'];...
-%    [dir,'BR-CAX_I1PTCLM50_r270_off_amb.clm2.h1.2001-01-01-00000.nc'];...
-%    [dir,'BR-CAX_I1PTCLM50_r270_off_tfe.clm2.h1.2001-01-01-00000.nc']};
-[dir2,'BR-CAX_I1PTCLM50_r270v3_phs_amb.clm2.h1.2001-01-01-00000.nc'];...
-[dir2,'BR-CAX_I1PTCLM50_r270v3_phs_tfe_60.clm2.h1.2001-01-01-00000.nc'];...
-[dir,'BR-CAX_I1PTCLM50_r270v3_sms_amb.clm2.h1.2001-01-01-00000.nc'];...
-[dir,'BR-CAX_I1PTCLM50_r270v3_sms_tfe_60.clm2.h1.2001-01-01-00000.nc']...
-};
+    %    [dir,'BR-CAX_I1PTCLM50_r270.clm2.h1.2001-01-01-00000.nc'];...
+    %    [dir,'BR-CAX_I1PTCLM50_r270_on_tfe.clm2.h1.2001-01-01-00000.nc'];...
+    %    [dir,'BR-CAX_I1PTCLM50_r270_off_amb.clm2.h1.2001-01-01-00000.nc'];...
+    %    [dir,'BR-CAX_I1PTCLM50_r270_off_tfe.clm2.h1.2001-01-01-00000.nc']};
+    [dir2,'BR-CAX_I1PTCLM50_r270v3_phs_amb.clm2.h1.2001-01-01-00000.nc'];...
+    [dir2,'BR-CAX_I1PTCLM50_r270v3_phs_tfe_60.clm2.h1.2001-01-01-00000.nc'];...
+    [dir,'BR-CAX_I1PTCLM50_r270v3_sms_amb.clm2.h1.2001-01-01-00000.nc'];...
+    [dir,'BR-CAX_I1PTCLM50_r270v3_sms_tfe_60.clm2.h1.2001-01-01-00000.nc']...
+    };
 
 
 a=ncinfo(files{1});
@@ -70,8 +70,8 @@ dz = zs(2:end)-zs(1:end-1);
 
 ff = [0,0,0,0,0,...
     0,0,0,0,0,...
-    0,0,0,0,0,...
-    1];
+    0,0,0,0,1,...
+    0];
 
 
 if ff(7)>0
@@ -115,7 +115,7 @@ if ff(7)>0
             end
         end
     end
-
+    
     %first subplot
     xdk = figure;
     subplot('Position',[0.06,0.1,0.42,0.83])
@@ -142,7 +142,7 @@ if ff(7)>0
     n  = sum(ix);
     b = 0.68:-0.29:0.1;
     ct = 0;
-
+    
     for i=1:3
         subplot('Position',[0.56,b(i),0.42,0.25])
         hold on
@@ -154,8 +154,8 @@ if ff(7)>0
             end
             set(gca,'xticklabel',[])
         else
-        plot(doy(ix)+mcsec(ix)/max(diurn),180*cumsum(prec(ix)),'LineWidth',2)
-        xlabel('Day of 2003')
+            plot(doy(ix)+mcsec(ix)/max(diurn),180*cumsum(prec(ix)),'LineWidth',2)
+            xlabel('Day of 2003')
         end
         %text(242,0.09*th(i),t{i},'FontWeight','bold')
         text(242,0.09*th(i),t{i})
@@ -165,9 +165,9 @@ if ff(7)>0
     ax1 = axes('Position',[0 0 1 1],'Visible','off');
     text(0.51,0.39,'Cumulative Water (cm)',...
         'FontSize',11,'Rotation',90);
-        text(0.5,0.97,'2003 Dry Season: Sept-Oct-Nov',...
+    text(0.5,0.97,'2003 Dry Season: Sept-Oct-Nov',...
         'FontSize',14,'FontWeight','bold','HorizontalAlignment','center');
-
+    
     
     xdk.Units = 'inches';
     xdk.Position = [2,2,7,5];
@@ -177,7 +177,7 @@ if ff(7)>0
     if ff(7)>1
         print(xdk,'../figs3/fig7','-dpdf')
     end
- 
+    
 end
 
 
@@ -263,7 +263,7 @@ if ff(8)>0
     ax1 = axes('Position',[0 0 1 1],'Visible','off');
     text(0.51,0.39,'Cumulative Water (cm)',...
         'FontSize',11,'Rotation',90);
-            text(0.5,0.97,'2003 Wet Season: Feb-Mar-Apr',...
+    text(0.5,0.97,'2003 Wet Season: Feb-Mar-Apr',...
         'FontSize',14,'FontWeight','bold','HorizontalAlignment','center');
     
     
@@ -280,8 +280,170 @@ if ff(8)>0
 end
 
 
-if ff(16)>0
+if ff(6)>0
     
-    'hello'
+    out = zeros(80,3);
+    kon = nan*smp(1:80,:);
+    ix  = year==2003&fctr(1,:)>0;
+    kon(1:40,:) = ksr(1:40,:);
+    
+    
+    for ss = 41:80
+        
+        kon(ss,ix)  = qrootsink(ss,ix)./min(189000,(smp(ss,ix)+255000));
+        ix1         = ix&smp(ss,:)<=-254900;
+        kon(ss,ix1) = 0;
+    end
+    
+    xdk = figure;
+    mm = 3;
+    ix = year==2003;
+    g  = findgroups(mcsec(ix));
+    subplot(1,2,1)
+    tv = 0.25:0.5:24;
+    x=splitapply(@nanmean,kon(43,ix),g);
+    plot(tv,x,'k','LineWidth',2)
+    hold on
+    x=splitapply(@nanmean,kon(63,ix),g);
+    plot(tv,x,'k:','LineWidth',2)
+    set(gca,'xtick',6:6:18)
+    xlim([6,18])
+    title('SMS')
+    xlabel('Hour of Day')
+    ylabel({'Average (implied)';'Hydraulic Conductance (s^{-1})'})
+    text(16.5,4.7e-11,'(a)','FontWeight','bold','FontSize',14)
+    
+    subplot(1,2,2)
+    x=splitapply(@nanmean,kon(3,ix),g);
+    plot(tv,x,'k','LineWidth',2)
+    hold on
+    x=splitapply(@nanmean,kon(23,ix),g);
+    plot(tv,x,'k:','LineWidth',2)
+    set(gca,'xtick',6:6:18)
+    xlim([6,18])
+    ylim([0,5e-9])
+    title('PHS')
+    xlabel('Hour of Day')
+    ylabel({'Average (modeled)';'Hydraulic Conductance (s^{-1})'})
+
+    text(16.5,4.7e-9,'(b)','FontWeight','bold','FontSize',14)
+
+     
+    xdk.Units = 'inches';
+    xdk.Position = [2,2,7,3];
+    xdk.PaperSize = [7,3];
+    xdk.PaperPosition = [0,0,7,3];
+    
+    if ff(6)>1
+        print(xdk,'../figs3/fig6','-dpdf')
+    end
+    
+    
+end
+
+
+if ff(5)>0
+    
+    out = zeros(80,3);
+    kon = nan*smp(1:80,:);
+    ix  = year==2003&fctr(1,:)>0;
+    kon(1:40,:) = ksr(1:40,:);
+    
+    
+    for ss = 41:80
+        
+        kon(ss,ix)  = qrootsink(ss,ix)./min(189000,(smp(ss,ix)+255000));
+        ix1         = ix&smp(ss,:)<=-254900;
+        kon(ss,ix1) = 0;
+    end
+ 
+    ix = year==2003&(month==7|month==8|month==9);
+    g  = findgroups(doy(ix));
+    
+    xdk = figure;
+    
+    dv = unique(doy(ix));
+    subplot(3,1,2)
+    plot(dv,splitapply(@mean,kon(3,ix),g),'k','LineWidth',2)
+    ylabel({'Daily Mean (Modeled)';'Conductance (1/s)'})
+    xlim([180,274])
+    text(182,1e-9,'PHSamb')
+    
+    subplot(3,1,1)
+    plot(dv,splitapply(@nanmean,kon(43,ix),g),'k','LineWidth',2)
+    title('Jul-Aug-Sept 2003','FontSize',14)
+    ylim([0,2e-11])
+    xlim([180,274])
+    text(182,(1/3)*10^-11,'SMSamb')
+    ylabel({'Daily Mean (Implied)';'Conductance (1/s)'})
+        set(gca,'ytick',0:1e-11:2e-11)
+    
+    
+    subplot(3,1,3)
+    bar(dv,1800*splitapply(@sum,prec(ix),g))
+    xlim([180,274])
+    xlabel('Day of Year')
+    ylabel('Rain (mm)')
+
+    
+     xdk.Units = 'inches';
+    xdk.Position = [2,2,7,6];
+    xdk.PaperSize = [7,6];
+    xdk.PaperPosition = [0,0,7,6];
+    
+    if ff(5)>0
+        print(xdk,'../figs3/suppcond','-dpdf')
+    end
+    
+end
+
+
+if ff(15)>0
+   
+    tstr = {'PHSamb','PHStfe','SMSamb','SMStfe'}
+    xdk = figure;
+    
+    for i=1:4
+        
+        ymin = [0,-0.1,0,0];
+        ymax = [0.05,0.5,3,3];
+        
+        if i==1||i==2
+        x = smp(3+(i-1)*20,:)-vegwp(4+(i-1)*4,:);
+        else
+            x = smp(3+(i-1)*20,:)+255000;
+        end
+        
+        tv = 0.25:0.5:24;
+        ix = year==2003; 
+        g = findgroups(mcsec(ix));
+        subplot(2,2,i)
+        plot(tv,splitapply(@mean,x(ix),g)/101972,'k','LineWidth',1.5)
+        xlim([6,18])
+        set(gca,'xtick',6:3:18)
+        ylim([ymin(i),ymax(i)])
+          title(tstr{i})  
+        if i>2
+            xlabel('Hour of Day')
+        end
+        if i==1||i==3
+            ylabel({'Average  \Delta\psi (MPa)'})
+        end
+        
+    end
+    
+
+        
+    xdk.Units = 'inches';
+    xdk.Position = [2,2,7,6];
+    xdk.PaperSize = [7,6];
+    xdk.PaperPosition = [0,0,7,6];
+    
+    if ff(15)>1
+        print(xdk,'../figs3/supppsi','-dpdf')
+    end
+    
+    
+    
 end
 
