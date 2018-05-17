@@ -70,7 +70,7 @@ dz = zs(2:end)-zs(1:end-1);
 
 ff = [0,0,0,0,0,...
     0,0,0,0,0,...
-    0,0,0,0,1,...
+    0,0,0,1,0,...
     0];
 
 
@@ -391,8 +391,48 @@ if ff(5)>0
     xdk.PaperSize = [7,6];
     xdk.PaperPosition = [0,0,7,6];
     
-    if ff(5)>0
+    if ff(5)>1
         print(xdk,'../figs3/suppcond','-dpdf')
+    end
+    
+end
+
+if ff(14)>0
+    xdk = figure;
+    c='PHSambPHStfeSMSambSMStfe';
+    x= [-0.19,0.95*-2.5,-0.19,0.95*-2.5];
+    tt=25;
+    ixd = mcsec>=diurn(tt)&mcsec<=diurn(tt+3);
+    ix = year==2003&ixd;
+    s  = [1,3,2,4];
+    for i = 1:4
+        subplot(2,2,i)
+        plot(smp(3+(i-1)*20,ix)/101972,qrootsink(3+(i-1)*20,ix),'.')
+        if i==1||i==3
+            xlim([-0.2,0])
+            %ylim([-1e-5,5e-5])
+            ylim([-5e-6,10e-5])
+            %xlim([-2.5,0])
+            ylabel({'Root Water Uptake';'(mm/s)'})
+        else
+            xlim([-2.5,0])
+            ylim([-5e-6,10e-5])
+        end
+        if i>2
+            xlabel('Soil Potential')
+        end
+        title(c((1:6)+(i-1)*6))
+        
+        grid on
+    end
+    
+    xdk.Units = 'inches';
+    xdk.Position = [2,2,7,6];
+    xdk.PaperSize = [7,6];
+    xdk.PaperPosition = [0,0,7,6];
+    
+    if ff(14)>0
+        print(xdk,'../figs3/supprwu','-dpdf')
     end
     
 end
