@@ -70,7 +70,7 @@ dz = zs(2:end)-zs(1:end-1);
 
 ff = [0,0,0,0,0,...
     0,0,0,0,0,...
-    0,0,0,1,0,...
+    0,0,1,0,0,...
     0];
 
 
@@ -397,6 +397,28 @@ if ff(5)>0
     
 end
 
+if ff(13)>0
+    ix1 = year==2003&month>1&month<5;
+    ixd = mcsec>=diurn(tt)&mcsec<=diurn(tt+3);
+    
+    
+    subplot(2,1,1)
+    x1 = mean(qrootsink(1:20,ix1&ixd),2);
+    
+    x2 = mean(qrootsink(21:40,ix1&ixd),2);
+    
+    bar([x1,x2])
+    
+    figure
+    subplot(1,2,1)
+    bar(mean(smp(1:20,ix1)/101972,2))
+    ylim([-0.3,0])
+    subplot(1,2,2)
+    bar(mean(smp(21:40,ix1)/101972,2))
+    ylim([-0.3,0])
+    
+end
+
 if ff(14)>0
     xdk = figure;
     c='PHSambPHStfeSMSambSMStfe';
@@ -431,7 +453,7 @@ if ff(14)>0
     xdk.PaperSize = [7,6];
     xdk.PaperPosition = [0,0,7,6];
     
-    if ff(14)>0
+    if ff(14)>1
         print(xdk,'../figs3/supprwu','-dpdf')
     end
     
