@@ -69,8 +69,8 @@ dz = zs(2:end)-zs(1:end-1);
 %------------------------------------------------------------------------
 
 ff = [0,0,0,0,0,...
-    0,0,0,0,0,...
     0,0,1,0,0,...
+    0,0,0,0,0,...
     0];
 
 
@@ -118,11 +118,11 @@ if ff(7)>0
     
     %first subplot
     xdk = figure;
-    subplot('Position',[0.06,0.1,0.42,0.83])
+    subplot('Position',[0.56,0.1,0.42,0.83])
     s = {'-',':','-',':'};
     c = [zeros(2,3);0.5*ones(2,3)];
     t = {'Extracted from 0-0.2m','Extracted from 0.2-8.6m','Ambient Precipitation'};
-    p = {'(b)','(c)','(d)'};
+    p = {'(b)','(c)','(a)'};
     th = [150,400,300];
     tlab   = {'PHS-amb','PHS-tfe','SMS-amb','SMS-tfe'};
     for i=1:4
@@ -134,17 +134,17 @@ if ff(7)>0
     ylabel('Depth (m)')
     xlabel({'Cumulative Root Water Uptake (cm)'})
     legend(tlab,'location','Southeast')
-    text(1,-0.5,'(a)','FontWeight','bold','FontSize',14)
+    text(1,-0.5,'(d)','FontWeight','bold','FontSize',14)
     box off
     
     %other 3
     ix = year==2003&month>8&month<12;
     n  = sum(ix);
-    b = 0.68:-0.29:0.1;
+    b = [0.39,0.1,0.68];
     ct = 0;
     
     for i=1:3
-        subplot('Position',[0.56,b(i),0.42,0.25])
+        subplot('Position',[0.08,b(i),0.42,0.25])
         hold on
         if i<3
             for j=1:4
@@ -152,10 +152,14 @@ if ff(7)>0
                 plot(doy(ix)+mcsec(ix)/max(diurn),out2(ct,1:n),...
                     'LineStyle',s{j},'Color',c(j,:),'LineWidth',2)
             end
-            set(gca,'xticklabel',[])
+            if i==2
+                            xlabel('Day of 2003')
+            else
+                            set(gca,'xticklabel',[])
+            end
         else
             plot(doy(ix)+mcsec(ix)/max(diurn),180*cumsum(prec(ix)),'LineWidth',2)
-            xlabel('Day of 2003')
+                        set(gca,'xticklabel',[])
         end
         %text(242,0.09*th(i),t{i},'FontWeight','bold')
         text(242,0.09*th(i),t{i})
@@ -163,7 +167,7 @@ if ff(7)>0
     end
     
     ax1 = axes('Position',[0 0 1 1],'Visible','off');
-    text(0.51,0.39,'Cumulative Water (cm)',...
+    text(0.03,0.39,'Cumulative Water (cm)',...
         'FontSize',11,'Rotation',90);
     text(0.5,0.97,'2003 Dry Season: Sept-Oct-Nov',...
         'FontSize',14,'FontWeight','bold','HorizontalAlignment','center');
@@ -218,11 +222,11 @@ if ff(8)>0
     end
     
     xdk = figure;
-    subplot('Position',[0.06,0.1,0.42,0.83])
+    subplot('Position',[0.56,0.1,0.42,0.83])
     s = {'-',':','-',':'};
     c = [zeros(2,3);0.5*ones(2,3)];
     t = {'Extracted from 0-0.2m','Extracted from 0.2-8.6m','Ambient Precipitation'};
-    p = {'(b)','(c)','(d)'};
+    p = {'(b)','(c)','(a)'};
     th = [0.9*40,30-0.1*40,0.9*110];
     tlab   = {'PHS-amb','PHS-tfe','SMS-amb','SMS-tfe'};
     for i=1:4
@@ -235,14 +239,14 @@ if ff(8)>0
     ylabel('Depth (m)')
     xlabel({'Cumulative Root Water Uptake (cm)'})
     legend(tlab,'location','Southeast')
-    text(20.5,-0.5,'(a)','FontWeight','bold','FontSize',14)
+    text(20.5,-0.5,'(d)','FontWeight','bold','FontSize',14)
     box off
     ix = year==2003&month>1&month<5;
     n  = sum(ix);
-    b = 0.68:-0.29:0.1;
+    b = [0.39,0.1,0.68];
     ct = 0;
     for i=1:3
-        subplot('Position',[0.56,b(i),0.42,0.25])
+        subplot('Position',[0.08,b(i),0.42,0.25])
         hold on
         if i<3
             for j=1:4
@@ -250,18 +254,22 @@ if ff(8)>0
                 plot(doy(ix)+mcsec(ix)/max(diurn),out2(ct,1:n),...
                     'LineStyle',s{j},'Color',c(j,:),'LineWidth',2)
             end
-            set(gca,'xticklabel',[])
+
         else
             plot(doy(ix)+mcsec(ix)/max(diurn),180*cumsum(prec(ix)),'LineWidth',2)
-            xlabel('Day of 2003')
         end
         xlim([31,121])
         text(34,th(i),t{i})
         text(90,th(i),p{i},'FontWeight','bold','FontSize',14)
+                if i==2
+            xlabel('Day of 2003')
+        else
+                        set(gca,'xticklabel',[])
+        end
     end
     ylim([0,110])
     ax1 = axes('Position',[0 0 1 1],'Visible','off');
-    text(0.51,0.39,'Cumulative Water (cm)',...
+    text(0.03,0.39,'Cumulative Water (cm)',...
         'FontSize',11,'Rotation',90);
     text(0.5,0.97,'2003 Wet Season: Feb-Mar-Apr',...
         'FontSize',14,'FontWeight','bold','HorizontalAlignment','center');
@@ -272,12 +280,14 @@ if ff(8)>0
     xdk.PaperSize = [7,5];
     xdk.PaperPosition = [0,0,7,5];
     
-    if ff(8)>1
+    if ff(8)>0
         print(xdk,'../figs3/fig8','-dpdf')
     end
     
     
 end
+
+
 
 
 if ff(6)>0
@@ -397,8 +407,77 @@ if ff(5)>0
     
 end
 
+if ff(10)>0
+    
+    %resample to height coords
+    out = zeros(860,length(fsds));
+    dzn = round(100*(zs(2:end)-zs(1:end-1)));
+    ct  = 0;
+    for ss=1:20
+        out(ct+(1:dzn(ss)),:) = repmat(smp(60+ss,:),dzn(ss),1);
+        ct = ct+dzn(ss);
+    end
+    
+    %daily mean
+    out = splitapply(@mean,out',(doy+(year-2001)*365)')';
+    contour(1:1095,-1:-1:-860,-out/101972,0.1:0.1:2.5)
+    
+end
+
+if ff(11)>0
+    
+    yy=2002;
+    xdk = figure;
+    %resample to height
+    x = 0;
+    ymax = [-1,-3];
+    vsn  = {'PHS','SMS'};
+    pnl  = {'(a)','(b)'};
+    for ss=[20,60]
+        x = x+1;
+        nz  = round(100*(zs(2:end)-zs(1:end-1)));
+        out = zeros(860,n);
+        ct  = 0;
+        
+        for i=1:20
+            ix = ct+(1:nz(i));
+            out(ix,:) = repmat(smp(ss+i,:),nz(i),1)/101972;
+            ct = ct+nz(i);
+        end
+        addpath('/Users/kennedy/Documents/MATLAB/othercolor')
+        colormap(othercolor('BrBG4'))
+        subplot(2,1,x)
+        imagesc((1:n)/(48*365)+2001,(1:860)/100,out,[ymax(x),0])
+        title(vsn{x})
+        xlim([2001,2004])
+        ylim([0,8.605])
+        ylabel('Depth (m)')
+        if x==2
+            xlabel('Year')
+        end
+        aa={'2001','','2002','','2003','','2004'};
+        
+        set(gca,'xticklabel',aa)
+        set(gca,'ytick',0:2:8)
+        c = colorbar;
+        ylabel(c,'Soil Potential (MPa)','FontSize',11)
+        text(2001.08,1,pnl{x},'FontSize',14,'FontWeight','bold','Color',[0.8,0.8,0.8])
+    end
+    
+    xdk.Units = 'inches';
+    xdk.Position = [2,2,7,5];
+    xdk.PaperSize = [7,5];
+    xdk.PaperPosition = [0,0,7,5];
+    
+    figure
+    contour(out)
+    
+    
+end
+
 if ff(13)>0
     ix1 = year==2003&month>1&month<5;
+    tt = 25;
     ixd = mcsec>=diurn(tt)&mcsec<=diurn(tt+3);
     
     
@@ -418,6 +497,8 @@ if ff(13)>0
     ylim([-0.3,0])
     
 end
+
+
 
 if ff(14)>0
     xdk = figure;
