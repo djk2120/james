@@ -1,4 +1,4 @@
-close all
+rclose all
 
 dir  = '../data/mar6/';
 dir2 = '../data/apr17/'; 
