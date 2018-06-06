@@ -410,17 +410,31 @@ bsw & Brooks-Corey parameter & $b$ & 6 \\
 Selected parameter values concerning vegetation hydrodynamics are presented in Table 1. All other parameters use the default values associated with the r270 version of CLM5. Informed by \cite{fisher2008}, we tuned soil hydraulic parameters and through-fall exclusion rates to reasonably capture the observed soil water dynamics (\cite{fisher2007} Figure 4), Supplementary Figure \ref{top3m}. Likewise, we tuned $k_{max}$ and $g_1$ parameters to improve the fit to sap flux observations in the ambient simulation. The object of this paper is to present the dynamical impact of PHS to clearly describe model functionality. Model skill and parameter sensitivity will be assessed in follow-up studies.
 
 %====================
-%  ANALYSIS DESCRIPTION
+%  RESULTS
 %====================
-\section{Analysis Details}  
-\subsection{Water potential}
+\section{Results}  
+\subsection{Vegetation water potential}
 
-Annual and diurnal cycles of vegetation water potential are presented. For the diurnal cycle, we average by timestep over the 91 days of SON, 2003, reporting curves for root, stem, shade-leaf, and sun-leaf water potential. For the annual cycle, we plot monthly mean midday (local time 12:00 to 14:00) sun-leaf water potential.
+    PHS introduces prognostic vegetation water potential to CLM at four locations within the plant structure: at the root, stem, shaded leaf, and sunlit leaf.
+    Under ambient conditions, 2003 dry season (September-October-November) model average sunlit leaf water potential is -1.65 MPa at midday (local time 12-14h, Figure \ref{fig:vwp}a)The midday pressure drop is concentrated between $\psi_{root}$ and $\psi_{stem}$, representing the root collar and upper stem, respectively.
+    Under TFE, model midday leaf water potential decreases to -2.31 MPa (Figure \ref{fig:vwp}b). 
+    Partitioned among the segments of the SPAC, the change in leaf water potential (totaling -0.66MPa) due to TFE is:
+    -0.44MPa soil potential,
+    -0.66MPa soil-to-root,
+    +0.45MPa root-to-stem, and 
+    -0.001MPa stem-to-leaf.
+    This comports with previous evidence that seasonal changes in hydraulic resistance are larger belowground \citep{fisher2006}.
+    
+    Describing Figure \ref{fig:vwp}c
+    seasonal cycle,
+    values in range of fisher2006,
+    but TFE effect was not observed in the field.
 
-\subsection{Stress factor, annual cycle}
-    Monthly means are reported for transpiration, gross photosynthesis, and $f_w$, the water stress factor (Fig \ref{fig:mm}). For the water stress factor, we opt to report the midday water stress averaging over local time 12:00 to 14:00. Monthly mean observational sap flow is also shown, courtesy of \cite{fisher2007}, which reports details on scaling observations to stand level. Months were dropped that featured fewer than 5 days of data.
 
-\subsection{Stress factor, diurnal cycle}
+\subsection{Stress factor}
+
+
+\subsection{GPP and Transpiration}
     In Figure \ref{fig4}, we plot the diurnal cycle of the stress factor averaged over the 2003 dry season (SON) (I am not a big fan of sentences in Figure we show, better to say what ahppens and then refer to figure).
     Drivers of the stress function are examined in Figure \ref{fig:vpd}.
     To highlight the response of stress to VPD, we subsetted data according to downwelling solar radiation, which also influences stress.
@@ -714,21 +728,7 @@ SMS, TFE & -0.6474 MPa & -1.8467 MPa \\
      }
      \label{fig:vwp}
   \end{figure}
-  
-  \clearpage   
-  \begin{figure}[h]
-     \centering
-     \includegraphics[width=30pc]{../figs3/tts.pdf}
-     \caption{(a,b) Monthly mean water stress function. Note that the water stress function equals 1 when there is no stress and 0 when fully stressed.
-     (c,d) Monthly mean transpiration (W/m$^2$).
-     (e,f) Monthly mean gross primary productivity (g/m$^2$/d). 
-     Solid lines correspond to ambient through-fall conditions, and dotted lines feature 60\% through-fall exclusion.
-     Black lines represent model output.
-     Red lines show observational transpiration derived from sap flux (see zqz).
-     PHS is on for (a), (c), and (e). PHS is off for (b), (d), and (f).
-     }
-     \label{fig:mm}
-  \end{figure}
+
   
     \clearpage
     \begin{figure}[h]
@@ -746,7 +746,7 @@ SMS, TFE & -0.6474 MPa & -1.8467 MPa \\
       \clearpage
     \begin{figure}[h]
      \centering
-     \includegraphics[width=30pc]{../figs2/fig5.pdf}
+     \includegraphics[width=30pc]{../figs3/vpdstress.pdf}
      \caption{Water stress function versus vapor pressure deficit, for points with downwelling shortwave radiation between 400 and 425 W/m2.
      (a) PHS, ambient through-fall
      (b) SMS, ambient through-fall
@@ -755,10 +755,42 @@ SMS, TFE & -0.6474 MPa & -1.8467 MPa \\
      For (a) and (c) data are subdivided based on predawn root water potential.
      For (b) and (d) data are subdivided based on average soil matric potential, weighted by root fraction.
      Blue dots represent the wettest tercile, yellow dots represent the intermediate tercile, and red dots represent the driest tercile.
-     Note that panels (c) and (d) exclude data from 2001, when CO$_2$ exclusion was not active.
+     Note that panels (c) and (d) exclude data from 2001, when throughfall exclusion was not active.
      }
      \label{fig:vpd}
        \end{figure}
+      
+          \clearpage   
+  \begin{figure}[h]
+     \centering
+     \includegraphics[width=30pc]{../figs3/gpp.pdf}
+     \caption{(a,b) Monthly mean water stress function. Note that the water stress function equals 1 when there is no stress and 0 when fully stressed.
+     (c,d) Monthly mean transpiration (W/m$^2$).
+     (e,f) Monthly mean gross primary productivity (g/m$^2$/d). 
+     Solid lines correspond to ambient through-fall conditions, and dotted lines feature 60\% through-fall exclusion.
+     Black lines represent model output.
+     Red lines show observational transpiration derived from sap flux (see zqz).
+     PHS is on for (a), (c), and (e). PHS is off for (b), (d), and (f).
+     }
+     \label{fig:mm}
+  \end{figure} 
+         
+  \clearpage   
+  \begin{figure}[h]
+     \centering
+     \includegraphics[width=30pc]{../figs3/T.pdf}
+     \caption{(a,b) Monthly mean water stress function. Note that the water stress function equals 1 when there is no stress and 0 when fully stressed.
+     (c,d) Monthly mean transpiration (W/m$^2$).
+     (e,f) Monthly mean gross primary productivity (g/m$^2$/d). 
+     Solid lines correspond to ambient through-fall conditions, and dotted lines feature 60\% through-fall exclusion.
+     Black lines represent model output.
+     Red lines show observational transpiration derived from sap flux (see zqz).
+     PHS is on for (a), (c), and (e). PHS is off for (b), (d), and (f).
+     }
+     \label{fig:mm}
+  \end{figure}
+  
+
   
   
 \clearpage   

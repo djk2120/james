@@ -54,10 +54,11 @@ zs=[     0  , 0.0200  , 0.0600  , 0.1200  , 0.2000  , 0.3200  , 0.4800,...
 z = zs(1:20)+zs(2:21);
 z = z/2;
 
-zr=[1.40e-2,2.73e-2,3.96e-2,5.02e-2,7.02e-2,...
-    8.49e-2,9.36e-2,9.62e-2,9.36e-2,8.67e-2,...
-    7.68e-2,6.54e-2,5.36e-2,4.67e-2,3.67e-2,...
-    2.62e-2,1.71e-2,1.03e-2,5.70e-3,2.92e-3];
+zr = 1-0.98^(zs(2)*100);
+for i=2:20
+    zr(i) = 1-sum(zr)-0.98^(zs(i+1)*100);
+end
+
 
 if ~exist('p','var')
 f = '../data/daily_sapflow_control.txt';
@@ -78,7 +79,392 @@ hh = zeros(200,1);
 gg = zeros(200,1);
 ff = zeros(200,1);
 
-hh(1:5) = [0,0,0,0,1];
+hh(1:5)  = [1,0,0,0,0];
+hh(6:10) = [0,0,0,0,0];
+
+if hh(10)>0
+    ix = mcsec>=diurn(25)&mcsec<=diurn(28);
+    g  = (year(ix)-2001)*365+doy(ix);
+    subplot(2,1,1)
+    plot(splitapply(@mean,vpd(ix),g),'.')
+    set(gca,'xtick',cumsum([0,eomday(2001,1:12),eomday(2001,1:12),eomday(2001,1:12)]))
+    set(gca,'xticklabel',[0:12,1:12,1:12])
+    xlim([0,1095])
+    grid on
+    
+    
+    subplot(2,1,2)
+    plot(splitapply(@mean,fsds(ix),g),'.')
+    set(gca,'xtick',cumsum([0,eomday(2001,1:12),eomday(2001,1:12),eomday(2001,1:12)]))
+    set(gca,'xticklabel',[0:12,1:12,1:12])
+    xlim([0,1095])
+    grid on
+    
+    
+    
+    
+end
+
+if hh(9)>0
+    xv = 0.5:730;
+    xdk = figure;
+    
+    
+    years =cell(1,25);
+    for i=0:24
+        if i==6
+            years(i+1)={'2002'};
+        elseif i==18
+            years(i+1)={'2003'};
+        end
+    end
+    
+    mls =cell(1,25);
+    mm = -1;
+    for i=0:24
+        if mod(i,2)~=0
+            mm = mm+2;
+            if mm>12
+                mm=1;
+            end
+            mls(i+1)={num2str(mm)};
+        end
+    end
+    
+    
+    xx = [0.09,0.54,0.09,0.54];
+    yy = [0.78,0.78,0.55,0.55];
+    w  = 0.44;
+    h  = 0.17;
+    cc = [0,0,0.7,0.7];
+    ss = '(a)(b)(c)(d)';
+    for i=1:4
+        s=subplot('Position',[xx(i),yy(i),w,h]);
+
+        ix = year>2001&mcsec>=diurn(25)&mcsec<=diurn(28);
+        g = (year(ix)-2002)*365+doy(ix);
+        plot(xv,splitapply(@mean,btran(i,ix),g),'.','color',ones(1,3)*cc(i))
+                hold on
+                plot([365,365],[0,1],'Color',[0.3,0.3,0.3])
+
+        xlim([0,730])
+        ylim([0,1])
+        set(gca,'xtick',cumsum([0,eomday(2001,1:12),eomday(2001,1:12)]))
+        set(gca,'xticklabel',years)
+        grid on
+        if i==1
+            title('AMB')
+            l = legend('PHS');
+            l.Position =[0.32    0.7944    0.11    0.04];
+        elseif i==2
+            title('TFE')
+        elseif i==3
+            ll=legend('SMS');
+            ll.Position =[0.32    0.5644    0.11    0.04];
+        end
+
+        if i==2||i==4
+            set(gca,'yticklabel',[])
+        end
+        text(10,0.2,ss((1:3)+(i-1)*3),'FontSize',14,'FontWeight','bold')
+        box off
+    end
+    
+    xf = 86400*1e-6*12; %umol/m2/s to g/m2/d
+    yy = [0.32,0.32,0.09,0.09];
+    ss = '(e)(f)(g)(h)';
+    for i=1:4
+        s=subplot('Position',[xx(i),yy(i),w,h]);
+                plot([365,365],[0,10],'Color',[0.3,0.3,0.3])
+        hold on
+        ix = year>2001;
+        g = (year(ix)-2002)*365+doy(ix);
+        plot(xv,xf*splitapply(@mean,fpsn(i,ix),g),'.','Color',cc(i)*ones(1,3))
+        xlim([0,730])
+        ylim([0,10])
+        if i<3
+            set(gca,'xtick',cumsum([0,eomday(2001,1:12),eomday(2001,1:12)]))
+            set(gca,'xticklabel',years)
+        else
+            set(gca,'xtick',cumsum([0,eomday(2001,1:12),eomday(2001,1:12)]))
+            set(gca,'xticklabel',mls)
+            xlabel('Time (month)')
+        end
+        if i==2||i==4
+            set(gca,'yticklabel',[])
+        end
+        text(10,2,ss((1:3)+(i-1)*3),'FontSize',14,'FontWeight','bold')
+        grid on
+        box off
+    end
+    
+    ax1 = axes('Position',[0 0 1 0.5],'Visible','off');
+    text(0.04,0.39,'GPP (gC/m2/d)',...
+        'FontSize',11,'Rotation',90);
+    ax1 = axes('Position',[0 0.5 1 0.5],'Visible','off');
+    text(0.04,0.2,'Stress Factor (midday)',...
+        'FontSize',11,'Rotation',90);
+    
+    
+    xdk.Units = 'Inches';
+    xdk.Position = [2,2,7,5];
+    xdk.PaperSize = [7,5];
+    xdk.PaperPosition = [0,0,7,5];
+    
+    print(xdk,'../figs3/gpp','-dpdf')
+    
+end
+
+if hh(8)>0
+   ix = fsds>400&fsds<425;
+   ot = 1:length(fsds);
+   xdk = figure;
+   cc = get(gca,'ColorOrder');
+   co = [2,3,1];
+   
+          xx = [0.08,0.53];
+   
+   sssms  = zr*smp(41:60,:);
+   sssms  = repmat(sssms(1,mcsec==diurn(10)),48,1);
+   sssms  = sssms(1:52551);
+   sssms2 = zr*smp(61:80,:);
+   sssms2 = repmat(sssms2(1,mcsec==diurn(10)),48,1);
+   sssms2 = sssms2(1:52551);
+   sssms  = [sssms;sssms2];
+ss = {'(a)','(b)'};
+   for i = 1:2
+
+       
+       ix = fsds>400&fsds<425&year>=2000+i;
+             subplot('Position',[xx(i),0.53,0.4,0.41])
+       qq = quantile(sssms(i,ix),[1/3,2/3]);
+       qq = [-inf,qq,0];
+       for j=[3,1,2]
+           ix2 = ix&sssms(i,:)>=qq(j)&sssms(i,:)<qq(j+1);
+           plot(vpd(ix2),btran(i+2,ix2),'.')
+           ylim([0,1])
+           hold on
+       end
+box off
+       
+       if i==1
+           title('AMB')
+           ylabel('Stress Factor (SMS)')
+       else
+           title('TFE')
+           set(gca,'yticklabel',[])
+       end
+       set(gca,'xticklabel',[])
+       text(3.5,0.1,ss{i},'FontSize',14,'FontWeight','bold')
+   end
+   
+
+   
+   ssphs  = repmat(vegwp(4,mcsec==diurn(10)),48,1);
+   ssphs  = ssphs(1:52551);
+   ssphs2 = repmat(vegwp(8,mcsec==diurn(10)),48,1);
+   ssphs2 = ssphs2(1:52551);
+   ssphs  = [ssphs;ssphs2];
+   
+   ss = {'(c)','(d)'};
+   for i = 1:2
+       subplot('Position',[xx(i),0.08,0.4,0.41])
+       ix = fsds>400&fsds<425&year>=2000+i;
+       qq = quantile(ssphs(i,ix),[1/3,2/3]);
+       qq = [-inf,qq,0];
+       for j=[3,1,2]
+           ix2 = ix&ssphs(i,:)>=qq(j)&ssphs(i,:)<qq(j+1);
+           plot(vpd(ix2),btran(i,ix2),'.')
+           ylim([0,1])
+           hold on
+       end
+       box off 
+       xlabel('VPD (kPa)')
+       if i==2
+           legend('wettest','driest','intermediate','location','best')
+           set(gca,'yticklabel',[])
+       else
+           ylabel('Stress Factor (PHS)')
+       end
+       text(3.5,0.1,ss{i},'FontSize',14,'FontWeight','bold')
+
+   end
+    
+        
+    xdk.Units = 'inches';
+    xdk.Position = [2,2,7,5];
+    xdk.PaperSize = [7,5];
+    xdk.PaperPosition = [0,0,7,5];
+    
+    if hh(8)>1
+        print(xdk,'../figs3/vpdstress','-dpdf')
+    end
+    
+end
+
+
+
+if hh(7)>0
+
+    
+    ix = year>2001&mcsec>=diurn(25)&mcsec<=diurn(28); %midday
+    g = (year(ix)-2002)*12+month(ix);
+    out = splitapply(@mean,btran(:,ix)',g');
+    xdk = figure;
+       xx = [0.08,0.53];
+    for i=1:2
+        subplot('Position',[xx(i),0.53,0.4,0.41])
+        hold on
+        plot(xv,out(:,i+2),'Color',[0.7,0.7,0.7],'LineWidth',2)
+        plot(xv,out(:,i),'k','LineWidth',2)
+        set(gca,'xtick',2002:0.5:2004)
+        set(gca,'xticklabel',[])
+        set(gca,'ytick',0:.25:1)
+        set(gca,'yticklabel',{'0','','0.5','','1'})
+        ylim([0,1])
+        if i==1
+            title('AMB')
+            ylabel('Stress Factor')
+            legend({'SMS','PHS'},'Location','SouthEast')
+
+        else
+            title('TFE')
+            set(gca,'yticklabel',[])
+        end
+        box off
+    end
+    
+        ix = year>2001;
+    g = (year(ix)-2002)*12+month(ix);
+    xf = 86400*1e-6*12; %umol/m2/s to g/m2/d
+    out = xf*splitapply(@mean,fpsn(:,ix)',g');
+    xv  = 2002+(0.5:24)/12;
+    
+    for i=1:2
+        subplot('Position',[xx(i),0.08,0.4,0.41])
+        hold on
+        plot(xv,out(:,i+2),'Color',[0.7,0.7,0.7],'LineWidth',2)
+        plot(xv,out(:,i),'k','LineWidth',2)
+        set(gca,'xtick',2002:0.5:2004)
+        set(gca,'xticklabel',{'2002','','2003','','2004'})
+        set(gca,'ytick',0:2.5:10)
+        set(gca,'yticklabel',{'0','','5','','10'})
+        ylim([0,10])
+        if i==1
+            ylabel('GPP (gC/m^2/d)')
+        else
+            set(gca,'yticklabel',[])
+        end
+        xlabel('Year')
+        
+    end
+    
+    xdk.Units = 'inches';
+    xdk.Position = [2,2,7,5];
+    xdk.PaperSize = [7,5];
+    xdk.PaperPosition = [0,0,7,5];
+    
+    if hh(7)>0
+        print(xdk,'../figs3/gpp','-dpdf')
+    end
+    
+end
+
+
+
+
+if hh(6)>0
+    g = (year-2001)*365+doy;
+   out  = 4e-7*1800*splitapply(@sum,fctr',g');
+   g = (year-2001)*12+month;
+   out2 = 4e-7*86400*splitapply(@mean,fctr',g');
+   
+   xx = [0.08,0.53];
+   yy = [0.07,0.365];
+   w = 0.4;
+   h = 0.27;
+   
+   dd = [0,0,0;0.7,0.7,0.7];
+   mm = {'(PHS)','(SMS)'};
+   xdk = figure;
+   for i=1:2
+   for j=1:2
+       ix = p(:,j)>0;
+       c = (i-1)*2+j;
+       subplot('Position',[xx(j),yy(i),w,h])
+       plot(p(ix,j),out(ix,c),'.','Color',dd(i,:))
+       
+       rr = corr(p(ix,j),out(ix,c))^2;
+       text(4.2,1.1,['R^2= ',num2str(round(rr,3))])
+       rmse = sqrt(mean((p(ix,j)-out(ix,c)).^2));
+       text(4.2,0.5,['RMSE= ',num2str(round(rmse,3))])
+       
+       std(out(:,c))
+       std(p(ix,j))
+       
+       xlim([0,6])
+       ylim([0,6])
+       hold on
+       box off
+       plot([0,6],[0,6],'k:')
+       
+       if i==2
+           set(gca,'xticklabel',[])
+       else
+           xlabel('Observed Sap Flux (mm/d)')
+       end
+       if j==2
+           set(gca,'yticklabel',[])
+       else
+           ylabel(['Model ',mm{i}])
+       end
+   end
+   end
+   
+   
+   for i=1:2
+       subplot('Position',[xx(i),0.7,w,h]);
+       ix = p(:,i)>0;
+       ot = 2001+1/365*(0.5:1095)';
+       tv = cumsum([0,eomday(2001,1:12)]);
+       tv = 0.5*(tv(1:12)+tv(2:13));
+       tv = 365+[tv,365+tv];
+       tv = 2001+tv/365;
+       
+       cc=get(gca,'ColorOrder');
+       plot(ot(ix),p(ix,i),'.','Color',cc(2,:))
+       hold on
+       plot(tv,out2(13:36,i+2),'Color',[0.7,0.7,0.7],'LineWidth',1.5)
+       plot(tv,out2(13:36,i),'k-','LineWidth',1.5)
+       box off
+       ylim([0,6])
+       set(gca,'xtick',2002:0.5:2004)
+       set(gca,'xticklabel',{'2002','','2003','','2004'})
+       
+       if i==1
+           ylabel('Transpiration (mm/d)')
+           title('AMB')
+       else
+           legend('OBS','SMS','PHS')
+           title('TFE')
+           set(gca,'yticklabel',[])
+       end
+       xlabel('Year')
+       
+   end
+   
+   
+    xdk.Units = 'inches';
+    xdk.Position = [2,2,7,7];
+    xdk.PaperSize = [7,7];
+    xdk.PaperPosition = [0,0,7,7];
+    
+    
+    if hh(6)>1
+        print(xdk,'../figs3/T','-dpdf')
+    end
+end
+
 
 if hh(5)>0
     
@@ -474,9 +860,10 @@ if hh(1)>0
     xlabel('Year')
     ylabel({'Midday Sun Leaf Water';'Potential (MPa)'})
     
+    %draw an arrow
     plot(2001+[10.5/12,10.5/12],[-2.6,-2.9],'k-','LineWidth',2)
-    plot(2001+[10.5/12,10.2/12],[-2.9,-2.8],'k-','LineWidth',2)
-    plot(2001+[10.5/12,10.8/12],[-2.9,-2.8],'k-','LineWidth',2)
+    plot(2001+[10.5/12,10.2/12],[-2.88,-2.8],'k-','LineWidth',2)
+    plot(2001+[10.5/12,10.8/12],[-2.88,-2.8],'k-','LineWidth',2)
     
     legend('AMB','TFE','Location','Southwest')
     text(33.8,-1.3,'(c)','FontSize',14,'FontWeight','bold')
@@ -508,18 +895,37 @@ if hh(1)>0
     disp('delta drop')
     disp(mean(out(4,25:28))-out(4,11)-(mean(out(8,25:28))-out(8,11)))
     
-    disp('AMB MD SUN & drop')
-    disp([mean(out(1,25:28)),mean(out(4,25:28))-mean(out(1,25:28))])
+
+    disp('AMB MD STEM & drop')
+    disp([mean(out(3,25:28)),mean(out(4,25:28))-mean(out(3,25:28))])
     
-    disp('TFE MD SUN & drop')
-    disp([mean(out(5,25:28)),mean(out(8,25:28))-mean(out(5,25:28))])
+    disp('TFE MD STEM & drop')
+    disp([mean(out(7,25:28)),mean(out(8,25:28))-mean(out(7,25:28))])
     
     disp('delta drop')
-    disp(mean(out(4,25:28))-mean(out(1,25:28))-(mean(out(8,25:28))-mean(out(5,25:28))))
+    disp(mean(out(4,25:28))-mean(out(3,25:28))-(mean(out(8,25:28))-mean(out(7,25:28))))
+    
+    
+    
+    disp('AMB MD SUN & drop')
+    disp([mean(out(1,25:28)),mean(out(3,25:28))-mean(out(1,25:28))])
+    
+    disp('TFE MD SUN & drop')
+    disp([mean(out(5,25:28)),mean(out(7,25:28))-mean(out(5,25:28))])
+    
+    disp('delta drop')
+    disp(mean(out(3,25:28))-mean(out(1,25:28))-(mean(out(7,25:28))-mean(out(5,25:28))))
     
     disp('net leaf drop')
     disp(mean(out(1,25:28))-mean(out(5,25:28)))
     
+    
+    plc1 = 2^(-(mean(out(3,25:28))/-1.75)^2.95);
+    plc2 = 2^(-(mean(out(7,25:28))/-1.75)^2.95);
+    
+    ix = year==2003&month>8&month<12;
+    sum(mean(ksr(1:20,ix),2))
+    sum(mean(ksr(21:40,ix),2))
     
     
         xdk.Units = 'inches';
@@ -527,13 +933,57 @@ if hh(1)>0
     xdk.PaperSize = [7,4];
     xdk.PaperPosition = [0,0,7,4];
     
-    if hh(1)>0
+    if hh(1)>1
         print(xdk,'../figs3/fig2','-dpdf')
     end
     
     
     
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
