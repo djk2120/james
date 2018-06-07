@@ -61,16 +61,16 @@ end
 
 
 if ~exist('p','var')
-f = '../data/daily_sapflow_control.txt';
-a=csvread(f,1,0);
-p = a(:,2);
-d = a(:,1);
-f = '../data/daily_sapflow_drought.txt';
-a=csvread(f,1,0);
-p = [p,a(:,2)];
-p = [zeros(365,2);p];
-
-dz = zs(2:end)-zs(1:end-1);
+    f = '../data/daily_sapflow_control.txt';
+    a=csvread(f,1,0);
+    p = a(:,2);
+    d = a(:,1);
+    f = '../data/daily_sapflow_drought.txt';
+    a=csvread(f,1,0);
+    p = [p,a(:,2)];
+    p = [zeros(365,2);p];
+    
+    dz = zs(2:end)-zs(1:end-1);
 end
 %************************************************************************
 %------------------------------------------------------------------------
@@ -79,29 +79,52 @@ hh = zeros(200,1);
 gg = zeros(200,1);
 ff = zeros(200,1);
 
-hh(1:5)  = [1,0,0,0,0];
+hh(1:5)  = [0,1,0,0,0];
 hh(6:10) = [0,0,0,0,0];
 
 if hh(10)>0
-    ix = mcsec>=diurn(25)&mcsec<=diurn(28);
-    g  = (year(ix)-2001)*365+doy(ix);
-    subplot(2,1,1)
-    plot(splitapply(@mean,vpd(ix),g),'.')
-    set(gca,'xtick',cumsum([0,eomday(2001,1:12),eomday(2001,1:12),eomday(2001,1:12)]))
-    set(gca,'xticklabel',[0:12,1:12,1:12])
-    xlim([0,1095])
-    grid on
+    ix = fsds>400&fsds<425;
+    ot = 1:length(fsds);
+    xdk = figure;
+    cc = get(gca,'ColorOrder');
+    co = [2,3,1];
     
+    xx = [0.08,0.53];
     
-    subplot(2,1,2)
-    plot(splitapply(@mean,fsds(ix),g),'.')
-    set(gca,'xtick',cumsum([0,eomday(2001,1:12),eomday(2001,1:12),eomday(2001,1:12)]))
-    set(gca,'xticklabel',[0:12,1:12,1:12])
-    xlim([0,1095])
-    grid on
+    sssms  = zr*smp(41:60,:);
+    sssms  = repmat(sssms(1,mcsec==diurn(10)),48,1);
+    sssms  = sssms(1:52551);
+    sssms2 = zr*smp(61:80,:);
+    sssms2 = repmat(sssms2(1,mcsec==diurn(10)),48,1);
+    sssms2 = sssms2(1:52551);
+    sssms  = [sssms;sssms2];
+
     
+    ssphs  = repmat(vegwp(4,mcsec==diurn(10)),48,1);
+    ssphs  = ssphs(1:52551);
+    ssphs2 = repmat(vegwp(8,mcsec==diurn(10)),48,1);
+    ssphs2 = ssphs2(1:52551);
+    ssphs  = [ssphs;ssphs2];
     
-    
+
+    n = sum(ix);
+    plot(0:1/(n-1):1,sort(sssms(1,ix))/101972,'.')
+    hold on
+    plot(0:1/(n-1):1,sort(ssphs(1,ix))/101972,'.')
+    plot([1/3,1/3],[-4,0],'k:')
+    plot([2/3,2/3],[-4,0],'k:')
+    ylim([-3,0])
+    xlim([0,1])
+
+    ix = ix&year>2001;
+    n = sum(ix);
+    plot(0:1/(n-1):1,sort(sssms(2,ix))/101972,'.')
+    hold on
+    plot(0:1/(n-1):1,sort(ssphs(2,ix))/101972,'.')
+    plot([1/3,1/3],[-4,0],'k:')
+    plot([2/3,2/3],[-4,0],'k:')
+    ylim([-3,0])
+    xlim([0,1])
     
 end
 
@@ -140,13 +163,13 @@ if hh(9)>0
     ss = '(a)(b)(c)(d)';
     for i=1:4
         s=subplot('Position',[xx(i),yy(i),w,h]);
-
+        
         ix = year>2001&mcsec>=diurn(25)&mcsec<=diurn(28);
         g = (year(ix)-2002)*365+doy(ix);
         plot(xv,splitapply(@mean,btran(i,ix),g),'.','color',ones(1,3)*cc(i))
-                hold on
-                plot([365,365],[0,1],'Color',[0.3,0.3,0.3])
-
+        hold on
+        plot([365,365],[0,1],'Color',[0.3,0.3,0.3])
+        
         xlim([0,730])
         ylim([0,1])
         set(gca,'xtick',cumsum([0,eomday(2001,1:12),eomday(2001,1:12)]))
@@ -162,7 +185,7 @@ if hh(9)>0
             ll=legend('SMS');
             ll.Position =[0.32    0.5644    0.11    0.04];
         end
-
+        
         if i==2||i==4
             set(gca,'yticklabel',[])
         end
@@ -175,7 +198,7 @@ if hh(9)>0
     ss = '(e)(f)(g)(h)';
     for i=1:4
         s=subplot('Position',[xx(i),yy(i),w,h]);
-                plot([365,365],[0,10],'Color',[0.3,0.3,0.3])
+        plot([365,365],[0,10],'Color',[0.3,0.3,0.3])
         hold on
         ix = year>2001;
         g = (year(ix)-2002)*365+doy(ix);
@@ -216,81 +239,81 @@ if hh(9)>0
 end
 
 if hh(8)>0
-   ix = fsds>400&fsds<425;
-   ot = 1:length(fsds);
-   xdk = figure;
-   cc = get(gca,'ColorOrder');
-   co = [2,3,1];
-   
-          xx = [0.08,0.53];
-   
-   sssms  = zr*smp(41:60,:);
-   sssms  = repmat(sssms(1,mcsec==diurn(10)),48,1);
-   sssms  = sssms(1:52551);
-   sssms2 = zr*smp(61:80,:);
-   sssms2 = repmat(sssms2(1,mcsec==diurn(10)),48,1);
-   sssms2 = sssms2(1:52551);
-   sssms  = [sssms;sssms2];
-ss = {'(a)','(b)'};
-   for i = 1:2
-
-       
-       ix = fsds>400&fsds<425&year>=2000+i;
-             subplot('Position',[xx(i),0.53,0.4,0.41])
-       qq = quantile(sssms(i,ix),[1/3,2/3]);
-       qq = [-inf,qq,0];
-       for j=[3,1,2]
-           ix2 = ix&sssms(i,:)>=qq(j)&sssms(i,:)<qq(j+1);
-           plot(vpd(ix2),btran(i+2,ix2),'.')
-           ylim([0,1])
-           hold on
-       end
-box off
-       
-       if i==1
-           title('AMB')
-           ylabel('Stress Factor (SMS)')
-       else
-           title('TFE')
-           set(gca,'yticklabel',[])
-       end
-       set(gca,'xticklabel',[])
-       text(3.5,0.1,ss{i},'FontSize',14,'FontWeight','bold')
-   end
-   
-
-   
-   ssphs  = repmat(vegwp(4,mcsec==diurn(10)),48,1);
-   ssphs  = ssphs(1:52551);
-   ssphs2 = repmat(vegwp(8,mcsec==diurn(10)),48,1);
-   ssphs2 = ssphs2(1:52551);
-   ssphs  = [ssphs;ssphs2];
-   
-   ss = {'(c)','(d)'};
-   for i = 1:2
-       subplot('Position',[xx(i),0.08,0.4,0.41])
-       ix = fsds>400&fsds<425&year>=2000+i;
-       qq = quantile(ssphs(i,ix),[1/3,2/3]);
-       qq = [-inf,qq,0];
-       for j=[3,1,2]
-           ix2 = ix&ssphs(i,:)>=qq(j)&ssphs(i,:)<qq(j+1);
-           plot(vpd(ix2),btran(i,ix2),'.')
-           ylim([0,1])
-           hold on
-       end
-       box off 
-       xlabel('VPD (kPa)')
-       if i==2
-           legend('wettest','driest','intermediate','location','best')
-           set(gca,'yticklabel',[])
-       else
-           ylabel('Stress Factor (PHS)')
-       end
-       text(3.5,0.1,ss{i},'FontSize',14,'FontWeight','bold')
-
-   end
+    ix = fsds>400&fsds<425;
+    ot = 1:length(fsds);
+    xdk = figure;
+    cc = get(gca,'ColorOrder');
+    co = [2,3,1];
     
+    xx = [0.08,0.53];
+    
+    sssms  = zr*smp(41:60,:);
+    sssms  = repmat(sssms(1,mcsec==diurn(10)),48,1);
+    sssms  = sssms(1:52551);
+    sssms2 = zr*smp(61:80,:);
+    sssms2 = repmat(sssms2(1,mcsec==diurn(10)),48,1);
+    sssms2 = sssms2(1:52551);
+    sssms  = [sssms;sssms2];
+    ss = {'(a)','(b)'};
+    for i = 1:2
         
+        
+        ix = fsds>400&fsds<425&year>=2000+i;
+        subplot('Position',[xx(i),0.53,0.4,0.41])
+        qq = quantile(sssms(i,ix),[1/3,2/3]);
+        qq = [-inf,qq,0];
+        for j=[3,1,2]
+            ix2 = ix&sssms(i,:)>=qq(j)&sssms(i,:)<qq(j+1);
+            plot(vpd(ix2),btran(i+2,ix2),'.')
+            ylim([0,1])
+            hold on
+        end
+        box off
+        
+        if i==1
+            title('AMB')
+            ylabel('Stress Factor (SMS)')
+        else
+            title('TFE')
+            set(gca,'yticklabel',[])
+        end
+        set(gca,'xticklabel',[])
+        text(3.5,0.1,ss{i},'FontSize',14,'FontWeight','bold')
+    end
+    
+    
+    
+    ssphs  = repmat(vegwp(4,mcsec==diurn(10)),48,1);
+    ssphs  = ssphs(1:52551);
+    ssphs2 = repmat(vegwp(8,mcsec==diurn(10)),48,1);
+    ssphs2 = ssphs2(1:52551);
+    ssphs  = [ssphs;ssphs2];
+    
+    ss = {'(c)','(d)'};
+    for i = 1:2
+        subplot('Position',[xx(i),0.08,0.4,0.41])
+        ix = fsds>400&fsds<425&year>=2000+i;
+        qq = quantile(ssphs(i,ix),[1/3,2/3]);
+        qq = [-inf,qq,0];
+        for j=[3,1,2]
+            ix2 = ix&ssphs(i,:)>=qq(j)&ssphs(i,:)<qq(j+1);
+            plot(vpd(ix2),btran(i,ix2),'.')
+            ylim([0,1])
+            hold on
+        end
+        box off
+        xlabel('VPD (kPa)')
+        if i==2
+            legend('wettest','driest','intermediate','location','best')
+            set(gca,'yticklabel',[])
+        else
+            ylabel('Stress Factor (PHS)')
+        end
+        text(3.5,0.1,ss{i},'FontSize',14,'FontWeight','bold')
+        
+    end
+    
+    
     xdk.Units = 'inches';
     xdk.Position = [2,2,7,5];
     xdk.PaperSize = [7,5];
@@ -305,13 +328,13 @@ end
 
 
 if hh(7)>0
-
+    
     
     ix = year>2001&mcsec>=diurn(25)&mcsec<=diurn(28); %midday
     g = (year(ix)-2002)*12+month(ix);
     out = splitapply(@mean,btran(:,ix)',g');
     xdk = figure;
-       xx = [0.08,0.53];
+    xx = [0.08,0.53];
     for i=1:2
         subplot('Position',[xx(i),0.53,0.4,0.41])
         hold on
@@ -326,7 +349,7 @@ if hh(7)>0
             title('AMB')
             ylabel('Stress Factor')
             legend({'SMS','PHS'},'Location','SouthEast')
-
+            
         else
             title('TFE')
             set(gca,'yticklabel',[])
@@ -334,7 +357,7 @@ if hh(7)>0
         box off
     end
     
-        ix = year>2001;
+    ix = year>2001;
     g = (year(ix)-2002)*12+month(ix);
     xf = 86400*1e-6*12; %umol/m2/s to g/m2/d
     out = xf*splitapply(@mean,fpsn(:,ix)',g');
@@ -375,85 +398,85 @@ end
 
 if hh(6)>0
     g = (year-2001)*365+doy;
-   out  = 4e-7*1800*splitapply(@sum,fctr',g');
-   g = (year-2001)*12+month;
-   out2 = 4e-7*86400*splitapply(@mean,fctr',g');
-   
-   xx = [0.08,0.53];
-   yy = [0.07,0.365];
-   w = 0.4;
-   h = 0.27;
-   
-   dd = [0,0,0;0.7,0.7,0.7];
-   mm = {'(PHS)','(SMS)'};
-   xdk = figure;
-   for i=1:2
-   for j=1:2
-       ix = p(:,j)>0;
-       c = (i-1)*2+j;
-       subplot('Position',[xx(j),yy(i),w,h])
-       plot(p(ix,j),out(ix,c),'.','Color',dd(i,:))
-       
-       rr = corr(p(ix,j),out(ix,c))^2;
-       text(4.2,1.1,['R^2= ',num2str(round(rr,3))])
-       rmse = sqrt(mean((p(ix,j)-out(ix,c)).^2));
-       text(4.2,0.5,['RMSE= ',num2str(round(rmse,3))])
-       
-       std(out(:,c))
-       std(p(ix,j))
-       
-       xlim([0,6])
-       ylim([0,6])
-       hold on
-       box off
-       plot([0,6],[0,6],'k:')
-       
-       if i==2
-           set(gca,'xticklabel',[])
-       else
-           xlabel('Observed Sap Flux (mm/d)')
-       end
-       if j==2
-           set(gca,'yticklabel',[])
-       else
-           ylabel(['Model ',mm{i}])
-       end
-   end
-   end
-   
-   
-   for i=1:2
-       subplot('Position',[xx(i),0.7,w,h]);
-       ix = p(:,i)>0;
-       ot = 2001+1/365*(0.5:1095)';
-       tv = cumsum([0,eomday(2001,1:12)]);
-       tv = 0.5*(tv(1:12)+tv(2:13));
-       tv = 365+[tv,365+tv];
-       tv = 2001+tv/365;
-       
-       cc=get(gca,'ColorOrder');
-       plot(ot(ix),p(ix,i),'.','Color',cc(2,:))
-       hold on
-       plot(tv,out2(13:36,i+2),'Color',[0.7,0.7,0.7],'LineWidth',1.5)
-       plot(tv,out2(13:36,i),'k-','LineWidth',1.5)
-       box off
-       ylim([0,6])
-       set(gca,'xtick',2002:0.5:2004)
-       set(gca,'xticklabel',{'2002','','2003','','2004'})
-       
-       if i==1
-           ylabel('Transpiration (mm/d)')
-           title('AMB')
-       else
-           legend('OBS','SMS','PHS')
-           title('TFE')
-           set(gca,'yticklabel',[])
-       end
-       xlabel('Year')
-       
-   end
-   
-   
+    out  = 4e-7*1800*splitapply(@sum,fctr',g');
+    g = (year-2001)*12+month;
+    out2 = 4e-7*86400*splitapply(@mean,fctr',g');
+    
+    xx = [0.08,0.53];
+    yy = [0.07,0.365];
+    w = 0.4;
+    h = 0.27;
+    
+    dd = [0,0,0;0.7,0.7,0.7];
+    mm = {'(PHS)','(SMS)'};
+    xdk = figure;
+    for i=1:2
+        for j=1:2
+            ix = p(:,j)>0;
+            c = (i-1)*2+j;
+            subplot('Position',[xx(j),yy(i),w,h])
+            plot(p(ix,j),out(ix,c),'.','Color',dd(i,:))
+            
+            rr = corr(p(ix,j),out(ix,c))^2;
+            text(4.2,1.1,['R^2= ',num2str(round(rr,3))])
+            rmse = sqrt(mean((p(ix,j)-out(ix,c)).^2));
+            text(4.2,0.5,['RMSE= ',num2str(round(rmse,3))])
+            
+            std(out(:,c))
+            std(p(ix,j))
+            
+            xlim([0,6])
+            ylim([0,6])
+            hold on
+            box off
+            plot([0,6],[0,6],'k:')
+            
+            if i==2
+                set(gca,'xticklabel',[])
+            else
+                xlabel('Observed Sap Flux (mm/d)')
+            end
+            if j==2
+                set(gca,'yticklabel',[])
+            else
+                ylabel(['Model ',mm{i}])
+            end
+        end
+    end
+    
+    
+    for i=1:2
+        subplot('Position',[xx(i),0.7,w,h]);
+        ix = p(:,i)>0;
+        ot = 2001+1/365*(0.5:1095)';
+        tv = cumsum([0,eomday(2001,1:12)]);
+        tv = 0.5*(tv(1:12)+tv(2:13));
+        tv = 365+[tv,365+tv];
+        tv = 2001+tv/365;
+        
+        cc=get(gca,'ColorOrder');
+        plot(ot(ix),p(ix,i),'.','Color',cc(2,:))
+        hold on
+        plot(tv,out2(13:36,i+2),'Color',[0.7,0.7,0.7],'LineWidth',1.5)
+        plot(tv,out2(13:36,i),'k-','LineWidth',1.5)
+        box off
+        ylim([0,6])
+        set(gca,'xtick',2002:0.5:2004)
+        set(gca,'xticklabel',{'2002','','2003','','2004'})
+        
+        if i==1
+            ylabel('Transpiration (mm/d)')
+            title('AMB')
+        else
+            legend('OBS','SMS','PHS')
+            title('TFE')
+            set(gca,'yticklabel',[])
+        end
+        xlabel('Year')
+        
+    end
+    
+    
     xdk.Units = 'inches';
     xdk.Position = [2,2,7,7];
     xdk.PaperSize = [7,7];
@@ -502,7 +525,7 @@ if hh(5)>0
     ix2(ee,:) = z>=q(1)&z<q(2)&ix;
     ix3(ee,:) = z>=q(2)&ix;
     
-
+    
     ixo=(vpd>1.4&vpd<1.5&fsds>400&fsds<425&btran(2,:)>0.54&btran(2,:)<0.55);
     zz = z(z>=q(2)&ix);
     zz = sort(zz);
@@ -551,14 +574,14 @@ if hh(5)>0
     ylim([0 1])
     set(gca,'xticklabel',[])
     set(gca,'ytick',0:0.25:1)
-        set(gca,'yticklabel',[])
-
+    set(gca,'yticklabel',[])
+    
     text(0.1,0.15,'(a)','FontSize',14,'FontWeight','bold')
     title('TFE')
     
     
-
-        subplot('position',[0.08, 0.12, 0.43, 0.39])
+    
+    subplot('position',[0.08, 0.12, 0.43, 0.39])
     ee  = 2;
     hold on
     plot(x(ix3(ee,:)),y(ee,ix3(ee,:)),'.','MarkerSize',9)
@@ -566,11 +589,11 @@ if hh(5)>0
     plot(x(ix2(ee,:)),y(ee,ix2(ee,:)),'.','MarkerSize',9)
     xlim([0 3.25])
     ylim([0 1])
-        set(gca,'ytick',0:0.25:1)
-            set(gca,'yticklabel',[])
+    set(gca,'ytick',0:0.25:1)
+    set(gca,'yticklabel',[])
     xlabel('VPD (kPa)')
     text(0.1,0.15,'(c)','FontSize',14,'FontWeight','bold')
-
+    
     
     subplot('position',[0.54, 0.12, 0.43, 0.39])
     ee  = 3;
@@ -621,45 +644,45 @@ if hh(4)>0
     
     xdk = figure;
     for i=1:2
-    for j=1:2
-        c = (i-1)*2+j;
-        ix = p(:,j)>0;
-        subplot('Position',[xx(j),yy(i),w,h])
-        plot(p(ix,j),out(ix,c),'r.')
-        hold on
-        plot([0,5.5],[0,5.5],'k:')
-        xlim([0,6])
-        ylim([0,6])
-        rr = corr(p(ix,j),out(ix,c))^2;
-        rmse = sqrt(mean((p(ix,j)-out(ix,c)).^2));
-        text(4,0.85,['R^2=',num2str(round(rr,3))])
-        text(4,0.5,['RMSE=',num2str(round(rmse,3))])
-        text(0.2,5.5,rst{c},'FontSize',14,'FontWeight','Bold')
-        box off
-        if j==2
-            set(gca,'yticklabel',[])
-        end
-        
-        if i==2
-            set(gca,'xticklabel',[])
-            if j==1
-            title('AMB')
-            ylabel('SMS T (mm/d)')
+        for j=1:2
+            c = (i-1)*2+j;
+            ix = p(:,j)>0;
+            subplot('Position',[xx(j),yy(i),w,h])
+            plot(p(ix,j),out(ix,c),'r.')
+            hold on
+            plot([0,5.5],[0,5.5],'k:')
+            xlim([0,6])
+            ylim([0,6])
+            rr = corr(p(ix,j),out(ix,c))^2;
+            rmse = sqrt(mean((p(ix,j)-out(ix,c)).^2));
+            text(4,0.85,['R^2=',num2str(round(rr,3))])
+            text(4,0.5,['RMSE=',num2str(round(rmse,3))])
+            text(0.2,5.5,rst{c},'FontSize',14,'FontWeight','Bold')
+            box off
+            if j==2
+                set(gca,'yticklabel',[])
+            end
+            
+            if i==2
+                set(gca,'xticklabel',[])
+                if j==1
+                    title('AMB')
+                    ylabel('SMS T (mm/d)')
+                else
+                    title('TFE')
+                end
             else
-            title('TFE')
+                if j==1
+                    ylabel('PHS T (mm/d)')
+                end
+                xlabel('OBS T (mm/d)')
             end
-        else
-            if j==1
-                ylabel('PHS T (mm/d)')
-            end
-            xlabel('OBS T (mm/d)')
+            
         end
-        
-    end
     end
     
     
-        xdk.Units = 'inches';
+    xdk.Units = 'inches';
     xdk.Position = [2,2,7,7];
     xdk.PaperSize = [7,7];
     xdk.PaperPosition = [0,0,7,7];
@@ -672,80 +695,80 @@ end
 
 
 if hh(3)>0
-   g = (year-2001)*365+doy;
-   out = 1800*4e-7*splitapply(@sum,fctr',g');
-   
-   oneto = (1:1095)';
-   ix = oneto>365;
-   xv = (2002+(0.5:730)/365)';
-   rr = {'(c)','(d)','(a)','(b)','(e)','(f)'};
-   
-   yy = [0.38,0.69,0.07];
-   xx = [0.06,0.53];
-   
-   xdk = figure;
-   ss = [1,2,3,4];
-   ii = [1,1,2,2,3,3];
-   jj = [1,2,1,2,1,2];
-   for i=1:4
-       subplot('Position',[xx(jj(i)),yy(ii(i)),0.445,0.28])
-       plot(xv,out(ix,i),'k.')
-       ylim([0,6])
-       set(gca,'xtick',2002:0.5:2004)
-       set(gca,'xticklabel',[])
-       if i==1
-
-           ylabel('PHS T (mm/d)')
-       elseif i==4
-           title('TFE')
-       elseif i==3
-                      title('AMB')
-           ylabel('SMS T (mm/d)')
-       end
-       if i==2||i==4
-           set(gca,'yticklabel',[])
-       end
-       text(2002.05,5.4,rr{i},'FontSize',14,'FontWeight','bold')
-   end
-   
-   
-   for i=5:6
-       subplot('Position',[xx(jj(i)),yy(ii(i)),0.445,0.28])
-       ix = p(:,i-4)>0;
-       p(ix,i-4);
-       plot(2001+(oneto(ix)-0.5)/365,p(ix,i-4),'k.')
-              set(gca,'xtick',2002:0.5:2004)
-              if i==5
-                  set(gca,'xticklabel',{'2002','','2003','','2004'})
-              else
-       set(gca,'xticklabel',{'','','2003','','2004'})
-              end
-       xlabel('Year')
-       ylim([0,6])
-       text(2002.05,5.4,rr{i},'FontSize',14,'FontWeight','bold')
-       if i==5
-           ylabel('OBS T (mm/d)')
-       else
-           set(gca,'yticklabel',[])
-       end
-   end
-   
-   
-   xdk.Units = 'inches';
-   xdk.Position = [2,2,7,6];
-   xdk.PaperSize = [7,6];
-   xdk.PaperPosition = [0,0,7,6];
-   
-   if hh(3)>1
+    g = (year-2001)*365+doy;
+    out = 1800*4e-7*splitapply(@sum,fctr',g');
+    
+    oneto = (1:1095)';
+    ix = oneto>365;
+    xv = (2002+(0.5:730)/365)';
+    rr = {'(c)','(d)','(a)','(b)','(e)','(f)'};
+    
+    yy = [0.38,0.69,0.07];
+    xx = [0.06,0.53];
+    
+    xdk = figure;
+    ss = [1,2,3,4];
+    ii = [1,1,2,2,3,3];
+    jj = [1,2,1,2,1,2];
+    for i=1:4
+        subplot('Position',[xx(jj(i)),yy(ii(i)),0.445,0.28])
+        plot(xv,out(ix,i),'k.')
+        ylim([0,6])
+        set(gca,'xtick',2002:0.5:2004)
+        set(gca,'xticklabel',[])
+        if i==1
+            
+            ylabel('PHS T (mm/d)')
+        elseif i==4
+            title('TFE')
+        elseif i==3
+            title('AMB')
+            ylabel('SMS T (mm/d)')
+        end
+        if i==2||i==4
+            set(gca,'yticklabel',[])
+        end
+        text(2002.05,5.4,rr{i},'FontSize',14,'FontWeight','bold')
+    end
+    
+    
+    for i=5:6
+        subplot('Position',[xx(jj(i)),yy(ii(i)),0.445,0.28])
+        ix = p(:,i-4)>0;
+        p(ix,i-4);
+        plot(2001+(oneto(ix)-0.5)/365,p(ix,i-4),'k.')
+        set(gca,'xtick',2002:0.5:2004)
+        if i==5
+            set(gca,'xticklabel',{'2002','','2003','','2004'})
+        else
+            set(gca,'xticklabel',{'','','2003','','2004'})
+        end
+        xlabel('Year')
+        ylim([0,6])
+        text(2002.05,5.4,rr{i},'FontSize',14,'FontWeight','bold')
+        if i==5
+            ylabel('OBS T (mm/d)')
+        else
+            set(gca,'yticklabel',[])
+        end
+    end
+    
+    
+    xdk.Units = 'inches';
+    xdk.Position = [2,2,7,6];
+    xdk.PaperSize = [7,6];
+    xdk.PaperPosition = [0,0,7,6];
+    
+    if hh(3)>1
         print(xdk,'../figs3/tts','-dpdf')
-   end
-   
-   
+    end
+    
+    
 end
 
 
 if hh(2)>0
-     
+    
     out = zeros(48,4);
     
     g = findgroups(mcsec);
@@ -788,10 +811,15 @@ if hh(2)>0
     xdk.PaperSize = [7,4];
     xdk.PaperPosition = [0,0,7,4];
     
+    
+    ix = year==2003&month>8&month<12&mcsec>=diurn(25)&mcsec<=diurn(28);
+    mean(btran(:,ix),2)
+    
+    
     if hh(2)>1
-         print(xdk,'../figs3/fig4','-dpdf')
+        print(xdk,'../figs3/fig4','-dpdf')
     end
-        
+    
     
 end
 
@@ -805,7 +833,7 @@ if hh(1)>0
     ixd = mcsec>=diurn(tt)&mcsec<=diurn(tt+3);
     
     for i=1:2
-    lwp(i,:) = 1/101972*splitapply(@mean,vegwp(1+(i-1)*4,ixd),month(ixd)+(year(ixd)-2001)*12);
+        lwp(i,:) = 1/101972*splitapply(@mean,vegwp(1+(i-1)*4,ixd),month(ixd)+(year(ixd)-2001)*12);
     end
     
     % calculate SON-2003 diurnal mean
@@ -868,7 +896,7 @@ if hh(1)>0
     legend('AMB','TFE','Location','Southwest')
     text(33.8,-1.3,'(c)','FontSize',14,'FontWeight','bold')
     
-      %predawn water potentials?
+    %predawn water potentials?
     out         = xf*out;
     
     disp('AMB MIDDAY')
@@ -895,7 +923,7 @@ if hh(1)>0
     disp('delta drop')
     disp(mean(out(4,25:28))-out(4,11)-(mean(out(8,25:28))-out(8,11)))
     
-
+    
     disp('AMB MD STEM & drop')
     disp([mean(out(3,25:28)),mean(out(4,25:28))-mean(out(3,25:28))])
     
@@ -928,7 +956,7 @@ if hh(1)>0
     sum(mean(ksr(21:40,ix),2))
     
     
-        xdk.Units = 'inches';
+    xdk.Units = 'inches';
     xdk.Position = [2,2,7,4];
     xdk.PaperSize = [7,4];
     xdk.PaperPosition = [0,0,7,4];
@@ -989,10 +1017,10 @@ end
 
 
 if gg(10)>0
-   ix = year==2001 & month==4;
-   out = mean(ksr(1:20,ix),2);
-   
-   plot(z,log10(out),'.')
+    ix = year==2001 & month==4;
+    out = mean(ksr(1:20,ix),2);
+    
+    plot(z,log10(out),'.')
     
     
 end
@@ -1001,16 +1029,16 @@ end
 if gg(9)>0
     
     g = (year-2001)*12+month;
-   out =splitapply(@mean,fpsn',g');
-   xv = 0.5:36;
-   xdk = figure;
+    out =splitapply(@mean,fpsn',g');
+    xv = 0.5:36;
+    xdk = figure;
     for i=[1,3]
         subplot(2,2,(i==3)+1)
         plot(xv,out(:,i),'k','LineWidth',2)
         hold on
         plot(xv,out(:,i+1),'Color',[0.7,0.7,0.7],'LineWidth',2)
         ylim([0,10])
-                xlim([0,36])
+        xlim([0,36])
         set(gca,'xtick',0:12:36)
         ylabel('GPP')
         if i==1
@@ -1022,7 +1050,7 @@ if gg(9)>0
     end
     ix  = mcsec>=diurn(25)&mcsec<=diurn(28);
     out =splitapply(@mean,btran(:,ix)',g(ix)');
-        for i=[1,3]
+    for i=[1,3]
         subplot(2,2,(i==3)+3)
         plot(xv,out(:,i),'k','LineWidth',2)
         hold on
@@ -1033,12 +1061,12 @@ if gg(9)>0
         ylabel('Stress Factor')
     end
     
-        xdk.Units = 'inches';
+    xdk.Units = 'inches';
     xdk.Position = [2,2,6,4];
     xdk.PaperSize = [6,4];
     xdk.PaperPosition = [0,0,6,4];
     
-        fout = ['../goodsim/figs_ens/fig6'];
+    fout = ['../goodsim/figs_ens/fig6'];
     mkjpg = ['convert -density 300 ',fout,'.pdf -quality 100 ',fout,'.jpg'];
     
     if gg(9)>0
@@ -1083,47 +1111,47 @@ if gg(8)>0
     ttt = {'PHSamb','PHStfe','SMSamb','SMStfe'};
     for i=2:8
         xdk = figure;
-    for j=1:4
-        if i==2
-            %0-0.3
-            dz = zs(2:end)-zs(1:end-1);
-            x  = ([dz(1:4),5/6*dz(5)])/0.3;
-            targ = x*h2osoi((1:5)+(j-1)*20,:);
-        else
-            targ = h2osoi(zzix(i)+(j-1)*20,:);
+        for j=1:4
+            if i==2
+                %0-0.3
+                dz = zs(2:end)-zs(1:end-1);
+                x  = ([dz(1:4),5/6*dz(5)])/0.3;
+                targ = x*h2osoi((1:5)+(j-1)*20,:);
+            else
+                targ = h2osoi(zzix(i)+(j-1)*20,:);
+            end
+            subplot(2,2,pp(j))
+            plot(tv,100*targ,'Color',[0.7,0.7,0.7])
+            hold on
+            if j==1||j==3
+                plot(amb_sm(:,1),amb_sm(:,i),'rx')
+            else
+                plot(tfe_sm(:,1),tfe_sm(:,i),'rx')
+            end
+            ylim([5,45])
+            xlim([2001,2004])
+            ylabel(yyy{j})
+            title(ttt{j})
         end
-        subplot(2,2,pp(j))
-        plot(tv,100*targ,'Color',[0.7,0.7,0.7])
-        hold on
-        if j==1||j==3
-        plot(amb_sm(:,1),amb_sm(:,i),'rx')
-        else
-            plot(tfe_sm(:,1),tfe_sm(:,i),'rx')
+        ax1 = axes('Position',[0 0 1 1],'Visible','off');
+        text(0.5,0.97,['Depth = ',dstr{i-1}],'HorizontalAlignment','Center',...
+            'FontSize',14,'FontWeight','bold')
+        
+        xdk.Units = 'inches';
+        xdk.Position = [2,2,6,4];
+        xdk.PaperSize = [6,4];
+        xdk.PaperPosition = [0,0,6,4];
+        
+        
+        fout = ['../goodsim/figs_ens/sm',num2str(i-1)];
+        mkjpg = ['convert -density 300 ',fout,'.pdf -quality 100 ',fout,'.jpg'];
+        
+        if gg(8)>0
+            print(xdk,fout,'-dpdf')
+            system(mkjpg)
         end
-        ylim([5,45])
-        xlim([2001,2004])
-        ylabel(yyy{j})
-        title(ttt{j})
-    end
-    ax1 = axes('Position',[0 0 1 1],'Visible','off');
-    text(0.5,0.97,['Depth = ',dstr{i-1}],'HorizontalAlignment','Center',...
-        'FontSize',14,'FontWeight','bold')
-    
-    xdk.Units = 'inches';
-    xdk.Position = [2,2,6,4];
-    xdk.PaperSize = [6,4];
-    xdk.PaperPosition = [0,0,6,4];
-    
-    
-    fout = ['../goodsim/figs_ens/sm',num2str(i-1)];
-    mkjpg = ['convert -density 300 ',fout,'.pdf -quality 100 ',fout,'.jpg'];
-    
-    if gg(8)>0
-        print(xdk,fout,'-dpdf')
-        system(mkjpg)
-    end
-    
-    
+        
+        
     end
     
 end
@@ -1145,20 +1173,20 @@ if gg(7)>0
     x = [1,3,2,4];
     for i=1:4
         subplot(2,2,x(i))
-
+        
         hold on
         if i==1||i==3
-        s = scatter(ot(ix1),p(ix1,1),10,[0.7,0.7,0.7],'filled');
-                ylabel('AMB T (mm/d)')
+            s = scatter(ot(ix1),p(ix1,1),10,[0.7,0.7,0.7],'filled');
+            ylabel('AMB T (mm/d)')
         else
-        s = scatter(ot(ix2),p(ix2,2),10,[0.7,0.7,0.7],'filled');
-                ylabel('TFE T (mm/d)')
+            s = scatter(ot(ix2),p(ix2,2),10,[0.7,0.7,0.7],'filled');
+            ylabel('TFE T (mm/d)')
         end
         %alpha(s,0.5)
-                plot(xv,out(:,i),'r')
+        plot(xv,out(:,i),'r')
         ylim([0,6])
         if i==4
-        legend('Obs','Model')
+            legend('Obs','Model')
         end
         
         if i==1
@@ -1171,18 +1199,18 @@ if gg(7)>0
     
     
     xdk.Units = 'inches';
-xdk.Position = [2,2,6,4];
-xdk.PaperSize = [6,4];
-xdk.PaperPosition = [0,0,6,4];
-
-
-fout = '../goodsim/figs_ens/fig5';
-mkjpg = ['convert -density 300 ',fout,'.pdf -quality 100 ',fout,'.jpg'];
-
-if gg(7)>1
-print(xdk,fout,'-dpdf')
-system(mkjpg) 
-end
+    xdk.Position = [2,2,6,4];
+    xdk.PaperSize = [6,4];
+    xdk.PaperPosition = [0,0,6,4];
+    
+    
+    fout = '../goodsim/figs_ens/fig5';
+    mkjpg = ['convert -density 300 ',fout,'.pdf -quality 100 ',fout,'.jpg'];
+    
+    if gg(7)>1
+        print(xdk,fout,'-dpdf')
+        system(mkjpg)
+    end
     
     
     
@@ -1202,7 +1230,7 @@ if gg(6)>0
     for i=1:4
         
         subplot(2,2,x(i))
-
+        
         if i==1||i==3
             plot(p(ix1,1),out(ix1,i),'.')
             rr = corr(p(ix1,1),out(ix1,i))^2;
@@ -1215,13 +1243,13 @@ if gg(6)>0
             rmse = sqrt(mean((p(ix2,2)-out(ix2,i)).^2));
             hold on
             plot([0,6],[0,6],'k:')
-
+            
         end
-
-                    text(0.2,5.5,['R^2=',num2str(round(rr,3))]);
-            text(3.5,0.4,['RMSE=',num2str(round(rmse,3))]);
+        
+        text(0.2,5.5,['R^2=',num2str(round(rr,3))]);
+        text(3.5,0.4,['RMSE=',num2str(round(rmse,3))]);
         ylim([0,6])
-
+        
         
         if i==1
             title('PHS')
@@ -1243,16 +1271,16 @@ if gg(6)>0
     xdk.Position = [2,2,6,4];
     xdk.PaperSize = [6,4];
     xdk.PaperPosition = [0,0,6,4];
-
-
-fout = '../goodsim/figs_ens/fig4';
-mkjpg = ['convert -density 300 ',fout,'.pdf -quality 100 ',fout,'.jpg'];
-
-if gg(6)>0
-print(xdk,fout,'-dpdf')
-system(mkjpg)
-end    
-
+    
+    
+    fout = '../goodsim/figs_ens/fig4';
+    mkjpg = ['convert -density 300 ',fout,'.pdf -quality 100 ',fout,'.jpg'];
+    
+    if gg(6)>0
+        print(xdk,fout,'-dpdf')
+        system(mkjpg)
+    end
+    
 end
 
 if gg(1)>0
@@ -1271,16 +1299,16 @@ if gg(1)>0
         plot(ot(ot>=2002),out(ot>=2002,i))
         hold on
         if i==1||i==3
-        s = scatter(ot(ix1),p(ix1,1),10,[0.7,0.7,0.7],'filled');
-                ylabel('AMB T (mm/d)')
+            s = scatter(ot(ix1),p(ix1,1),10,[0.7,0.7,0.7],'filled');
+            ylabel('AMB T (mm/d)')
         else
-        s = scatter(ot(ix2),p(ix2,2),10,[0.7,0.7,0.7],'filled');
-                ylabel('TFE T (mm/d)')
+            s = scatter(ot(ix2),p(ix2,2),10,[0.7,0.7,0.7],'filled');
+            ylabel('TFE T (mm/d)')
         end
         alpha(s,0.5)
         ylim([0,6])
         if i==2
-        legend('Model','Obs')
+            legend('Model','Obs')
         end
         
         if i==1
@@ -1292,16 +1320,16 @@ if gg(1)>0
     
     
     xdk.Units = 'inches';
-xdk.Position = [2,2,6,4];
-xdk.PaperSize = [6,4];
-xdk.PaperPosition = [0,0,6,4];
-
-
-fout = '../goodsim/figs_ens/fig3';
-mkjpg = ['convert -density 300 ',fout,'.pdf -quality 100 ',fout,'.jpg'];
-
-print(xdk,fout,'-dpdf')
-system(mkjpg)
+    xdk.Position = [2,2,6,4];
+    xdk.PaperSize = [6,4];
+    xdk.PaperPosition = [0,0,6,4];
+    
+    
+    fout = '../goodsim/figs_ens/fig3';
+    mkjpg = ['convert -density 300 ',fout,'.pdf -quality 100 ',fout,'.jpg'];
+    
+    print(xdk,fout,'-dpdf')
+    system(mkjpg)
     
 end
 
@@ -1311,9 +1339,9 @@ if gg(2)>0
     
     for i=1:4
         subplot(2,2,i)
-    plot(out(:,i),'.')
-    ylim([0,10])
-    xlim([0,1095])
+        plot(out(:,i),'.')
+        ylim([0,10])
+        xlim([0,1095])
     end
     
     ix = mcsec>=diurn(25)&mcsec<=diurn(28);
@@ -1508,17 +1536,17 @@ if gg(4)>0
                 plot(doy(ix)+mcsec(ix)/max(diurn),out2(ct,1:n),...
                     'LineStyle',s{j},'Color',c(j,:),'LineWidth',2)
             end
-
+            
         else
             plot(doy(ix)+mcsec(ix)/max(diurn),180*cumsum(prec(ix)),'LineWidth',2)
         end
         xlim([31,121])
         text(34,th(i),t{i})
         text(90,th(i),p{i},'FontWeight','bold','FontSize',14)
-                if i==2
+        if i==2
             xlabel('Day of 2003')
         else
-                        set(gca,'xticklabel',[])
+            set(gca,'xticklabel',[])
         end
     end
     ylim([0,110])
@@ -1544,7 +1572,7 @@ end
 
 
 if gg(101)>0
-
+    
     g = (year-2001)*365+doy;
     out = 1800*4e-7*splitapply(@sum,fctr',g');
     p = [zeros(365,2);p];
@@ -1596,7 +1624,7 @@ if ff(1)>0
     
     subplot(1,2,1)
     plot(out(ix1,1),amb(ix1),'.')
-        subplot(1,2,2)
+    subplot(1,2,2)
     plot(out(ix2,1),tfe(ix2),'.')
     
     
@@ -1705,13 +1733,13 @@ if ff(7)>0
                     'LineStyle',s{j},'Color',c(j,:),'LineWidth',2)
             end
             if i==2
-                            xlabel('Day of 2003')
+                xlabel('Day of 2003')
             else
-                            set(gca,'xticklabel',[])
+                set(gca,'xticklabel',[])
             end
         else
             plot(doy(ix)+mcsec(ix)/max(diurn),180*cumsum(prec(ix)),'LineWidth',2)
-                        set(gca,'xticklabel',[])
+            set(gca,'xticklabel',[])
         end
         %text(242,0.09*th(i),t{i},'FontWeight','bold')
         text(242,0.09*th(i),t{i})
@@ -1806,17 +1834,17 @@ if ff(8)>0
                 plot(doy(ix)+mcsec(ix)/max(diurn),out2(ct,1:n),...
                     'LineStyle',s{j},'Color',c(j,:),'LineWidth',2)
             end
-
+            
         else
             plot(doy(ix)+mcsec(ix)/max(diurn),180*cumsum(prec(ix)),'LineWidth',2)
         end
         xlim([31,121])
         text(34,th(i),t{i})
         text(90,th(i),p{i},'FontWeight','bold','FontSize',14)
-                if i==2
+        if i==2
             xlabel('Day of 2003')
         else
-                        set(gca,'xticklabel',[])
+            set(gca,'xticklabel',[])
         end
     end
     ylim([0,110])
@@ -1887,10 +1915,10 @@ if ff(6)>0
     title('PHS')
     xlabel('Hour of Day')
     ylabel({'Average (modeled)';'Hydraulic Conductance (s^{-1})'})
-
+    
     text(16.5,4.7e-9,'(b)','FontWeight','bold','FontSize',14)
-
-     
+    
+    
     xdk.Units = 'inches';
     xdk.Position = [2,2,7,3];
     xdk.PaperSize = [7,3];
@@ -1918,7 +1946,7 @@ if ff(5)>0
         ix1         = ix&smp(ss,:)<=-254900;
         kon(ss,ix1) = 0;
     end
- 
+    
     ix = year==2003&(month==7|month==8|month==9);
     g  = findgroups(doy(ix));
     
@@ -1938,7 +1966,7 @@ if ff(5)>0
     xlim([180,274])
     text(182,(1/3)*10^-11,'SMSamb')
     ylabel({'Daily Mean (Implied)';'Conductance (1/s)'})
-        set(gca,'ytick',0:1e-11:2e-11)
+    set(gca,'ytick',0:1e-11:2e-11)
     
     
     subplot(3,1,3)
@@ -1946,9 +1974,9 @@ if ff(5)>0
     xlim([180,274])
     xlabel('Day of Year')
     ylabel('Rain (mm)')
-
     
-     xdk.Units = 'inches';
+    
+    xdk.Units = 'inches';
     xdk.Position = [2,2,7,6];
     xdk.PaperSize = [7,6];
     xdk.PaperPosition = [0,0,7,6];
@@ -1993,19 +2021,19 @@ if ff(11)>0
         ylim([ymin(i),0])
         %ylim([20,80])
     end
-
+    
     figure
     for i=1:4
-    subplot(2,2,i)
-    plot(t,1800*cumsum(qrootsink(7+20*(i-1),:)))
-    ylim([0,400])
+        subplot(2,2,i)
+        plot(t,1800*cumsum(qrootsink(7+20*(i-1),:)))
+        ylim([0,400])
     end
     
     figure
     out = splitapply(@sum,1800*qrootsink',((year-2001)*12+month)')';
     for i=1:4
         subplot(2,2,i)
-    bar(out(7+20*(i-1),:))
+        bar(out(7+20*(i-1),:))
     end
 end
 
@@ -2017,7 +2045,7 @@ if ff(12)>0
     amb_sm(amb_sm==0) = nan;
     tfe_sm = csvread('../goodsim/tfe_sm.csv');
     tfe_sm(tfe_sm==0) = nan;
-  
+    
     %which soil layer
     depths = [nan,0.15,0.5,1,2,3,4,5];
     zzix   = nan(8,1);
@@ -2032,8 +2060,8 @@ if ff(12)>0
             end
         end
     end
-   
-
+    
+    
     a = amb_sm;
     pts = [];
     g  = (year-2001)*365+doy;
@@ -2097,7 +2125,7 @@ if ff(13)>0
         else
             targ = b;
         end
-
+        
         
         plot(tv,100*out(i,:))
         hold on
@@ -2109,7 +2137,7 @@ if ff(13)>0
         xlabel('Day')
         ylabel('Volumetric Soil Water')
         title(p{i})
-                
+        
         if i==2
             legend({'Model','Obs'},'Location','Northeast')
         end
@@ -2166,7 +2194,7 @@ if ff(14)>0
         grid on
     end
     
-
+    
     
     xdk.Units = 'inches';
     xdk.Position = [2,2,7,6];
@@ -2181,7 +2209,7 @@ end
 
 
 if ff(15)>0
-   
+    
     tstr = {'PHSamb','PHStfe','SMSamb','SMStfe'}
     xdk = figure;
     
@@ -2191,20 +2219,20 @@ if ff(15)>0
         ymax = [0.05,0.5,3,3];
         
         if i==1||i==2
-        x = smp(3+(i-1)*20,:)-vegwp(4+(i-1)*4,:);
+            x = smp(3+(i-1)*20,:)-vegwp(4+(i-1)*4,:);
         else
             x = smp(3+(i-1)*20,:)+255000;
         end
         
         tv = 0.25:0.5:24;
-        ix = year==2003; 
+        ix = year==2003;
         g = findgroups(mcsec(ix));
         subplot(2,2,i)
         plot(tv,splitapply(@mean,x(ix),g)/101972,'k','LineWidth',1.5)
         xlim([6,18])
         set(gca,'xtick',6:3:18)
         ylim([ymin(i),ymax(i)])
-          title(tstr{i})  
+        title(tstr{i})
         if i>2
             xlabel('Hour of Day')
         end
@@ -2214,8 +2242,8 @@ if ff(15)>0
         
     end
     
-
-        
+    
+    
     xdk.Units = 'inches';
     xdk.Position = [2,2,7,6];
     xdk.PaperSize = [7,6];
