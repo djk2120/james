@@ -416,7 +416,8 @@ Selected parameter values concerning vegetation hydrodynamics are presented in T
 \subsection{Vegetation water potential}
 
     PHS introduces prognostic vegetation water potential to CLM at four locations within the plant structure: at the root, stem, shaded leaf, and sunlit leaf.
-    Under ambient conditions, 2003 dry season (September-October-November) model average sunlit leaf water potential is -1.65 MPa at midday (local time 12-14h, Figure \ref{fig:vwp}a)The midday pressure drop is concentrated between $\psi_{root}$ and $\psi_{stem}$, representing the root collar and upper stem, respectively.
+    Under ambient conditions, 2003 dry season (September-October-November) model average sunlit leaf water potential is -1.65 MPa at midday (local time 12-14h, Figure \ref{fig:vwp}a). 
+    The midday pressure drop is primarily between $\psi_{root}$ and $\psi_{stem}$, representing the root collar and upper stem, respectively.
     Under TFE, model midday leaf water potential decreases to -2.31 MPa (Figure \ref{fig:vwp}b). 
     Partitioned among the segments of the SPAC, the change in leaf water potential (totaling -0.66MPa) due to TFE is:
     -0.44MPa soil potential,
@@ -432,41 +433,40 @@ Selected parameter values concerning vegetation hydrodynamics are presented in T
 
 
 \subsection{Stress factor}
+    
+    Average midday stress values from the two models are comparable during the 2003 dry season (Figure \ref{fig:stress1}).
+    Under ambient conditions, the average stress factor values are 0.59 and 0.54 for SMS and PHS, respectively (dry season, midday), 
+    decreasing to 0.16 and 0.21, with TFE.
+    While the SMS stress factor has minimal diurnal variability (Figure \ref{fig:stress1}a),
+    PHS features increased stress at midday (Figure \ref{fig:stress1}b), tracking the drop in leaf water potential (Figure \ref{fig:vwp}b,c).
+    Likewise, the PHS stress factor responds to both soil moisture and VPD (Figure \ref{fig:stress2}c,d), while SMS responds only to soil moisture (Figure \ref{fig:stress2}a,b).
+    This results in more wet season (FMA) stress with PHS (as compared to SMS) under both ambient and TFE conditions (Figure \ref{fig:gpp}a-d).
 
-Average midday stress values from the two models are comparable during the 2003 dry season (Figure \ref{fig:stress1}).
-Under ambient conditions, 0.59 and 0.54 for SMS and PHS, respectively.
-With TFE, 0.16 and 0.21, respectively.
-While the SMS stress factor has minimal diurnal variability (Figure \ref{fig:stress1}a),
-PHS features increased stress at midday (Figure \ref{fig:stress1}b), tracking the drop in leaf water potential (Figure \ref{fig:vwp}b,c).
-Likewise, the PHS stress factor responds to both soil moisture and VPD (Figure \ref{fig:stress2}c,d), while SMS responds only to soil moisture (Figure \ref{fig:stress2}a,b).
-
-
-
-
-
-
-\subsection{GPP and Transpiration}
-    In Figure \ref{fig4}, we plot the diurnal cycle of the stress factor averaged over the 2003 dry season (SON) (I am not a big fan of sentences in Figure we show, better to say what ahppens and then refer to figure).
-    Drivers of the stress function are examined in Figure \ref{fig:vpd}.
-    To highlight the response of stress to VPD, we subsetted data according to downwelling solar radiation, which also influences stress.
-    Data are selected with downwelling solar radiation between 400 and 425 W/m2, which corresponds to 775 half-hour timesteps.
-    For the TFE simulations, (Figure \ref{fig:vpd}c,d), we additionally exclude data from 2001, because TFE was not initiated until November 2001, leaving 515  timsteps.
-    Data are subdivided into terciles based on soil water (within each plot), and colored accordingly.
-    The terciles are defined for each simulation in Table 2.
 \begin{table}
-\caption{Root-zone soil potential terciles for Figure \ref{fig:vpd}}
+\caption{Root-zone soil potential $^a$ (MPa) terciles for Figure \ref{fig:stress2}}
 \centering
 \begin{tabular}{c c c }
 Simulation & T1 & T2 \\
 \hline
-PHS, Ambient & -0.0136 MPa & -0.0476 MPa \\
-PHS, TFE & -0.0788 MPa & -0.2454 MPa \\
-SMS, Ambient & -0.0056 MPa & -0.2296 MPa \\
-SMS, TFE & -0.6474 MPa & -1.8467 MPa \\
+SMS, Ambient & -0.01 & -0.54 \\
+SMS, TFE & -0.29 & -1.74 \\
+PHS, Ambient & -0.01 & -0.05 \\
+PHS, TFE & -0.05 & -0.33 \\
 \hline
-
+\multicolumn{2}{p{.5\linewidth}}{$^{a}$SMS values correspond to daily mean root-fraction weighted soil potential.
+PHS values correspond to predawn root water potential.}
 \end{tabular}
 \end{table}
+
+
+\subsection{GPP and Transpiration}
+    The two models predict similar total GPP across 2002-2003 under TFE, 3.96 kg/m$^2$ (SMS) and 4.00 kg/m$^2$ (PHS), 
+    but GPP is lower for PHS under ambient conditions (4.86 kg/m$^2$) as compared to SMS (5.46 kg/m$^2$, Figure \ref{fig:gpp}e-h).
+    The standard deviation of daily total GPP (2002-2003) is smaller for PHS (0.49,1.55 g/m2/d for AMB/TFE) than for SMS (1.53, 2.73 g/m2/d).
+    Transpiration seasonality is comparable between the two models (Figure \ref{fig:t}a,b), but with a larger amplitude for SMS.
+    PHS yields a better fit to field observations of daily sap flux (see Section zqz), with higher R$^2$ and lower RMSE compared to SMS 
+    under both ambient and TFE conditions (Figure \ref{fig:t}c-f).
+
     
 
 \subsection{Hydraulic conductance}
@@ -783,7 +783,7 @@ SMS, TFE & -0.6474 MPa & -1.8467 MPa \\
      Red lines show observational transpiration derived from sap flux (see zqz).
      PHS is on for (a), (c), and (e). PHS is off for (b), (d), and (f).
      }
-     \label{fig:mm}
+     \label{fig:gpp}
   \end{figure} 
          
   \clearpage   
@@ -798,7 +798,7 @@ SMS, TFE & -0.6474 MPa & -1.8467 MPa \\
      Red lines show observational transpiration derived from sap flux (see zqz).
      PHS is on for (a), (c), and (e). PHS is off for (b), (d), and (f).
      }
-     \label{fig:mm}
+     \label{fig:t}
   \end{figure}
   
 
@@ -874,23 +874,7 @@ SMS, TFE & -0.6474 MPa & -1.8467 MPa \\
 
       \begin{figure}[h]
      \centering
-     \includegraphics[width=30pc]{../figs2/top3m.pdf}
-     \caption{Total water content of the top three meters of the soil column through time for the four simulations.}
-     \label{top3m}
-  \end{figure}
-  \clearpage
-  
-        \begin{figure}[h]
-     \centering
-     \includegraphics[width=30pc]{../figs3/trmse.pdf}
-     \caption{Total water content of the top three meters of the soil column through time for the four simulations.}
-     \label{top3m}
-  \end{figure}
-  \clearpage
-  
-      \begin{figure}[h]
-     \centering
-     \includegraphics[width=30pc]{../figs2/suppfsds.pdf}
+     \includegraphics[width=30pc]{../figs3/suppstress.pdf}
      \caption{Water stress function versus downwelling shortwave radiation for points with vapor pressure deficit between 1 and 1.0559 kPa.
      (a) PHS, ambient through-fall
      (b) SMS, ambient through-fall
@@ -903,6 +887,17 @@ SMS, TFE & -0.6474 MPa & -1.8467 MPa \\
      }
      \label{supp:fsds}
        \end{figure}
+
+
+      \begin{figure}[h]
+     \centering
+     \includegraphics[width=30pc]{../figs2/top3m.pdf}
+     \caption{Total water content of the top three meters of the soil column through time for the four simulations.}
+     \label{top3m}
+  \end{figure}
+  \clearpage
+
+ 
 
         \begin{figure}[h]
      \centering
