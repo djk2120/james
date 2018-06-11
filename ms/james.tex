@@ -388,22 +388,22 @@ The four simulations are used to assess the impact of the plant hydrodynamics mo
 \begin{tabular}{c c c c}
 CLM name & Full Name & Symbol &  Value \\
 \hline
-kmax(1) & Maximum Sun Branch Conductance & $k_{1a,\text{max}}$ &  4e-7 s$^{-1}$ \\
-kmax(2) & Maximum Shade Branch Conductance & $k_{1b,\text{max}}$ &  4e-7 s$^{-1}$ \\
-kmax(3) & Maximum Stem Conductivity & $k_{2,\text{max}}$ &  4e-7 m/s \\
-krmax & Maximum Root Conductivity & $k_{r,\text{max}}$ &  6.3e-9 m/s \\
-psi50 & Water potential at 50\% loss of conductivity & $\psi_{50}$ &  -2.45 MPa \\
-ck & Vulnerability shape parameter & $c_k$ &  3.95 \\
-smpso & Soil potential with stomata fully open & $\psi_o$ & -0.647 MPa \\
+kmax(1) & Maximum Sun Branch Conductance & $k_{1a,\text{max}}$ &  4e-8 s$^{-1}$ \\
+kmax(2) & Maximum Shade Branch Conductance & $k_{1b,\text{max}}$ &  4e-8 s$^{-1}$ \\
+kmax(3) & Maximum Stem Conductivity & $k_{2,\text{max}}$ &  4e-8 m/s \\
+krmax & Maximum Root Conductivity & $k_{r,\text{max}}$ &  6e-9 m/s \\
+psi50 & Water potential at 50\% loss of conductivity & $\psi_{50}$ &  -1.75 MPa \\
+ck & Vulnerability shape parameter & $c_k$ &  2.95 \\
+smpso & Soil potential with stomata fully open & $\psi_o$ & -0.65 MPa \\
 smpsc & Soil potential with stomata fully closed & $\psi_c$ & -2.5 MPa \\
 medlyn\textunderscore intercept & Medlyn intercept & $g_0$ &  100 $\mu$mol / m2 / s \\
-medlyn\textunderscore slope & Medlyn slope & $g_1$ &  7 kPa$^{0.5}$ \\
-n & Soil porosity & $n$ & 0.42 \\
-hksat & Saturated soil hydraulic conductivity & $k_{\text{s,max}}$ & 1.5e-5 m/s \\
+medlyn\textunderscore slope & Medlyn slope & $g_1$ &  6 kPa$^{0.5}$ \\
+n & Soil porosity to 4.64 meters & $n$ & 0.42 \\
+n & Soil porosity beyond 4.64 meters & $n$ & 0.28 \\
+hksat & Saturated soil hydraulic conductivity & $k_{\text{s,max}}$ & 3e-5 m/s \\
 sucsat & Saturated soil matric potential & $\psi_{\text{sat}}$ & 461 Pa \\
 bsw & Brooks-Corey parameter & $b$ & 6 \\
 \hline
-\multicolumn{2}{l}{$^{a}$Table note text here.}
 \end{tabular}
 \end{table}
 
@@ -428,8 +428,8 @@ Selected parameter values concerning vegetation hydrodynamics are presented in T
     
     Describing Figure \ref{fig:vwp}c
     seasonal cycle,
-    values in range of fisher2006,
-    but TFE effect was not observed in the field.
+    LWP values in range of fisher2006 if on the low side,
+    but stem too low in ambient and TFE effect was not observed in the field.
 
 
 \subsection{Stress factor}
@@ -444,6 +444,7 @@ Selected parameter values concerning vegetation hydrodynamics are presented in T
 
 \begin{table}
 \caption{Root-zone soil potential $^a$ (MPa) terciles for Figure \ref{fig:stress2}}
+\label{tab:tercile}
 \centering
 \begin{tabular}{c c c }
 Simulation & T1 & T2 \\
@@ -512,6 +513,38 @@ PHS values correspond to predawn root water potential.}
     With SMS, we opt for a root-fraction weighted average, following from Equation \ref{eq:btrwu}.
     This is a poor measure for PHS, because it neglects gravitational contributions and the appropriate root area basis. 
     Instead we opt for predawn (defined at 5AM) root water potential, which, given minimal transpiration at night, is in equilibrium with the soil column. 
+    
+\section{Discussion}
+\subsection{The promise of plant hydraulics}
+    People are excited about plant hydraulics, especially if we can constrain parameter ranges and model complexity \citep{sperry2015,rogers2017}
+    VWP is cool \citep{sperry2017,anderegg2017,mcdowell2018}
+    Site-level models \citep{williams1996,sperry1998,bohrer2005}.
+    Coupled to global models \citep{bonan2014,xu2016,christoffersen2016}.
+    Here we implement plant hydraulics into CLM.
+    
+    We model water potential according to circuit analogy (Figure \ref{circuit}), which captures expected diurnal and seasonal dynamics of leaf water potential (Figure \ref{fig:vwp}).
+    Under ambient conditions hydraulic resistance is largest from root-to-stem (Figure \ref{fig:vwp}a), 
+    while the added resistance from TFE is primarily from soil-to-root, consistent with previous results \citep{fisher2006}.
+    No pressure drop stem-to-leaf (Figure \ref{fig:vwp}a,b), as we don't properly model leaf conductance \citep{franks2007}, but the functionality is there for those interested.
+    
+    The looming concern has been added complexity \citep{verhoef2014}, so we installed a simplified model.
+    Evidence suggests complexity can be managed \citep{bartlett2016,mcdowell2018,powell2018}.
+    Hydraulic models introduce new observational streams.
+    LWP can be monitored in the field \citep{boyer1967} and has been shown to correlate with remote sensing products \citep{momen2017}, 
+    which could provide crucial validation.
+    Parameter values can be measured in the field \citep{sack2002} and are available in the TRY database \citep{kattge2011}
+
+\subsection{Water stress and stomatal conductance}
+
+PHS uses leaf water potential to invoke water stress for modeling photosynthesis and transpiration.
+Brief description of stomatal conductance theory. 
+Point to the more recent studies.
+Ours is a xylem tension stress.
+
+Discuss results of stress
+
+Discuss how stress influences GPP and transpiration.
+
     
 \section{Results and Discussion}
 \subsection{Modeling vegetation water potential}
@@ -729,13 +762,13 @@ PHS values correspond to predawn root water potential.}
 \section{Figures}
   \begin{figure}[h]
      \centering
-     \includegraphics[width=30pc]{../figs3/fig2.pdf}
+     \includegraphics[width=30pc]{../figs3/vwp.pdf}
      \caption{Modeled vegetation water potential at  Caxiuan\~a, Brazil.
-     (a) 2003 Dry season (SON) diurnal mean, ambient through-fall conditions,
-     (b) 2003 Dry season (SON) diurnal mean, with 60\% through-fall excluded.
-     Curves are drawn for sunlit leaf, shaded leaf, stem, and root water potentials. Note that the first three mostly overlap.
-     (c) Monthly mean midday leaf water potential, under ambient (solid line) and 60\% through-fall exclusion (dotted line) conditions.
-     Note that through-fall exclusion begins in month 11 (Nov 1, 2001).
+     (a) 2003 dry season (SON) diurnal mean, ambient through-fall conditions,
+     (b) 2003 dry season diurnal mean, with 60\% TFE.
+     Curves are drawn for sunlit leaf, shaded leaf, stem, and root water potentials, with the first three mostly overlapping.
+     (c) Monthly average midday (12h-14h) leaf water potential, under ambient (solid line) and TFE (dotted line) conditions.
+     Note that TFE begins Nov 1, 2001, as indicated by the vertical arrow. 
      }
      \label{fig:vwp}
   \end{figure}
@@ -745,11 +778,10 @@ PHS values correspond to predawn root water potential.}
     \begin{figure}[h]
      \centering
      \includegraphics[width=30pc]{../figs3/fig4.pdf}
-     \caption{2003 Dry season (SON) diurnal mean water stress function for 
-     (a) PHS off, and
-     (b) PHS off.
-     Solid lines correspond to ambient through-fall conditions, and dotted lines feature 60\% through-fall exclusion.
-     Note that the water stress function equals 1 when there is no stress and 0 when fully stressed.
+     \caption{2003 dry season (SON) diurnal mean water stress function for 
+     (a) SMS, and
+     (b) PHS.
+     Note that the water stress factor equals 1 when there is no stress and 0 when fully stressed.
      }
      \label{fig:stress1}
   \end{figure}
@@ -758,15 +790,11 @@ PHS values correspond to predawn root water potential.}
     \begin{figure}[h]
      \centering
      \includegraphics[width=30pc]{../figs3/vpdstress.pdf}
-     \caption{Water stress function versus vapor pressure deficit, for points with downwelling shortwave radiation between 400 and 425 W/m2.
-     (a) PHS, ambient through-fall
-     (b) SMS, ambient through-fall
-     (c) PHS, 60\% through-fall excluded
-     (d) SMS, 60\% through-fall excluded. 
-     For (a) and (c) data are subdivided based on predawn root water potential.
-     For (b) and (d) data are subdivided based on average soil matric potential, weighted by root fraction.
-     Blue dots represent the wettest tercile, yellow dots represent the intermediate tercile, and red dots represent the driest tercile.
-     Note that panels (c) and (d) exclude data from 2001, when throughfall exclusion was not active.
+     \caption{Water stress factor versus vapor pressure deficit (2002-2003), for timesteps with downwelling shortwave radiation between 400 and 425 W/m2 (n=515).
+     Radiation is controlled to highlight the relationship with VPD, the reverse (controlling for VPD) is shown in Figure \ref{supp:fsds}.
+     For SMS (a,b), data are subdivided based on average soil matric potential, weighted by root fraction.
+     For PHS (c,d), data are subdivided based on predawn (5h) root water potential.
+     Blue dots represent the wettest tercile, yellow dots represent the intermediate tercile, and red dots represent the driest tercile (see Table \ref{tab:tercile}).
      }
      \label{fig:stress2}
        \end{figure}
@@ -775,13 +803,8 @@ PHS values correspond to predawn root water potential.}
   \begin{figure}[h]
      \centering
      \includegraphics[width=30pc]{../figs3/gpp.pdf}
-     \caption{(a,b) Monthly mean water stress function. Note that the water stress function equals 1 when there is no stress and 0 when fully stressed.
-     (c,d) Monthly mean transpiration (W/m$^2$).
-     (e,f) Monthly mean gross primary productivity (g/m$^2$/d). 
-     Solid lines correspond to ambient through-fall conditions, and dotted lines feature 60\% through-fall exclusion.
-     Black lines represent model output.
-     Red lines show observational transpiration derived from sap flux (see zqz).
-     PHS is on for (a), (c), and (e). PHS is off for (b), (d), and (f).
+     \caption{Daily stress factor (midday, averaged over 12h-14h) and GPP during 2002-2003 under ambient (left) and TFE (right) conditions.
+     Output from the SMS configuration (a,b,e,f) are plotted with gray color, while output from the PHS configuration (c,d,g,h) are plotted in black.
      }
      \label{fig:gpp}
   \end{figure} 
@@ -807,11 +830,10 @@ PHS values correspond to predawn root water potential.}
 \clearpage   
   \begin{figure}[h]
      \centering
-     \includegraphics[width=30pc]{../figs3/fig6.pdf}
-     \caption{Soil Layer 3 conductance, under ambient through-fall conditions in 2003. 
-     (a) Time-series of PHS modeled soil-to-root conductance (s$^{-1}$) from Soil Layer 3 (spanning 6 to 12 centimeters in depth).
-     (b) Time-series of SMS inferred conductance (s$^{-1}$) also from Soil Layer 3.
-     (c) Concurrent precipitation forcing (mm/d).
+     \includegraphics[width=30pc]{../figs3/k.pdf}
+     \caption{Diurnal mean of the Soil Layer 5 conductance, under ambient and TFE conditions during 2003. 
+     (a) Time-series of PHS modeled soil-to-root conductance (s$^{-1}$) from Soil Layer 5 (spanning 20 to 32 centimeters in depth).
+     (b) Time-series of SMS inferred conductance (s$^{-1}$) also from Soil Layer 5.
      }
      \label{fig:cond}
   \end{figure}
@@ -820,7 +842,7 @@ PHS values correspond to predawn root water potential.}
         \clearpage
     \begin{figure}[h]
      \centering
-     \includegraphics[width=30pc]{../figs3/fig7.pdf}
+     \includegraphics[width=30pc]{../figs3/qdry.pdf}
      \caption{2003 dry season (SON) cumulative root water uptake and precipitation. 
      (a) Cumulative root water uptake with depth across the four simulations.
      (b,c) Cumulative water uptake over time from above and below 0.2m, respectively.
@@ -832,7 +854,7 @@ PHS values correspond to predawn root water potential.}
         \clearpage
     \begin{figure}[h]
      \centering
-     \includegraphics[width=30pc]{../figs3/fig8.pdf}
+     \includegraphics[width=30pc]{../figs3/qwet.pdf}
      \caption{2003 wet season (FMA) cumulative root water uptake and precipitation. 
      (a) Cumulative root water uptake with depth across the four simulations.
      (b,c) Cumulative water uptake over time from above and below 0.2m, respectively.
@@ -844,7 +866,7 @@ PHS values correspond to predawn root water potential.}
     \clearpage
     \begin{figure}[h]
      \centering
-     \includegraphics[width=30pc]{../figs2/fig9.pdf}
+     \includegraphics[width=30pc]{../figs3/hr.pdf}
      \caption{Total hydraulic redistribution (mm) by month in 2003. For (a) ambient through-fall conditions, and (b) 60\% through-fall exclusion. 
      Darker shading shows portion of HR at night [6pm,6am), lighter shading shows portion of HR during day [6am,6pm).}
      \label{fig:hr}
@@ -854,7 +876,7 @@ PHS values correspond to predawn root water potential.}
       \clearpage
     \begin{figure}[h]
      \centering
-     \includegraphics[width=30pc]{../figs2/fig11.pdf}
+     \includegraphics[width=30pc]{../figs3/smp.pdf}
      \caption{Vertical profile of soil water potential (MPa) over time under 60\% through-fall exclusion, for
      (a) PHS, and 
      (b) SMS.
@@ -875,15 +897,11 @@ PHS values correspond to predawn root water potential.}
       \begin{figure}[h]
      \centering
      \includegraphics[width=30pc]{../figs3/suppstress.pdf}
-     \caption{Water stress function versus downwelling shortwave radiation for points with vapor pressure deficit between 1 and 1.0559 kPa.
-     (a) PHS, ambient through-fall
-     (b) SMS, ambient through-fall
-     (c) PHS, 60\% through-fall excluded
-     (d) SMS, 60\% through-fall excluded. 
-     For (a) and (c) data are subdivided based on predawn root water potential.
-     For (b) and (d) data are subdivided based on average soil matric potential, weighted by root fraction.
+     \caption{Water stress factor versus downwelling shortwave radiation (2002-2003), for timesteps with VPD between 1 and 1.0559 kPa (n=470).
+     VPD is controlled to highlight the relationship with downwelling radiation, the reverse (controlling for radiation) is shown in Figure \ref{fig:stress2}.
+     For SMS (a,b), data are subdivided based on average soil matric potential, weighted by root fraction.
+     For PHS (c,d), data are subdivided based on predawn (5h) root water potential.
      Blue dots represent the wettest tercile, yellow dots represent the intermediate tercile, and red dots represent the driest tercile.
-     Note that panels (c) and (d) exclude data from 2001, when through-fall exclusion was not active.
      }
      \label{supp:fsds}
        \end{figure}
@@ -901,7 +919,7 @@ PHS values correspond to predawn root water potential.}
 
         \begin{figure}[h]
      \centering
-     \includegraphics[width=30pc]{../figs3/supppsi.pdf}
+     \includegraphics[width=30pc]{../figs3/suppdp.pdf}
      \caption{To complement Figure 6}
      \label{supp:cond}
   \end{figure}

@@ -80,16 +80,522 @@ gg = zeros(200,1);
 ff = zeros(200,1);
 
 hh(1:5)   = [0,0,0,0,0];
-hh(6:10)  = [0,0,0,1,0];
+hh(6:10)  = [0,0,0,0,0];
 hh(11:15) = [0,0,0,0,0];
+hh(16:20) = [0,0,0,0,1];
 
-%6 = transpiration
-%8 = vpd stress
-%9 = gpp
+%1  = vwp
+%6  = transpiration
+%8  = vpd stress
+%9  = gpp
+%14 = k
+%16 = qdry
+%17 = qwet
+%18 = hr
+%19 = smp time series
+
+if hh(20)>0
+        amb_sm = csvread('../goodsim/control_sm.csv');
+    amb_sm(amb_sm==0) = nan;
+    tfe_sm = csvread('../goodsim/tfe_sm.csv');
+    tfe_sm(tfe_sm==0) = nan;
+    
+    amb_sm(:,1) = 2001+amb_sm(:,1)/365;
+    tfe_sm(:,1) = 2001+tfe_sm(:,1)/365;
+    
+    %which soil layer
+    depths = [nan,0.15,0.5,1,2,3,4,5];
+    zzix   = nan(8,1);
+    for i=3:8
+        j  = 0;
+        go = 1;
+        while go
+            j = j+1;
+            if zs(j)>depths(i)
+                zzix(i)=j-1;
+                go = 0;
+            end
+        end
+    end
+    
+    g = (year-2001)*365+doy;
+    xv = 2001+(0.5:1095)/365;
+    i=3;
+    
+    tt = {'AMB','TFE'};
+    ss = [3,4,1,2];
+    for j=1:4
+        subplot(2,2,ss(j))
+        plot(xv,splitapply(@mean,h2osoi(zzix(3)+(j-1)*20,:),g))
+        hold on
+        if j==1||j==3
+            plot(amb_sm(:,1),amb_sm(:,3)/100,'rx')
+        else
+            plot(tfe_sm(:,1),tfe_sm(:,3)/100,'rx')
+        end
+        ylim([0.05,0.35])
+        
+        if ss(j)<3
+        title(tt{ss(j)})
+        set(gca,'xticklabel',[])
+        else
+            xlabel('Year')
+        end
+        
+        set(gca,'ytick',0.05:0.1:0.35)
+        
+        if j==1||j==3
+            ylabel('Volumetric Soil Moisture')
+        else
+            set(gca,'yticklabel',[])
+        end
+    end
+    
+    
+    
+end
+
+
+if hh(19)>0
+    yy=2002;
+    xdk = figure;
+    n = length(fsds);
+    %resample to height
+    x = 0;
+    ymax = [-1,-3];
+    vsn  = {'PHS','SMS'};
+    pnl  = {'(a)','(b)'};
+    for ss=[20,60]
+        x = x+1;
+        nz  = round(100*(zs(2:end)-zs(1:end-1)));
+        out = zeros(860,n);
+        ct  = 0;
+        
+        for i=1:20
+            ix = ct+(1:nz(i));
+            out(ix,:) =  repmat(smp(ss+i,:),nz(i),1)/101972;
+            ct = ct+nz(i);
+        end
+        addpath('/Users/kennedy/Documents/MATLAB/othercolor')
+        colormap(othercolor('BrBG4'))
+        subplot(2,1,x)
+        imagesc((1:n)/(48*365)+2001,(1:860)/100,out,[ymax(x),0])
+        title(vsn{x})
+        xlim([2001,2004])
+        ylim([0,8.605])
+        ylabel('Depth (m)')
+        if x==2
+            xlabel('Year')
+        end
+        aa={'2001','','2002','','2003','','2004'};
+        
+        set(gca,'xticklabel',aa)
+        set(gca,'ytick',0:2:8)
+        c = colorbar;
+        ylabel(c,'Soil Potential (MPa)','FontSize',11)
+        text(2001.08,1,pnl{x},'FontSize',14,'FontWeight','bold','Color',[0.8,0.8,0.8])
+    end
+    
+    xdk.Units = 'inches';
+    xdk.Position = [2,2,7,5];
+    xdk.PaperSize = [7,5];
+    xdk.PaperPosition = [0,0,7,5];
+    
+    
+    if hh(19)>0
+        print(xdk,'smp','-dpdf')
+    end
+        
+end
+
+
+if hh(18)>0
+    
+    hr = qrootsink(1:40,:);
+    for ss=1:40
+        hr(ss,:) = -qrootsink(ss,:).*(qrootsink(ss,:)<0);
+    end
+    
+    ix = (mcsec<diurn(13)|mcsec>diurn(36))&year==2003;
+    ix2 = (~(mcsec<diurn(13)|mcsec>diurn(36)))&year==2003;
+    hr1 = [180*splitapply(@sum,sum(hr(1:20,ix)),month(ix))',...
+        180*splitapply(@sum,sum(hr(1:20,ix2)),month(ix2))'];
+    hr2 = [180*splitapply(@sum,sum(hr(21:40,ix)),month(ix))',...
+        180*splitapply(@sum,sum(hr(21:40,ix2)),month(ix2))'];
+    
+    
+    
+    xdk = figure;
+    
+    subplot('Position',[0.08,0.11,0.45,0.84])
+    b=bar(hr1,'stacked');
+    b(1).FaceColor = [0.4,0.4,0.6];
+    b(2).FaceColor = [0.6,0.6,0.8];
+    b(1).EdgeColor = [0.35,0.35,0.6];
+    b(2).EdgeColor = [0.55,0.55,0.8];
+    xlabel('Month')
+    ylabel('Total HR (cm)')
+    title('AMB')
+    xlim([0 13])
+    ylim([0 10])
+    text(0.4,9.5,'(a)','FontSize',14,'FontWeight','bold')
+    
+    
+    subplot('Position',[0.54,0.11,0.45,0.84])
+    b=bar(hr2,'stacked');
+    b(1).FaceColor = [0.4,0.4,0.6];
+    b(2).FaceColor = [0.6,0.6,0.8];
+    b(1).EdgeColor = [0.35,0.35,0.6];
+    b(2).EdgeColor = [0.55,0.55,0.8];
+    %bar(hr2,'FaceColor',[0.6,0.6,0.8],'EdgeColor',[0.55,0.55,0.8])
+    xlabel('Month')
+    xlim([0 13])
+    ylim([0 10])
+    title('TFE')
+    set(gca,'yticklabel',[])
+    text(0.4,9.5,'(b)','FontSize',14,'FontWeight','bold')
+    legend({'Nighttime','Daytime'})
+    
+    xdk.Units = 'inches';
+    xdk.Position = [2,2,7,4];
+    xdk.PaperSize = [7,4];
+    xdk.PaperPosition = [0,0,7,4];
+    
+    if hh(18)>1
+        print(xdk,'../figs3/hr','-dpdf')
+    end
+    
+end
+
+
+if hh(17)>0
+    
+    ix = year==2003&month>1&month<5;
+    
+    %create cumulative profile
+    out = zeros(860,4);
+    for ee=1:4
+        x=180*sum(qrootsink((1:20)+(ee-1)*20,ix),2);
+        dzi = round(100*dz);
+        ss = 1;
+        
+        for i=1:860
+            if i/100>zs(ss+1)
+                ss = ss+1;
+            end
+            out(i,ee)=x(ss)/dzi(ss);
+        end
+    end
+    
+    %create cumulative timeseries
+    ct = 0;
+    out2 = zeros(8,5000);
+    n  = sum(ix);
+    for d = [0,1]
+        if ~d
+            sv = 1:4;
+            %sv = 1:5;
+        else
+            sv=5:20;
+            %sv = 6:20;
+        end
+        for i=1:4
+            ct = ct+1;
+            out2(ct,1:n) = 180*cumsum(sum(qrootsink(sv+(i-1)*20,ix)));
+        end
+    end
+    
+    xdk = figure;
+    subplot('Position',[0.56,0.1,0.42,0.83])
+    s = {'-',':','-',':'};
+    c = [zeros(2,3);0.5*ones(2,3)];
+    t = {'Extracted from 0-0.2m','Extracted from 0.2-8.6m','Ambient Precipitation'};
+    p = {'(b)','(c)','(a)'};
+    ymax = [40,20,110];
+    ymin = [0,-20,0];
+    tlab   = {'PHS-amb','PHS-tfe','SMS-amb','SMS-tfe'};
+    for i=1:4
+        plot(cumsum(flipud(out(1:400,i))),-4:0.01:-0.01,...
+            'LineStyle',s{i},'Color',c(i,:),'LineWidth',2)
+        hold on
+    end
+    xlim([-15,25])
+    set(gca,'ytick',-4:1:0)
+    set(gca,'yticklabel',4:-1:0)
+    ylabel('Depth (m)')
+    xlabel({'Cumulative Root Water Uptake (cm)'})
+    legend(tlab,'location','Southeast')
+    text(2/30*40-15,-3.75,'(d)','FontWeight','bold','FontSize',14)
+    box off
+    ix = year==2003&month>1&month<5;
+    n  = sum(ix);
+    b = [0.39,0.1,0.68];
+    ct = 0;
+    for i=1:3
+        subplot('Position',[0.08,b(i),0.42,0.25])
+        hold on
+        if i<3
+            for j=1:4
+                ct = ct+1;
+                plot(doy(ix)+mcsec(ix)/max(diurn),out2(ct,1:n),...
+                    'LineStyle',s{j},'Color',c(j,:),'LineWidth',2)
+            end
+            
+        else
+            plot(doy(ix)+mcsec(ix)/max(diurn),180*cumsum(prec(ix)),'LineWidth',2)
+        end
+        xlim([31,121])
+        ylim([ymin(i),ymax(i)])
+        text(34,ymin(i)+0.9*(ymax(i)-ymin(i)),t{i})
+        text(112,ymin(i)+0.12*(ymax(i)-ymin(i)),p{i},'FontWeight','bold','FontSize',14)
+        if i==2
+            xlabel('Day of 2003')
+        else
+            set(gca,'xticklabel',[])
+        end
+    end
+    ylim([0,110])
+    ax1 = axes('Position',[0 0 1 1],'Visible','off');
+    text(0.03,0.39,'Cumulative Water (cm)',...
+        'FontSize',11,'Rotation',90);
+    text(0.5,0.97,'2003 Wet Season: Feb-Mar-Apr',...
+        'FontSize',14,'FontWeight','bold','HorizontalAlignment','center');
+    
+    
+    xdk.Units = 'inches';
+    xdk.Position = [2,2,7,5];
+    xdk.PaperSize = [7,5];
+    xdk.PaperPosition = [0,0,7,5];
+    
+    if hh(17)>1
+        print(xdk,'../figs3/qwet','-dpdf')
+    end
+    
+    
+    
+    
+end
+
+
+if hh(16)>0
+    
+    ix = year==2003&month>8&month<12;
+    %create cumulative profile
+    out = zeros(860,4);
+    for ee=1:4
+        x=180*sum(qrootsink((1:20)+(ee-1)*20,ix),2);
+        dzi = round(100*dz);
+        ss = 1;
+        
+        for i=1:860
+            if i/100>zs(ss+1)
+                ss = ss+1;
+            end
+            out(i,ee)=x(ss)/dzi(ss);
+        end
+    end
+    
+    %create cumulative timeseries
+    ct = 0;
+    out2 = zeros(8,5000);
+    for w=[0,1]
+        if ~w
+            ix = year==2003&month>8&month<12;
+        else
+            ix = year==2003&month>1&month<5;
+        end
+        n  = sum(ix);
+        for d = [0,1]
+            if ~d
+                sv = 1:4;
+                %sv = 1:5;
+            else
+                sv=5:20;
+                %sv = 6:20;
+            end
+            for i=1:4
+                ct = ct+1;
+                out2(ct,1:n) = 180*cumsum(sum(qrootsink(sv+(i-1)*20,ix)));
+            end
+        end
+    end
+    
+    %first subplot
+    xdk = figure;
+    subplot('Position',[0.56,0.1,0.42,0.83])
+    s = {'-',':','-',':'};
+    c = [zeros(2,3);0.5*ones(2,3)];
+    t = {'Extracted from 0-0.2m','Extracted beyond 0.2m','Ambient Precipitation'};
+    p = {'(b)','(c)','(a)'};
+    tlab   = {'PHS-amb','PHS-tfe','SMS-amb','SMS-tfe'};
+    
+    ymax = [20,20,30];
+    
+    for i=1:4
+        plot(cumsum(flipud(out(1:400,i))),-4:0.01:-0.01,...
+            'LineStyle',s{i},'Color',c(i,:),'LineWidth',2)
+        hold on
+    end
+    set(gca,'ytick',-4:0)
+    set(gca,'yticklabel',4:-1:0)
+    ylabel('Depth (m)')
+    xlabel({'Cumulative Root Water Uptake (cm)'})
+    legend(tlab,'location','Southeast')
+    text(2,-3.75,'(d)','FontWeight','bold','FontSize',14)
+    box off
+    
+    %other 3
+    ix = year==2003&month>8&month<12;
+    n  = sum(ix);
+    b = [0.39,0.1,0.68];
+    ct = 0;
+    
+    for i=1:3
+        subplot('Position',[0.08,b(i),0.42,0.25])
+        hold on
+        if i<3
+            for j=1:4
+                ct = ct+1;
+                plot(doy(ix)+mcsec(ix)/max(diurn),out2(ct,1:n),...
+                    'LineStyle',s{j},'Color',c(j,:),'LineWidth',2)
+            end
+            if i==2
+                xlabel('Day of 2003')
+            else
+                set(gca,'xticklabel',[])
+            end
+        else
+            plot(doy(ix)+mcsec(ix)/max(diurn),180*cumsum(prec(ix)),'LineWidth',2)
+            set(gca,'xticklabel',[])
+        end
+        
+        ylim([0,ymax(i)])
+        text(242,0.9*ymax(i),t{i})
+        text(330,0.12*ymax(i),p{i},'FontWeight','bold','FontSize',14)
+    end
+    
+    ax1 = axes('Position',[0 0 1 1],'Visible','off');
+    text(0.03,0.39,'Cumulative Water (cm)',...
+        'FontSize',11,'Rotation',90);
+    text(0.5,0.97,'2003 Dry Season: Sept-Oct-Nov',...
+        'FontSize',14,'FontWeight','bold','HorizontalAlignment','center');
+    
+    
+    xdk.Units = 'inches';
+    xdk.Position = [2,2,7,5];
+    xdk.PaperSize = [7,5];
+    xdk.PaperPosition = [0,0,7,5];
+    
+    if hh(16)>1
+        print(xdk,'../figs3/qdry','-dpdf')
+    end
+end
+
+
+
+if hh(15)>0
+    
+    dp = smp+255000; %sms
+    dp(1:20,:) = smp(1:20,:)-repmat(vegwp(4,:),20,1); %phsamb (ignores gravity)
+    dp(21:40,:) = smp(21:40,:)-repmat(vegwp(8,:),20,1); %phstfe (ignores gravity)
+    %layer 5 gravity ~ 0.0025 MPa
+    
+    xdk = figure;
+    ix = year==2003;
+    g = findgroups(mcsec(ix));
+    xv = 0.25:0.5:24;
+    yy = [0.3,2.5];
+    yy2 = [-0.15,0];
+    cc  = [0,0.7];
+    tt  = {'PHS','SMS'};
+    pp  = {'(b)','(a)'};
+    zz  = [2.35*45/250-0.15,2.35];
+    for i=1:2
+        subplot(1,2,(i==1)+1)
+        hold on
+        plot(xv,splitapply(@mean,dp(5+(i-1)*40,ix),g)/101972,'-','LineWidth',2,'Color',cc(i)*ones(1,3))
+        plot(xv,splitapply(@mean,dp(5+(i-1)*40+20,ix),g)/101972,':','LineWidth',2,'Color',cc(i)*ones(1,3))
+        
+        xlim([0,24])
+        set(gca,'xtick',0:6:24)
+        ylim([yy2(i),yy(i)])
+        title(tt{i})
+        xlabel('Hour of Day')
+        ylabel({'Average Layer 5 \Delta\psi (MPa)'})
+        text(1.1,zz(i),pp{i},'FontSize',14,'FontWeight','bold')
+        if i==2
+            legend('AMB','TFE','Location','SouthWest')
+        end
+        
+    end
+    
+    xdk.Units = 'Inches';
+    xdk.Position = [2,2,7,4];
+    xdk.PaperSize = [7,4];
+    xdk.PaperPosition = [0,0,7,4];
+    
+    if hh(15)>1
+        print(xdk,'../figs3/suppdp','-dpdf')
+    end
+    
+end
+
+
+if hh(14)>0
+    dp = smp+255000;
+    dp(dp<100)=0;
+    k = qrootsink./dp;
+    k(dp==0) = nan;
+    k(41:60,fctr(:,3)<1) = nan;
+    k(61:80,fctr(:,4)<1) = nan;
+    k(1:40,:) = ksr(1:40,:);
+    
+    xdk = figure;
+    ix = year==2003;
+    g = findgroups(mcsec(ix));
+    xv = 0.25:0.5:24;
+    ss = [2,2,1,1];
+    yy = [10e-9,10e-9,1.2e-10,1.2e-10];
+    cc = [0,0,0.7,0.7];
+    ll = {'-',':','-',':'};
+    tt = [0.1,0.1]*1e-10;
+    tt = [100*10/12*tt,tt];
+    rr = '(b)(a)';
+    for i=1:4
+        subplot(1,2,ss(i))
+        plot(xv,splitapply(@nanmean,k(5+(i-1)*20,ix),g),'Color',cc(i)*ones(1,3),...
+            'LineWidth',2,'LineStyle',ll{i})
+        xlim([6,18])
+        ylim([0,yy(i)])
+        set(gca,'xtick',6:3:18)
+        hold on
+        xlabel('Hour of Day')
+        if i==1
+            ylabel({'Layer-5 mean (modeled)';'hydraulic conductance (s-1)'})
+            title('PHS')
+        elseif i==3
+            ylabel({'Layer-5 mean (implied)';'hydraulic conductance (s-1)'})
+            title('SMS')
+        elseif i==2
+            legend('AMB','TFE','Location','SouthWest')
+        end
+        if i==1||i==3
+            text(15,tt(i),rr((1:3)+(i-1)*3-(i==3)*3),'FontSize',14,'FontWeight','bold')
+        end
+        box off
+    end
+    xdk.Units = 'Inches';
+    xdk.Position = [2,2,7,4];
+    xdk.PaperSize = [7,4];
+    xdk.PaperPosition = [0,0,7,4];
+    if hh(14)>1
+        print(xdk,'../figs3/k','-dpdf')
+    end
+end
 
 if hh(13)>0
     
-
+    
     ot = 1:length(fsds);
     xdk = figure;
     cc = get(gca,'ColorOrder');
@@ -106,12 +612,12 @@ if hh(13)>0
     sssms  = [sssms;sssms2];
     ss = {'(a)','(b)'};
     
-        theq = zeros(4,4);
-        cc = 0;
+    theq = zeros(4,4);
+    cc = 0;
     for i = 1:2
         cc=cc+1;
         
-        ix = vpd>1&vpd<1.0559&year>=2000+i;
+        ix = vpd>1&vpd<1.0559&year>2001;
         max(fsds(ix))
         subplot('Position',[xx(i),0.53,0.4,0.41])
         qq = quantile(sssms(i,ix),[1/3,2/3]);
@@ -120,7 +626,7 @@ if hh(13)>0
         for j=[3,1,2]
             ix2 = ix&sssms(i,:)>=qq(j)&sssms(i,:)<qq(j+1);
             plot(fsds(ix2),btran(i+2,ix2),'.')
-            xlim([0,1050])
+            xlim([0,1000])
             ylim([0,1])
             hold on
         end
@@ -135,7 +641,7 @@ if hh(13)>0
         end
         set(gca,'xticklabel',[])
         
-        text(950,0.9,ss{i},'FontSize',14,'FontWeight','bold')
+        text(900,0.9,ss{i},'FontSize',14,'FontWeight','bold')
     end
     
     
@@ -146,33 +652,33 @@ if hh(13)>0
     ssphs2 = ssphs2(1:52551);
     ssphs  = [ssphs;ssphs2];
     
-
+    
     
     ss = {'(c)','(d)'};
     for i = 1:2
         cc = cc+1;
         subplot('Position',[xx(i),0.08,0.4,0.41])
-        ix = vpd>1&vpd<1.0559&year>=2000+i;
+        ix = vpd>1&vpd<1.0559&year>2001;
         qq = quantile(ssphs(i,ix),[1/3,2/3]);
         qq = [-inf,qq,0];
         theq(cc,:) = qq;
         for j=[3,1,2]
             ix2 = ix&ssphs(i,:)>=qq(j)&ssphs(i,:)<qq(j+1);
             plot(fsds(ix2),btran(i,ix2),'.')
-            xlim([0,1050])
+            xlim([0,1000])
             ylim([0,1])
             hold on
         end
         box off
-        xlabel('FSDS (W/m2)')
+        xlabel('Shortwave Radiation (W/m2)')
         if i==1
-            legend('wettest','driest','intermediate','location','best')
+            legend('wettest','driest','intermediate','location','SouthWest')
             ylabel('Stress Factor (PHS)')
         else
             set(gca,'yticklabel',[])
             
         end
-        text(950,0.9,ss{i},'FontSize',14,'FontWeight','bold')
+        text(900,0.9,ss{i},'FontSize',14,'FontWeight','bold')
         
     end
     
@@ -223,7 +729,7 @@ if hh(12)>0
     plot(x(ix,4),y(ix,4)-y(ix,2),'.')
     xlim([-1,0])
     ylim([-3,3])
-        
+    
     ss = {'SMSamb','SMStfe','PHSamb','PHStfe'};
     for i=1:4
         subplot(2,2,i)
@@ -231,8 +737,8 @@ if hh(12)>0
         ylabel({'Model-Obs';'Transpiration (mm/d)'})
         xlabel('Model Soil Potential (MPa)')
     end
-
-
+    
+    
     
     xdk.Units = 'Inches';
     xdk.Position = [2,2,7,5];
@@ -241,8 +747,8 @@ if hh(12)>0
     
     
     
-   
-
+    
+    
 end
 
 
@@ -259,7 +765,7 @@ if hh(11)>0
     y3 = 1800*4e-7*splitapply(@sum,fctr',g');
     y  = [y1,y2,y3];
     
-
+    
     xdk = figure;
     c = 0;
     for j=[1,2]
@@ -285,12 +791,12 @@ if hh(11)>0
                     title('Modeled Transpiration')
                 end
             end
-                    
-                
+            
+            
             
         end
     end
-
+    
     xi = [3,3,4,4];
     yi = [1,3,2,4];
     
@@ -320,22 +826,22 @@ if hh(11)>0
         text(0.92,1.08-0.22*i,ss1{i},'FontSize',12)
         text(0.92,1.05-0.22*i,ss2{i},'FontSize',12)
     end
-        
-       xdk.Units = 'Inches';
+    
+    xdk.Units = 'Inches';
     xdk.Position = [2,2,7,7];
     xdk.PaperSize = [7,7];
     xdk.PaperPosition = [0,0,7,7];
     
     
     if hh(11)>1
-    print(xdk,'../figs3/transpiration_vs_smp','-dpdf')
+        print(xdk,'../figs3/transpiration_vs_smp','-dpdf')
     end
-
+    
 end
-    
-    
-    
-    
+
+
+
+
 
 
 
@@ -355,7 +861,7 @@ if hh(10)>0
     sssms2 = repmat(sssms2(1,mcsec==diurn(10)),48,1);
     sssms2 = sssms2(1:52551);
     sssms  = [sssms;sssms2];
-
+    
     
     ssphs  = repmat(vegwp(4,mcsec==diurn(10)),48,1);
     ssphs  = ssphs(1:52551);
@@ -363,7 +869,7 @@ if hh(10)>0
     ssphs2 = ssphs2(1:52551);
     ssphs  = [ssphs;ssphs2];
     
-
+    
     n = sum(ix);
     plot(0:1/(n-1):1,sort(sssms(1,ix))/101972,'.')
     hold on
@@ -372,7 +878,7 @@ if hh(10)>0
     plot([2/3,2/3],[-4,0],'k:')
     ylim([-3,0])
     xlim([0,1])
-
+    
     ix = ix&year>2001;
     n = sum(ix);
     plot(0:1/(n-1):1,sort(sssms(2,ix))/101972,'.')
@@ -461,7 +967,7 @@ if hh(9)>0
         s=subplot('Position',[xx(i),yy(i),w,h]);
         plot([365,365],[0,10],'Color',[0.3,0.3,0.3])
         hold on
-
+        
         plot(xv,out(:,i),'.','Color',cc(i)*ones(1,3))
         xlim([0,730])
         ylim([0,10])
@@ -496,7 +1002,7 @@ if hh(9)>0
     xdk.PaperPosition = [0,0,7,5];
     
     if hh(9)>1
-    print(xdk,'../figs3/gpp','-dpdf')
+        print(xdk,'../figs3/gpp','-dpdf')
     end
     
     disp('std of daily total gpp (gC/m2/d)')
@@ -530,12 +1036,12 @@ if hh(8)>0
     sssms  = [sssms;sssms2];
     ss = {'(a)','(b)'};
     
-        theq = zeros(4,4);
-        cc = 0;
+    theq = zeros(4,4);
+    cc = 0;
     for i = 1:2
         cc=cc+1;
         
-        ix = fsds>400&fsds<425&year>=2000+i;
+        ix = fsds>400&fsds<425&year>2001;
         subplot('Position',[xx(i),0.53,0.4,0.41])
         qq = quantile(sssms(i,ix),[1/3,2/3]);
         qq = [-inf,qq,0];
@@ -555,8 +1061,10 @@ if hh(8)>0
             title('TFE')
             set(gca,'yticklabel',[])
         end
+        xlim([0,3.2])
+        set(gca,'xtick',0:3)
         set(gca,'xticklabel',[])
-        text(3.5,0.1,ss{i},'FontSize',14,'FontWeight','bold')
+        text(2.87,0.1,ss{i},'FontSize',14,'FontWeight','bold')
     end
     
     
@@ -567,13 +1075,13 @@ if hh(8)>0
     ssphs2 = ssphs2(1:52551);
     ssphs  = [ssphs;ssphs2];
     
-
+    
     
     ss = {'(c)','(d)'};
     for i = 1:2
         cc = cc+1;
         subplot('Position',[xx(i),0.08,0.4,0.41])
-        ix = fsds>400&fsds<425&year>=2000+i;
+        ix = fsds>400&fsds<425&year>2001;
         qq = quantile(ssphs(i,ix),[1/3,2/3]);
         qq = [-inf,qq,0];
         theq(cc,:) = qq;
@@ -585,13 +1093,16 @@ if hh(8)>0
         end
         box off
         xlabel('VPD (kPa)')
-        if i==2
-            legend('wettest','driest','intermediate','location','best')
-            set(gca,'yticklabel',[])
-        else
+        if i==1
+            legend('wettest','driest','intermediate','location','SouthWest')
             ylabel('Stress Factor (PHS)')
+        else
+            set(gca,'yticklabel',[])
+            
         end
-        text(3.5,0.1,ss{i},'FontSize',14,'FontWeight','bold')
+        text(2.87,0.1,ss{i},'FontSize',14,'FontWeight','bold')
+        xlim([0,3.2])
+        set(gca,'xtick',0:3)
         
     end
     
@@ -1175,12 +1686,13 @@ if hh(1)>0
     ylabel({'Midday Sun Leaf Water';'Potential (MPa)'})
     
     %draw an arrow
-    plot(2001+[10.5/12,10.5/12],[-2.6,-2.9],'k-','LineWidth',2)
-    plot(2001+[10.5/12,10.2/12],[-2.88,-2.8],'k-','LineWidth',2)
-    plot(2001+[10.5/12,10.8/12],[-2.88,-2.8],'k-','LineWidth',2)
+    plot(2001+[10/12,10/12],[-2.6,-2.9],'k-','LineWidth',2)
+    plot(2001+[10/12,9.7/12],[-2.88,-2.8],'k-','LineWidth',2)
+    plot(2001+[10/12,10.3/12],[-2.88,-2.8],'k-','LineWidth',2)
     
     legend('AMB','TFE','Location','Southwest')
-    text(33.8,-1.3,'(c)','FontSize',14,'FontWeight','bold')
+    x = (87-42.5)/42.5*24;
+    text(2001+3*(21+x)/(24+x),-1-2.5/3*2,'(c)','FontSize',14,'FontWeight','bold')
     
     %predawn water potentials?
     out         = xf*out;
@@ -1248,7 +1760,7 @@ if hh(1)>0
     xdk.PaperPosition = [0,0,7,4];
     
     if hh(1)>1
-        print(xdk,'../figs3/fig2','-dpdf')
+        print(xdk,'../figs3/vwp','-dpdf')
     end
     
     
