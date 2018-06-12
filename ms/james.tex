@@ -409,6 +409,13 @@ bsw & Brooks-Corey parameter & $b$ & 6 \\
 
 Selected parameter values concerning vegetation hydrodynamics are presented in Table 1. All other parameters use the default values associated with the r270 version of CLM5. Informed by \cite{fisher2008}, we tuned soil hydraulic parameters and through-fall exclusion rates to reasonably capture the observed soil water dynamics (\cite{fisher2007} Figure 4), Supplementary Figure \ref{top3m}. Likewise, we tuned $k_{max}$ and $g_1$ parameters to improve the fit to sap flux observations in the ambient simulation. The object of this paper is to present the dynamical impact of PHS to clearly describe model functionality. Model skill and parameter sensitivity will be assessed in follow-up studies.
 
+  \begin{figure}[h]
+     \centering
+     \includegraphics[width=20pc]{../figs3/roots.pdf}
+     \caption{Cumulative rooting distribution}
+     \label{roots}
+  \end{figure}
+
 %====================
 %  RESULTS
 %====================
@@ -469,7 +476,6 @@ PHS values correspond to predawn root water potential.}
     under both ambient and TFE conditions (Figure \ref{fig:t}c-f).
 
     
-
 \subsection{Hydraulic conductance}
     In Figures \ref{fig:cond} and \ref{fig:cond2}, we compare conductance values derived from the PHS and SMS implementations.
     With SMS, $k$ is not explicitly modeled, so instead we infer $k$, 
@@ -522,7 +528,7 @@ PHS values correspond to predawn root water potential.}
     vegetation water potential can improve predictions of stomatal response to the environment \citep{sperry2017,anderegg2017},
     More recently hydraulics have been coupled to global models \citep{bonan2014,xu2016,christoffersen2016}.
 
-            In this study, we implement plant hydraulic theory within CLM5, 
+    In this study, we implement plant hydraulic theory within CLM5, 
     using vegetation water potential to modulate leaf gas exchange and root water uptake.
     We model water potential according to circuit analogy (Figure \ref{circuit}), which captures expected diurnal and seasonal dynamics of leaf water potential (Figure \ref{fig:vwp}).
     Under ambient conditions hydraulic resistance is largest from root-to-stem (Figure \ref{fig:vwp}a), 
@@ -536,15 +542,25 @@ PHS values correspond to predawn root water potential.}
 
 \subsection{Water stress and stomatal conductance}
 
-Stress, which was previously based on soil potential, switches to leaf potential, imparting a diurnal cycle (Figure \ref{fig:stress1}).
-As such, stress now depends on transpiration demand, and, in turn, VPD and solar radiation (Figures \ref{fig:stress2},\ref{supp:fsds}).
-Medlyn does already reduce stomatal conductance based on VPD, but based on A-$\lambda$E.
-Here we are trying to impart xylem tension stress, allowing plants to avoid cavitation and embolism.
-Support for this in the literature \citep{novick2016a,sperry2017}, but still no consensus on the best functional form \citep{zhou2013}. 
-
-
-Discuss how stress influences GPP and transpiration.
-
+    Stress, which was previously based on soil potential, switches to leaf potential, imparting a diurnal cycle (Figure \ref{fig:stress1}).
+    As such, stress now depends on transpiration demand, and, in turn, VPD and solar radiation (Figures \ref{fig:stress2},\ref{supp:fsds}).
+    Medlyn does already reduce stomatal conductance based on VPD, but based on A-$\lambda$E.
+    Here we are trying to impart xylem tension stress, allowing plants to avoid cavitation and embolism.
+    Support for this in the literature \citep{novick2016a,sperry2017}, but still no consensus on the best functional form \citep{zhou2013}. 
+    
+    The water stress factor follows a seasonal cycle, with lower (indicating more stress) values during the dry season, 
+    but with a smaller amplitude compared to the control model (Figure \ref{fig:gpp}a-d).
+    As a result PHS features less seasonal variability in GPP, especially under ambient conditions (Figure \ref{fig:gpp}e-h).
+    The xylem tension constraint in PHS imparts a negative feedback on GPP 
+    Factors increasing GPP (e.g. more light) also increase xylem tension and stress, which limits GPP.
+    \cite{restrepo2017} show that GPP increases at Caxiuana during the dry season, suggesting that PHS improves the GPP seasonal cycle.
+    
+    However, PHS underestimates the seasonal cycle in transpiration under ambient predictions, with less variability than sap flux observations (Figure \ref{fig:t}a,c).
+    Likewise, we produce a high bias in transpiration under TFE, similar to previous evidence showing that models tend to underestimate the effect of TFE \citep{powell2013}.
+    Considerable uncertainty remains regarding the appropriate functional form of water stress.
+    Further work could examine other permutations of water stress, and/or concurrent improvement in photosynthesis parameters and model structure.
+    While a work in progress, PHS does improve transpiration predictions, 
+    with lower RMSE and higher correlation compared to the control model, albeit with model tuning (Figure \ref{fig:t}).
     
 \section{Results and Discussion}
 \subsection{Modeling vegetation water potential}
@@ -866,8 +882,8 @@ Discuss how stress influences GPP and transpiration.
     \clearpage
     \begin{figure}[h]
      \centering
-     \includegraphics[width=30pc]{../figs3/hr.pdf}
-     \caption{Total hydraulic redistribution (mm) by month in 2003. For (a) ambient through-fall conditions, and (b) 60\% through-fall exclusion. 
+     \includegraphics[width=30pc]{../figs3/hr2.pdf}
+     \caption{Total hydraulic redistribution (cm) by month across in 2002 and 2003. For (a) ambient through-fall conditions, and (b) 60\% through-fall exclusion. 
      Darker shading shows portion of HR at night [6pm,6am), lighter shading shows portion of HR during day [6am,6pm).}
      \label{fig:hr}
   \end{figure}
@@ -883,7 +899,26 @@ Discuss how stress influences GPP and transpiration.
      Note that color axes are different. }
      \label{fig:sm}
   \end{figure}
+  
+        \clearpage
+    \begin{figure}[h]
+     \centering
+     \includegraphics[width=30pc]{../figs3/sm2.pdf}
+     \caption{Vertical profile of soil water potential (MPa) over time under 60\% through-fall exclusion, for
+     (a) PHS, and 
+     (b) SMS.
+     Note that color axes are different. }
+     \label{fig:sm}
+  \end{figure}
 
+              \begin{figure}[h]
+     \centering
+     \includegraphics[width=30pc]{../figs3/t_vs_smp.pdf}
+     \caption{Time series of soil moisture by soil layer.
+     Complements Figure \ref{fig:sm}}
+     \label{fig:cool}
+  \end{figure}
+          \clearpage
 
 \clearpage
 
@@ -1004,13 +1039,14 @@ Discuss how stress influences GPP and transpiration.
 
     \begin{figure}[h]
      \centering
-     \includegraphics[width=30pc]{../figs2/supp_smlayer.pdf}
-     \caption{Time series of soil potential by soil layer, with SMS, under 60\% through-fall exclusion. 
-     This duplicates the information in Figure \ref{fig:sm}a to highlight the the sensitivity of soil moisture dynamics to the SMS parameter, $\psi_c$ (soil potential with stomates fully closed, -2.5 MPa).
-     Soil Layers 17-20, which do not dry out completely (similar to Soil Layer 16), are not shown.}
+     \includegraphics[width=30pc]{../figs3/suppsm2.pdf}
+     \caption{Time series of soil moisture by soil layer.
+     Complements Figure \ref{fig:sm}}
      \label{supp:sm2}
   \end{figure}
           \clearpage
+          
+
 
 
 \section{Appendix to Model Description}

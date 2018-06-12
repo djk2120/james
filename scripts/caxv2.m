@@ -1,4 +1,4 @@
-rclose all
+close all
 
 dir  = '../data/mar6/';
 dir2 = '../data/apr17/'; 
@@ -2296,9 +2296,9 @@ if ff(31)>0
     xlabel('Layer 3 Soil Potential (MPa)')
     
             xdk.Units = 'inches';
-    xdk.Position = [2,2,7,4];
-    xdk.PaperSize = [7,4];
-    xdk.PaperPosition = [0,0,7,4];
+    xdk.Position = [2,2,4,3];
+    xdk.PaperSize = [4,3];
+    xdk.PaperPosition = [0,0,4,3];
     
     if ff(31)>1
     print(xdk,'../figs2/suppfig2','-dpdf')

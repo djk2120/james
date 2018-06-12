@@ -82,7 +82,8 @@ ff = zeros(200,1);
 hh(1:5)   = [0,0,0,0,0];
 hh(6:10)  = [0,0,0,0,0];
 hh(11:15) = [0,0,0,0,0];
-hh(16:20) = [0,0,0,0,1];
+hh(16:20) = [0,0,0,0,0];
+hh(21:25) = [0,0,0,0,1];
 
 %1  = vwp
 %6  = transpiration
@@ -93,6 +94,333 @@ hh(16:20) = [0,0,0,0,1];
 %17 = qwet
 %18 = hr
 %19 = smp time series
+%20 = h2osoi with obs
+
+
+if hh(25)>0
+    ix  = mcsec>0;
+    g   = month(ix);
+    out = splitapply(@mean,fpsn(:,ix)',g');
+    subplot(1,2,1)
+    bar(out(:,1)-out(:,3))
+    ylim([-2.5,2.5])
+    
+    ix  = mcsec>=diurn(25)&mcsec<=diurn(28);
+    g   = month(ix);
+    [(1:12)',splitapply(@mean,btran(1,ix)',g')]
+    
+    ix  = year>2001;
+    g   = month(ix);
+    out = splitapply(@mean,fpsn(:,ix)',g');
+    subplot(1,2,2)
+    bar(out(:,2)-out(:,4))
+    ylim([-2.5,2.5])
+    
+    ix  = year>2001&mcsec>=diurn(25)&mcsec<=diurn(28);
+    g   = month(ix);
+    [(1:12)',splitapply(@mean,btran(2,ix)',g')]
+    
+    ix = year>2001;
+    g   = month(ix);
+    [(1:12)',splitapply(@mean,vpd(ix)',g')]
+    
+    ix = year>2001&mcsec==diurn(10);
+    g   = month(ix);
+    [(1:12)',splitapply(@mean,vegwp(8,ix)',g')/101972]
+    
+    
+end
+
+
+if hh(24)>0
+    g   = (year-2001)*365+doy;
+    out = 1800*4e-7*splitapply(@sum,fctr',g');
+    
+    ss = vegwp(4,mcsec==diurn(10));
+    ss = [ss;vegwp(8,mcsec==diurn(10))];
+    ss = [ss;splitapply(@mean,zr*smp(41:60,:),g)];
+    ss = [ss;splitapply(@mean,zr*smp(61:80,:),g)];
+    ss = ss/101972;
+    
+    xdk = figure;
+    pp = [1,2,1,2];
+    xx = [-1,-1,-4,-4];
+    rr = {'(c)','(d)','(a)','(b)'};
+    cc = [3,4,1,2]
+    for i=1:4
+        subplot(2,2,cc(i))
+        ix = p(:,pp(i))>0;
+        plot(ss(i,ix),out(ix,i)-p(ix,pp(i)),'k.')
+        xlim([xx(i),0])
+        ylim([-3,3])
+        
+        if i==1
+            ylabel({'Transpiration (mm/d)';'PHS-Obs'})
+        end
+        
+        if i<3
+            xlabel('Model Soil Potential (MPa)')
+        end
+        
+        if i==3
+            ylabel({'Transpiration (mm/d)';'SMS-Obs'})
+            title('AMB')
+        end
+        if i==4
+            title('TFE')
+        end
+        if i==2||i==4
+            set(gca,'yticklabel',[])
+        end
+        box off
+        text(0.97*xx(i),2.6,rr{i},'FontSize',14,'FontWeight','bold')
+    end
+    
+            xdk.Units = 'inches';
+    xdk.Position = [2,2,7,5];
+    xdk.PaperSize = [7,5];
+    xdk.PaperPosition = [0,0,7,5];
+
+    if hh(24)>0
+        print(xdk,'../figs3/t_vs_smp','-dpdf')
+    end
+    
+    
+end
+
+
+if hh(23)>0
+    zz = 0:860;
+    zr = 0.98.^(zz);
+    
+    xdk = figure;
+    plot(zr,0:-0.01:-8.6,'k','LineWidth',2)
+    ylim([-9,0])
+    set(gca,'ytick',-9:1:0)
+    xx = cell(10,1);
+    xx(:) = {''};
+    xx(1:3:10) = [{'9'},{'6'},{'3'},{'0'}];
+    set(gca,'yticklabel',xx)
+    ylabel('Depth (m)')
+    xlabel('Cumulative Root Fraction')
+    box off
+    grid on
+    
+        xdk.Units = 'inches';
+    xdk.Position = [2,2,4,3];
+    xdk.PaperSize = [4,3];
+    xdk.PaperPosition = [0,0,4,3];
+
+    if hh(23)>0
+        print(xdk,'../figs3/roots','-dpdf')
+    end
+    
+end
+
+
+
+if hh(22)>0
+    n = length(fsds);
+    out = zeros(2,n);
+    for ee=0:1
+        for i=1:length(prec)
+            t = qrootsink((1:20)+ee*20,i);
+            surp = 0;
+            up   = 0;
+            down = 0;
+            for ss=20:-1:1
+                x = t(ss);
+                if x>0
+                    surp = surp+x;
+                elseif ss==2
+                    up = up-x;
+                elseif abs(x)<=surp
+                    up = up-x;
+                    surp = surp+x;
+                elseif surp>0
+                    up = up+surp;
+                    down = down-x-surp;
+                    surp = surp+x;
+                else
+                    surp = surp+x;
+                    down = down-x;
+                    
+                end
+            end
+            out(1+ee*2,i)=up;
+            out(2+ee*2,i)=down;
+        end
+    end
+    
+    xdk=figure;
+
+    ee = [0,1,0,1];
+    yy = [2002,2002,2003,2003];
+    tt = {'AMB-2002','TFE-2002','AMB-2003','TFE-2003'};
+    
+    addpath('/Users/kennedy/Documents/MATLAB/othercolor')
+    cc=colormap(othercolor('BrBG4'));
+    
+    rr = {'(a)','(b)','(c)','(d)'};
+    
+    for i=1:4
+        subplot(2,2,i)
+        ix = (mcsec<diurn(13)|mcsec>diurn(36))&year==yy(i);
+        ix2 = (~(mcsec<diurn(13)|mcsec>diurn(36)))&year==yy(i);
+        a1=(splitapply(@sum,180*out(1+ee(i)*2,ix),month(ix)));
+        a2=(splitapply(@sum,180*out(1+ee(i)*2,ix2),month(ix2)));
+        b1=(splitapply(@sum,180*out(2+ee(i)*2,ix),month(ix)));
+        b2=(splitapply(@sum,180*out(2+ee(i)*2,ix2),month(ix2)));
+        
+        b=bar(2:3:36,a1+a2,0.3);
+        b.FaceColor=cc(20,:);
+        b.EdgeColor=cc(15,:);
+        hold on
+        b=bar(2:3:36,a1,0.3);
+        b.FaceColor=cc(5,:);
+        b.EdgeColor=cc(4,:);
+        b=bar(1:3:36,b1+b2,0.3);
+        b.FaceColor=cc(40,:);
+        b.EdgeColor=cc(50,:);
+        b=bar(1:3:36,b1,0.3);
+        b.FaceColor=cc(60,:);
+        b.EdgeColor=cc(61,:);
+        xlim([0,36])
+        ylim([0,10])
+        set(gca,'xtick',1.5:3:36)
+        set(gca,'xticklabel',1:12)
+        xlabel('Month')
+        ylabel('HR (cm)')
+        box off
+        title(tt{i})
+        text(0.9,9.3,rr{i},'FontSize',14,'FontWeight','bold')
+        if i==2
+                legend('Up,day','Up,night',...
+        'Down,day','Down,night')
+        end
+    end
+
+    xdk.Units = 'inches';
+    xdk.Position = [2,2,7,5];
+    xdk.PaperSize = [7,5];
+    xdk.PaperPosition = [0,0,7,5];
+
+    if hh(22)>0
+        print(xdk,'../figs3/hr2','-dpdf')
+    end
+    
+end
+
+if hh(21)>0
+        amb_sm = csvread('../goodsim/control_sm.csv');
+    amb_sm(amb_sm==0) = nan;
+    tfe_sm = csvread('../goodsim/tfe_sm.csv');
+    tfe_sm(tfe_sm==0) = nan;
+    
+    amb_sm(:,1) = 2001+amb_sm(:,1)/365;
+    tfe_sm(:,1) = 2001+tfe_sm(:,1)/365;
+    
+    %which soil layer
+    depths = [nan,0.15,0.5,1,2,3,4,5];
+    zzix   = nan(8,1);
+    for i=3:8
+        j  = 0;
+        go = 1;
+        while go
+            j = j+1;
+            if zs(j)>depths(i)
+                zzix(i)=j-1;
+                go = 0;
+            end
+        end
+    end
+    
+    g = (year-2001)*365+doy;
+    xv = 2001+(0.5:1095)/365;
+    
+    
+    tt = {'AMB','TFE'};
+    xx = [0.12,0.57,0.12,0.57];
+    yy = [0.08,0.08,0.53,0.53];
+    rr = {'(c)','(d)','(a)','(b)'};
+
+    xdk = figure;
+    ss = [2,4,1,3];
+    
+    uu = [];
+    
+    for i=[2,4:8]
+    for j=1:4
+
+        if i>3
+            jj=subplot(6,4,ss(j)+(i-3)*4);
+            plot(xv,splitapply(@mean,h2osoi(zzix(i)+(j-1)*20,:),g),'LineWidth',1.5)
+            hold on
+        else
+
+            jj=subplot(6,4,ss(j));
+            plot(xv,splitapply(@mean,1/0.3*[dz(1:4),0.1]*h2osoi((1:5)+(j-1)*20,:),g),'LineWidth',1.5)
+            hold on
+        end
+        if j==1||j==3
+            plot(amb_sm(:,1),amb_sm(:,i)/100,'rx')
+        else
+            plot(tfe_sm(:,1),tfe_sm(:,i)/100,'rx')
+        end
+        ylim([0.05,0.35])
+        xlim([2001,2004])
+        
+        set(gca,'xtick',2001:2004)
+
+        if i~=8
+            set(gca,'xticklabel',[])
+        end
+        
+        
+        set(gca,'ytick',0.05:0.1:0.35)
+        if j~=3
+            set(gca,'yticklabel',[])
+        end
+        uu = [uu,{jj}];
+    
+        box off
+    end
+    end
+    
+    legend('Model','Obs')
+    ax1 = axes('Position',[0 0 1 1],'Visible','off');
+    
+    yy = [0,0.88,0];
+    yy = [yy,yy(2)-0.1425:-0.1425:0];
+    dd = {'','0-0.3m','','1m','2m','3m','4m','5m'};
+    for i=[2,4:8]
+    text(0.9,yy(i),dd{i},'FontSize',11,'FontWeight','bold')
+    end
+    dd = {'SMSamb','PHSamb','SMStfe','PHStfe'};
+    xx = [0.205:0.2062:1];
+    for i=1:4
+        text(xx(i),0.95,dd{i},'FontSize',12,'FontWeight','bold',...
+            'HorizontalAlignment','Center')
+    end
+    text(0.05,0.42,'Volumetric Soil Moisture (-)','FontSize',11,...
+        'Rotation',90)
+    text(0.5,0.05,'Year','FontSize',11,...
+        'HorizontalAlignment','Center')
+        
+        
+    
+    
+        xdk.Units = 'inches';
+    xdk.Position = [2,2,7,9];
+    xdk.PaperSize = [7,9];
+    xdk.PaperPosition = [0,0,7,9];
+    if hh(21)>1
+        print(xdk,'../figs3/suppsm2','-dpdf')
+    end
+    
+    
+    
+end
 
 if hh(20)>0
         amb_sm = csvread('../goodsim/control_sm.csv');
@@ -123,10 +451,16 @@ if hh(20)>0
     i=3;
     
     tt = {'AMB','TFE'};
+    xx = [0.12,0.57,0.12,0.57];
+    yy = [0.08,0.08,0.53,0.53];
+    rr = {'(c)','(d)','(a)','(b)'};
+
+    xdk = figure;
+    
     ss = [3,4,1,2];
     for j=1:4
-        subplot(2,2,ss(j))
-        plot(xv,splitapply(@mean,h2osoi(zzix(3)+(j-1)*20,:),g))
+        subplot('Position',[xx(j),yy(j),0.4,0.41])
+        plot(xv,splitapply(@mean,h2osoi(zzix(3)+(j-1)*20,:),g),'LineWidth',1.5)
         hold on
         if j==1||j==3
             plot(amb_sm(:,1),amb_sm(:,3)/100,'rx')
@@ -135,6 +469,7 @@ if hh(20)>0
         end
         ylim([0.05,0.35])
         
+        set(gca,'xtick',2001:2004)
         if ss(j)<3
         title(tt{ss(j)})
         set(gca,'xticklabel',[])
@@ -142,19 +477,33 @@ if hh(20)>0
             xlabel('Year')
         end
         
+        text(2001.1,0.08,rr{j},'FontSize',14,'FontWeight','bold')
         set(gca,'ytick',0.05:0.1:0.35)
         
-        if j==1||j==3
-            ylabel('Volumetric Soil Moisture')
+        if j==1
+            ylabel({'PHS (Layer 7)';'Volumetric Soil Moisture (-)'})
+        elseif j==3
+            ylabel({'SMS (Layer 7)';'Volumetric Soil Moisture (-)'})
         else
             set(gca,'yticklabel',[])
         end
+        if j==2
+            legend('Model','Obs','Location','Northeast')
+        end
+        box off
+    end
+    
+        xdk.Units = 'inches';
+    xdk.Position = [2,2,7,5];
+    xdk.PaperSize = [7,5];
+    xdk.PaperPosition = [0,0,7,5];
+    if hh(20)>1
+        print(xdk,'../figs3/sm2','-dpdf')
     end
     
     
     
 end
-
 
 if hh(19)>0
     yy=2002;
@@ -1075,8 +1424,8 @@ if hh(8)>0
     ssphs2 = ssphs2(1:52551);
     ssphs  = [ssphs;ssphs2];
     
-    
-    
+
+            
     ss = {'(c)','(d)'};
     for i = 1:2
         cc = cc+1;
