@@ -516,32 +516,32 @@ PHS values correspond to predawn root water potential.}
     
 \section{Discussion}
 \subsection{The promise of plant hydraulics}
-    People are excited about plant hydraulics, especially if we can constrain parameter ranges and model complexity \citep{sperry2015,rogers2017}
-    VWP is cool \citep{sperry2017,anderegg2017,mcdowell2018}
-    Site-level models \citep{williams1996,sperry1998,bohrer2005}.
-    Coupled to global models \citep{bonan2014,xu2016,christoffersen2016}.
-    Here we implement plant hydraulics into CLM.
-    
+    Plant hydraulics have promised to improve model predictions of vegetation response to climate change \citep{sperry2015}, 
+    especially if parameter ranges and model complexity can be constrained \citep{rogers2017}.
+    Numerous site-level models have deployed plant hydraulics (e.g. \citet{williams1996,sperry1998,bohrer2005}), and studies show
+    vegetation water potential can improve predictions of stomatal response to the environment \citep{sperry2017,anderegg2017},
+    More recently hydraulics have been coupled to global models \citep{bonan2014,xu2016,christoffersen2016}.
+
+            In this study, we implement plant hydraulic theory within CLM5, 
+    using vegetation water potential to modulate leaf gas exchange and root water uptake.
     We model water potential according to circuit analogy (Figure \ref{circuit}), which captures expected diurnal and seasonal dynamics of leaf water potential (Figure \ref{fig:vwp}).
     Under ambient conditions hydraulic resistance is largest from root-to-stem (Figure \ref{fig:vwp}a), 
-    while the added resistance from TFE is primarily from soil-to-root, consistent with previous results \citep{fisher2006}.
-    No pressure drop stem-to-leaf (Figure \ref{fig:vwp}a,b), as we don't properly model leaf conductance \citep{franks2007}, but the functionality is there for those interested.
-    
-    The looming concern has been added complexity \citep{verhoef2014}, so we installed a simplified model.
+    while the added resistance from TFE is primarily from soil-to-root (Figure \ref{fig:vwp}b), consistent with previous results \citep{fisher2006}.
+
+    The looming concern has been added complexity \citep{verhoef2014}, so we installed a simplified model (see Section zqz).
     Evidence suggests complexity can be managed \citep{bartlett2016,mcdowell2018,powell2018}.
-    Hydraulic models introduce new observational streams.
     LWP can be monitored in the field \citep{boyer1967} and has been shown to correlate with remote sensing products \citep{momen2017}, 
     which could provide crucial validation.
     Parameter values can be measured in the field \citep{sack2002} and are available in the TRY database \citep{kattge2011}
 
 \subsection{Water stress and stomatal conductance}
 
-PHS uses leaf water potential to invoke water stress for modeling photosynthesis and transpiration.
-Brief description of stomatal conductance theory. 
-Point to the more recent studies.
-Ours is a xylem tension stress.
+Stress, which was previously based on soil potential, switches to leaf potential, imparting a diurnal cycle (Figure \ref{fig:stress1}).
+As such, stress now depends on transpiration demand, and, in turn, VPD and solar radiation (Figures \ref{fig:stress2},\ref{supp:fsds}).
+Medlyn does already reduce stomatal conductance based on VPD, but based on A-$\lambda$E.
+Here we are trying to impart xylem tension stress, allowing plants to avoid cavitation and embolism.
+Support for this in the literature \citep{novick2016a,sperry2017}, but still no consensus on the best functional form \citep{zhou2013}. 
 
-Discuss results of stress
 
 Discuss how stress influences GPP and transpiration.
 
