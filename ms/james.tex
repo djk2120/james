@@ -526,7 +526,7 @@ PHS values correspond to predawn root water potential.}
     especially if parameter ranges and model complexity can be constrained \citep{rogers2017}.
     Numerous site-level models have deployed plant hydraulics (e.g. \citet{williams1996,sperry1998,bohrer2005}), and studies show
     vegetation water potential can improve predictions of stomatal response to the environment \citep{sperry2017,anderegg2017},
-    More recently hydraulics have been coupled to global models \citep{bonan2014,xu2016,christoffersen2016}.
+    More recently hydraulics have been coupled to global models \citep{bonan2014,xu2016,christoffersen2016}, but most Earth System Models do not incorporate plant xylem.
 
     In this study, we implement plant hydraulic theory within CLM5, 
     using vegetation water potential to modulate leaf gas exchange and root water uptake.
@@ -534,11 +534,12 @@ PHS values correspond to predawn root water potential.}
     Under ambient conditions hydraulic resistance is largest from root-to-stem (Figure \ref{fig:vwp}a), 
     while the added resistance from TFE is primarily from soil-to-root (Figure \ref{fig:vwp}b), consistent with previous results \citep{fisher2006}.
 
-    The looming concern has been added complexity \citep{verhoef2014}, so we installed a simplified model (see Section zqz).
-    Evidence suggests complexity can be managed \citep{bartlett2016,mcdowell2018,powell2018}.
+    Concerns exist in the literature regarding hydraulic model complexity and parameterization \citep{verhoef2014,drake2017}, 
+    which informed our model design (see Section zqz).
+    Support for hydraulic models better mortality and productivity \citep{mcdowell2018,choat2012}, complexity can be managed, by  \citep{bartlett2016,powell2018}.
     LWP can be monitored in the field \citep{boyer1967} and has been shown to correlate with remote sensing products \citep{momen2017}, 
     which could provide crucial validation.
-    Parameter values can be measured in the field \citep{sack2002} and are available in the TRY database \citep{kattge2011}
+    Parameter values can be measured in the field \citep{sack2002} and are available in the TRY database \citep{kattge2011}.
 
 \subsection{Water stress and stomatal conductance}
 
@@ -882,8 +883,8 @@ PHS values correspond to predawn root water potential.}
     \clearpage
     \begin{figure}[h]
      \centering
-     \includegraphics[width=30pc]{../figs3/hr2.pdf}
-     \caption{Total hydraulic redistribution (cm) by month across in 2002 and 2003. For (a) ambient through-fall conditions, and (b) 60\% through-fall exclusion. 
+     \includegraphics[width=30pc]{../figs3/hr.pdf}
+     \caption{Total hydraulic redistribution (cm) by month across in 2003. For (a) ambient through-fall conditions, and (b) 60\% through-fall exclusion. 
      Darker shading shows portion of HR at night [6pm,6am), lighter shading shows portion of HR during day [6am,6pm).}
      \label{fig:hr}
   \end{figure}
@@ -896,7 +897,9 @@ PHS values correspond to predawn root water potential.}
      \caption{Vertical profile of soil water potential (MPa) over time under 60\% through-fall exclusion, for
      (a) PHS, and 
      (b) SMS.
-     Note that color axes are different. }
+     Note that color axes are different.
+     Figure \ref{supp:sm} duplicates this analysis under ambient conditions.
+     Figure \ref{fig:sm2} replots this data along with observational soil moisture at 0.5m depth. }
      \label{fig:sm}
   \end{figure}
   
@@ -904,18 +907,17 @@ PHS values correspond to predawn root water potential.}
     \begin{figure}[h]
      \centering
      \includegraphics[width=30pc]{../figs3/sm2.pdf}
-     \caption{Vertical profile of soil water potential (MPa) over time under 60\% through-fall exclusion, for
-     (a) PHS, and 
-     (b) SMS.
-     Note that color axes are different. }
-     \label{fig:sm}
+     \caption{Volumetric soil moisture (-) over time under ambient and TFE conditions at depth of 50cm.
+     (a/b) SMS
+     (c/d) PHS
+     Arrows indicate start of TFE. Figure \ref{supp:sm2} shows the same plots at 7 other soil depths. }
+     \label{fig:sm2}
   \end{figure}
 
               \begin{figure}[h]
      \centering
-     \includegraphics[width=30pc]{../figs3/t_vs_smp.pdf}
-     \caption{Time series of soil moisture by soil layer.
-     Complements Figure \ref{fig:sm}}
+     \includegraphics[width=30pc]{../figs3/sm3.pdf}
+     \caption{Difference between modeled and observed transpiration (mm/d) versus soil potential.}
      \label{fig:cool}
   \end{figure}
           \clearpage
@@ -941,15 +943,6 @@ PHS values correspond to predawn root water potential.}
      \label{supp:fsds}
        \end{figure}
 
-
-      \begin{figure}[h]
-     \centering
-     \includegraphics[width=30pc]{../figs2/top3m.pdf}
-     \caption{Total water content of the top three meters of the soil column through time for the four simulations.}
-     \label{top3m}
-  \end{figure}
-  \clearpage
-
  
 
         \begin{figure}[h]
@@ -960,17 +953,10 @@ PHS values correspond to predawn root water potential.}
   \end{figure}
   \clearpage
   
-        \begin{figure}[h]
-     \centering
-     \includegraphics[width=30pc]{../figs3/suppcond.pdf}
-     \caption{May be better captured by next figure}
-     \label{supp:cond}
-  \end{figure}
-  \clearpage
   
   \begin{figure}[h]
      \centering
-     \includegraphics[width=30pc]{../figs2/suppfig2.pdf}
+     \includegraphics[width=30pc]{../figs3/suppcond.pdf}
      \caption{Log of conductance versus soil potential for Soil Layer 3 (2003).}
      \label{supp:cond2}
   \end{figure}

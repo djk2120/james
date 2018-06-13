@@ -83,7 +83,8 @@ hh(1:5)   = [0,0,0,0,0];
 hh(6:10)  = [0,0,0,0,0];
 hh(11:15) = [0,0,0,0,0];
 hh(16:20) = [0,0,0,0,0];
-hh(21:25) = [0,0,0,0,1];
+hh(21:25) = [0,0,0,0,0];
+hh(26:30) = [0,1,0,0,0];
 
 %1  = vwp
 %6  = transpiration
@@ -96,6 +97,147 @@ hh(21:25) = [0,0,0,0,1];
 %19 = smp time series
 %20 = h2osoi with obs
 
+if hh(27)>0
+    dp = smp+255000;
+    dp(dp<100)=0;
+    k = qrootsink./dp;
+    k(dp==0) = nan;
+    k(41:60,fctr(:,3)<1) = nan;
+    k(61:80,fctr(:,4)<1) = nan;
+    k(1:40,:) = ksr(1:40,:);
+    
+    ix = mcsec>=diurn(25)&mcsec<=diurn(28)&year==2003;
+    xdk = figure;
+    rr = {'(a)','(b)','(c)','(d)'};
+    tt = {'PHS','SMS'};
+    for i=1:2
+        subplot(2,2,i)
+        plot(smp(25+(i-1)*40,ix)/101972,log10(k(25+(i-1)*40,ix)),'.')
+        hold on
+        plot(smp(5+(i-1)*40,ix)/101972,log10(k(5+(i-1)*40,ix)),'.')
+        ylim([-13,-7])
+        xlim([-2.5,0])
+        title(tt{i})
+        if i==1
+        ylabel({'Log-10 of Layer 5';'conductance [log(1/s)]'})
+        end
+        box off
+        text(-2.4,-12.3,rr{i},'FontSize',14,'FontWeight','bold')
+    end
+    for i=1:2
+        subplot(2,2,i+2)
+        if i==2
+        plot([-10,1],[0,0],'k:')
+        end
+        hold on
+        plot(smp(25+(i-1)*40,ix)/101972,qrootsink(25+(i-1)*40,ix),'.')
+        
+        plot(smp(5+(i-1)*40,ix)/101972,qrootsink(5+(i-1)*40,ix),'.')
+        ylim([-2e-5,5e-5])
+        box off
+        xlim([-2.5,0])
+        if i==1
+            plot([-10,1],[0,0],'k:')
+            ylabel({'Layer 5 Root Water Uptake';'(mm/s)'})
+            legend('TFE','AMB','location','northwest')
+        end
+        text(-2.4,7/60*7e-5-2e-5,rr{i+2},'FontSize',14,'FontWeight','bold')
+
+    end
+    
+    
+    xdk.Units = 'inches';
+    xdk.Position = [2,2,7,5];
+    xdk.PaperSize = [7,5];
+    xdk.PaperPosition = [0,0,7,5];
+    
+    if hh(27)>0
+        print(xdk,'../figs3/suppcond','-dpdf')
+    end
+    
+    
+end
+
+
+
+if hh(26)>0
+
+   g  = (year-2001)*365+doy; 
+    ss = [vegwp(4,mcsec==diurn(10))/101972;...
+        vegwp(8,mcsec==diurn(10))/101972;...
+        splitapply(@mean,zr*smp(41:60,:),g)/101972;...
+        splitapply(@mean,zr*smp(61:80,:),g)/101972];
+   
+   tt = 1800*4e-7*splitapply(@sum,fctr',g');
+   rr = {'AMB','TFE'};
+   kk = [1,2,1,2];
+   cc = [3,4,1,2];
+   
+   xx = [0.08,0.55,0.08,0.55];
+   yy = [0.1,0.1,0.55,0.55];
+   zz = {'(c)','(d)','(a)','(b)'};
+   
+   xdk = figure;
+   for j = 1:4
+       k = kk(j);
+       subplot('Position',[xx(j),yy(j),0.44,0.38])
+       
+       ix = p(:,k)>0;
+       gg = nan(size(p(:,1)));
+       if j<3
+           bins = -1:0.05:0;
+       else
+           bins = -4:0.2:0;
+       end
+       out = zeros(8,1);
+       for i = 1:length(bins)-1
+           ixb = ix'&ss(j,:)>bins(i)&ss(j,:)<=bins(i+1);
+           gg(ixb) = i;
+           out(i) = mean(tt(ixb,j)-p(ixb,k));
+       end
+       plot([-100,100],[0,0],'k:')
+       hold on
+       boxplot(tt(:,j)-p(:,k),gg)
+       ylim([-3,3])
+       
+       aa = get(gca,'xlim');
+       xlim([aa(2)-20,aa(2)])
+       
+       if j==2||j==4
+           set(gca,'yticklabel',[])
+       elseif j==1
+           ylabel({'Transpiration (mm/d)';'PHS-Obs'})
+       else
+           ylabel({'Transpiration (mm/d)';'SMS-Obs'})
+       end
+       
+       if j<3
+           set(gca,'xtick',aa(2)-20:5:aa(2))
+           set(gca,'xticklabel',-1:0.25:0)
+           xlabel('Model Soil Potential (MPa)')
+       else
+           set(gca,'xtick',aa(2)-20:5:aa(2))
+           set(gca,'xticklabel',-4:1:0)
+           title(rr{j-2})
+           
+       end
+       text(aa(2)-19.4,2.5,zz{j},'FontSize',14,'FontWeight','bold')
+       box off
+       
+   end
+   ax1 = axes('Position',[0 0 1 1],'Visible','off');
+   %text(0.514,0.076,'0','FontSize',10)
+   %text(0.9832,0.076,'0','FontSize',10)
+
+               xdk.Units = 'inches';
+    xdk.Position = [2,2,7,5];
+    xdk.PaperSize = [7,5];
+    xdk.PaperPosition = [0,0,7,5];
+    if hh(26)>1
+        print(xdk,'../figs3/sm3','-dpdf')
+    end
+    
+end
 
 if hh(25)>0
     ix  = mcsec>0;
@@ -481,19 +623,29 @@ if hh(20)>0
         set(gca,'ytick',0.05:0.1:0.35)
         
         if j==1
-            ylabel({'PHS (Layer 7)';'Volumetric Soil Moisture (-)'})
+            ylabel({'PHS (depth = 50cm)';'Volumetric Soil Moisture (-)'})
         elseif j==3
-            ylabel({'SMS (Layer 7)';'Volumetric Soil Moisture (-)'})
+            ylabel({'SMS (depth = 50cm)';'Volumetric Soil Moisture (-)'})
         else
             set(gca,'yticklabel',[])
         end
-        if j==2
-            legend('Model','Obs','Location','Northeast')
-        end
+
         box off
+        
+        if j==2||j==4
+                plot(2001+[10/12,10/12],[.3*4/30+.05,.3*1/30+.05],'k-','LineWidth',2)
+    plot(2001+[10/12,9.7/12],[.3*12/300+.05,.2*4/30+.05],'k-','LineWidth',2)
+    plot(2001+[10/12,10.3/12],[.3*12/300+.05,.2*4/30+.05],'k-','LineWidth',2)
+        end
+                if j==2
+            legend({'Model','Obs'},'Location','Northeast')
+        end
     end
     
-        xdk.Units = 'inches';
+    
+    
+    
+    xdk.Units = 'inches';
     xdk.Position = [2,2,7,5];
     xdk.PaperSize = [7,5];
     xdk.PaperPosition = [0,0,7,5];
