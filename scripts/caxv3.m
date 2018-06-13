@@ -84,7 +84,7 @@ hh(6:10)  = [0,0,0,0,0];
 hh(11:15) = [0,0,0,0,0];
 hh(16:20) = [0,0,0,0,0];
 hh(21:25) = [0,0,0,0,0];
-hh(26:30) = [0,1,0,0,0];
+hh(26:30) = [0,0,0,0,1];
 
 %1  = vwp
 %6  = transpiration
@@ -96,6 +96,68 @@ hh(26:30) = [0,1,0,0,0];
 %18 = hr
 %19 = smp time series
 %20 = h2osoi with obs
+
+if hh(30)>0
+    hr = qrootsink(1:40,:);
+    for ss=1:40
+        hr(ss,:) = -qrootsink(ss,:).*(qrootsink(ss,:)<0);
+    end
+    hr = 180*hr;
+    g  = (year-2001)*12+month;
+    subplot(4,1,1)
+    bar(reshape(splitapply(@sum,sum(hr(1:20,:)),g),12,3)')
+    subplot(4,1,2)
+    bar(reshape(splitapply(@sum,sum(hr(1:20,:)),g),12,3))
+    subplot(4,1,3)
+    bar(reshape(splitapply(@sum,sum(hr(21:40,:)),g),12,3)')
+    subplot(4,1,4)
+    bar(reshape(splitapply(@sum,sum(hr(21:40,:)),g),12,3))
+    
+    figure
+    bar(reshape(180*splitapply(@sum,prec,g),12,3))
+    
+end
+
+if hh(29)>0
+    
+    ix = year==2003&month>8&month<12;
+    180*4e-7*sum(fctr(:,ix),2)
+    
+    if 1==2
+    g  = (year-2001)*365+doy;
+    xv = 2001+(0.5:1095)/365;
+    plot(xv,splitapply(@mean,dz*h2osoi(21:40,:),g)-splitapply(@mean,dz*h2osoi(1:20,:),g))
+    hold on
+    plot(xv,splitapply(@mean,dz*h2osoi(61:80,:),g)-splitapply(@mean,dz*h2osoi(41:60,:),g))
+    end
+end
+
+
+if hh(28)>0
+    ix = year==2003&month>8&month<12;
+    xv = doy(ix)+mcsec(ix)/max(diurn);
+    
+    xdk = figure;
+    plot(xv,h2osoi(22,ix),'k','LineWidth',2)
+    hold on
+    plot(xv,h2osoi(62,ix),'Color',0.5*ones(1,3),'LineWidth',2)
+    legend('PHS','SMS')
+       
+    ylabel('Volumetric Soil Moisture (-)')
+    xlabel('Day of 2003')
+    
+    xdk.Units = 'inches';
+    xdk.Position = [2,2,7,4];
+    xdk.PaperSize = [7,4];
+    xdk.PaperPosition = [0,0,7,4];
+    
+    if hh(28)>0
+        print(xdk,'../figs3/supplayer2','-dpdf')
+    end
+    
+    
+end
+
 
 if hh(27)>0
     dp = smp+255000;
@@ -872,8 +934,55 @@ if hh(17)>0
         print(xdk,'../figs3/qwet','-dpdf')
     end
     
+
+    go = 1;
+    i  = 10;
+    while go
+        i = i+1;
+        if sum(out(i:end,1))<0
+            i
+            go = 0;
+        end
+        if i==859
+            i
+            go = 0;
+        end
+    end
+    sum(out(i-1:end,1))
+    sum(out(i:end,1))
+    dd = i-1+sum(out(i-1:end,1))/out(i-1,1)
     
     
+    disp('SMS extracts:')
+    ttt = (sum(out(i:end,3))+out(i-1,3)*sum(out(i-1:end,1))/out(i-1,1));
+    disp(ttt)
+    disp(ttt/sum(out(:,3)))
+    
+    
+    go = 1;
+    i  = 1;
+    while go
+        i = i+1;
+        if sum(out(i:end,2))<0
+            i
+            go = 0;
+        end
+        if i==859
+            i
+            go = 0;
+        end
+    end
+    sum(out(i-1:end,2))
+    sum(out(i:end,2))
+    sum(out(i-1:end,2))/out(i-1,2)
+    dd = i-1+sum(out(i-1:end,2))/out(i-1,2)
+    
+    disp('SMS extracts:')
+    ttt = (sum(out(i:end,4))+out(i-1,4)*sum(out(i-1:end,2))/out(i-1,2));
+    disp(ttt)
+    disp(ttt/sum(out(:,4)))
+        
+        
     
 end
 

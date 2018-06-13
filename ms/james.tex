@@ -477,39 +477,34 @@ PHS values correspond to predawn root water potential.}
 
     
 \subsection{Hydraulic conductance}
-    In Figures \ref{fig:cond} and \ref{fig:cond2}, we compare conductance values derived from the PHS and SMS implementations.
-    With SMS, $k$ is not explicitly modeled, so instead we infer $k$, 
-    by dividing root water uptake $q_i$, by $\Delta\psi$ as defined in Equation \ref{kb}.
-    We interpret the constraint that $\Delta\psi$ be greater than or equal to zero to mean 
-    that conductance is zero in non-conforming cases, which we extend to $k=0$ when $\Delta\psi<\text{1 kPa}$.
-    For our analyses, we consider only points when transpiration is greater than 4 W/m2, which improves the tractability of inferring conductance,
-    given that SMS root water uptake is precluded absent transpiration (REPHRASE). 
-    
-    For Figure \ref{fig:cond}a,b, conductance is plotted from Soil Layer 3 (spans from 6 to 12 cm below ground),
-     for all points during 2003 when transpiration is greater than 4 W/m2 (n=7752).
-    For Figure \ref{fig:cond2}a,b, conductance is averaged daily, subject to the same restrictions.
-    Average intra-day standard deviation is reported for FMA, by which we calculate a daily standard deviation of complying points, and report the average over the 89 days.
-
+    Briefly describe implied conductance.
+    SMS features diurnal cycle, increases with TFE.
+    PHS no diurnal cycle, decreases with TFE (Figure \ref{fig:cond}).
+    Instead daily dynamics come from $\Delta \psi$ (Supp Fig \ref{supp:cond})
+    SMS conductance tethered to transpiration.
+    PHS conductance xylem vulnerability and Brooks-Corey with strong dependence on soil potential (Supp Fig \ref{supp:cond2}a).
 
 \subsection{Root water uptake}
-    Vertical profiles of the rate of root water uptake are presented in Figures \ref{fig7}a and \ref{fig8}a, averaged over SON and FMA, respectively.
-    This is plotted as average cumulative rate of root water uptake, starting at depth (8.6 meters).
-    Time series of total root water uptake are also provided (Figs \ref{fig7}b,c, \ref{fig8}b,c).
-    We plot total cumulative water extracted from near the surface over time in Figures \ref{fig7}b and \ref{fig8}b, 
-    accompanied by that extracted from depths beyond 20 centimeters in Figures \ref{fig7}c and \ref{fig8}d.
-    We chose 20 centimeters as the break point based on the vertical profiles of root water uptake, and with a preference for not splitting any of the discrete soil layers.
-    Soil Layers 1-4 span 0 to 0.2 meters, and Soil Layers 5-20 span 0.2 to 8.6 meters.
-    Time series of total cumulative ambient precipitation are shown for comparison (Figs \ref{fig7}b and \ref{fig8}b).
+    dry-amb, comparable total transpiration (phs:28.3, sms:28.5cm)  but distinct profiles, PHS removes less water from intermediate soil layers (0.5-1.5meters) (Figure \ref{fig:qdry}d),.
+    Partitioning between surface and beyond more sensitive to precipitation with PHS (Figure \ref{fig:qdry}a-c).
+    Both models decrease surface extraction with TFE (Figure \ref{fig:qdry}b), but PHS has a larger compensation from depth (Figure \ref{fig:qdry}c),
+    allowing more overall transpiration (14.6 vs. 10.8 cm).
     
+    Wet season PHS opts for surface water, with zero net extraction beyond [35.2,9.6cm].
+    SMS for reference extracts [49.8\%,81.5\%] of water from down there (Figure \ref{fig:qwet}). 
+    PHS does extract farther into the soil profile, but in service of HR, 
+    sending surface water to depth.
+    PHS can achieve higher root water uptake rates, especially under wet conditions, where, for example, 
+    Soil Layer 2 dries much faster than with the SMS formulation after rain events (Supp Fig \ref{supp:layer2})
         
 \subsection{Hydraulic redistribution}
-    Hydraulic redistribution refers to flows of water between soil layers through vegetation substrate.
-    To calculate total HR, we sum the negative root water uptake fluxes ((i.e., root to soil fluxes) across all soil layers.
-    Total HR, partitioned by month and by daytime versus nighttime is shown in Figure \ref{fig:hr}.
     Note that over the course of a day or season, HR can occur without net negative root water uptake.
     For example, hydraulic lift may occur at night, moving water from deep in the soil column up to near the surface, which is then more readily available for transpiration during the following day.  This can 
     result in HR occurring even when there is net positive root water uptake.
-    This type of feature is evident in Figure \ref{fig7}, where there is net positive root water uptake throughout the soil column over the 2003 dry season, even when there is significant HR into the near-surface layers (Fig \ref{fig:hr}).
+    This type of feature is evident in
+    HR totals to [/] with the majority occurring at night [/]
+    Different seasonality AMB has more HR during Sept-Dec, TFE during Feb-Apr
+
 
 \subsection{Soil moisture}
     The vertical profile soil water potential under 60\% TFE is plotted in Figure \ref{fig:sm} (SMA, DO NOT SAY THIS IS PLOTTED BUT DESCIRBE RESULTS AND MENTION FIGURE).
@@ -865,7 +860,7 @@ PHS values correspond to predawn root water potential.}
      (b,c) Cumulative water uptake over time from above and below 0.2m, respectively.
      (d) Cumulative precipitation under ambient conditions.
      }
-     \label{fig7}
+     \label{fig:qdry}
   \end{figure}
   
         \clearpage
@@ -877,7 +872,7 @@ PHS values correspond to predawn root water potential.}
      (b,c) Cumulative water uptake over time from above and below 0.2m, respectively.
      (d) Cumulative precipitation under ambient conditions.
      }
-     \label{fig8}
+     \label{fig:qwet}
   \end{figure}
   
     \clearpage
@@ -962,53 +957,28 @@ PHS values correspond to predawn root water potential.}
   \end{figure}
   \clearpage
   
+     \clearpage
     \begin{figure}[h]
      \centering
-     \includegraphics[width=30pc]{../figs3/supprwu.pdf}
-     \caption{Midday root water uptake versus soil potential for Soil Layer 3 (2003).}
-     \label{supp:rwu}
+     \includegraphics[width=30pc]{../figs3/supplayer2.pdf}
+     \caption{Volumetric soil water content in Soil Layer 2 (which spans 2-6cm in depth), for SON-2003, featuring 60\% through-fall exclusion.
+     With PHS (black line), the soil layer can dry out more quickly after rain events.}
+     \label{supp:layer2}
   \end{figure}
-  \clearpage
 
-    \begin{figure}[h]
-     \centering
-     \includegraphics[width=30pc]{../figs2/fig10.pdf}
-     \caption{PHS, nighttime (6pm to 6am) average root water uptake profiles with depth. 
-     Showing nighttime serves to emphasize the profile of hydraulic redistribution.
-     Panel (a) shows cumulative (starting at depth) root water uptake (mm/s) for ambient (solid line) and 60\% through-fall exclusion (dotted line)
-     during the wet (FMA, cyan color) and dry (SON, brown color) seasons. 
-     Panels (b)-(e) present the information from (a) in non-cumulative form. 
-     Note that for panels (b)-(e) negative root water uptake is shaded red, and also that for panel (a), 
-     positive slope indicates water uptake, and negative slope indicates water deposited.
-     Note also that SMS is not shown, because hydraulic redistribution is precluded.}
-     \label{supp:hr}
-  \end{figure}
-  \clearpage
+
   
       \begin{figure}[h]
      \centering
-     \includegraphics[width=30pc]{../figs2/supphr.pdf}
+     \includegraphics[width=30pc]{../figs3/hr2}
      \caption{PHS hydraulic distribution during 2003. Alternative version partitioning by direction.}
      \label{supp:hr2}
   \end{figure}
   \clearpage
   
-     \clearpage
-    \begin{figure}[h]
-     \centering
-     \includegraphics[width=30pc]{../figs2/supplayer2.pdf}
-     \caption{Volumetric soil water content in Soil Layer 2 (which spans 2-6cm in depth), for SON-2003, featuring 60\% through-fall exclusion.
-     With PHS (black line), the soil layer can dry out much more quickly after rain events.}
-     \label{supp:layer2}
-  \end{figure}
 
-        \clearpage
-    \begin{figure}[h]
-     \centering
-     \includegraphics[width=30pc]{../figs2/suppsoilwater.pdf}
-     \caption{Delta soil water}
-     \label{supp:buff}
-  \end{figure}
+
+
   
   
         \clearpage
