@@ -29,7 +29,7 @@ if ~exist('fctr','var')
     a          = getvars( files{3} , offset, ns, 1);
     varlist    = {'FCTR','FPSN','BTRAN','VEGWP','SMP','QROOTSINK',...
         ...          1      2      3       4        5     6
-        'FCEV','FSH','KSR','ELAI','FGEV','H2OSOI'};
+        'FCEV','FSH','KSR','ELAI','FGEV','H2OSOI','QOVER','QDRAI'};
     %     7      8      9     10      11     12     13      14
     vard       = ones(length(varlist),length(files));
     vard(3,:)  = [1,1,1,1];
@@ -84,7 +84,10 @@ hh(6:10)  = [0,0,0,0,0];
 hh(11:15) = [0,0,0,0,0];
 hh(16:20) = [0,0,0,0,0];
 hh(21:25) = [0,0,0,0,0];
-hh(26:30) = [0,0,0,0,1];
+hh(26:30) = [0,0,0,0,0];
+hh(31:35) = [0,0,0,0,0];
+hh(36:40) = [0,0,0,0,0];
+hh(41:45) = [1,0,0,0,0];
 
 %1  = vwp
 %6  = transpiration
@@ -97,24 +100,575 @@ hh(26:30) = [0,0,0,0,1];
 %19 = smp time series
 %20 = h2osoi with obs
 
+if hh(41)>0
+    
+
+    g   = (year-2001)*365+doy;
+    tt = 1800*4e-7*splitapply(@sum,fctr',g');
+    tt = [tt,p,p];
+    ix = mcsec>=diurn(25)&mcsec<=diurn(28);
+    bb = splitapply(@mean,btran(1:2,ix)',g(ix)');
+    bb = [bb,splitapply(@mean,btran(3:4,:)',g')];
+    bb = [bb,bb];
+    pp = [5,7,1,3,6,8,2,4];
+    
+    for i=1:8
+        subplot(4,2,pp(i))
+        
+        if i<5
+            ix = tt(:,i+4)>0;
+        else
+            ix = tt(:,i)>0;
+        end
+        plot(bb(ix,i),tt(ix,i),'.')
+        xlim([0,1])
+        ylim([0,6])
+        set(gca,'ytick',0:3:6)
+        
+    end
+    
+    
+  
+    
+end
+
+
+
+if hh(40)>0
+        g   = (year-2001)*365+doy;
+    tt = 1800*4e-7*splitapply(@sum,fctr',g');
+    tt = [tt,p,p];
+    ix = mcsec>=diurn(25)&mcsec<=diurn(28);
+    bb = splitapply(@mean,btran(1:2,ix)',g(ix)');
+    bb = [bb,splitapply(@mean,btran(3:4,:)',g')];
+    bb = [bb,bb];
+
+    
+        g   = (year-2001)*365+doy;
+    tt = 1800*4e-7*splitapply(@sum,fctr',g');
+    tt = [tt,p,p];
+    ix = mcsec>=diurn(25)&mcsec<=diurn(28);
+    bb = splitapply(@mean,btran(1:2,ix)',g(ix)');
+    bb = [bb,splitapply(@mean,btran(3:4,:)',g')];
+    bb = [bb,bb];
+    pp = [5,7,1,3,6,8,2,4];
+    
+    
+       xx = [0.08,0.55,0.08,0.55];
+   yy = [0.1,0.1,0.54,0.54];
+   zz = {'(c)','(d)','(a)','(b)'};
+
+       
+    
+    
+    xdk = figure;
+    cc = [3,4,1,2];
+    for j = 1:4
+        bins = 0:0.05:1;
+        
+        gg = nan(1095,1);
+        for i=1:length(bins)-1
+            ixb = bb(:,j)>bins(i)&bb(:,j)<=bins(i+1);
+            gg(ixb) = i;
+        end
+        
+        subplot('Position',[xx(j),yy(j),0.44,0.4])
+        %subplot(2,2,cc(j))
+        
+        plot([-30,30],[0,0],'k:')
+        hold on
+        ix = tt(:,j+4)>0;
+        
+        aa = boxplot(tt(ix,j)-tt(ix,j+4),gg(ix));
+        set(aa(7,:),'Visible','off');
+        set(aa(1:4,:),'Visible','off');
+        
+        ylim([-3,3])
+        
+
+        aa = get(gca,'xlim');
+        xlim([aa(2)-20,aa(2)])
+        set(gca,'xtick',aa(2)-20:5:aa(2))
+        set(gca,'xticklabel',0:0.25:1)
+        
+        if j<3
+            xlabel('Stress Factor')
+        else
+            set(gca,'xticklabel',[])
+        end
+        
+        if j==1
+            ylabel({'Transpiration (mm/d)';'PHS-obs'})
+        end
+        
+        if j==3
+            title('AMB')
+            ylabel({'Transpiration (mm/d)';'SMS-obs'})
+        end
+        
+        if j==4
+            title('TFE')
+        end
+
+        if j==2||j==4
+            set(gca,'yticklabel',[])
+        end
+        
+        text(aa(2)-19.4,2.5,zz{j},'FontSize',14,'FontWeight','bold')
+        box off
+        
+        
+        
+    end
+    
+    
+    xdk.Units = 'inches';
+    xdk.Position = [2,2,7,5];
+    xdk.PaperSize = [7,5];
+    xdk.PaperPosition = [0,0,7,5];
+    
+    
+    if hh(40)>0
+        print(xdk,'../figs3/t_v_bt','-dpdf')
+    end
+    
+    gg = zeros(1000,1);
+    
+end
+
+
+if hh(39)>0
+    g = (year-2001)*365+doy;
+    
+    bb = splitapply(@mean,btran',g');
+    bb = [bb,bb];
+    tt = 1800*4e-7*splitapply(@sum,fctr',g');
+    tt = [tt,p,p];
+        pp = [5,7,1,3,6,8,2,4];
+    
+    for i=1:8
+        if i<5
+            ix = tt(:,i+4)>0;
+        else
+            ix = tt(:,i)>0;
+        end
+        
+        subplot(4,2,pp(i))
+        plot(bb(ix,i),tt(ix,i),'.')
+        xlim([0,1])
+        ylim([0,6])
+        set(gca,'ytick',0:3:6)
+        
+        
+        
+    end
+    
+    
+end
+
+if hh(38)>0
+    ix = p(:,1)>0;
+    g  = (year-2001)*365+doy;
+    
+    tt = [1800*4e-7*splitapply(@sum,fctr',g'),p,p];
+    ss = [vegwp(4,mcsec==diurn(10))/101972;...
+        vegwp(8,mcsec==diurn(10))/101972;...
+        splitapply(@mean,zr*smp(41:60,:),g)/101972;...
+        splitapply(@mean,zr*smp(61:80,:),g)/101972];
+    
+    ss = [ss;ss];
+    
+    xdk = figure;
+    
+        
+    xx = [-1,-1,-4,-4,-1,-1,-4,-4];
+    pp = [5,7,1,3,6,8,2,4];
+    
+    yy1 = {'PHS','PHS','SMS','SMS','','','',''};
+    yy2 = {'amb','tfe','amb','tfe','','','',''};
+    
+    rr = '(a)(b)(c)(d)(e)(f)(g)(h)';
+    
+    for i=1:8
+        subplot(4,2,pp(i))
+        if i<5
+            ix = tt(:,i+4)>0;
+        else
+        ix = tt(:,i)>0;
+        end
+        plot(ss(i,ix),tt(ix,i),'.')
+        ylim([0,6])
+        xlim([xx(i),0])
+        set(gca,'ytick',0:3:6)
+        
+        ylabel([yy1{i},yy2{i}])
+        
+        if pp(i)==1
+            title('Model Transpiration (mm/d)')
+        end
+        if pp(i)==2
+            title('Observed Transpiration (mm/d)')
+        end
+        if pp(i)>6
+            xlabel('Model Soil Potential (MPa)')
+        end
+        
+        text(xx(i)*0.97,5,rr((1:3)+(pp(i)-1)*3),'FontSize',14,'FontWeight','bold')
+    end
+    
+        xdk.Units = 'inches';
+    xdk.Position = [2,2,7,7];
+    xdk.PaperSize = [7,7];
+    xdk.PaperPosition = [0,0,7,7];
+    
+    
+    if hh(38)>0
+        print(xdk,'../figs3/suppcool','-dpdf')
+    end
+    
+end
+
+
+if hh(37)>0
+    ss = 20;
+    yy = 2003;
+    for dd=1:365
+        mm = mean(month(doy==dd));
+   plot(mean(h2osoi((1:20)+ss,year==yy&doy==dd),2),-z,'-x') 
+   hold on
+   plot(mean(h2osoi((41:60)+ss,year==yy&doy==dd),2),-z,'-x') 
+   xlim([0.05,0.35])
+   title([num2str(mm),'-',num2str(yy)])
+   hold off
+    pause(0.1)
+    end
+    
+end
+
+
+if hh(36)>0
+    yy=2002;
+    xdk = figure;
+    n = length(fsds);
+    %resample to height
+    x = 0;
+    ymax = [-2.5,-2.5];
+    vsn  = {'PHS','SMS'};
+    pnl  = {'(a)','(b)'};
+    for ss=[0,40]
+        x = x+1;
+        nz  = round(100*(zs(2:end)-zs(1:end-1)));
+        out = zeros(860,n);
+        ct  = 0;
+        
+        for i=1:20
+            ix = ct+(1:nz(i));
+            out(ix,:) =  repmat(h2osoi(ss+i,:),nz(i),1);
+            ct = ct+nz(i);
+        end
+        addpath('/Users/kennedy/Documents/MATLAB/othercolor')
+        colormap(othercolor('BrBG4'))
+        subplot(2,1,x)
+        imagesc((1:n)/(48*365)+2001,(1:860)/100,out,[0.1,0.3])
+        title(vsn{x})
+        xlim([2001,2004])
+        ylim([0,8.605])
+        ylabel('Depth (m)')
+        if x==2
+            xlabel('Year')
+        end
+        aa={'2001','','2002','','2003','','2004'};
+        
+        set(gca,'xticklabel',aa)
+        set(gca,'ytick',0:2:8)
+        c = colorbar;
+        ylabel(c,'Soil Potential (MPa)','FontSize',11)
+        text(2001.08,1,pnl{x},'FontSize',14,'FontWeight','bold','Color',[0.8,0.8,0.8])
+    end
+    
+    xdk.Units = 'inches';
+    xdk.Position = [2,2,7,5];
+    xdk.PaperSize = [7,5];
+    xdk.PaperPosition = [0,0,7,5];
+    
+    
+    if hh(19)>0
+        print(xdk,'../figs3/smp','-dpdf')
+    end
+        
+end
+
+
+if hh(35)>0
+    
+    amb_sm = csvread('../goodsim/control_sm.csv');
+    amb_sm(amb_sm==0) = nan;
+    tfe_sm = csvread('../goodsim/tfe_sm.csv');
+    tfe_sm(tfe_sm==0) = nan;
+    
+    %amb_sm(:,1) = 2001+amb_sm(:,1)/365;
+    %tfe_sm(:,1) = 2001+tfe_sm(:,1)/365;
+    amb_sm(:,2:end) = amb_sm(:,2:end)/100;
+    tfe_sm(:,2:end) = tfe_sm(:,2:end)/100;
+    
+    %which soil layer
+    depths = [nan,0.15,0.5,1,2,3,4,5];
+    zzix   = nan(8,1);
+    for i=3:8
+        j  = 0;
+        go = 1;
+        while go
+            j = j+1;
+            if zs(j)>depths(i)
+                zzix(i)=j-1;
+                go = 0;
+            end
+        end
+    end
+    
+    g = (year-2001)*365+doy;
+
+    
+    rms = zeros(7,4);
+    for j=1:4
+        if j==1||j==3
+            targ = amb_sm;
+            ix = targ(:,1);
+        else
+            targ = tfe_sm;
+            ix = tfe_sm(:,1);
+        end
+        c = 0;
+            ss = 0;
+        for i=2:8
+            
+            if i==2
+                x = splitapply(@mean,1/0.3*[dz(1:4),0.1]*h2osoi((1:5)+(j-1)*20,:),g);
+            else
+                x = splitapply(@mean,h2osoi(zzix(i)+(j-1)*20,:),g);
+            end
+            
+            c = c+1;
+            subplot(4,7,c+(j-1)*7)
+            plot([0.1,0.4],[0.1,0.4],'k:')
+            hold on
+            plot(targ(:,i),x(ix),'x')
+            xlim([0.1,0.4])
+            ylim([0.1,0.4])
+            set(gca,'xticklabel',[])
+            set(gca,'yticklabel',[])
+            
+            rms(c,j) = sqrt(mean((targ(:,i)'-x(ix)).^2));
+            
+            
+            out(ss+(1:length(ix)),j) = x(ix);
+            if j==1||j==2
+                out(ss+(1:length(ix)),j+4) = targ(:,i);
+            end
+            ss = ss+length(ix);
+            
+            
+        end
+    end
+    
+    
+    
+    
+    figure
+    for i=1:4
+        subplot(2,2,i)
+        if i==1||i==3
+            rmse = sqrt(mean((out(:,5)-out(:,i)).^2))
+        else
+            ix = ~isnan(out(:,6));
+            rmse = sqrt(mean((out(ix,6)-out(ix,i)).^2))
+        end
+    end
+    
+end
+
+
+if hh(34)>0
+    ix = month>8&month<12;
+    
+    subplot(2,2,1)
+    plot(mean(smp(1:12,ix),2)/101972,-z(1:12),'-x')
+    hold on
+    plot(mean(smp(41:52,ix)/101972,2),-z(1:12),'-x')
+    subplot(2,2,2)
+    plot(mean(h2osoi(1:20,ix),2),-z,'-x')
+    hold on
+    plot(mean(h2osoi(41:60,ix),2),-z,'-x')
+    subplot(2,2,3)
+    plot(mean(smp(21:32,ix),2)/101972,-z(1:12),'-x')
+    hold on
+    plot(mean(smp(61:72,ix)/101972,2),-z(1:12),'-x')
+    subplot(2,2,4)
+    plot(mean(h2osoi(21:40,ix),2),-z,'-x')
+    hold on
+    plot(mean(h2osoi(61:80,ix),2),-z,'-x')
+    
+    
+    mean(dz*h2osoi(1:20,ix))/mean(dz*h2osoi(41:60,ix))
+    mean(dz*h2osoi(21:40,ix))/mean(dz*h2osoi(61:80,ix))
+    
+    aa = 180*4e-7*sum(fctr,2);
+    bb = 180*4e-7*sum(fcev+fgev+qdrai+qover,2);
+    
+    ix = month>8&month<12&year>2001;
+    disp('TFE')
+    disp(['SMS: ',num2str(mean(zr*smp(61:80,ix))/101972),' MPa'])
+    disp(['PHS: ',num2str(mean(vegwp(8,ix&mcsec==diurn(10)))/101972),' MPa'])
+    
+end
+
+if hh(33)>0
+    yy=2002;
+    xdk = figure;
+    n = length(fsds);
+    %resample to height
+    x = 0;
+    ymax = [-2.5,-2.5];
+    vsn  = {'PHS','SMS'};
+    pnl  = {'(a)','(b)'};
+    for ss=[0,40]
+        x = x+1;
+        nz  = round(100*(zs(2:end)-zs(1:end-1)));
+        out = zeros(860,n);
+        ct  = 0;
+        
+        for i=1:20
+            ix = ct+(1:nz(i));
+            out(ix,:) =  repmat(smp(ss+i,:),nz(i),1)/101972;
+            ct = ct+nz(i);
+        end
+        addpath('/Users/kennedy/Documents/MATLAB/othercolor')
+        colormap(othercolor('BrBG4'))
+        subplot(2,1,x)
+        imagesc((1:n)/(48*365)+2001,(1:860)/100,out,[ymax(x),0])
+        title(vsn{x})
+        xlim([2001,2004])
+        ylim([0,8.605])
+        ylabel('Depth (m)')
+        if x==2
+            xlabel('Year')
+        end
+        aa={'2001','','2002','','2003','','2004'};
+        
+        set(gca,'xticklabel',aa)
+        set(gca,'ytick',0:2:8)
+        c = colorbar;
+        ylabel(c,'Soil Potential (MPa)','FontSize',11)
+        text(2001.08,1,pnl{x},'FontSize',14,'FontWeight','bold','Color',[0.8,0.8,0.8])
+    end
+    
+    xdk.Units = 'inches';
+    xdk.Position = [2,2,7,5];
+    xdk.PaperSize = [7,5];
+    xdk.PaperPosition = [0,0,7,5];
+    
+    
+    if hh(33)>0
+        print(xdk,'../figs3/suppsmp','-dpdf')
+    end
+        
+end
+
+
+
+if hh(32)>0
+    g = (year-2001)*365+doy;
+    qq = 180*splitapply(@sum,qdrai',g');
+    
+
+    
+    
+    
+    
+    if 1==2
+    for yy=2002:2003
+        for dd=1:1:365
+            mm= mean(month(doy==dd));
+            ix = year==yy&doy==dd;
+            plot(mean(h2osoi((1:15)+20,ix),2),-z(1:15))
+            hold on
+            plot(mean(h2osoi((1:15)+60,ix),2),-z(1:15))
+            hold off
+            xlim([0.05,0.4])
+            title([num2str(mm),'-',num2str(yy)])
+            pause(0.1)
+        end
+    end
+    end
+    
+    if 1==2
+        for yy=2001:2003
+        for dd=1:5:365
+            mm= mean(month(doy==dd));
+            ix = year==yy&doy==dd;
+            plot(mean(smp((1:15)+20,ix),2)/101972,-z(1:15))
+            hold on
+            plot(mean(smp((1:15)+60,ix),2)/101972,-z(1:15))
+            hold off
+            xlim([-2.8,0])
+            title([num2str(mm),'-',num2str(yy)])
+            pause(0.1)
+        end
+        end
+    end
+    
+    
+    
+end
+
+
+if hh(31)>0
+    
+    yy=2002;
+    ix = year==yy&month==9;
+    plot(mean(smp((1:15)+20,ix),2)/101972,-z(1:15))
+    hold on
+    yy=2003;
+    ix = year==yy&month==9;
+    plot(mean(smp((1:15)+20,ix),2)/101972,-z(1:15))
+    
+    
+    
+    if 1==2
+    yy = 2002;
+    for dd=1:3:365
+        plot(mean(smp(1:15,year==yy&doy==dd),2)/101972,-z(1:15))
+        hold on
+        plot(mean(smp((1:15)+20,year==yy&doy==dd),2)/101972,-z(1:15))
+        hold off
+        xlim([-0.75,0])
+        title(mean(month(doy==dd)))
+        pause(0.2)
+    end
+    end
+end
+    
+    
+    
+    
+
+
+
 if hh(30)>0
     hr = qrootsink(1:40,:);
     for ss=1:40
         hr(ss,:) = -qrootsink(ss,:).*(qrootsink(ss,:)<0);
     end
-    hr = 180*hr;
-    g  = (year-2001)*12+month;
-    subplot(4,1,1)
-    bar(reshape(splitapply(@sum,sum(hr(1:20,:)),g),12,3)')
-    subplot(4,1,2)
-    bar(reshape(splitapply(@sum,sum(hr(1:20,:)),g),12,3))
-    subplot(4,1,3)
-    bar(reshape(splitapply(@sum,sum(hr(21:40,:)),g),12,3)')
-    subplot(4,1,4)
-    bar(reshape(splitapply(@sum,sum(hr(21:40,:)),g),12,3))
+
+
+    180*sum(sum(hr(1:20,year==2003)))
+    180*sum(sum(hr(21:40,year==2003)))
     
-    figure
-    bar(reshape(180*splitapply(@sum,prec,g),12,3))
+    ix = (mcsec<diurn(13)|mcsec>diurn(36))&year==2003;
+    ix2 = (~(mcsec<diurn(13)|mcsec>diurn(36)))&year==2003;
+    
+    180*sum(sum(hr(1:20,ix)))
+    180*sum(sum(hr(21:40,ix)))
     
 end
 
@@ -259,7 +813,9 @@ if hh(26)>0
        end
        plot([-100,100],[0,0],'k:')
        hold on
-       boxplot(tt(:,j)-p(:,k),gg)
+       bb= boxplot(tt(:,j)-p(:,k),gg);
+       set(bb(7,:),'Visible','off');
+       set(bb(1:4,:),'Visible','off');
        ylim([-3,3])
        
        aa = get(gca,'xlim');
@@ -295,7 +851,7 @@ if hh(26)>0
     xdk.Position = [2,2,7,5];
     xdk.PaperSize = [7,5];
     xdk.PaperPosition = [0,0,7,5];
-    if hh(26)>1
+    if hh(26)>0
         print(xdk,'../figs3/sm3','-dpdf')
     end
     
@@ -504,6 +1060,12 @@ if hh(22)>0
         end
     end
 
+    % out = up,down,up,down
+    % out = a,a,tfe,tfe
+    
+    180*sum(sum(out(1:2,year==2003)))
+    180*sum(sum(out(3:4,year==2003)))
+    
     xdk.Units = 'inches';
     xdk.Position = [2,2,7,5];
     xdk.PaperSize = [7,5];
@@ -725,7 +1287,7 @@ if hh(19)>0
     n = length(fsds);
     %resample to height
     x = 0;
-    ymax = [-1,-3];
+    ymax = [-2.5,-2.5];
     vsn  = {'PHS','SMS'};
     pnl  = {'(a)','(b)'};
     for ss=[20,60]
@@ -766,7 +1328,7 @@ if hh(19)>0
     
     
     if hh(19)>0
-        print(xdk,'smp','-dpdf')
+        print(xdk,'../figs3/smp','-dpdf')
     end
         
 end
