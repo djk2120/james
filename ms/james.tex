@@ -508,13 +508,11 @@ PHS values correspond to predawn root water potential.}
 
 \subsection{Soil moisture}
     During the dry season, SMS simulations yield much lower values for soil matric potential (Figure \ref{fig:sm}, Supp Fig \ref{supp:sm}). 
+    The average soil potential  is -1.42 MPa during SON under ambient conditions, as compared to -0.14 MPa in the PHS simulation.
+    With TFE, SMS is -2.51 MPa and PHS is -0.5 MPa.
     Following from the definitions of root water uptake (see Section zqz), we use different methods for calculating average soil potential.
     With SMS we utilize root-fraction weighted averaging.
     With PHS we opt for predawn (5h) root water potential. 
-        The average soil potential  is -1.42 MPa during SON under ambient conditions, as compared to -0.14 MPa in the PHS simulation.
-    With TFE, SMS is -2.51 MPa and PHS is -0.5 MPa.
-    Partly this is a difference in transpiration, PHS has 2.4 and 1.5 \% more column total soil water in amb/tfe, respectively.
-    The other difference is PHS extracts deeper.
 
     PHS better matches observations, especially in the top meter of the soil column, with RMSE lower by up to 55\%.
     SMS seems to pull too hard in 0-0.3m, 0.5m, and 1m, with soil potential too low during the dry season.
@@ -524,8 +522,17 @@ PHS values correspond to predawn root water potential.}
     (except in the first two soil layers, which are under the influence of soil evaporation).
     Beyond 1m, root fractions are smaller, attenuating the dry bias.
     
-    The SMS water stress factor also depends on $\psi_c$.
+\subsection{Soil moisture effect on transpiration}    
+    Model soil potential shows limited effect on transpiration in the ambient simulations, 
+    based on sap flux observations (Supp Fig \ref{supp:cool}b,f).
+    However, in the SMS configuration, modeled transpiration decreases with more negative soil potential (Supp Fig \ref{supp:cool}a),
+    biasing the model relative to observations (Fig \ref{fig:cool}a).
     
+    Observed transpiration under TFE shows a stronger relationship with soil potential in the 
+    PHS simulation than in the SMS simulation (Supp Fig \ref{supp:cool}h,d).
+    And again the relationship with soil potential seems to bias modeled transpiration with SMS (Fig \ref{fig:cool}b).
+    The two PHS simulations feature less structure in transpiration bias vs. soil potential and less bias overall (Fig \ref{fig:cool}c,d).
+
 
     
 \section{Discussion}
@@ -575,8 +582,14 @@ PHS values correspond to predawn root water potential.}
     While a work in progress, PHS does improve transpiration predictions, 
     with lower RMSE and higher correlation compared to the control model, albeit with model tuning (Figure \ref{fig:t}).
     
-\section{Results and Discussion}
-\subsection{Modeling vegetation water potential}
+\subsection{Structural improvements in modeling root water uptake}
+Our pull evolves in time
+Our conductance responds to soil moisture
+\subsection{HR}
+\subsection{Soil moisture and its influence on transpiration}
+
+    
+\section{leftovers from previous version}
     
  This is consistent with findings in \cite{fisher2006} that most of the whole-plant resistance is above ground, but that added resistance from drying is predominately sourced? below ground. Likewise \cite{fisher2006} found evidence of isohydric behavior, where plants manage water loss through stomata to regulate leaf water potential, which is consistent with results here of reduction in potential drop across the stem. However, PHS shows declines in midday leaf water potential due to TFE, but \cite{fisher2006} found no significant observed difference between ambient and TFE dry season leaf water potential. This could indicate that our parameters do not result in sufficiently isohydric behavior.
     
@@ -783,7 +796,7 @@ Observations indicate the trees here adopt an isohydric behavior, where declines
       \clearpage
     \begin{figure}[h]
      \centering
-     \includegraphics[width=30pc]{../figs3/smp.pdf}
+     \includegraphics[width=30pc]{../figs3/smp.jpg}
      \caption{Vertical profile of soil water potential (MPa) over time under 60\% through-fall exclusion, for
      (a) PHS, and 
      (b) SMS.
@@ -828,6 +841,16 @@ Observations indicate the trees here adopt an isohydric behavior, where declines
 
 \section{Supplementary Figures}
 
+
+      \begin{figure}[h]
+     \centering
+     \includegraphics[width=30pc]{../figs3/ens.pdf}
+     \caption{Parameter tuning exercise.
+     }
+     \label{supp:ens}
+       \end{figure}
+         \clearpage
+
       \begin{figure}[h]
      \centering
      \includegraphics[width=30pc]{../figs3/suppstress.pdf}
@@ -839,6 +862,7 @@ Observations indicate the trees here adopt an isohydric behavior, where declines
      }
      \label{supp:fsds}
        \end{figure}
+         \clearpage
 
  
 
@@ -854,19 +878,11 @@ Observations indicate the trees here adopt an isohydric behavior, where declines
   \begin{figure}[h]
      \centering
      \includegraphics[width=30pc]{../figs3/suppcond.pdf}
-     \caption{Log of conductance versus soil potential for Soil Layer 3 (2003).}
+     \caption{Log of conductance versus soil potential for Soil Layer 3 (2003).
+     Only midday (12h-14h) timesteps are shown to emphasize relationship with soil potential.}
      \label{supp:cond2}
   \end{figure}
   \clearpage
-  
-     \clearpage
-    \begin{figure}[h]
-     \centering
-     \includegraphics[width=30pc]{../figs3/supplayer2.pdf}
-     \caption{Volumetric soil water content in Soil Layer 2 (which spans 2-6cm in depth), for SON-2003, featuring 60\% through-fall exclusion.
-     With PHS (black line), the soil layer can dry out more quickly after rain events.}
-     \label{supp:layer2}
-  \end{figure}
 
 
   
@@ -886,7 +902,7 @@ Observations indicate the trees here adopt an isohydric behavior, where declines
         \clearpage
     \begin{figure}[h]
      \centering
-     \includegraphics[width=30pc]{../figs3/suppsmp.pdf}
+     \includegraphics[width=30pc]{../figs3/suppsmp.jpg}
      \caption{Vertical profile of soil water potential (MPa) through time under ambient through-fall conditions, for
      (a) PHS, and 
      (b) SMS.
@@ -901,6 +917,15 @@ Observations indicate the trees here adopt an isohydric behavior, where declines
      \caption{Time series of soil moisture by soil layer.
      Complements Figure \ref{fig:sm}}
      \label{supp:sm2}
+  \end{figure}
+          \clearpage
+          
+     \begin{figure}[h]
+     \centering
+     \includegraphics[width=30pc]{../figs3/suppcool.pdf}
+     \caption{Modeled (left column) and observed (right column) transpiration  vs. model soil potential.
+     Complements Figure \ref{fig:cool}}
+     \label{supp:cool}
   \end{figure}
           \clearpage
           
