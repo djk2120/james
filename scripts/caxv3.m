@@ -81,12 +81,12 @@ ff = zeros(200,1);
 
 hh(1:5)   = [0,0,0,0,0];
 hh(6:10)  = [0,0,0,0,0];
-hh(11:15) = [0,0,0,0,0];
+hh(11:15) = [0,0,0,1,0];
 hh(16:20) = [0,0,0,0,0];
 hh(21:25) = [0,0,0,0,0];
 hh(26:30) = [0,0,0,0,0];
 hh(31:35) = [0,0,0,0,0];
-hh(36:40) = [0,0,2,0,0];
+hh(36:40) = [0,0,0,0,0];
 hh(41:45) = [0,0,0,0,0];
 hh(46:50) = [0,0,0,0,0];
 hh(51:55) = [0,0,0,0,0];
@@ -107,20 +107,22 @@ hh(51:55) = [0,0,0,0,0];
 
 
 if hh(52)>0
-    g  = (year-2001)*365+doy;
-    ss1 = splitapply(@mean,zr*smp(21:40,:),g)/101972;
-    ss2 = splitapply(@mean,zr*smp(61:80,:),g)/101972;
-    ss3 = vegwp(8,mcsec==diurn(10))/101972;
+    %defining k,dp (for SMS)
+    ot = 1:n;
+    dp = smp;
+    for i=41:80
+        dp(i,:) = [0,min(189000,smp(i,1:end-1)+255000)];   %model uses last timestep smp!
+    end
+    dp(dp<100) = nan;
+    k = qrootsink./dp;
+    k(isnan(k))=0;
     
-    tt = 1800*4e-7*splitapply(@sum,fctr',g');
+    ix = year==2003;
+    plot(splitapply(@mean,sum(k(41:60,ix)),findgroups(mcsec(ix))))
+    hold on
+    plot(splitapply(@mean,sum(k(61:80,ix)),findgroups(mcsec(ix))))
     
     
-    
-    subplot(1,2,1)
-    plot(ss1,tt(:,2),'.')
-    subplot(1,2,2)
-    plot(ss3,tt(:,2),'.')
-        
 end
 
 if hh(51)>0
@@ -2179,52 +2181,96 @@ end
 
 
 if hh(14)>0
-    dp = smp+255000;
-    dp(dp<100)=0;
-    k = qrootsink./dp;
-    k(dp==0) = nan;
-    k(41:60,fctr(:,3)<1) = nan;
-    k(61:80,fctr(:,4)<1) = nan;
-    k(1:40,:) = ksr(1:40,:);
     
-    xdk = figure;
+    %defining k,dp (for SMS)
+    ot = 1:n;
+    dp = smp;
+    for i=41:80
+        dp(i,:) = [0,min(189000,smp(i,1:end-1)+255000)];   %model uses last timestep smp!
+    end
+    dp(dp<100) = nan;
+    k = qrootsink./dp;
+    k(isnan(k))=0;
+    
+    %averaging
     ix = year==2003;
-    g = findgroups(mcsec(ix));
+    out = [splitapply(@mean,ksr(5,ix),findgroups(mcsec(ix)));...
+        splitapply(@mean,ksr(25,ix),findgroups(mcsec(ix)));...
+        splitapply(@mean,k(45,ix),findgroups(mcsec(ix)));...
+        splitapply(@mean,k(65,ix),findgroups(mcsec(ix)))];
+    out2 = [splitapply(@mean,smp(5,ix)-vegwp(4,ix),findgroups(mcsec(ix)));...
+        splitapply(@mean,smp(25,ix)-vegwp(8,ix),findgroups(mcsec(ix)));...
+        splitapply(@mean,min(189000,smp(45,ix)+255000),findgroups(mcsec(ix)));...
+        splitapply(@nanmean,min(189000,smp(65,ix)+255000),findgroups(mcsec(ix)))];
+    out2 = out2/101972;
+    
+    
+    
+    %plotting
+    xdk = figure;
     xv = 0.25:0.5:24;
     ss = [2,2,1,1];
-    yy = [10e-9,10e-9,1.2e-10,1.2e-10];
+    tt = {'','PHS','','SMS'};
     cc = [0,0,0.7,0.7];
     ll = {'-',':','-',':'};
-    tt = [0.1,0.1]*1e-10;
-    tt = [100*10/12*tt,tt];
-    rr = '(b)(a)';
+    yy1 = [10e-9,10e-9,1.5e-10,1.5e-10];
+    rr = {'(b)','','(a)',''};
     for i=1:4
-        subplot(1,2,ss(i))
-        plot(xv,splitapply(@nanmean,k(5+(i-1)*20,ix),g),'Color',cc(i)*ones(1,3),...
-            'LineWidth',2,'LineStyle',ll{i})
-        xlim([6,18])
-        ylim([0,yy(i)])
-        set(gca,'xtick',6:3:18)
+        subplot(2,2,ss(i))
+        plot(xv,out(i,:),'LineWidth',2,'LineStyle',ll{i},'Color',cc(i)*ones(1,3))
+        xlim([0,24])
+        ylim([0,yy1(i)])
+        set(gca,'xtick',0:6:24)
+        title(tt{i})
         hold on
-        xlabel('Hour of Day')
-        if i==1
-            ylabel({'Layer-5 mean (modeled)';'hydraulic conductance (s-1)'})
-            title('PHS')
-        elseif i==3
-            ylabel({'Layer-5 mean (implied)';'hydraulic conductance (s-1)'})
-            title('SMS')
-        elseif i==2
-            legend('AMB','TFE','Location','SouthWest')
-        end
-        if i==1||i==3
-            text(15,tt(i),rr((1:3)+(i-1)*3-(i==3)*3),'FontSize',14,'FontWeight','bold')
-        end
         box off
+        if i==1
+            ylabel({'Layer 5 mean (modeled)';'Hydraulic Conductance (s-1)'})
+        elseif i==3
+            ylabel({'Layer 5 mean (implied)';'Hydraulic Conductance (s-1)'})
+        end
+        
+        text(21,0.1*yy1(i),rr{i},'FontSize',14,'FontWeight','bold')
+        
     end
+    
+    
+    yy1 = [0.25,0.25,2,2];
+    yy2 = [-0.15,-0.15,0,0];
+    
+    rr = {'(d)','','(c)',''};
+    for i=1:4
+        subplot(2,2,ss(i)+2)
+        plot(xv,out2(i,:),'LineWidth',2,'LineStyle',ll{i},'Color',cc(i)*ones(1,3))
+        xlim([0,24])
+        set(gca,'xtick',0:6:24)
+        xlabel('Hour of Day')
+        ylim([yy2(i),yy1(i)])
+        hold on
+        box off
+        ylabel({'Layer 5 mean';'\Delta\psi (MPa)'})
+        if i==4
+            legend('AMB','TFE','location','Southwest')
+        end
+        
+        text(21,yy2(i)+0.92*(yy1(i)-yy2(i)),rr{i},'FontSize',14,'FontWeight','bold')
+        
+    end
+    
+
+    figure
+    ix = year==2003;
+    
+    plot([0,4e-10],[0,4e-10],'k:')
+    hold on
+    plot(k(45,ix),k(65,ix),'.')
+    xlim([0,4e-10])
+    ylim([0,4e-10])
+    
     xdk.Units = 'Inches';
-    xdk.Position = [2,2,7,4];
-    xdk.PaperSize = [7,4];
-    xdk.PaperPosition = [0,0,7,4];
+    xdk.Position = [2,2,7,5];
+    xdk.PaperSize = [7,5];
+    xdk.PaperPosition = [0,0,7,5];
     if hh(14)>1
         print(xdk,'../figs3/k','-dpdf')
     end

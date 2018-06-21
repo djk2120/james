@@ -433,15 +433,15 @@ Selected parameter values concerning vegetation hydrodynamics are presented in T
     -0.001MPa stem-to-leaf.
     This comports with previous evidence that seasonal changes in hydraulic resistance are larger belowground \citep{fisher2006}.
     
-    Describing Figure \ref{fig:vwp}c
-    seasonal cycle,
-    LWP values in range of fisher2006 if on the low side,
-    but stem too low in ambient and TFE effect was not observed in the field.
+    Modeled root water potential values match wet season observations, but are less negative than dry season observations under ambient conditions \citep{fisher2006}.
+    Midday leaf water potential features a seasonal cycle, with lower values during the dry season (Figure \ref{fig:vwp}c).
+    Modeled leaf water potential values under ambient conditions are less negative than averages reported by \cite{fisher2006} (1.71 MPa during the wet season and -2.47 MPa during the dry season), but are within the range of observations.
+    The model seems to underestimate isohydricity in response to TFE, showing a drop in leaf water potential of 0.66MPa (dry season, 2003), whereas observations showed no significant difference.
 
 
 \subsection{Stress factor}
     
-    Average midday stress values from the two models are comparable during the 2003 dry season (Figure \ref{fig:stress1}).
+    Average midday stress values are comparable during the 2003 dry season (Figure \ref{fig:stress1}) with the two model configurations.
     Under ambient conditions, the average stress factor values are 0.59 and 0.54 for SMS and PHS, respectively (dry season, midday), 
     decreasing to 0.16 and 0.21, with TFE.
     While the SMS stress factor has minimal diurnal variability (Figure \ref{fig:stress1}a),
@@ -470,19 +470,26 @@ PHS values correspond to predawn root water potential.}
 \subsection{GPP and Transpiration}
     The two models predict similar total GPP across 2002-2003 under TFE, 3.96 kg/m$^2$ (SMS) and 4.00 kg/m$^2$ (PHS), 
     but GPP is lower for PHS under ambient conditions (4.86 kg/m$^2$) as compared to SMS (5.46 kg/m$^2$, Figure \ref{fig:gpp}e-h).
-    The standard deviation of daily total GPP (2002-2003) is smaller for PHS (0.49,1.55 g/m2/d for AMB/TFE) than for SMS (1.53, 2.73 g/m2/d).
-    Transpiration seasonality is comparable between the two models (Figure \ref{fig:t}a,b), but with a larger amplitude for SMS.
+    Seasonal variability in GPP is smaller with PHS. 
+    The standard deviations of daily GPP (2002-2003) are 0.49 and 1.55 g/m2/d for AMB/TFE, 
+    as compared to 1.53, 2.73 g/m2/d with SMS. 
+    Transpiration seasonality is featured in both models (Figure \ref{fig:t}a,b), but with a larger amplitude for SMS.
     PHS yields a better fit to field observations of daily sap flux (see Section zqz), with higher R$^2$ and lower RMSE compared to SMS 
     under both ambient and TFE conditions (Figure \ref{fig:t}c-f).
 
     
 \subsection{Hydraulic conductance}
-    Briefly describe implied conductance.
-    SMS features diurnal cycle, increases with TFE.
-    PHS no diurnal cycle, decreases with TFE (Figure \ref{fig:cond}).
-    Instead daily dynamics come from $\Delta \psi$ (Supp Fig \ref{supp:cond})
-    SMS conductance tethered to transpiration.
-    PHS conductance xylem vulnerability and Brooks-Corey with strong dependence on soil potential (Supp Fig \ref{supp:cond2}a).
+    The two model configurations differ in how to impose the diurnal cycle in root water uptake (Figure \ref{fig:cond}).
+    With PHS, the diurnal cycle features in the gradient in water potential from $\psi_{\text{soil}}$ to $\psi_{\text{root}}$,
+    while with SMS, $\Delta\psi$ features no diurnal variability on average (Figure \ref{fig:cond}c).
+    Instead SMS imposes a diurnal cycle through hydraulic conductance (Figure \ref{fig:cond}a).
+    In response to TFE, PHS features an increase in $\Delta\psi$ compared to a decrease with SMS.
+    Alternatively, hydraulic conductance decreases with TFE with PHS, but increases under SMS.
+    Both models net a decrease in root water uptake under TFE.
+    
+    PHS conductance is modeled based on xylem vulnerability and Brooks-Corey, 
+    imposing a strong dependence on soil potential (Supp Fig \ref{supp:cond2}a).
+    
 
 \subsection{Root water uptake}
     dry-amb, comparable total transpiration (phs:28.3, sms:28.5cm)  but distinct profiles, PHS removes less water from intermediate soil layers (0.5-1.5meters) (Figure \ref{fig:qdry}d),.
