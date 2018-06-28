@@ -81,7 +81,7 @@ ff = zeros(200,1);
 
 hh(1:5)   = [0,0,0,0,0];
 hh(6:10)  = [0,0,0,0,0];
-hh(11:15) = [0,0,0,1,0];
+hh(11:15) = [0,0,0,0,0];
 hh(16:20) = [0,0,0,0,0];
 hh(21:25) = [0,0,0,0,0];
 hh(26:30) = [0,0,0,0,0];
@@ -89,7 +89,7 @@ hh(31:35) = [0,0,0,0,0];
 hh(36:40) = [0,0,0,0,0];
 hh(41:45) = [0,0,0,0,0];
 hh(46:50) = [0,0,0,0,0];
-hh(51:55) = [0,0,0,0,0];
+hh(51:55) = [0,0,1,0,0];
 
 
 
@@ -104,9 +104,31 @@ hh(51:55) = [0,0,0,0,0];
 %19 = smp full profile time series
 %20 = h2osoi with obs
 
+if hh(53)>0
 
+    ix = year==2003&month==9;
+    
+    
+    
+
+end
 
 if hh(52)>0
+    xdk = figure;
+    ss = 5;
+    
+    xv = cell(1,12);
+    for i=1:12
+        if mod(i,2)==1
+            xv{1,i} = -3+i*0.25;
+            xv{2,i} = -1.2+i*0.1;
+        else
+            xv{1,i} = '';
+            xv{2,i} = '';
+        end
+    end
+    
+    
     %defining k,dp (for SMS)
     ot = 1:n;
     dp = smp;
@@ -117,33 +139,180 @@ if hh(52)>0
     k = qrootsink./dp;
     k(isnan(k))=0;
     
-    ix = year==2003;
-    plot(splitapply(@mean,sum(k(41:60,ix)),findgroups(mcsec(ix))))
+    ot  = 1:n;
+    ix  = year>2001&mcsec>=diurn(25)&mcsec<=diurn(28);
+    ix2 = ot(ix)-1;
+    subplot(2,2,1)
+    plot(smp(ss+60,ix2)/101972,log10(k(ss+60,ix)),'.','Color',...
+         [0.8500    0.3250    0.0980])
     hold on
-    plot(splitapply(@mean,sum(k(61:80,ix)),findgroups(mcsec(ix))))
+    plot(smp(ss+40,ix2)/101972,log10(k(ss+40,ix)),'.','Color',...
+        [0    0.4470    0.7410])
+    xlim([-2.75,0])
+    ylim([-13,-7])
+        set(gca,'xtick',-2.75:0.25:0)
+    set(gca,'xticklabel',xv(1,:))
+    xlabel('Soil Potential (MPa)')
+    ylabel({'Log of (implied)';'conductance [log10(s-1)]'})
+    title('SMS')
+    box off
+    text(10.5/11*-2.75,-13+23/25*6,'(a)','FontSize',14,'FontWeight','bold')
+    
+    subplot(2,2,2)
+    plot(smp(ss+20,ix2)/101972,log10(ksr(ss+20,ix)),'.','Color',...
+        [0.8500    0.3250    0.0980])
+    hold on
+    plot(smp(ss,ix2)/101972,log10(ksr(ss,ix)),'.','Color',...
+        [0    0.4470    0.7410])
+    xlim([-1.1,0])
+    ylim([-13,-7])
+    set(gca,'xtick',-1.1:0.1:0)
+    set(gca,'xticklabel',xv(2,:))
+    xlabel('Soil Potential (MPa)')
+    ylabel({'Log of (modeled)';'conductance [log10(s-1)]'})
+    title('PHS')
+    box off
+    text(10.5/11*-1.1,-13+23/25*6,'(b)','FontSize',14,'FontWeight','bold')
+    
+    
+    out = zeros(11,1);
+    ix  = year>2001&mcsec>=diurn(25)&mcsec<=diurn(28);
+    for i=1:4
+        if i>2
+            bins = [-2.75:0.25:0];
+        else
+            bins = [-1.1:0.1:0];
+        end
+        
+        for j= 1:length(bins)-1
+            ixb    = ix&smp(ss+(i-1)*20,:)/101972>=bins(j)&smp(ss+(i-1)*20,:)/101972<=bins(j+1);
+            out(j,i) = sum(ixb);
+        end
+        
+    end
+    
+        
+
+    
+    subplot(2,2,3)
+    b=bar(out(:,3:4));
+    b(2).FaceColor = [0.8500    0.3250    0.0980];
+    b(1).FaceColor = [0    0.4470    0.7410];
+    xlabel('Soil Potential (MPa)')
+    xlim([0.5,11.5])
+    set(gca,'xtick',0.5:11.5)
+    set(gca,'xticklabel',xv(1,:))
+    ylabel('Number of timesteps')
+    text(1,2300,'(c)','FontSize',14,'FontWeight','bold')
+    box off
+    
+    subplot(2,2,4)
+    b=bar(out(:,1:2));
+    b(2).FaceColor = [0.8500    0.3250    0.0980];
+    b(1).FaceColor = [0    0.4470    0.7410];
+    xlim([0.5,11.5])
+    set(gca,'xtick',0.5:11.5)
+    set(gca,'xticklabel',xv(2,:))
+    legend('AMB','TFE','Location','Northwest')
+    xlabel('Soil Potential (MPa)')
+    ylabel('Number of timesteps')
+    text(1,2300,'(d)','FontSize',14,'FontWeight','bold')
+    box off
+    
+    xdk.Units = 'inches';
+    xdk.Position = [2,2,7,5];
+    xdk.PaperSize = [7,5];
+    xdk.PaperPosition = [0,0,7,5];
+    
+    if hh(52)>1
+        print(xdk,'../figs3/suppcond','-dpdf')
+    end
+    
+
+        
     
     
 end
 
+
 if hh(51)>0
-    ot = 1:n;
-    ix = year==2003&mcsec>=diurn(25)&mcsec<=diurn(28);
     
-    aa = ot(ix);
-    
-    kk = ksr(5,ix);
-    nk = length(kk);
-    for i=1:sum(ix)
-        bb = (sum(ksr(5,aa(i))>kk)/nk)^(1/3);
-        plot(smp(5,aa(i)-1)-vegwp(4,aa(i)),qrootsink(5,aa(i)),'.','Color',[bb,0.3,1-bb])
-        hold on
+    xv = cell(1,12);
+    for i=1:12
+        if mod(i,2)==1
+            xv{i} = -3+i*0.25;
+        else
+            xv{i} = '';
+        end
     end
     
-    figure
-    plot(smp(5,ot(ix)-1),qrootsink(5,ix),'.')
+    ix = year>2001&mcsec>=diurn(25)&mcsec<=diurn(28);
+    ss = 5;
+    
+    xdk = figure;
+    out = zeros(4,1);
 
+    pp = [3,4,1,2];
+    tt = {'','','AMB','TFE'};
+    
+    xx = [0.04,0.53,0.04,0.53];
+    yy = [0.1,0.1,0.55,0.55];
+    rr = {'(c)','(d)','(a)','(b)'};
+    ee = {'PHS','PHS','SMS','SMS'};
+    for i=1:4
+        if i>2
+            bins = [-2.75:0.25:0];
+        else
+            bins = [-1.1:0.1:0];
+        end
+        gg = nan(size(fsds));
+        for j=1:length(bins)-1
+            ixb = ix&smp(ss+(i-1)*20,:)/101972>=bins(j)&smp(ss+(i-1)*20,:)/101972<=bins(j+1);
+            out(i,j) = sum(ixb);
+            gg(ixb) = j;
+        end
+        
+        subplot('position',[xx(i),yy(i),0.45,0.4])
+        b= boxplot(qrootsink(ss+(i-1)*20,:),gg);
+        set(b(7,:),'Visible','off');
+        set(b(1:4,:),'Visible','off');
+        ylim([0,4e-5])
+        title(tt{i})
+        aa = get(gca,'xlim');
+        if i>2
+            xlim([aa(2)-11,aa(2)])
+            set(gca,'xtick',aa(2)-11:aa(2))
+        else
+            xlim([aa(2)-11*2.5,aa(2)])
+            set(gca,'xtick',aa(2)-11*2.5:2.5:aa(2))
+        end
+        %text(aa(2)-5,3.7e-5,rr{i},'FontSize',14,'FontWeight','bold')
+        %text(aa(2)-48,3.7e-5,ee{i},'FontSize',11,'FontWeight','bold')
+
+        set(gca,'xticklabel',xv)
+        
+        if i>2
+            set(gca,'xticklabel',[])
+        else
+            xlabel('Soil Potential (MPa)')
+        end
+        if i==2||i==4
+            set(gca,'yticklabel',[])
+        else
+            ylabel('Layer-5 Midday RWU (mm/s)')
+        end
+        box off
+    end
     
     
+        xdk.Units = 'inches';
+    xdk.Position = [2,2,7,5];
+    xdk.PaperSize = [7,5];
+    xdk.PaperPosition = [0,0,7,5];
+    
+    if hh(51)>1
+        print(xdk,'../figs3/rwu','-dpdf')
+    end
 
 end
 
@@ -4109,8 +4278,8 @@ if ff(1)>0
     plot(out(ix2,1),tfe(ix2),'.')
     
     
-    corr(out(ix1,1),amb(ix1))^2
-    corr(out(ix2,2),tfe(ix2))^2
+    corr(out(ix1,1),amb(ix1))^2;
+    corr(out(ix2,2),tfe(ix2))^2;
     sqrt(mean((out(ix1,1)-amb(ix1)).^2))
     sqrt(mean((out(ix2,2)-tfe(ix2)).^2))
 end
