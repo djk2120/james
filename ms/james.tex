@@ -478,69 +478,63 @@ PHS values correspond to predawn root water potential.}
     under both ambient and TFE conditions (Figure \ref{fig:t}c-f).
 
     
-\subsection{Hydraulic conductance}
-    The two model configurations differ in how to impose the diurnal cycle in root water uptake (Figure \ref{fig:cond}).
-    With PHS, the diurnal cycle features in the gradient in water potential from $\psi_{\text{soil}}$ to $\psi_{\text{root}}$,
-    while with SMS, $\Delta\psi$ features no diurnal variability on average (Figure \ref{fig:cond}c).
-    Instead SMS imposes a diurnal cycle through hydraulic conductance (Figure \ref{fig:cond}a).
-    In response to TFE, PHS features an increase in $\Delta\psi$ compared to a decrease with SMS.
-    Alternatively, hydraulic conductance decreases with TFE with PHS, but increases under SMS.
-    Both models net a decrease in root water uptake under TFE.
+\subsection{Root water uptake: dynamics}
+    Root water uptake is more sensitive to soil potential with PHS (Figure \ref{fig:rwu}),
+    attributable to declining hydraulic conductance.
+    Hydraulic conductance decreases approximately three orders of magnitude across the range of PHS soil potential (Supp Figure \ref{supp:cond}a,b).
+    SMS implied conductance increases as the soils dry, until $\psi_{\text{soil}}$ reaches -2.5MPa (Supp Figure \ref{supp:cond}a,b).
+    Instead, root water uptake decreases due to loss of $\Delta\psi$ (Supp Figure \ref{supp:cond2}c).
+    Whereas PHS imparts a diurnal cycle to root water uptake through $\Delta\psi$, 
+    $\psi_c$ is constant with SMS, requiring a diurnal cycle in the implied conductance (Supp Figure \ref{supp:cond2}).
     
-    PHS conductance is modeled based on xylem vulnerability and Brooks-Corey, 
-    imposing a strong dependence on soil potential (Supp Fig \ref{supp:cond2}a).
-    
-
-\subsection{Root water uptake}
-    dry-amb, comparable total transpiration (phs:28.3, sms:28.5cm)  but distinct profiles, PHS removes less water from intermediate soil layers (0.5-1.5meters) (Figure \ref{fig:qdry}d),.
-    Partitioning between surface and beyond more sensitive to precipitation with PHS (Figure \ref{fig:qdry}a-c).
-    Both models decrease surface extraction with TFE (Figure \ref{fig:qdry}b), but PHS has a larger compensation from depth (Figure \ref{fig:qdry}c),
+\subsection{Root water uptake: profiles}
+    Overall, the two model configurations feature comparable transpiration during the dry season under ambient conditions (PHS: 28.3cm, SMS: 28.5cm).
+    However the two models feature distinct vertical profiles, where PHS removes less water from intermediate soil layers (0.5-1.5meters) (Figure \ref{fig:qdry}d).
+    SMS can remove more water from these layers, due to lower sensitivity of RWU to soil potential.
+    Likewise partitioning of root water uptake between near-surface and beyond is more sensitive to precipitation with PHS (Figure \ref{fig:qdry}a-c).
+    During the longer periods without rain, surface extraction plateaus and transpiration is fueled by the deeper soil water.
+    After rain events, surface extraction renews, while at depth, root water fluxes reverse, depositing water.
+    Both models decrease surface extraction with TFE (Figure \ref{fig:qdry}b), but PHS has a larger compensation from beyond 2m (Figure \ref{fig:qdry}c),
     allowing more overall transpiration (14.6 vs. 10.8 cm).
     
-    Wet season PHS opts for surface water, with zero net extraction beyond [35.2,9.6cm].
-    SMS for reference extracts [49.8\%,81.5\%] of water from down there (Figure \ref{fig:qwet}). 
+    During the wet season PHS utilizes more water from the near-surface soil layers ((Figure \ref{fig:qwet})b), 
+    with zero net root water uptake beyond 35.2 cm under ambient conditions (9.6cm with TFE).
+    SMS extracts 49.8\% (amb) and 81.5\% (tfe) of total uptake from beyond those levels (Figure \ref{fig:qwet}). 
     PHS does extract farther into the soil profile, but in service of HR, 
-    sending surface water to depth.
-    PHS can achieve higher root water uptake rates, especially under wet conditions, where, for example, 
-    Soil Layer 2 dries much faster than with the SMS formulation after rain events (Supp Fig \ref{supp:layer2})
+    sending this water deeper into the soil column.
         
 \subsection{Hydraulic redistribution}
-    HR totals to [38.9/40.0] with the majority occurring at night [28.0/26.7] (Figure \ref{fig:hr}).
-    Total HR refers to the sum of all reversed flows, namely from root-to-soil.
-    Note that over the course of a day or season, HR can occur without net negative root water uptake.
-    For example, hydraulic lift may occur at night, moving water from deep in the soil column up to near the surface, which is then more readily available for transpiration during the following day.    
-
-    Different seasonality AMB has more HR during Sept-Jan, TFE during Feb-Apr.
-    HR occurs in both directions (Supp Fig \ref{supp:hr}), but is predominately downwards [30.65/33.75].
+    SMS precludes hydraulic redistribution (HR), setting root water uptake to zero when reversed gradients in water potential occur.
+    With PHS, 2003 HR totals to 38.9 cm under ambient conditions and 40.0 cm under TFE, with the majority (28.0, 26.7 cm) occurring at night (Figure \ref{fig:hr}).
+    HR occurs in both directions (Supp Fig \ref{supp:hr}), but is predominately downwards (amb: 30.7cm, tfe: 33.8cm).
+    Likewise HR occurs during both the wet and dry seasons.
+    The seasonality changes with TFE, as AMB has more HR during Sept-Jan, while TFE features more HR during Feb-Apr.
 
 \subsection{Soil moisture}
     During the dry season, SMS simulations yield much lower values for soil matric potential (Figure \ref{fig:sm}, Supp Fig \ref{supp:sm}). 
-    The average soil potential  is -1.42 MPa during SON under ambient conditions, as compared to -0.14 MPa in the PHS simulation.
-    With TFE, SMS is -2.51 MPa and PHS is -0.5 MPa.
-    Following from the definitions of root water uptake (see Section zqz), we use different methods for calculating average soil potential.
-    With SMS we utilize root-fraction weighted averaging.
-    With PHS we opt for predawn (5h) root water potential. 
+    During SON, SMS average soil potential  is -1.42 MPa under ambient conditions. 
+    In lieu of straight average over the vertical profile, we use root-fraction weighted average for SMS.
+    For PHS, we use predawn (5AM) root water potential, which more appropriately captures the effective soil potential (see section zqz).
+    Predawn root water potential averages to -0.14 MPa during SON under ambient conditions.
+    With TFE, SMS dry season soil potential drops to -2.51 MPa and PHS to -0.5 MPa.
 
-    PHS better matches observations, especially in the top meter of the soil column, with RMSE lower by up to 55\%.
-    SMS seems to pull too hard in 0-0.3m, 0.5m, and 1m, with soil potential too low during the dry season.
+    PHS better matches observations, especially in the top meter of the soil column, with RMSE lower by up to 55\% (Figure \ref{fig:sm2}, Supp Fig \ref{supp:sm2}).
+    SMS root water uptake seems to pull too hard in the upper soil layers, with soil potential too low during the dry season.
     This is associated with the soil wilting parameter ($\psi_c$), which takes the value -2.5MPa for BET \citep{oleson2013}.
-    It is not a coincidence that this value is equivalent to SMS TFE smp average in the last paragraph.
-    Root water uptake depends on $\psi_c$, with this parameter serving as the lower bound for soil potential 
-    (except in the first two soil layers, which are under the influence of soil evaporation).
-    Beyond 1m, root fractions are smaller, attenuating the dry bias.
+    It is not a coincidence that this value is equivalent to the SMS average under TFE in the last paragraph.
+    SMS root water uptake depends on $\psi_c$, with extraction set to zero when soil potential is drier than -2.5MPa.
+    Beyond 1m, root fractions are smaller (Figure \ref{roots}), attenuating the SMS dry bias.
     
 \subsection{Soil moisture effect on transpiration}    
-    Model soil potential shows limited effect on transpiration in the ambient simulations, 
+    Model soil potential shows limited relationship to transpiration in the ambient simulations, 
     based on sap flux observations (Supp Fig \ref{supp:cool}b,f).
     However, in the SMS configuration, modeled transpiration decreases with more negative soil potential (Supp Fig \ref{supp:cool}a),
     biasing the model relative to observations (Fig \ref{fig:cool}a).
     
-    Observed transpiration under TFE shows a stronger relationship with soil potential in the 
-    PHS simulation than in the SMS simulation (Supp Fig \ref{supp:cool}h,d).
-    And again the relationship with soil potential seems to bias modeled transpiration with SMS (Fig \ref{fig:cool}b).
+    Sap flux observations under TFE shows a stronger relationship with PHS soil potential in the 
+     than with SMS soil potential (Supp Fig \ref{supp:cool}h,d).
+    With SMS, the relationship with soil potential again seems to bias modeled transpiration with SMS (Fig \ref{fig:cool}b).
     The two PHS simulations feature less structure in transpiration bias vs. soil potential and less bias overall (Fig \ref{fig:cool}c,d).
-
-
     
 \section{Discussion}
 \subsection{The promise of plant hydraulics}
@@ -757,9 +751,12 @@ Observations indicate the trees here adopt an isohydric behavior, where declines
   \begin{figure}[h]
      \centering
      \includegraphics[width=30pc]{../figs3/rwu.pdf}
-     \caption{Log of conductance versus soil potential for Soil Layer 3 (2003).
-     Only midday (12h-14h) timesteps are shown to emphasize relationship with soil potential.}
-     \label{supp:cond2}
+     \caption{Binned boxplot of root water uptake versus soil potential for Soil Layer 5 (2002-3).
+     Red lines mark the median, with boxes spanning the interquartile range.
+     Bin sizes are 0.25 MPa for SMS and 0.1 MPa for PHS.
+     Soil Layer 5 is shown, because it is near the surface (12 to 20 cm) and has a large root fraction (14\%).
+     Only midday (12h-14h) timesteps are shown to highlight the relationship with soil potential.}
+     \label{fig:rwu}
   \end{figure}
   \clearpage
   
@@ -793,7 +790,8 @@ Observations indicate the trees here adopt an isohydric behavior, where declines
      \centering
      \includegraphics[width=30pc]{../figs3/hr.pdf}
      \caption{Total hydraulic redistribution (cm) by month across in 2003. For (a) ambient through-fall conditions, and (b) 60\% through-fall exclusion. 
-     Darker shading shows portion of HR at night [6pm,6am), lighter shading shows portion of HR during day [6am,6pm).}
+     Darker shading shows portion of HR at night [6pm,6am), lighter shading shows portion of HR during day [6am,6pm).
+     Total HR refers to the sum of all negative root water uptake flows, where water is deposited by roots into a given soil layer.}
      \label{fig:hr}
   \end{figure}
 
@@ -869,16 +867,14 @@ Observations indicate the trees here adopt an isohydric behavior, where declines
        \end{figure}
          \clearpage
 
-
- 
-
   
   \begin{figure}[h]
      \centering
      \includegraphics[width=30pc]{../figs3/suppcond.pdf}
-     \caption{Log of conductance versus soil potential for Soil Layer 3 (2002-3).
-     Only midday (12h-14h) timesteps are shown to emphasize relationship with soil potential.}
-     \label{supp:cond2}
+     \caption{Log of conductance versus soil potential for Soil Layer 5 (2002-3).
+     Only midday (12h-14h) timesteps are shown to emphasize relationship with soil potential.
+     Beyond 2.5MPa, SMS implied conductance equals 0 (see Section zqz).}
+     \label{supp:cond}
   \end{figure}
   \clearpage
 
@@ -886,11 +882,9 @@ Observations indicate the trees here adopt an isohydric behavior, where declines
   \begin{figure}[h]
      \centering
      \includegraphics[width=30pc]{../figs3/k.pdf}
-     \caption{Diurnal mean of the Soil Layer 5 conductance, under ambient and TFE conditions during 2003. 
-     (a) Time-series of PHS modeled soil-to-root conductance (s$^{-1}$) from Soil Layer 5 (spanning 20 to 32 centimeters in depth).
-     (b) Time-series of SMS inferred conductance (s$^{-1}$) also from Soil Layer 5.
+     \caption{2003 diurnal mean of Soil Layer 5 conductance and $\Delta\psi$, under ambient and TFE conditions. 
      }
-     \label{fig:cond}
+     \label{supp:cond2}
   \end{figure}
   
       \begin{figure}[h]
