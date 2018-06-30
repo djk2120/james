@@ -79,7 +79,7 @@ hh = zeros(200,1);
 gg = zeros(200,1);
 ff = zeros(200,1);
 
-hh(1:5)   = [0,0,0,0,0];
+hh(1:5)   = [1,0,0,0,0];
 hh(6:10)  = [0,0,0,0,0];
 hh(11:15) = [0,0,0,0,0];
 hh(16:20) = [0,0,0,0,0];
@@ -89,7 +89,8 @@ hh(31:35) = [0,0,0,0,0];
 hh(36:40) = [0,0,0,0,0];
 hh(41:45) = [0,0,0,0,0];
 hh(46:50) = [0,0,0,0,0];
-hh(51:55) = [0,0,1,0,0];
+hh(51:55) = [0,0,0,0,0];
+hh(56:60) = [0,0,0,0,0];
 
 
 
@@ -104,12 +105,81 @@ hh(51:55) = [0,0,1,0,0];
 %19 = smp full profile time series
 %20 = h2osoi with obs
 
+
+
+
+
+if hh(55)>0
+    g = (year-2001)*365+doy;
+    
+    x = splitapply(@mean,fsds,g);
+    for i=1:4
+        subplot(2,2,i)
+        y = splitapply(@mean,fpsn(i,:),g);
+        plot(x,y,'.')
+        %xlim([0,2])
+        ylim([0,10])
+    end
+   
+    
+end
+
+
+if hh(54)>0
+    g = (year-2001)*365+doy;
+    
+   x = splitapply(@mean,zr*smp(41:60,:),g);
+   y = splitapply(@mean,fpsn(3,:),g);
+   subplot(2,2,1)
+   plot(x/101972,y,'.')
+   ylim([0,10])
+   xlim([-4,0])
+   
+   x = splitapply(@mean,zr*smp(61:80,:),g);
+   y = splitapply(@mean,fpsn(4,:),g);
+   subplot(2,2,2)
+   plot(x/101972,y,'.')
+   ylim([0,10])
+   xlim([-4,0])
+   
+    
+   x = vegwp(4,mcsec==diurn(10));
+   y = splitapply(@mean,fpsn(1,:),g);
+   subplot(2,2,3)
+   plot(x/101972,y,'.')
+   ylim([0,10])
+   xlim([-4,0])
+   
+   x = vegwp(8,mcsec==diurn(10));
+   y = splitapply(@mean,fpsn(2,:),g);
+   subplot(2,2,4)
+   plot(x/101972,y,'.')
+   ylim([0,10])
+   xlim([-4,0])
+   
+    
+end
+
+
+
 if hh(53)>0
 
-    ix = year==2003&month==9;
-    
-    
-    
+%how much goes to HR?
+
+pos = smp(1:20,:);
+neg = pos;
+for i=1:40
+    pos(i,:)= qrootsink(i,:).*(qrootsink(i,:)>0);
+    neg(i,:)= qrootsink(i,:).*(qrootsink(i,:)<0);
+end
+
+   
+hrp = 1-sum(qrootsink(1:20,:))./sum(pos(1:20,:));
+
+ix = year==2002;
+-180*sum(sum(neg(21:40,ix)))
+180*sum(sum(qrootsink(21:40,ix)))
+
 
 end
 
@@ -282,9 +352,13 @@ if hh(51)>0
         if i>2
             xlim([aa(2)-11,aa(2)])
             set(gca,'xtick',aa(2)-11:aa(2))
+            text(aa(2)-10.75,3.75e-5,rr{i},'FontSize',14,'FontWeight','bold','VerticalAlignment','middle')
+            text(aa(2)-9.75,3.75e-5,'SMS','FontSize',11,'VerticalAlignment','middle')
         else
             xlim([aa(2)-11*2.5,aa(2)])
             set(gca,'xtick',aa(2)-11*2.5:2.5:aa(2))
+            text(aa(2)-2.5*10.75,3.75e-5,rr{i},'FontSize',14,'FontWeight','bold')
+            text(aa(2)-2.5*9.75,3.75e-5,'PHS','FontSize',11,'VerticalAlignment','middle')
         end
         %text(aa(2)-5,3.7e-5,rr{i},'FontSize',14,'FontWeight','bold')
         %text(aa(2)-48,3.7e-5,ee{i},'FontSize',11,'FontWeight','bold')
@@ -532,6 +606,13 @@ if hh(45)>0
         
         
     end
+    
+    for i=1:2
+        subplot(2,1,i)
+        hold on
+        plot([2000,2005],[0.5,0.5],'k:')
+    end
+        
     
     xdk.Units = 'inches';
     xdk.Position = [2,2,7,5];
@@ -3472,9 +3553,40 @@ if hh(2)>0
     
 end
 
+if hh(56)>0
+    g = (year-2001)*12+month;
+    ix = mcsec>=diurn(25)&mcsec<=diurn(28);
+    
+    xv = cumsum(repmat(eomday(2001,1:12),1,3));
+    xv = 2001+([0,xv(1:end-1)]+xv)/2/365;
+    
+    xdk = figure;
+    ll = {'-',':'};
+    
+    for ee=[0,1]
+
+        z = splitapply(@mean,vegwp(1+ee*4,ix),g(ix));
+        set(gca,'ColorOrderIndex',1)
+        plot(xv,z/101972,'LineWidth',2,'LineStyle',ll{ee+1})
+        hold on
+
+    end
+    for ee=[0,1]
+            y = splitapply(@mean,vegwp(4+ee*4,ix),g(ix));
+                    set(gca,'ColorOrderIndex',2)
+        plot(xv,y/101972,'LineWidth',2,'LineStyle',ll{ee+1})
+    end
+    ylim([-3,0])
+    legend({'SunLeafAMB','SunLeafTFE','RootAMB','RootTFE'},'Location','Southwest') 
+    
+end
 
 if hh(1)>0
-    
+    cols = [...
+             0    0.4470    0.7410;...
+    0.4940    0.1840    0.5560;...
+    0.9290    0.6940    0.1250;...
+    0.8500    0.3250    0.0980];
     %figure 2, SON2003 diurnal and monthly mean of veg water potential
     
     % calculate monthly mean midday lwp
@@ -3483,6 +3595,7 @@ if hh(1)>0
     
     for i=1:2
         lwp(i,:) = 1/101972*splitapply(@mean,vegwp(1+(i-1)*4,ixd),month(ixd)+(year(ixd)-2001)*12);
+        rwp(i,:) = 1/101972*splitapply(@mean,vegwp(4+(i-1)*4,ixd),month(ixd)+(year(ixd)-2001)*12);
     end
     
     % calculate SON-2003 diurnal mean
@@ -3499,7 +3612,10 @@ if hh(1)>0
     xf = 1/101972;  %converts mm to MPa
     
     subplot('position',[0.1, 0.59, 0.425, 0.36])
-    plot(x,xf*out(1:4,:)')
+    for i=4:-1:1
+        plot(x,xf*out(i,:),'Color',cols(i,:),'LineWidth',2)
+        hold on
+    end
     xlim([0 24])
     ylim([-3 0])
     xlabel('Hour')
@@ -3509,14 +3625,18 @@ if hh(1)>0
     set(gca,'xtick',0:6:24)
     
     subplot('position',[0.545, 0.59, 0.425, 0.36])
-    plot(x,xf*out(5:8,:)')
+    %plot(x,xf*out(5:8,:)')
+    for i=4:-1:1
+        plot(x,xf*out(i+4,:),'Color',cols(i,:),'LineWidth',2)
+        hold on
+    end
     set(gca,'xtick',0:6:24)
     ylim([-3 0])
     xlim([0 24])
     xlabel('Hour')
     title('TFE')
     set(gca,'yticklabel',[])
-    l = legend('sun-leaf','shade-leaf','stem','root','location','southeast');
+    l = legend('root','stem','shade-leaf','sun-leaf','location','southeast');
     l.Position(1) = 0.45;
     l.Position(2) = 0.65;
     set(gca,'xtick',0:6:24)
@@ -3525,17 +3645,22 @@ if hh(1)>0
     x = 2001+(0.5:36)/12;
     
     subplot('position',[0.1, 0.1, 0.87, 0.36])
-    plot(x,lwp(1,:),'k-','LineWidth',2)
+
+    plot(x,lwp(1,:),'-','LineWidth',2)
     hold on
-    plot(x,lwp(2,:),'k:','LineWidth',2)
-    ylim([-3,-1])
+    set(gca,'ColorOrderIndex',1)
+    plot(x,lwp(2,:),':','LineWidth',2)
+    plot(x,rwp(1,:),'-','LineWidth',2)
+    set(gca,'ColorOrderIndex',2)
+    plot(x,rwp(2,:),':','LineWidth',2)
+    ylim([-3,0])
     %xlim([0,36])
-    set(gca,'ytick',-3:0.5:-1)
-    set(gca,'yticklabel',{'-3','','-2','','-1'})
+    set(gca,'ytick',-3:0.5:0)
+    set(gca,'yticklabel',{'-3','','-2','','-1','',0})
     set(gca,'xtick',2001:0.5:2004)
     set(gca,'xticklabel',{'2001','','2002','','2003','','2004'})
     xlabel('Year')
-    ylabel({'Midday Sun Leaf Water';'Potential (MPa)'})
+    ylabel({'Midday Water';'Potential (MPa)'})
     
     %draw an arrow
     plot(2001+[10/12,10/12],[-2.6,-2.9],'k-','LineWidth',2)
