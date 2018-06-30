@@ -569,11 +569,11 @@ PHS values correspond to predawn root water potential.}
     Here we are trying to impart xylem tension stress, allowing plants to avoid cavitation and embolism.
     Support for this in the literature \citep{novick2016a,sperry2017}, but still no consensus on the best functional form \citep{zhou2013}. 
     
-    The water stress factor follows a seasonal cycle, with lower (indicating more stress) values during the dry season, 
+    The water stress factor follows a seasonal cycle, with lower values (indicating more stress) during the dry season, 
     but with less seasonal variation compared to the control model (Figure \ref{fig:gpp}a-d).
     As a result PHS features less seasonal variability in GPP, especially under ambient conditions (Figure \ref{fig:gpp}e-h).
     The xylem tension constraint in PHS imparts a negative feedback on GPP.
-    Factors increasing GPP (e.g. more light) also increase xylem tension and stress, which limits GPP.
+    Factors increasing GPP (e.g. more light) also increase xylem tension and stress, which opposes increases in GPP.
     \cite{restrepo2017} show that GPP increases at Caxiuana during the dry season, suggesting that PHS improves the GPP seasonal cycle relative to the control model.
     
     PHS underestimates the seasonal cycle in transpiration under ambient predictions, with less variability than sap flux observations (Figure \ref{fig:t}a,c).
@@ -584,23 +584,20 @@ PHS values correspond to predawn root water potential.}
     with lower RMSE and higher correlation compared to the control model, albeit with model tuning (Figure \ref{fig:t}).
 
 \subsection{The extensive influence of $\psi_c$}
+    Water stress (in the SMS model configuration) is largely determined by 
+    $\psi_c$, the soil potential with stomates fully closed.
+    For the Broadleaf Evergreen Tropical PFT, $\psi_c$ equals -2.5 MPa \citep{oleson2013}.
+    Root water uptake scales with hydraulic gradient ($\Delta\psi$), and
+    $\psi_c$ serves as the sink potential for soil water extraction ($\Delta\psi = \psi_{\text{soil}}-\psi_c$).
+    This defines the slope with which root water uptake decreases with soil drying (Figure \ref{fig:rwu})
+    and results in transpiration overall trending towards zero as column-average soil potential approaches -2.5 MPa (Supp Fig \ref{supp:cool}).
+    
     Root water uptake from a given soil layer is defined to be zero whenever soil potential is more negative than $\psi_c$ (Figure \ref{fig:rwu}),  
     following from the definition of the SMS water stress factor (Section zqz).
-    The non-linearity of root water uptake tends to make soil potential run to and then stick at $\psi_c$ (Figure \ref{fig:sm}).
-    At the same time, $\psi_c$ serves as the sink potential relative to which the hydraulic gradient root water extraction is measured ($\Delta\psi = \psi_{\text{soil}}-\psi_c$).
-    This defines the way root water uptake falls off with soil drying (Figure \ref{fig:rwu}), 
-    which results in transpiration overall trending towards zero as average soil potential approaches -2.5 MPa (Supp Fig \ref{supp:cool}).
+    This non-linearity of root water uptake tends to make soil potential decrease to and then hold at $\psi_c$ (Figure \ref{fig:sm}).
+    As such, $\psi_c$ has strong influence on both transpiration and soil moisture, despite limited empirical or physical basis \citep{rogers2017}.
     
-    SMS water stress factor is defined in part by $\psi_c$, the water potential with stomates fully closed.
-    Meaning that how photosynthesis and transpiration fall off with shortfalls in precipitation is coupled to that parameter.
-    Root water uptake is also based on $\psi_c$, where roughly speaking $q_i=k_i\left(\psi_{\text{soil},i}-\psi_c\right)$.
-    Because $k_i$ does not decrease with soil potential in the SMS framework (Supp Fig \ref{supp:cond}), 
-    water shortfalls tend to result in $\psi_{\text{soil},i}$ equivalent to $\psi_c$ (Figure \ref{fig:sm}).
-    
-    For the Broadleaf Evergreen Tropical PFT, $\psi_c$ equals -2.5 MPa \citep{oleson2013}, 
-    leading to a strong dry bias in soil moisture in the first two meters of the soil column.
-    
-    At two meters and beyond, root fraction is too small to influence soil moisture very much.
+
 
 \subsection{Structural improvements in modeling root water uptake}
     Conductance, based on brooks-corey, vulnerability, better response to soil moisture, allocation
@@ -660,16 +657,6 @@ Observations indicate the trees here adopt an isohydric behavior, where declines
     This may be especially important given projected increases in VPD associated with warming.
 
 
-    
-\subsubsection{Is hydraulic redistribution a feature or a liability?}
-   
-    HR is a natural consequence of using Darcy's Law to model root water uptake - when hydraulic gradients are reversed, HR should occur. As such it is naturally included within a plant hydraulics model with multiple soil layers and is an emergent behavior of respecting hydraulic flow down gradient of potentials.  In ESMs, where soil moisture is typically resolved vertically, interfacing the plant hydrulics with a multi-layer soil naturally accounts for HR. Other models, similar to the SMS paradigm, disallow HR by constraining root water uptake to be positive \citep{xu2016}.
-    
-    Most literature models force the model with a single bulk soil water potential $\psi_s$, which precludes HR \citep{fisher2007,bonan2014,sperry2017}. \cite{christoffersen2016} expand beyond a single $\psi_s$ horizontally, representing soil elements at different charecteristic distances from the root surface,  but still feature a single soil layer in the vertical dimension.  
-    
-    Likewise HR is likely sensitive to the representation of vegetation tissue capacitance and below-ground hydraulic segmentation (CITAIONS NEEDED).
-    
-    Hydraulic redistribution has the impact of reducing the variance in the availability of water for plant transpiration, potentially at odds with observations of interannual variation (see Lawrence et al in prep. Tang et al. 2015) Observations of HR are extremely difficult, in unequivocal detection of HR involves the observation of reverse flow along transport roots, typically at rates close ot the detection threshold of sap flow monitoring systems. Therefore, the degree to which HR actually occurs in unclear. While there is some first-order benefit to plants of moving water from deep soil to surface layers to allow more transpiration, this water is then also available for competition with other shallow-rooted plants, and for evaporative processes. Further, cavitation of fine roots in shallow soils might explicitly act as a 'fuse' to prevent loss of water from the plant into dry soil layers (Kotowska et al. 2015) - a process not explicitly resolved here. Therefore we view this first implementation of HR into the default versions of the CLM as a 'null' hypothesis for the functioning of this process, and as a platform to allow further refinement from the plant hydraulics community. 
     
 
 \section{Conclusion}
