@@ -79,7 +79,7 @@ hh = zeros(200,1);
 gg = zeros(200,1);
 ff = zeros(200,1);
 
-hh(1:5)   = [1,0,0,0,0];
+hh(1:5)   = [0,0,0,0,0];
 hh(6:10)  = [0,0,0,0,0];
 hh(11:15) = [0,0,0,0,0];
 hh(16:20) = [0,0,0,0,0];
@@ -90,7 +90,7 @@ hh(36:40) = [0,0,0,0,0];
 hh(41:45) = [0,0,0,0,0];
 hh(46:50) = [0,0,0,0,0];
 hh(51:55) = [0,0,0,0,0];
-hh(56:60) = [0,0,0,0,0];
+hh(56:60) = [0,0,1,0,0];
 
 
 
@@ -105,8 +105,45 @@ hh(56:60) = [0,0,0,0,0];
 %19 = smp full profile time series
 %20 = h2osoi with obs
 
+if hh(58)>0
+    
+    ix = year>2000&month>8&month<12;
+    mean(zr*smp(41:60,ix))/101972
+    mean(vegwp(4,ix&mcsec==diurn(10)))/101972
+    ix = year>2001&month>8&month<12;
+    mean(zr*smp(61:80,ix))/101972
+    mean(vegwp(8,ix&mcsec==diurn(10)))/101972
+    
+    
+    
+    
+end
 
 
+if hh(57)>0
+    amb_sm = csvread('../goodsim/control_sm.csv');
+    amb_sm(amb_sm==0) = nan;
+    tfe_sm = csvread('../goodsim/tfe_sm.csv');
+    tfe_sm(tfe_sm==0) = nan;
+    
+    g  = (year-2001)*365+doy;
+    out = splitapply(@mean,h2osoi',g');
+
+    
+    yv = -[0.15,0.5,1,2];
+    for i=1:18
+        subplot(3,6,i)
+        plot(tfe_sm(i,2:5)/100,yv,'k-')
+        hold on
+        plot(out(i,21:32),-z(1:12),'r-')
+        plot(out(i,61:72),-z(1:12),'b-')
+        title(amb_sm(i,1))
+        xlim([0,0.45])
+        ylim([-2,0])
+    end
+    
+
+end
 
 
 if hh(55)>0
