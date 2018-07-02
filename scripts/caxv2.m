@@ -68,12 +68,12 @@ p = [p,a(:,2)];
 %************************************************************************
 %------------------------------------------------------------------------
 
-ff = [0,0,1,0,0,...  %1
+ff = [0,0,0,0,0,...  %1
     0,0,0,0,0,...    %2
     0,0,0,0,0,...    %3
     0,0,0,0,0,...    %4
     0,0,0,0,0,...    %5
-    0,0,0,0,0,...    %6
+    1,0,0,0,0,...    %6
     0,0,0,0,0,...    %7
     0,0,0,0,0,...
     0,0];
@@ -1981,7 +1981,7 @@ if ff(26)>0
     
     %analsysis2 - cumulative timeseries lyrs1-4 vs. 5-20
     ct = 0;
-    out2 = zeros(16,5000);
+    out2 = zeros(8,5000);
     for w=[0,1]
         if ~w
             ix = year==2003&month>8&month<12;
@@ -2296,9 +2296,9 @@ if ff(31)>0
     xlabel('Layer 3 Soil Potential (MPa)')
     
             xdk.Units = 'inches';
-    xdk.Position = [2,2,7,4];
-    xdk.PaperSize = [7,4];
-    xdk.PaperPosition = [0,0,7,4];
+    xdk.Position = [2,2,4,3];
+    xdk.PaperSize = [4,3];
+    xdk.PaperPosition = [0,0,4,3];
     
     if ff(31)>1
     print(xdk,'../figs2/suppfig2','-dpdf')
