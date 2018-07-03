@@ -90,7 +90,7 @@ hh(36:40) = [0,0,0,0,0];
 hh(41:45) = [0,0,0,0,0];
 hh(46:50) = [0,0,0,0,0];
 hh(51:55) = [0,0,0,0,0];
-hh(56:60) = [0,0,0,1,0];
+hh(56:60) = [0,0,0,0,1];
 
 
 
@@ -104,6 +104,26 @@ hh(56:60) = [0,0,0,1,0];
 %18 = hr
 %19 = smp full profile time series
 %20 = h2osoi with obs
+
+
+if hh(60)>0
+
+    tt = sum(qrootsink(41:60,:));
+    ss = smp(45,:);
+    qq = qrootsink(45,:);
+    bb = btran(3,:);
+    
+    zzz = 0.1436749;
+
+    k = tt./bb*zzz/189000;
+    dp = max(0,min(189000,ss+255000));
+    
+    ix = mcsec>=diurn(25)&mcsec<=diurn(28);
+    plot(smp(45,ix),k(ix),'.')
+
+    
+
+end
 
 
 if hh(59)>0

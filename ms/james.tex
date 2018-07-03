@@ -63,10 +63,9 @@ In this study, we develop a new plant water stress parameterization within the r
 
 Adding the representation of the SPAC introduces the representation of vegetation water potential (discretized into leaf, stem and root elements) into the CLM, as well as an explicit representation of water supply, from the soil through the vegetation substrate. Transpiration is attenuated in the model with drought stress according to leaf water status, capturing dynamic vegetation water use regulation. These changes in the parameterization framework have numerous implications, including 
 
-
 1. Leaf water potential serves as a metric for water status compared to soil water or soil matric potential. As such, it reflects vegetation sensitivity to both soil and atmospheric drying, while serving as a diagnostic for excessive xylem tension and cavitation risk. 
 
-2. Modeling plant hydrodynamics allows representing hydraulic redistribution \citep{lee2005}, as the flow repects Darcy's law and thus is alwyas directed down gradients of water potentials. 
+2. Modeling plant hydrodynamics allows representing hydraulic redistribution \citep{lee2005}, as the flow respects Darcy's law and thus is always directed down gradients of water potentials. 
 
 3. Further, root water potential can be used to predict gradient-based root water uptake based on Darcy's law, replacing the previous empirical transpiration partitioning heuristic. This provides the means to vary, for example, the mean depth of extraction with changing soil water conditions.
 
@@ -74,12 +73,12 @@ Adding the representation of the SPAC introduces the representation of vegetatio
 
 5. Modeling vegetation water potential allows improved connection to remote sensing observations of vegetation water status ( Vegetation Optical Depth) \citep{konings2016}. 
 
-To assess the new model formulation, we carried out site-level simulations at Caxiuan\~a National Forest in Brazil, which features a critical biome (terra-firme moist tropical evergreen forest) \citep{fisher2006}.  Starting in 2001, a plot at this site was subjected to an approximately 50\% percent precipitation through-fall exclusion. Due to the large drop in soil moisture at the precipitation exclusion site, significant vegetation water stress regulation of transpiration and photosynthesis was present at the site, prviding a natural experiment to test the model \citep{fisher2007}.
+To assess the new model formulation, we carried out site-level simulations at Caxiuan\~a National Forest in Brazil, which features a critical biome (terra-firme moist tropical evergreen forest) \citep{fisher2006}.  Starting in 2001, a plot at this site was subjected to an approximately 50\% percent precipitation through-fall exclusion. Due to the large drop in soil moisture at the precipitation exclusion site, significant vegetation water stress regulation of transpiration and photosynthesis was present at the site, providing a natural experiment to test the model \citep{fisher2007}.
 
-In this paper we therfore:
-1. Introduce the PHS theory and implemention in the CLM
+In this paper we therefore:
+1. Introduce the PHS theory and implementation in the CLM
 2. Analyze the dynamics of modeled water stress, root water uptake and soil moisture profiles. 
-3. Compare PHS to the behaviour of the default  CLM water stress configuration.
+3. Compare PHS to the behavior of the previous CLM water stress configuration.
 4. Discuss the benefits and limitations of the new model. 
 
 SAY IN WHICH SECTION WE WILL FINE EACH PART
@@ -93,8 +92,8 @@ SAY IN WHICH SECTION WE WILL FINE EACH PART
 \subsection{Photosynthesis}
 \label{sect:A}
     The CLM5 photosynthesis model is described in details in \citet{bonan2011}, \citet{thornton2007},
-    and \citet{oleson2013}.Photosynthesis is limited by three factors: Rubisco-limitations, light-limitations, and export-limitations 
-    following \citet{farquhar1980} and \citet{harley1992}.The implementation extends \citet{sellers1996a,sellers1996b} with 
+    and \citet{oleson2013}. Photosynthesis is limited by three factors: Rubisco-limitations, light-limitations, and export-limitations 
+    following \citet{farquhar1980} and \citet{harley1992}. The implementation extends \citet{sellers1996a,sellers1996b} with 
     co-limitation following \citet{collatz1991}. 
     
     The CLM5 photosynthesis module, in its default configuration, is a two-big-leaf model, with a sunlit and shaded leaf for each plant functional type \citep{thornton2007, dai2004, oleson2013}. 
@@ -106,40 +105,144 @@ SAY IN WHICH SECTION WE WILL FINE EACH PART
 %Stomatal Conductance
 \subsection{Stomatal Conductance}
 \label{sect:gs}
-    The new CLM5 version implements the Medlyn stomatal conductance model, which reconciles the empirical and optimal approaches to 
-    stomatal conductance, which aims at maximizing photosynthesis while minimizing transpiration \citep{medlyn2011}. 
-    Stomatal conductance of CO$_2$ is thus directly related to net photosynthesis ($A_n$), CO$_2$ concentration at the leaf surface 
-    ($C_a$), and the square root of the vapor pressure deficit near the leaf surface ($\sqrt{D}$).
+    CLM5 implements the Medlyn stomatal conductance model, which reconciles the empirical and optimal approaches to 
+    stomatal conductance \citep{medlyn2011}.. 
+    The optimization aims to maximize photosynthesis relative to transpiration costs. 
+    Stomatal conductance of CO$_2$ is thus directly related to net photosynthesis ($A_n$) 
+    and inversely related to the square root of the vapor pressure deficit near the leaf surface ($\sqrt{D}$) and the concentration of CO$_2$ at the leaf surface ($C_a$).
     \begin{equation}
     g_s=g_0+\left(1+\dfrac{g_1}{\sqrt{D}}\right)\dfrac{A}{C_a}
     \end{equation}
     The model features two parameters $g_0$ ($\mu$mol / m2 / s) and $g_1$ (kPa$^{0.5}$). 
     The $g_0$ parameter is minimum stomatal conductance, representing cuticular and epidermal losses (small). 
-    The $g_1$ parameter relates to the marginal water cost guiding the optimization of carbon assimilation. These parameters are plant functional type dependent.
+    The $g_1$ parameter relates to the marginal water cost guiding the optimization of carbon assimilation. 
+    These parameters are plant functional type dependent.
     
-    The Medlyn model, derived from stomatal optimization theory, predicts stomatal conductance to maximize assimilation relative to water transpiration costs ($A-\lambda E$), 
-    but does not resolve concurrent limitations to stomatal conductance associated with drought conditions. To represent soil water stress, and its impact on leaf-gas exchange, land surface models typically include a `water stress factor'($f_w$, dimensionless, 0 to 1, formerly $\beta_t$). Uncertainty remains within the literature for how and where to apply water stress factors to photosynthesis and/or stomatal conductance. 
-    \citep{zhou2013,novick2016a,sperry2015}.
-    
-    In CLM, $f_w$ multiplies the rate of maximum carboxylation ($V_{\text{cmax}}$) as described in \citet{oleson2013}. Other models opt for soil-moisture based stomatal limitation (linking the stomatal conductance model slope parameter to soil moisture), however,
-    \cite{lin2018} found that only $g_0$ was sensitive to soil moisture but not $g_1$ based on eddy-covariance observations.
-    \cite{zhou2013} suggest that changes in assimilation tend to exceed those predicted by modulating $g_1$ with soil moisture, but could be captured by changing $V_{\text{cmax}}$.
-    Other field studies, however, suggest that measured $V_{\text{cmax}}$ at the leaf level does not change with drought \citep{flexas2004}. On the other hand,  the modeled $V_{\text{cmax}}$ is a bulk measure of $V_{\text{cmax}}$, which implicitly account for mesophyll conductance changes \citep{flexas2004}, which has been shown to be water stress dependent.
-    
-    In PHS, we opt for a simplified form of this stress approach, which seems to be consistent with eddy-covariance observations and apply the stress function to the bulk modeled $V_{\text{cmax}}$ \citep{lin2018}. Prognostic water stress ($f_w$, ranging from 0-1) then attenuates stomatal conductance indirectly via multiplication of $V_{\text{cmax}}$. Water stress then lowers assimilation, and therfore stomatal conductance through a downregulation of photosynthesis ( CITE YOUR EQUATION ABOVE \citep{medlyn2011}).
-    
-    $f_w$ is modeled here as a function of leaf water potential ($\psi_{leaf}$) (see Section \ref{sect:demand}), with stress increasing as $\psi_{leaf}$ becomes more negative.
-    This reflects the concept of hydraulic safety, with vegetation avoiding excessive xylem tension associated with risk of cavitation. The previous stress formulation used instead the soil water potential, averaged across the root zone according to the root fractions.
-    
-    Utilizing leaf water potential instead of soil water potential for drought stress, introduces a new paradigm in the model as leaf water potential is regulated by supply of sap to the leaves and evaporative demand, regulated by stomatal regulation \citep{novick2016a}. As a result, low soil water (bottom-up stress) induces leaf moisture stress due to limited water supply but in addition high atmospheric VPD can also induce leaf moisture stress by propagating a drying into the xylem (top-down stress). This latter mechanism was absent from the previous water stress function (dependant on soil water potential only), by construction. Given the importance of rising VPD, it appears critical to include such mechanistic dependence of water stress though.
-    
-     I SUGGEST REMOVING THIS PARGRAPH APPEARS LIKE A TRAIN FO THOUGH, NOT THAT USEFULMuch recent work has focused on alternative constraints on plant hydrodynamics, especially in response to drying soils \citep{manzoni2013b,novick2016a,zhou2014}.
-    This includes how plants manage the risk of cavitation associated with increasing xylem tension \citep{sperry1998}.
-    \citep{sperry2017}, for example, argue that theory based on hydraulic costs (define) could be used instead of optimizing of $A-\lambda E$.  
-    Otherwise, the marginal water cost might be adjusted based on  soil water status  by adjusting $\lambda$ or Medlyn $g_1$ \citep{manzoni2013b}, but this may underestimate drought effects on photosynthesis *expand on this-RF*\citep{zhou2013,lin2018}.
-    A hybrid approach, combines stomatal optimization with hydraulic constraints and/or
-    so-called non-stomatal limitation, where stress attenuates $V_{\text{cmax}}$ or mesophyll conductance (both of which feed back through photosynthesis to lower stomatal conductance) \citep{egea2011,novick2016a}. [*link this back to which options are used in PHS -RF*]
+    While maximizing assimilation relative to water transpiration costs ($A-\lambda E$), the Medlyn model does not 
+    but does not resolve concurrent limitations to stomatal conductance associated with declining soil water. 
+    To represent soil water stress, and its impact on leaf-gas exchange, land surface models typically include a `water stress factor' (see section zqz). 
 
+    
+\subsection{Water stress factor}
+
+    In the CLM the water stress factor ($f_w$) multiplies the `well-watered rate' of maximum carboxylation ($V_{\text{cmax,ww}}$) to effect water stress (as described in \citet{oleson2013}). 
+    
+    \begin{equation}
+    V_{\text{cmax}} = f_w\, V_{\text{cmax,ww}} 
+    \end{equation}
+
+    Other models opt for stomatal limitation based on soil moisture, linking the stomatal conductance model slope parameter to soil moisture (e.g. \cite{manzoni2011}, which modulates $\lambda$ based on soil water).
+     However, \cite{lin2018} found that only the intercept parameter was sensitive to soil moisture based on eddy-covariance observations.
+    \cite{zhou2013} suggest that changes in assimilation tend to exceed those predicted by modulating $g_1$ with soil moisture, but could be captured by changing $V_{\text{cmax}}$.
+    Other field studies, however, suggest that measured $V_{\text{cmax}}$ at the leaf level does not change with drought \citep{flexas2004}. 
+    On the other hand, the modeled $V_{\text{cmax}}$ is a bulk measure of $V_{\text{cmax}}$ and may implicitly account for mesophyll conductance changes \citep{rogers2017}, which has been shown to be water stress dependent \citep{flexas2012}.
+
+    Uncertainty remains within the literature for how and where to apply water stress factors to photosynthesis and/or stomatal conductance 
+    \citep{zhou2013,novick2016a,sperry2015}.
+    For now, applying water stress through $V_{\text{cmax}}$ seems well-supported, but future refinements may well be appropriate.
+    In this study, we preserve the location of water stress, but experiment with how $f_w$ responds to environmental conditions.
+    
+    \subsubsection{Soil Moisture Stress (control model)}
+    
+    The control model for our study is Soil Moisture Stress (SMS), which we compare to the model of interest, Plant Hydraulic Stress (PHS). 
+    PHS is the default configuration of CLM5.
+    SMS is a re-configuration of CLM5, substituting in the CLM4.5 representations of 
+    (1) root water uptake (Section \ref{sect:rwu}) and (2) water stress (described here).
+    Otherwise the models are identical.
+    
+    The scalar $f_w$ is calculated as the summation of the soil wilting factor across the $n$ soil layers, weighted by root fraction ($r_i$).
+    The soil wilting factor ($w_i$) is a bounded linear function of soil matric potential ($\psi_i$).
+    The function is defined by two parameters, the soil potential with stomates fully open ($\psi_o$) and fully closed ($\psi_o$).  
+
+    \begin{linenomath*}
+    \begin{equation}
+     f_{w,\text{SMS}} = \sum_{i=1}^{n}{r_iw_i}
+    \label{bt:1}
+    \end{equation}
+    \begin{equation} 
+    \label{bt:2}
+    w_i=0 \leq \dfrac{\psi_i-\psi_{c}}{\psi_{o}-\psi_{c}} \leq 1
+    \end{equation}
+    \end{linenomath*}
+    
+    \subsubsection{Plant Hydraulic Stress (new model)}
+    
+    PHS introduces a new formulation of $f_w$, which is based on leaf water potential ($\psi_{\text{leaf}}$) instead of soil potential (details are provided in Section zqz).
+    The relationship is modeled with a weibull function, subject to two parameters: the water potential at 50\% loss of stomatal conductance ($\psi_{50}$) and a shape-fitting parameter ($c_k$).
+    
+    \begin{linenomath*}
+    \begin{equation}
+    f_{w,\text{PHS}} = 2^{-\left(\dfrac{\psi_{\text{leaf}}}{\psi_{50}}\right)^{c_k}}
+    \end{equation}
+    \end{linenomath*}
+    
+    Utilizing leaf water potential instead of soil water potential for drought stress, introduces a new paradigm to the model. 
+    Leaf water potential is modulated by supply of sap to the leaves and by evaporative demand, as regulated by stomatal dynamics \citep{novick2016a}. 
+    As a result, low soil water (bottom-up stress) induces stress due to limited water supply, but in addition, high atmospheric VPD can induce stress with the associated increases in the gradient in water potential across the plant xylem (top-down stress). 
+    This latter mechanism was absent from the previous water stress function (dependent on soil water potential only), by construction.
+    Given the importance of rising VPD, it appears critical to include such mechanistic dependence of water stress though.
+    The new stress factor formulation reflects the concept of hydraulic safety, with vegetation avoiding excessive xylem tension associated with risk of cavitation.
+    While the Medlyn stomatal conductance model does depend on VPD, this captures water `costs' and not xylem tension.
+
+\subsection{Root Water Uptake}
+\label{sect:rwu}
+
+\subsubsection{SMS}
+    
+    In the SMS configuration, a heuristic function is used to determine the root water uptake from a given soil layer ($q_i$).
+    The function partitions the total transpiration ($T$) among the soil layers layers based on the product of the root fraction and the wilting factor, which must be normalized by $f_w$. 
+    We then substitute for $w_i$ and rearrange to yield the SMS root water uptake equation (\ref{eq:btrwu}), subject to the restriction that $\psi_o \ge \psi_i \ge \psi_c$.
+    
+    \begin{linenomath*}
+    \begin{equation}
+    \label{bt:4}
+    q_i = \dfrac{r_i w_i}{f_w}T
+    \end{equation}
+    \end{linenomath*}
+    
+    \begin{linenomath*}
+    \begin{equation}
+    \label{eq:btrwu}
+    q_i = \dfrac{T}{f_w} \dfrac{r_i}{\psi_{o}-\psi_{c}} \left(\psi_i-\psi_{c} \right)
+    \end{equation}
+    \end{linenomath*}
+    
+    In the Darcy framework, water fluxes are the product of hydraulic conductance ($k_i$) and hydraulic gradient ($\Delta\psi$).
+    Where upon inspection of (\ref{eq:btrwu}), we can define hydraulic analogs resulting from the transpiration partitioning heuristic function, 
+    allowing easy comparison to the PHS root water uptake implementation.
+    
+    \begin{linenomath*}
+    \begin{equation} \begin{aligned}
+    q_i &= -k_i\Delta\psi \\
+    \Delta\psi &=  \psi_{c}-\psi_i \\
+    k_i &= \dfrac{T}{f_w} \dfrac{r_i}{\psi_{o}-\psi_{c}} \\
+    \mbox{constrained by:} \qquad
+    \Delta\psi &=
+    \begin{cases}
+    0                          & \text{if } \psi_i<\psi_{c}  \\
+    \psi_{c}-\psi_{o} & \text{if } \psi_i>\psi_{o}
+    \label{kb}
+    \end{cases}
+    \end{aligned}\end{equation}
+    \end{linenomath*}
+    
+    
+    \subsubsection{PHS}
+    
+    PHS installs an alternative to the SMS heuristic approach, using a mechanistic representation of root water uptake, following Darcy's Law.
+    Fluxes from a given soil layer are driven by the gradient between soil potential in that layer ($\psi_i$) and the water potential at the root collar ($\psi_{\text{root}}$), 
+    after accounting for the effects of gravity ($\rho g z$, where $z$ is the soil layer depth).
+    Hydraulic conductance across the soil and roots ($k_{sr}$) is modeled based on soil hydraulic properties and xylem vulnerability, 
+    accounting for the path across the soil matrix and through the xylem conduits (details in Section zqz).
+    
+    \begin{linenomath*}
+    \begin{equation}
+        \begin{aligned}
+    q_i &= -k_{sr}  \left(\psi_{\text{root}}-\psi_{i}+\rho g z\right)
+    \label{phs:sink}
+    \end{aligned}
+    \end{equation}
+    \end{linenomath*}
     
 % Plant Hydaulics
 \subsection{Plant Hydraulic Stress (PHS)}
@@ -287,15 +390,7 @@ SAY IN WHICH SECTION WE WILL FINE EACH PART
     
     In SMS, the variable $f_w$ is unitless, ranging from 0 to 1, with 1 corresponding to no water stress, and 0 corresponding to fully water stressed. It is calculated based on a root-fraction weighted average of soil layer wilting factor ($w_i$), which is a bounded linear function of soil water potential ($\psi_i$) relative to PFT parameters defining the soil potential with stomates fully open ($\psi_{o}$) and fully closed ($\psi_{c}$), among the soil layers $i=1,...\,,n$. Note that root fraction ($r_i$) sums to 1, by definition.
     
-    \begin{linenomath*}
-    \begin{equation} f_w = \sum_{i=1}^{n}{r_iw_i}
-    \label{bt:1}
-    \end{equation}
-    \begin{equation} 
-    \label{bt:2}
-    w_i=0 \leq \dfrac{\psi_i-\psi_{c}}{\psi_{o}-\psi_{c}} \leq 1
-    \end{equation}
-    \end{linenomath*}
+
     
 
 \subsection{Root water uptake in SMS vs. PHS}
@@ -322,29 +417,7 @@ SAY IN WHICH SECTION WE WILL FINE EACH PART
     \end{equation}
     \end{linenomath*}
     
-    For direct comparison between SMS and PHS, we recast (\ref{bt:4}) into the hydraulic framework: defining $T_{\text{max}}$, such that: $T = f_w T_{\text{max}}$ to replace $T$ in (\ref{bt:4}), and replacing $w_i$ in (\ref{bt:4}) with the formula from (\ref{bt:2}).
-    
-    \begin{linenomath*}
-    \begin{equation}
-    \label{eq:btrwu}
-    q_i = \dfrac{T_{\text{max}}}{\psi_{o}-\psi_{c}} r_i \left(\psi_i-\psi_{c} \right)
-    \end{equation}
-    \end{linenomath*}
-    
-    This yields SMS analogs for the hydraulic conductance and gradient terms of Equation \ref{phs:sink}.
-    \begin{linenomath*}
-    \begin{equation} \begin{aligned}
-    k_i &= r_i \, \dfrac{T_{max}}{\psi_{o}-\psi_{c}} \\
-    \Delta\psi &=  \psi_{c}-\psi_i \\
-    \mbox{constrained by:} \qquad
-    \Delta\psi &=
-    \begin{cases}
-    0                          & \text{if } \psi_i<\psi_{c}  \\
-    \psi_{c}-\psi_{o} & \text{if } \psi_i>\psi_{o}
-    \label{kb}
-    \end{cases}
-    \end{aligned}\end{equation}
-    \end{linenomath*}
+
 
    We use this formulation to discuss some of the implications for root water uptake from the former SMS parameterization of water stress (Equation 15).
    
@@ -624,21 +697,21 @@ PHS values correspond to predawn root water potential.}
 
 \subsection{Inconsistencies in SMS}
     
-    \subsusection{Constant pulling potential}
+    \subsubsection{Constant pulling potential}
     With SMS, the water potential gradient is implicitly defined for each soil layer as the difference between the soil water potential in that layer ($\psi_i$) and a constant parameter, the soil water potential when stomata are fully closed ($\psi_{c}$). This parameter serves as the vegetation ``pulling'' potential for calculating the soil transpiration sink.
     
     Using a constant wilting point is inconsistent with extensive evidence from the field of dynamic vegetation water potential, and cohesion tension theory (CITATIONS NEEDED) driving the transpiration flow. Likewise the values for $\psi_{c}$ are quite negative, (-2.5 MPa for broadleaf evergreen tropical, BET, forests). \cite{fisher2006} measured midday stem potential consistently higher than -0.5 MPa during the wet season, and on average -1.69 and -1.53 MPa during the dry season in the control and exclusion plots, respectively.
     
-    \subsusection{Conductance dynamics}
+    \subsubsection{Conductance dynamics}
     In SMS, in lieu of dynamic vegetation water potential, intra-day SMS soil sink dynamics derive from a highly variable conductance (CLARIFY). As inferred in Equation \ref{kb}, SMS conductance is modeled as a function of $T_{max}$, and three constant parameters. $T_{max}$ is highly dynamic, responding to the diurnal course in transpiration demand. This is inconsistent with general principles of porous media flow, where conductivity is a function of the hydraulic architecture and its wetted status.    Likewise, this representation of conductance does not represent the characteristic phenomenon where vessels lose conductance with drying.
       
-    \subsusection{No dependence on belowground carbon allocation}
+    \subsubsection{No dependence on belowground carbon allocation}
     As is typical in water stress parameterizations, the SMS conductance is scaled by layer using an area basis, here using the relative vertical root fraction is used. With PHS, an absolute measure of root biomass is used (see Appendix Equation \ref{eq:rai}), so that the belowground water cycle interacts with carbon allocation to the roots. An absolute measure better conforms with the physics of porous media flow and better responds to varying carbon allocation strategies. For example, with SMS, if root mass doubles in every soil layer, the root access to water remains unchanged.
 
-    \subsusection{Lacks penalties for extraction from depth}
+    \subsubsection{Lacks penalties for extraction from depth}
     Both PHS and SMS account for the effect of decreasing root area with depth (PHS, root area; SMS, root fraction), but PHS implements two other penalties for extracting water from deep in the soil column that are missing from SMS. The first is minor, but water extracted from depth must overcome gravity, amounting to about 0.01 MPa per meter in depth. This is missing from SMS and included with PHS.  Likewise, SMS ignores the fact that hydraulic conductance is generally taken to scale with the inverse of conducting length. Deeper roots feature longer root tissue conducting length, and root spacing within the soil is less dense, requiring longer conducting distances across the soil matrix.In PHS, both these processes result in diminished hydraulic conductance (UNCLEAR).
 
-    \subsusection{Constraints}
+    \subsubsection{Constraints}
     With SMS, the gradient in water potential is constrained between 0 and the range of soil potential between parameters for stomata fully open and closed (Equation \ref{kb}). The upper constraint caps the gradient in water potential when soil potential reaches the value for stomata fully open ($\psi_o$=-0.65 MPa for BET). Darcy's Law predicts that the gradient in water potential would continue to increase until saturation matric potential. The lower constraint caps the gradient in water potential at zero, disallowing negative gradients. However, reversed water fluxes, caused by positive gradients in water potential from root to soil, have been observed in the field \citep{burgess1998}. Both constraints are eschewed with PHS.     
 
 \section{Conclusion}
