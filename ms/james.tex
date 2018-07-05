@@ -151,7 +151,7 @@ SAY IN WHICH SECTION WE WILL FINE EACH PART
     Otherwise the models are identical.
     
     The scalar $f_w$ is calculated as the summation of the soil wilting factor across the $n$ soil layers, weighted by root fraction ($r_i$).
-    The soil wilting factor ($w_i$) is a bounded linear function of soil matric potential ($\psi_i$).
+    The soil wilting factor ($w_i$) is a bounded linear function of soil matric potential ($\psi_{\text{soil},i}$).
     The function is defined by two parameters, the soil potential with stomates fully open ($\psi_o$) and fully closed ($\psi_o$).  
 
     \begin{linenomath*}
@@ -161,7 +161,7 @@ SAY IN WHICH SECTION WE WILL FINE EACH PART
     \end{equation}
     \begin{equation} 
     \label{bt:2}
-    w_i=0 \leq \dfrac{\psi_i-\psi_{c}}{\psi_{o}-\psi_{c}} \leq 1
+    w_i=0 \leq \dfrac{\psi_{\text{soil},i}-\psi_{c}}{\psi_{o}-\psi_{c}} \leq 1
     \end{equation}
     \end{linenomath*}
     
@@ -202,7 +202,7 @@ SAY IN WHICH SECTION WE WILL FINE EACH PART
     
     In the SMS configuration, a heuristic function is used to determine $q_i$.
     Transpiration is partitioned among the soil layers layers based on the product of the root fraction and the wilting factor, which must be normalized by $f_w$. 
-    Substituting for $w_i$ yields the SMS root water uptake equation as a function of the layer-$i$ soil potential ($\psi_i$).
+    Substituting for $w_i$ yields the SMS root water uptake equation as a function of the layer-$i$ soil potential ($\psi_{\text{soil},i}$).
     
     \begin{linenomath*}
     \begin{equation}
@@ -216,11 +216,11 @@ SAY IN WHICH SECTION WE WILL FINE EACH PART
     q_i =
     \begin{cases}
     \label{eq:btrwu}
-    0    & \text{if } \psi_i<\psi_{c}  \\
+    0    & \text{if } \psi_{\text{soil},i}<\psi_{c}  \\
     \\[1pt]
-        \dfrac{T}{f_w} \dfrac{r_i}{\psi_{o}-\psi_{c}} \left(\psi_i-\psi_{c} \right)     & \text{if } \psi_{c} \le \psi_i \le \psi_{o} \\
+        \dfrac{T}{f_w} \dfrac{r_i}{\psi_{o}-\psi_{c}} \left(\psi_{\text{soil},i}-\psi_{c} \right)     & \text{if } \psi_{c} \le \psi_{\text{soil},i} \le \psi_{o} \\
     \\[1pt]
-    \dfrac{T}{f_w} r_i    & \text{if } \psi_{c} \le \psi_i \le \psi_{o}
+    \dfrac{T}{f_w} r_i    & \text{if } \psi_{c} \le \psi_{\text{soil},i} \le \psi_{o}
     \end{cases}
     \end{equation}
     \end{linenomath*}
@@ -232,13 +232,13 @@ SAY IN WHICH SECTION WE WILL FINE EACH PART
     \begin{linenomath*}
     \begin{equation} \begin{aligned}
     q_i &= -k_i\Delta\psi \\
-    \Delta\psi &=  \psi_{c}-\psi_i \\
+    \Delta\psi &=  \psi_{c}-\psi_{\text{soil},i} \\
     k_i &= \dfrac{T}{f_w} \dfrac{r_i}{\psi_{o}-\psi_{c}} \\
     \mbox{constrained by:} \qquad
     \Delta\psi &=
     \begin{cases}
-    0                          & \text{if } \psi_i<\psi_{c}  \\
-    \psi_{c}-\psi_{o} & \text{if } \psi_i>\psi_{o}
+    0                          & \text{if } \psi_{\text{soil},i}<\psi_{c}  \\
+    \psi_{c}-\psi_{o} & \text{if } \psi_{\text{soil},i}>\psi_{o}
     \label{kb}
     \end{cases}
     \end{aligned}\end{equation}
@@ -249,7 +249,7 @@ SAY IN WHICH SECTION WE WILL FINE EACH PART
     
     PHS installs an alternative to the SMS heuristic approach, using a mechanistic representation of root water uptake, following Darcy's Law.
     Instead of using a constant parameter ($\psi_c$) for defining $\Delta\psi$, PHS installs a physical model of vegetation water potential (described in Section \ref{sect:vwp}).
-    Fluxes from a given soil layer are driven by the gradient between soil potential ($\psi_i$) and the water potential in the root collar ($\psi_{\text{root}}$), 
+    Fluxes from a given soil layer are driven by the gradient between soil potential ($\psi_{\text{soil},i}$) and the water potential in the root collar ($\psi_{\text{root}}$), 
     after accounting for the effects of gravity ($\rho g z$, where $z$ is the soil layer depth).
     Hydraulic conductance across the soil and roots ($k_{sr}$) is modeled based on soil hydraulic properties and xylem vulnerability, 
     accounting for the path across the soil matrix and through the xylem conduits (details in Appendix zqz).
@@ -257,7 +257,7 @@ SAY IN WHICH SECTION WE WILL FINE EACH PART
     \begin{linenomath*}
     \begin{equation}
         \begin{aligned}
-    q_i &= -k_{sr}  \left(\psi_{\text{root}}-\psi_{i}+\rho g z\right)
+    q_i &= -k_{sr}  \left(\psi_{\text{root}}-\psi_{\text{soil},i}+\rho g z\right)
     \label{phs:sink}
     \end{aligned}
     \end{equation}
@@ -303,7 +303,7 @@ SAY IN WHICH SECTION WE WILL FINE EACH PART
     whereby its inclusion may be warranted in future model generations.
 
      Hydraulic conductance through vegetation segments is modeled following empirical xylem vulnerability curves \citep{tyree1989}, where segments lose conductance with increasing xylem tension related to cavitation and embolism \citep{holbrook2001}.
-      The vulnerability curves model loss of conductance relative to maximum conductance using two parameters: 
+      The vulnerability curves model loss of conductance relative to maximum conductance ($k_{\text{max}}$) using two parameters: 
       $c_k$, a sigmoidal shape-fitting parameter, and $p_{50}$, the water potential at 50\% loss of segment conductance (following \cite{gentine2016}). 
      
      Both $c_k$ and  $p_{50}$ can be estimated from field experiments \citep{sack2002}, and $p_{50}$ is available in the TRY trait database \citep{kattge2011}. 
@@ -318,52 +318,34 @@ SAY IN WHICH SECTION WE WILL FINE EACH PART
      \end{equation}
      \end{linenomath*}
      
-     PHS models root, stem, and leaf tissue conductances according to equation \ref{eq:vulnerability}. The parameterization of $k_{\text{max}}$ varies by hydraulic segment (see details in Appendix B1). The conductance across the soil matrix to the root surface follows \citet{williams2001} and \citet{bonan2014} and estimates a characteristic distance between the bulk soil and the root surface, to facilitate length-scaling of soil conductivity. Bulk soil resistivity is based on \citet{clapp1978} as described in \citet{oleson2013}. Details are provided in Appendix B1.
+     PHS models root, stem, and leaf tissue conductances according to equation \ref{eq:vulnerability}. 
+     The parameterization of $k_{\text{max}}$ varies by hydraulic segment (see details in Appendix B1). 
+     The conductance across the soil matrix to the root surface follows \citet{williams2001} and \citet{bonan2014}. 
+     Bulk soil resistivity is based on \citet{clapp1978} as described in \citet{oleson2013}. 
+     Details are provided in Appendix B1.
     
 %Water demand
     \subsubsection{Water demand}
     \label{sect:demand}
     
-    Vegetation water demand and stomatal regulation is based on the Medlyn stomatal conductance model (see Section \ref{sect:gs}), which we adjust using the water stress factor $f_w$. 
-    As discussed earlier, $f_w$ is based on leaf water potential \citep{klein2014}, and multiplies $V_{\text{cmax}}$, attenuating photosynthesis, and thus also stomatal conductance and transpiration.
-    
-     As leaf water potential declines (because of transpiration) and xylem tension increases, transpiration is attenuated relative to its maximal value.  The maximum transpiration ($E_{\text{sun,max}}$, $E_{\text{shade,max}}$) is defined as the value that results from Medlyn stomatal conductance in the absence of water stress (achieved by setting $f_w=1$). The fraction of maximum transpiration is modeled with a two-parameter sigmoidal function (Equation \ref{eq:demand}). 
-     
-    
-     \begin{linenomath*}
-     \begin{eqnarray}
-     \begin{aligned}
-     \label{eq:demand}
-     E_{\text{sun}}     &= E_{\text{sun,max}} \, 2^{-\left(\dfrac{\psi_{\text{sun-leaf}}}{\psi_{50}}\right)^{c_k}} \\
-     E_{\text{shade}} &= E_{\text{shade,max}} \, 2^{-\left(\dfrac{\psi_{\text{shade-leaf}}}{\psi_{50}}\right)^{c_k}}
-     \end{aligned}
-     \end{eqnarray}
-     \end{linenomath*}
-    
-     Where $\psi_{50}$, is the leaf water potential at 50\% loss of transpiration and $c_k$ is a sigmoidal shape-fitting parameter.
+\citep{klein2014}, and multiplies $V_{\text{cmax}}$, attenuating photosynthesis, and thus also stomatal conductance and transpiration.
 
-    
-    We define $f_w$ as the ratio of attenuated to maximal stomatal conductance (Equation \ref{eq:stress}).  Maximum stomatal conductance ($g_{\text{s,sun,max}}$, $g_{\text{s,shade,max}}$) is computed as the stomatal conductance in the absence of water stress, i.e. $f_w=1$.  The attenuated stomatal conductance ($g_{\text{s,sun}}$, $g_{\text{s,shade}}$) is then the stomatal conductance associated with the PHS module water flow solution, which matches vegetation water supply with vegetation water demand. 
-    (Section \ref{sect:solution}).
-    
      \begin{linenomath*}
-     \begin{eqnarray}
+     \begin{equation}
      \begin{aligned}
-     \label{eq:stress}
-     f_{\text{w,sun}}         &= \dfrac{g_{\text{s,sun}}}{g_{\text{s,sun,max}}} \\
-     f_{\text{w,shade}}     &= \dfrac{g_{\text{s,shade}}}{g_{\text{s,shade,max}}} \\
-     \end{aligned}
-     \end{eqnarray}
+     f_{w,sun} &= 2^{-\left(\dfrac{\psi_{\text{sun-leaf}}}{\psi_{50}}\right)^{c_k}} \\
+     f_{w,shade} &= 2^{-\left(\dfrac{\psi_{\text{shade-leaf}}}{\psi_{50}}\right)^{c_k}} \\
+     E_{sun} & = f_wE_{sun,max} \\
+     E_{shade} & = f_wE_{shade,max}
+     \end{aligned}     
+     \end{equation}
      \end{linenomath*}
-    A nice feature of the new PHS formulation is that the parameters related to hydraulic loss of conductivity or stomatal regulation are traits that are routinely measured in the field and thus which can be used as constraints of the model. 
-     
-     In the olde formulation SMS, CLM featured two empirical water stress parameters, which are the soil matric potentials where stomata are either fully closed ($\theta_{wilt}$) or fully open  ($\theta_{crit}$)  (see Section \ref{sect:btran}).
-
 %PHS solution
     \subsubsection{PHS solution}
     \label{sect:solution}
     
-    PHS solves for the set of vegetation water potential values ($\psi$) that matches water supply (root water uptake) to water demand (transpiration), while satisfying continuity across the four water flow segments (soil-to-root, root-to-stem, stem-to-leaf, and leaves-to-transpiration). Numerically, at each time step, PHS computes the flux divergence $f$ (representing the mismatch of flow in and out of each segment for a given set of vegetation water potential values $\psi_i$, and iteratively updates $\psi$ until convergence i.e., $f\to0$.
+    PHS solves for the set of vegetation water potential values ($\psi$) that matches water supply (root water uptake) to water demand (transpiration), while satisfying continuity across the four water flow segments (soil-to-root, root-to-stem, stem-to-leaf, and leaves-to-transpiration). 
+    Beginning from an initial condition of $\psi$ (from the previous timestep), PHS computes the flux divergence $f$ (representing the mismatch of flow in and out of each segment) and iteratively updates $\psi$ until $f\to0$.
     
     \begin{linenomath*}
     \begin{equation} 
