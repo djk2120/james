@@ -1086,6 +1086,38 @@ The challenge here is obviously getting your head around all the parameters.
 % Details on water demand
 \subsection{Details of Water Demand}
 
+Outside the PHS iteration
+    \begin{equation}
+    V_{\text{cmax}} = f_w\, V_{\text{cmax,ww}} 
+    \end{equation}
+    
+    \begin{equation}
+    g_s=g_0+\left(1+\dfrac{g_1}{\sqrt{D}}\right)\dfrac{A}{C_a}
+    \end{equation}
+    
+    \begin{equation}
+    \begin{aligned}
+    E_{sun} &=   g_{s,sun}*\rho*\text{VPD}*laisun*\left(1+\dfrac{g_{s,sun}}{g_b}\right)^{-1} \\
+    E_{shade} &=   g_{s,shade}*\rho*\text{VPD}*laishade*\left(1+\dfrac{g_{s,shade}}{g_b}\right)^{-1}
+    \end{aligned}
+    \end{equation}
+    
+Inside the PHS iteration
+    \begin{equation}
+    \begin{aligned}
+    E_{sun} &=   E_{sun,max}*2^{-\left(\dfrac{\psi_{\text{leaf}}}{\psi_{50}}\right)^{c_k}} \\
+    E_{shade} &=   E_{shade,max}*2^{-\left(\dfrac{\psi_{\text{leaf}}}{\psi_{50}}\right)^{c_k}}
+    \end{aligned}
+    \end{equation}
+    
+Where we return $f_w$ as
+    \begin{equation}
+    \begin{aligned}
+    f_{w,sun} &= \dfrac{g_{s,sun}}{g_{s,sun,max}}    \\
+    f_{w,shade} &= \dfrac{g_{s,shade}}{g_{s,shade,max}}    
+    \end{aligned}
+    \end{equation}
+
 % Details on phs solution
 \subsection{Details of Solution}
 
@@ -1275,7 +1307,7 @@ Root and stem vulnerability $\psi_{50}$: -1.75, -2.25, -2.75 MPa \\
 Stomatal $\psi_{50}$: above plus either 0 or 0.5MPa \\
 Vulnerability shape parameter, $c_k$: 2.95, 3.95, 5.45 (unitless) \\
 Medlyn slope, $g_1$: 6, 7 kPa$^{0.5}$ \\
-Rooting depth parameter, $\beta$: 0.95, 0.98, 0.993
+Rooting depth parameter, $\beta$: 0.95, 0.98, 0.993 (unitless) 
 
 
 
