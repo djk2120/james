@@ -328,18 +328,37 @@ SAY IN WHICH SECTION WE WILL FINE EACH PART
     \subsubsection{Water demand}
     \label{sect:demand}
     
-\citep{klein2014}, and multiplies $V_{\text{cmax}}$, attenuating photosynthesis, and thus also stomatal conductance and transpiration.
-
+    Water demand is calculated using the Medlyn stomatal conductance model (see Section zqz) modulated by the CLM water stress factor.
+    As discussed earlier $f_w$ is based on leaf water potential \citep{klein2014} in PHS, where stress increases as leaf water potential becomes more negative.
+    Because leaf water potential is modeled separately for sunlit and shaded leaves, $f_w$ takes on distinct sunlit and shaded values.
+    
      \begin{linenomath*}
      \begin{equation}
      \begin{aligned}
+     \label{eq:d1}
      f_{w,sun} &= 2^{-\left(\dfrac{\psi_{\text{sun-leaf}}}{\psi_{50}}\right)^{c_k}} \\
-     f_{w,shade} &= 2^{-\left(\dfrac{\psi_{\text{shade-leaf}}}{\psi_{50}}\right)^{c_k}} \\
-     E_{sun} & = f_wE_{sun,max} \\
-     E_{shade} & = f_wE_{shade,max}
+     f_{w,shade} &= 2^{-\left(\dfrac{\psi_{\text{shade-leaf}}}{\psi_{50}}\right)^{c_k}}
      \end{aligned}     
      \end{equation}
      \end{linenomath*}
+     
+     Shaded and sunlit leaf transpiration ($E_{\text{sun}}$, $E_{\text{shade}}$) are calculated by attenuating maximal transpiration ($E_{\text{sun,max}}$,$E_{\text{shade,max}}$) according to $f_w$. 
+     $E_{\text{sun,max}}$ and $E_{\text{shade,max}}$ are calculated at the beginning of each timestep by running the stomatal conductance model with $f_w=1$.
+     Equations (\ref{eq:d1}) and (\ref{eq:d2}) reflect a simplification used within iterations of the PHS module, 
+     neglecting non-linear components of the relationship between stress and transpiration (see next section).
+     
+     \begin{linenomath*}
+     \begin{equation}
+     \begin{aligned}
+     \label{eq:d2}
+     E_{\text{sun}} & = f_wE_{\text{sun,max}} \\
+     E_{\text{shade}} & = f_wE_{\text{shade,max}}
+     \end{aligned}     
+     \end{equation}
+     \end{linenomath*}
+     
+
+     
 %PHS solution
     \subsubsection{PHS solution}
     \label{sect:solution}
@@ -386,9 +405,7 @@ SAY IN WHICH SECTION WE WILL FINE EACH PART
     \end{aligned} \end{equation}
     \end{linenomath*}    
     
-    The numerics are tractable because $f$ has analytical derivatives and $A$ (a 4x4 matrix with six null entries) is easy to invert when well-conditioned. Supply and demand converge, because transpiration demand decreases with more negative leaf water potentials and supply increases with more negative leaf water potentials. Within a set of PHS iterations (\ref{eq:iter}), transpiration is assumed to be linear with $f_w$.
-    
-    The PHS loop is nested within iterations for intercellular CO$_2$ concentration and leaf temperature. The non-linear relationship between $f_w$ and transpiration is resolved through iteration for converging $f_w$ alongside intercellular CO$_2$. Details on the numerical implementation are provided in Appendix Section B.1.
+    The numerics are tractable because $f$ has continuous, analytical derivatives and $A$ (a 4x4 matrix with six null entries) is easy to invert when well-conditioned. Supply and demand converge, because transpiration demand decreases with more negative leaf water potentials and supply increases with more negative leaf water potentials. The PHS loop is nested within iterations for intercellular CO$_2$ concentration and leaf temperature. As described earlier, within a set of PHS iterations (\ref{eq:iter}), transpiration is assumed to be linear with $f_w$.  The non-linear relationship between $f_w$ and transpiration is resolved through iteration for converging $f_w$ alongside intercellular CO$_2$. Details on the numerical implementation are provided in Appendix Section B.1.
    
 %====================
 %  EXP DESCRIPTION
