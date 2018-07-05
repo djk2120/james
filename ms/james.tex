@@ -411,10 +411,19 @@ SAY IN WHICH SECTION WE WILL FINE EACH PART
 %  EXP DESCRIPTION
 %====================
 \section{Experiment Description}
-All four simulations in this paper use the same development version of CLM5 (development version r270, https://github.com/ESCOMP/ctsm/releases/tag/clm4\textunderscore 5\textunderscore 18\textunderscore r270).
-The four simulations are used to assess the impact of the plant hydrodynamics model (PHS vs. SMS) on a through-fall experiment (i.e., with either ambient or 60\% through-fall excluded), with all other model components and forcing shared. Simulations are run offline (uncoupled from an active atmospheric model), spanning from 2001 through 2003, utilizing the satellite phenology (SP) mode of CLM5 in which vegetation state (LAI, canopy height) is prescribed and biogeochemistry is inactive. All simulations start from the same initial conditions, which are obtained from a 9-year spin-up that repeats the PHS/Ambient simulation three times. Descriptions of site characteristics, forcing data, and observational sap flux, can be found in \cite{fisher2007}.
 
-\subsection{Parameter Values and Through-fall Exclusion}
+We use a set of four simulations to assess the impact of the plant hydrodynamics model (PHS vs. SMS) on a through-fall experiment.
+\begin{enumerate}
+\item SMS, with ambient throughfall conditions (AMB)
+\item SMS, with 60\% of throughfall excluded (TFE)
+\item PHS, AMB
+\item PHS, TFE
+\end{enumerate}
+
+All four simulations use the same version of CLM5 (development version r270, https://github.com/ESCOMP/ctsm/releases/tag/clm4\textunderscore 5\textunderscore 18\textunderscore r270), which features a switch that can toggle between SMS and PHS configurations.
+Simulations are run offline (uncoupled from an active atmospheric model), spanning from 2001 through 2003, utilizing the satellite phenology (SP) mode of CLM5 in which vegetation state (LAI, canopy height) is prescribed and biogeochemistry is inactive. Six-year spin-up simulations (one each for SMS and PHS) are used to create initial conditions, repeating the Ambient simulation twice. Descriptions of site characteristics, forcing data, and observational sap flux, can be found in \cite{fisher2007}.
+
+\subsection{Parameter Values and Throughfall Exclusion}
 \label{sect:param}
 \begin{table}
 \caption{Select parameter values}
@@ -441,7 +450,11 @@ bsw & Brooks-Corey parameter & $b$ & 6 \\
 \end{tabular}
 \end{table}
 
-Selected parameter values concerning vegetation hydrodynamics are presented in Table 1. All other parameters use the default values associated with the r270 version of CLM5. Informed by \cite{fisher2008}, we tuned soil hydraulic parameters and through-fall exclusion rates to reasonably capture the observed soil water dynamics (\cite{fisher2007} Figure 4), Supplementary Figure \ref{top3m}. Likewise, we tuned $k_{max}$ and $g_1$ parameters to improve the fit to sap flux observations in the ambient simulation. The primary objective here is to present the dynamical impact of PHS tin terms of model functionality, rather than model performance, hence the choice to minimize model tuning. 
+Selected parameter values concerning vegetation hydrodynamics are presented in Table 1. 
+All other parameters use the default values associated with the r270 version of CLM5. 
+Informed by parameter values reported in \cite{fisher2008}, we tuned soil hydraulic parameters and through-fall exclusion rates to get in range of observed soil moisture (Supp Fig \ref{supp:sm}).
+An ensemble of 972 simulations was used to tune the parameters for the PHS configuration to fit sap flux observations (see Appendix zqz).
+No tuning was used for the SMS configuration.
 
   \begin{figure}[h]
      \centering
@@ -682,6 +695,7 @@ PHS values correspond to predawn root water potential.}
      
 
 \subsection{Inconsistencies in SMS}
+I plan to delete this section, after incorporating the main points into either the model description or previous discussion sections.
     
     \subsubsection{Constant pulling potential}
     With SMS, the water potential gradient is implicitly defined for each soil layer as the difference between the soil water potential in that layer ($\psi_i$) and a constant parameter, the soil water potential when stomata are fully closed ($\psi_{c}$). This parameter serves as the vegetation ``pulling'' potential for calculating the soil transpiration sink.
@@ -1247,12 +1261,26 @@ The soil-to-root fluxes $\left( q_{3,1},q_{3,2},\text{...},q_{3,n}\right)$ are u
     Plant tissue water storage (capacitance) is not represented, whereby the solution does not
     depend on the previous timestep and has no time derivatives.
 
+\subsection{Parameter tuning exercise}
+
+We used a factorial design to create 972 ensemble members based on the parameter values below.
+We ran PHS simulations under both AMB and TFE conditions.
+All simulations used the same initial conditions, which were the result of the previous best simulation.
+We evaluated the simulations based on the fit to sap flux observations.
+We chose the ensemble member that maximized $R^2_{amb}+R^2_{tfe}-RMSE_{amb}-RMSE_{tfe}$ (Supp Fig \ref{supp:ens}).
+
+Stem conductivity, $k_{\text{max}}$: 2e-8, 4e-8, 8e-8 s$^{-1}$ \\
+Root conductivity, $k_{\text{r,max}}$: 2e-9, 6e-8, 18e-9 s$^{-1}$ \\
+Root and stem vulnerability $\psi_{50}$: -1.75, -2.25, -2.75 MPa \\
+Stomatal $\psi_{50}$: above plus either 0 or 0.5MPa \\
+Vulnerability shape parameter, $c_k$: 2.95, 3.95, 5.45 (unitless) \\
+Medlyn slope, $g_1$: 6, 7 kPa$^{0.5}$ \\
+Rooting depth parameter, $\beta$: 0.95, 0.98, 0.993
+
+
+
 \acknowledgments
  = enter acknowledgments here =
-
-PIerre: Text I removed
-While there are disagreements about soil moisture trends globally \citep{dai2013,sheffield2012}, 
-Amazonia has experienced and a lengthening dry season \citep{fu2013} and faces projections of increasing frequency of extreme El Ni\~no events \citep{cai2014}
 
 %====================
 %   REFERENCES
