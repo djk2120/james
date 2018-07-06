@@ -1086,40 +1086,75 @@ The challenge here is obviously getting your head around all the parameters.
 % Details on water demand
 \subsection{Details of Water Demand}
 
-Outside the PHS iteration
+The CLM5 implementation utilizes the Medlyn stomatal conductance model \citep{medlyn2011}, while also applying water stress through $V_{\text{cmax}}$.
+Transpiration is calculated reflecting contributions from both stomatal conductance and leaf boundary layer conductance ($g_b$).
     \begin{equation}
+    \label{suppeq:vc}
     V_{\text{cmax}} = f_w\, V_{\text{cmax,ww}} 
     \end{equation}
     
     \begin{equation}
+    \label{suppeq:gs}
     g_s=g_0+\left(1+\dfrac{g_1}{\sqrt{D}}\right)\dfrac{A}{C_a}
     \end{equation}
     
     \begin{equation}
     \begin{aligned}
-    E_{sun} &=   g_{s,sun}*\rho*\text{VPD}*laisun*\left(1+\dfrac{g_{s,sun}}{g_b}\right)^{-1} \\
-    E_{shade} &=   g_{s,shade}*\rho*\text{VPD}*laishade*\left(1+\dfrac{g_{s,shade}}{g_b}\right)^{-1}
-    \end{aligned}
-    \end{equation}
-    
-Inside the PHS iteration
-    \begin{equation}
-    \begin{aligned}
-    E_{sun} &=   E_{sun,max}*2^{-\left(\dfrac{\psi_{\text{leaf}}}{\psi_{50}}\right)^{c_k}} \\
-    E_{shade} &=   E_{shade,max}*2^{-\left(\dfrac{\psi_{\text{leaf}}}{\psi_{50}}\right)^{c_k}}
-    \end{aligned}
-    \end{equation}
-    
-Where we return $f_w$ as
-    \begin{equation}
-    \begin{aligned}
-    f_{w,sun} &= \dfrac{g_{s,sun}}{g_{s,sun,max}}    \\
-    f_{w,shade} &= \dfrac{g_{s,shade}}{g_{s,shade,max}}    
+    \label{suppeq:e1}
+    E_{sun} &=   g_{s,sun}*\rho*\text{VPD}*lai_{sun}*\left(1+\dfrac{g_{s,sun}}{g_b}\right)^{-1} \\
+    E_{shade} &=   g_{s,shade}*\rho*\text{VPD}*lai_{shade}*\left(1+\dfrac{g_{s,shade}}{g_b}\right)^{-1}
     \end{aligned}
     \end{equation}
 
+At the beginning of a set of PHS iterations, we solve for $E_{\text{sun,max}}$ and $E_{\text{shade,max}}$, 
+by running the stomatal conductance scheme with $f_w$ set to 1 (no stress).
+Within each PHS iteration, we do not resolve the full stomatal conductance scheme, 
+but instead consider only the linear attenuation of stomatal conductance by $f_w$.
+Transpiration is attenuated relative to the maximal values according to leaf water potential.
+
+    \begin{equation}
+    \begin{aligned}
+    \label{suppeq:e2}
+    E_{\text{sun}} &=   E_{\text{sun,max}}*2^{-\left(\dfrac{\psi_{\text{leaf}}}{\psi_{50}}\right)^{c_k}} \\
+    E_{\text{shade}} &=   E_{\text{shade,max}}*2^{-\left(\dfrac{\psi_{\text{leaf}}}{\psi_{50}}\right)^{c_k}}
+    \end{aligned}
+    \end{equation}
+    
+We define $f_w$ as the ratio of attenuated stomatal conductance ($g_{s,sun}$, $g_{s,shade}$) to maximal stomatal conductance ($g_{s,sun,max}$, $g_{s,shade,max}$),
+where $g_{s,sun,max}$ and $g_{s,shade,max}$ are the stomatal conductance values associated with $E_{\text{sun,max}}$ and $E_{\text{shade,max}}$.
+As such, the definition in the main text (Equation zqz), represents a linear simplification between stomatal conductance and transpiration.
+Our formal definition eschews this simplification to improve model convergence.
+
+    \begin{equation}
+    \begin{aligned}
+    f_{w,sun} &= \dfrac{g_{s,sun}}{g_{s,sun,max}}    \\
+    f_{w,shade} &= \dfrac{g_{s,shade}}{g_{s,shade,max}}
+    \end{aligned}
+    \end{equation}
+
+After each PHS iteration, we compute $g_{s,sun}$ and $g_{s,shade}$ via Equations \ref{suppeq:vc} and \ref{suppeq:vc} (which involves iterating for intercellular $CO_2$ concentration).
+We then update $g_{s,sun,max}$ and $g_{s,shade,max}$ to achieve consistency between equations (\ref{suppeq:e1}) and (\ref{suppeq:e2}).
+At this point $g_{s,sun,max}$ and $g_{s,shade,max}$ no longer refer to the values associated with $f_w=1$, but rather also incorporate the non-linearity between $g_s$ and $f_w$.
+The PHS iteration (see Figure) continues to convergence of $f_w$.
+The numerics have proven to be stable in practice, but future versions may aim to better integrate PHS within the stomatal conductance scheme to avoid the linearity assumption within PHS.
+
+    \begin{equation}
+    \begin{aligned}
+    g_{s,sun,max} &= \dfrac{g_{s,sun}}{f_{w,sun}} \\
+    g_{s,shade,max} &= \dfrac{g_{s,shade}}{f_{w,shade}} \\
+    \end{aligned}
+    \end{equation}
+    
+         \begin{figure}[h]
+     \centering
+     \includegraphics[width=30pc]{../figs3/schem3.pdf}
+     \caption{Flow chart of PHS iterative solution}
+     \label{supp:cool}
+  \end{figure}
+          \clearpage
+
 % Details on phs solution
-\subsection{Details of Solution}
+\subsection{Details of Water Potential Solution}
 
 
 The continuity of water flow through the system yields four equations
@@ -1272,26 +1307,6 @@ Now we compute all the entries for $A$ and $b$ based on the soil moisture and ma
    \end{equation} \end{linenomath*}
 
 We iterate until $b\to 0$, signifying water flux balance through the system. The result is a final set of water potentials ( $\psi_{root}$, $\psi_{xylem}$, $\psi_{shadeleaf}$, $\psi_{sunleaf}$) satisfying non-divergent water flux through the system. 
-The magnitude of the water flux is driven by soil matric potential and unstressed ( $\beta_t=1$) transpiration. 
-
-We use the transpiration solution (corresponding to the final solution for $\psi$) to compute stomatal conductance. The stomatal conductance is then used to compute $\beta_t$. 
-
-   \begin{linenomath*} \begin{equation} 
-   \beta_{t,sun} = \dfrac{g_{s,sun}}{g_{s,sun,\beta_t=1}} 
-   \end{equation} \end{linenomath*}
-
-   \begin{linenomath*} \begin{equation} 
-   \beta_{t,shade} = \dfrac{g_{s,shade}}{g_{s,shade,\beta_t=1}} 
-   \end{equation} \end{linenomath*}
-
-The $\beta_t$ values are used in the Photosynthesis module (see section \ref{sect:A}) to apply water stress. 
-The solution for $\psi$ is saved as a new variable (vegetation water potential) and is indicative of plant water status.
-The soil-to-root fluxes $\left( q_{3,1},q_{3,2},\text{...},q_{3,n}\right)$ are used as the soil transpiration sink in the Richards' equation subsurface flow equations.
-
-    Furthermore several simplifications were made that decrease the numerical complexity.
-    For the purposes of the PHS solution, soil potentials are assumed constant during each timestep.
-    Plant tissue water storage (capacitance) is not represented, whereby the solution does not
-    depend on the previous timestep and has no time derivatives.
 
 \subsection{Parameter tuning exercise}
 

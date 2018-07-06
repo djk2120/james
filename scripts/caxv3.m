@@ -108,19 +108,11 @@ hh(56:60) = [0,0,0,0,1];
 
 if hh(60)>0
 
-    tt = sum(qrootsink(41:60,:));
-    ss = smp(45,:);
-    qq = qrootsink(45,:);
-    bb = btran(3,:);
+    ix = year==2003&month==12;
+    b2 = 2.^-((vegwp(5,:)/101972/-1.75).^2.95);
+    plot(fpsn(2,ix),btran(2,ix)-b2(ix),'.')
     
-    zzz = 0.1436749;
-
-    k = tt./bb*zzz/189000;
-    dp = max(0,min(189000,ss+255000));
     
-    ix = mcsec>=diurn(25)&mcsec<=diurn(28);
-    plot(smp(45,ix),k(ix),'.')
-
     
 
 end
