@@ -108,11 +108,30 @@ hh(56:60) = [0,0,0,0,1];
 
 if hh(60)>0
 
-    ix = year==2003&month==12;
-    b2 = 2.^-((vegwp(5,:)/101972/-1.75).^2.95);
-    plot(fpsn(2,ix),btran(2,ix)-b2(ix),'.')
+        %defining k,dp (for SMS)
+    ot = 1:n;
+    dp = smp;
+    for i=41:80
+        dp(i,:) = [0,min(189000,smp(i,1:end-1)+255000)];   %model uses last timestep smp!
+    end
+    dp(dp<100) = nan;
+    k = qrootsink./dp;
+    k(isnan(k))=0;
     
+    zz = nan*smp(45,:);
+    bins = 0:-0.25:-2.5;
+    for i = 1:length(bins)-1
+        ix = smp(45,:)/101972<=bins(i)&smp(45,:)/101972>bins(i+1);
+        zz(ix) = i;
+    end
     
+    ix = mcsec==diurn(25);
+    plot((bins(1:end-1)+bins(2:end))/2,splitapply(@nanmedian,k(45,ix),zz(ix)),'rx')
+    
+    figure
+    ix = mcsec>=diurn(25)&mcsec<=diurn(28);
+    plot(smp(45,ix)/101972,qrootsink(45,ix),'.')
+    %ylim([0,1])
     
 
 end

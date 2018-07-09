@@ -631,14 +631,17 @@ PHS values correspond to predawn root water potential.}
     In our experiment, PHS does improve transpiration predictions, 
     with lower RMSE and higher correlation compared to the control model, albeit with the advantage of model tuning (Figure \ref{fig:t}).
 
-\subsection{The extensive influence of $\psi_c$}
-    Water stress in the SMS model configuration is largely determined by 
+\subsection{The undue influence of $\psi_c$}
+    Whereas the previous two subsections discuss model transpiration and water stress, the next four subsections pertain to the dynamics of root water uptake and soil moisture.
+    In the SMS model configuration these dynamics are strongly influenced by 
     $\psi_c$, the soil potential at which stomates are fully closed.
-    For the Broadleaf Evergreen Tropical PFT, $\psi_c$ equals -2.5 MPa \citep{oleson2013}.
-    Root water uptake scales with hydraulic gradient ($\Delta\psi$), and
-    $\psi_c$ serves as the sink potential for soil water extraction ($\Delta\psi = \psi_{\text{soil}}-\psi_c$).
-    This defines the slope with which root water uptake decreases with soil drying (Figure \ref{fig:rwu})
-    and results in transpiration overall trending towards zero as column-average soil potential approaches -2.5 MPa (Supp Fig \ref{supp:cool}).
+    For the Broadleaf Evergreen Tropical PFT (BET), $\psi_c$ equals -2.5 MPa \citep{oleson2013}.
+    
+    Root water uptake shows a strong dependence on $\psi_c$, defined to approach 0 as $\psi_{\text{soil}}$ nears $\psi_c$ (Figure \ref{fig:rwu}a,b).
+    As such, $\psi_c$ sets the intercept for the relationship between root water uptake and $\psi_{\text{soil}}$.
+    The maximum root water uptake is determined by transpiration dynamics and the layer root fraction. 
+    The onset of stress, where the curve begins to decline from maximal root water uptake, is defined by the soil potential with stomates fully opened, $\psi_o$,
+    which equals 0.66MPa for BET.
     
     Root water uptake from a given soil layer is defined to be zero whenever soil potential is more negative than $\psi_c$ (Figure \ref{fig:rwu}),  
     following from the definition of the SMS water stress factor (Section zqz).
