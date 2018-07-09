@@ -593,7 +593,7 @@ PHS values correspond to predawn root water potential.}
     In this study, we have implemented plant hydraulic theory within CLM5, 
     using dynamic vegetation water potential to modulate leaf gas exchange and root water uptake.
     We model water potential according to a simplified circuit analogy (Figure \ref{circuit}), 
-    which captures expected diurnal and seasonal dynamics of soil and vegetation water potentials, with lower values at midday within the stem and during the dry season (Figure \ref{fig:vwp}).
+    which captures expected diurnal and seasonal dynamics of soil and vegetation water potentials, with lower values within the stem and leaves at midday and during the dry season (Figure \ref{fig:vwp}).
     Our model places the bulk of hydraulic resistance aboveground (Figure \ref{fig:vwp}a), 
     while the added resistance from dryness (TFE) is primarily loacted within the soil-to-root interface (Figure \ref{fig:vwp}b), consistent with previous results \citep{fisher2006}.
    
@@ -767,11 +767,10 @@ I plan to delete this section, after incorporating the main points into either t
   \begin{figure}[h]
      \centering
      \includegraphics[width=30pc]{../figs3/vwp.pdf}
-     \caption{Modeled vegetation water potential at  Caxiuan\~a, Brazil.
-     (a) 2003 dry season (SON) diurnal mean, ambient through-fall conditions,
-     (b) 2003 dry season diurnal mean, with 60\% TFE.
+     \caption{(a,b) 2003 dry season diurnal mean of modeled vegetation water potential under ambient and 60\% TFE conditions.
      Curves are drawn for sunlit leaf, shaded leaf, stem, and root water potentials, with the latter three overlapping.
-     (c) Monthly average midday (12h-14h) root and leaf water potential, under ambient (solid line) and TFE (dotted line) conditions.
+     (c) Monthly mean midday (12h-14h) vegetation water potential under ambient (solid line) and TFE (dotted line) conditions.
+     Here curves are drawn only for sunlit leaf and root water potential.
      Note that TFE begins Nov 1, 2001, as indicated by the vertical arrow. 
      }
      \label{fig:vwp}
@@ -794,11 +793,11 @@ I plan to delete this section, after incorporating the main points into either t
     \begin{figure}[h]
      \centering
      \includegraphics[width=30pc]{../figs3/vpdstress.pdf}
-     \caption{Water stress factor versus vapor pressure deficit (2002-2003), for timesteps with downwelling shortwave radiation between 400 and 425 W/m2 (n=515).
+     \caption{Water stress factor versus vapor pressure deficit (2002-2003), constrained to timesteps with downwelling shortwave radiation between 400 and 425 W/m2 (n=515).
      Radiation is controlled to highlight the relationship with VPD, the reverse (controlling for VPD) is shown in Figure \ref{supp:fsds}.
      For SMS (a,b), data are subdivided based on average soil matric potential, weighted by root fraction.
      For PHS (c,d), data are subdivided based on predawn (5h) root water potential.
-     Blue dots represent the wettest tercile, yellow dots represent the intermediate tercile, and red dots represent the driest tercile (see Table \ref{tab:tercile}).
+     Blue dots represent the wettest tercile, yellow dots represent the intermediate tercile, and red dots represent the driest tercile (values defining each tercile are in Table \ref{tab:tercile}).
      }
      \label{fig:stress2}
        \end{figure}
@@ -807,7 +806,7 @@ I plan to delete this section, after incorporating the main points into either t
   \begin{figure}[h]
      \centering
      \includegraphics[width=30pc]{../figs3/gpp.pdf}
-     \caption{Daily stress factor (midday, averaged over 12h-14h) and GPP during 2002-2003 under ambient (left) and TFE (right) conditions.
+     \caption{Daily stress factor (midday, averaged over 12h-14h) and GPP during 2002-2003 under ambient (left column) and TFE (right right column) conditions.
      Output from the SMS configuration (a,b,e,f) are plotted with gray color, while output from the PHS configuration (c,d,g,h) are plotted in black.
      }
      \label{fig:gpp}
@@ -817,13 +816,8 @@ I plan to delete this section, after incorporating the main points into either t
   \begin{figure}[h]
      \centering
      \includegraphics[width=30pc]{../figs3/T.pdf}
-     \caption{(a,b) Monthly mean water stress function. The water stress factor equals 1 when there is no stress and 0 when fully stressed.
-     (c,d) Monthly mean transpiration (W/m$^2$).
-     (e,f) Monthly mean gross primary productivity (g/m$^2$/d). 
-     Solid lines correspond to ambient through-fall conditions, and dotted lines feature 60\% through-fall exclusion.
-     Black lines represent model output.
-     Red lines show observational transpiration derived from sap flux (see zqz).
-     PHS is on for (a), (c), and (e). PHS is off for (b), (d), and (f).
+     \caption{(a,b) Monthly mean transpiration over 2002-3 (solid lines), with daily sap flux observations (red dots).
+     (c-f), Model daily transpiration (mm/d) versus observed sap flux.
      }
      \label{fig:t}
   \end{figure}
@@ -833,9 +827,9 @@ I plan to delete this section, after incorporating the main points into either t
      \includegraphics[width=30pc]{../figs3/rwu.pdf}
      \caption{Binned boxplot of root water uptake versus soil potential for Soil Layer 5 (2002-3).
      Red lines mark the median, with boxes spanning the interquartile range.
-     Bin sizes are 0.25 MPa for SMS and 0.1 MPa for PHS.
-     Soil Layer 5 is shown, because it is near the surface (20 to 32 cm) and has a large root fraction (14.4\%).
-     Only midday (12h-14h) timesteps are shown to highlight the relationship with soil potential.}
+     Bin widths are 0.25 MPa for SMS and 0.1 MPa for PHS.
+     Soil Layer 5 is shown, because it is close enough to the surface (20 to 32 cm) to achieve a good range in soil potential, and it has a large root fraction (14.4\%, only Soil Layer 6 has a larger root fraction).
+     Only midday (12h-14h) timesteps are used to highlight the relationship with soil potential.}
      \label{fig:rwu}
   \end{figure}
   \clearpage
@@ -846,9 +840,9 @@ I plan to delete this section, after incorporating the main points into either t
      \centering
      \includegraphics[width=30pc]{../figs3/qdry.pdf}
      \caption{2003 dry season (SON) cumulative root water uptake and precipitation. 
-     (a) Cumulative root water uptake with depth across the four simulations.
+     (a) Cumulative precipitation over time under ambient conditions
      (b,c) Cumulative water uptake over time from above and below 0.2m, respectively.
-     (d) Cumulative precipitation under ambient conditions.
+     (d) Cumulative root water uptake with depth.
      }
      \label{fig:qdry}
   \end{figure}
@@ -858,9 +852,9 @@ I plan to delete this section, after incorporating the main points into either t
      \centering
      \includegraphics[width=30pc]{../figs3/qwet.pdf}
      \caption{2003 wet season (FMA) cumulative root water uptake and precipitation. 
-     (a) Cumulative root water uptake with depth across the four simulations.
+     (a) Cumulative precipitation over time under ambient conditions
      (b,c) Cumulative water uptake over time from above and below 0.2m, respectively.
-     (d) Cumulative precipitation under ambient conditions.
+     (d) Cumulative root water uptake with depth.
      }
      \label{fig:qwet}
   \end{figure}
@@ -869,9 +863,9 @@ I plan to delete this section, after incorporating the main points into either t
     \begin{figure}[h]
      \centering
      \includegraphics[width=30pc]{../figs3/hr.pdf}
-     \caption{Total hydraulic redistribution (cm) by month across in 2003. For (a) ambient through-fall conditions, and (b) 60\% through-fall exclusion. 
+     \caption{Total hydraulic redistribution (cm) by month across 2003. For (a) ambient through-fall conditions, and (b) 60\% throughfall exclusion. 
      Darker shading shows portion of HR at night [6pm,6am), lighter shading shows portion of HR during day [6am,6pm).
-     Total HR refers to the sum of all negative root water uptake flows, where water is deposited by roots into a given soil layer.}
+     Total HR refers to the sum of all negative root water uptake flows, when water is deposited by roots into a given soil layer.}
      \label{fig:hr}
   \end{figure}
 
@@ -880,11 +874,11 @@ I plan to delete this section, after incorporating the main points into either t
     \begin{figure}[h]
      \centering
      \includegraphics[width=30pc]{../figs3/smp.jpg}
-     \caption{Vertical profile of soil water potential (MPa) over time under 60\% through-fall exclusion, for
+     \caption{Vertical profile of soil water potential (MPa) over time under 60\% throughfall exclusion, for
      (a) SMS, and 
      (b) PHS.
      Note that color axes are different.
-     SMS soil potential spends long periods at -2.5MPa, which is the value of parameter $\psi_c$.
+     SMS soil potential spends long periods at -2.5MPa, which is the value of soil-wilting parameter, $\psi_c$.
      Figure \ref{fig:sm2} subsets this data at 0.5m depth (dotted line), plotted alongside observations.
      Soil potential under ambient conditions is shown in Supp Fig \ref{supp:sm}.
  }
@@ -898,7 +892,7 @@ I plan to delete this section, after incorporating the main points into either t
      \caption{Volumetric soil moisture (-) over time under ambient and TFE conditions at depth of 50cm.
      (a/b) SMS
      (c/d) PHS.
-     RMSE are 0.048, 0.049, 0.022, and 0.029.
+     RMSE are 0.048, 0.049, 0.022, and 0.029 [move to plot].
      Arrows indicate start of TFE. Figure \ref{supp:sm2} shows the same plots at 7 other soil depths. }
      \label{fig:sm2}
   \end{figure}
@@ -911,7 +905,7 @@ I plan to delete this section, after incorporating the main points into either t
      The two models use different root water uptake paradigms, from which we define different operators for column effective soil potential.
      For SMS we average over the soil column weighted by root fraction and over time (daily mean).
      For PHS we use predawn (5h) root water potential.
-     Bin widths are 0.2 MPa for SMS (a,b) and 0.05 MPa for PHS (c,d).
+     Bin widths are 0.2 MPa for SMS (a,b) and 0.05 MPa for PHS (c,d); note the different x-axes. 
 }
      \label{fig:cool}
   \end{figure}
