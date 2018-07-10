@@ -650,29 +650,6 @@ PHS, TFE & 0.449 & 0.741 \\
     Because considerable uncertainty remains regarding the appropriate functional form of water stress, PHS should be considered a starting point for improving transpiration response to hydroclimate. 
     In our experiment, PHS does improve transpiration predictions, 
     with lower RMSE and higher correlation compared to the control model, albeit with the advantage of model tuning (Figure \ref{fig:t}).
-
-\subsection{The extensive influence of $\psi_c$}
-
-    [will be removed]
-    
-    [as pierre has noted, this section doesn't really work on its own, I'm currently working to incorporate the main points into the other sections]
-
-
-    Whereas the previous two subsections discuss model transpiration and water stress, the next four subsections pertain to the dynamics of root water uptake and soil moisture.
-    In the SMS model configuration, these dynamics are strongly influenced by 
-    $\psi_c$, the soil potential at which stomates are fully closed.
-    For the Broadleaf Evergreen Tropical PFT (BET), $\psi_c$ equals -2.5 MPa \citep{oleson2013}.
-    
-    Root water uptake shows a strong dependence on $\psi_c$, defined to approach 0 as $\psi_{\text{soil}}$ nears $\psi_c$ (Figure \ref{fig:rwu}a,b).
-    As such, $\psi_c$ sets the intercept for the relationship between root water uptake and $\psi_{\text{soil}}$.
-    The maximum root water uptake is determined by transpiration dynamics and the layer root fraction. 
-    The onset of stress, where the curve begins to decline from maximal root water uptake, is defined by the soil potential with stomates fully opened, $\psi_o$,
-    which equals 0.66MPa for BET.
-    
-    Root water uptake from a given soil layer is defined to be zero whenever soil potential is more negative than $\psi_c$ (Figure \ref{fig:rwu}),  
-    following from the definition of the SMS water stress factor (Section zqz).
-    This sharp non-linearity tends to make soil potential decrease to and then hold at values equal to $\psi_c$ (Figure \ref{fig:sm}).
-    As such, $\psi_c$ has strong influence on model output for both transpiration and soil moisture, despite limited empirical or physical basis \citep{rogers2017}.
     
 \subsection{Structural improvements in modeling root water uptake}
     Whereas the previous two subsections discuss model transpiration and water stress, the next three pertain to the dynamics of root water uptake and soil moisture.
@@ -696,13 +673,13 @@ Because SMS does not resolve water potential through the vegetation substrate, t
     The model can overcome these penalties, with compensatory root water uptake observed with increased extraction from beyond 2 meters depth during the TFE dry season (Figure \ref{fig:qdry}).
     Dynamic root water potential (and conductance) gives the system more play, allowing the model to switch root water uptake to the lower layers as the surface dries out.
    
-        PHS also eschews the unsubstantiated constraints on $\Delta\psi$ imposed by SMS ($0\ge\Delta\psi\ge\psi_c-\psi_o$, see Section \ref{sect:fwsms}).
+     Finally, PHS eschews the unsubstantiated constraints on $\Delta\psi$ imposed by SMS ($0\ge\Delta\psi\ge\psi_c-\psi_o$, see Section \ref{sect:fwsms}).
     Allowing $\Delta\psi$ to change sign yields a representation of hydraulic redistribution, which has been observed in Amazonian forests \citep{oliveira2005}.
     
 \subsection{Hydraulic Redistribution (HR)}
-    In our experiment, modeled HR totals to 38.9 cm over the course of 2003 under ambient conditions and 40.0 cm with TFE (Figure \ref{fig:hr}).
-    HR occurs in both directions vertically (Supp Fig \ref{supp:hr}), consistent with field observations \citep{burgess1998}, .
-    Modeled HR is mostly downwards, sending water shallower water from rain events deeper into the soil column and thus saving it for when it is most needed, i.e. dry season.
+    In our experiment, modeled HR totals to 38.9 cm over the course of 2003 under ambient conditions and 40.0 cm under TFE (Figure \ref{fig:hr}).
+    HR occurs in both directions vertically (Supp Fig \ref{supp:hr}), as has been observed in the field \citep{burgess1998}.
+    Modeled HR is mostly downwards, sending near-surface water from rain events deeper into the soil column and thus saving it for when it is most needed, i.e. dry season.
     This would seem to convey an advantage to deep-rooted individuals, banking water for later use out of reach of shallow-rooted competitors.
     HR can offer significant water subsidies during dry periods \citep{jackson2000} and has been highlighted as an important missing feature in CLM \citep{lee2005}.
     
@@ -712,18 +689,19 @@ Because SMS does not resolve water potential through the vegetation substrate, t
     Unequivocal detection of HR involves the observation of reverse flow along transport roots, typically at rates close to the detection threshold of sap flow monitoring systems. 
     In our simulations, HR increases root water uptake by up to 52\% relative to transpiration alone (2003, TFE). 
     
-    HR follows directly from Darcy's Law, occurring when water potential in a given soil layer is more negative than $\psi_{\text{root}}$,
-    but it remains to be seen whether HR as modeled in this implementation is a feature or a liability.
+    PHS naturally represents HR, as it follows directly from Darcy's Law, occurring when water potential in a given soil layer is more negative than $\psi_{\text{root}}$.
+    However, it remains to be seen whether HR, as modeled in this implementation, is a feature or a liability.
     PHS may overestimate HR, given the simplified root system architecture \citep{bouda2017} 
     and the lack of an explicit representation of fine-root cavitation \citep{kotowska2015}.
     Other models, similar to the SMS paradigm, disallow HR by constraining root water uptake to be positive \citep{xu2016}.
-    We view this first implementation of HR into the default versions of the CLM as a `null' hypothesis for the functioning of this process, and as a platform to allow further refinement from the plant hydraulics community. Isotopologues of water could be used as a tool to further constraint this redistribution in CLM in the future. 
+    We view this first implementation of HR into the default versions of the CLM as a `null' hypothesis for the functioning of this process, and as a platform to allow further refinement from the plant hydraulics community. 
+    Isotopologues of water could be used as a tool to further constrain this redistribution in CLM in the future. 
 
 \subsection{Soil moisture and its influence on transpiration}
 
     Partly due to HR, vertical and temporal gradients in soil potential are significantly reduced in PHS (Figure \ref{fig:sm}).
-    This is also related to the root water extraction gradient, which is significantly smaller in PHS (Supp Fig \ref{supp:cond2}).
-    The SMS sink potential ($\psi_c$, -2.5MPa), is significantly lower than PHS ($\psi_{\text{root}}$, Figure \ref{fig:vwp}).
+    This is also related to the root water extraction hydraulic gradient ($\Delta\psi$), which is significantly smaller in PHS (Supp Fig \ref{supp:cond2}).
+    The SMS sink potential ($\psi_c$, -2.5MPa), is significantly lower than $\psi_{\text{root}}$ in PHS (Figure \ref{fig:vwp}), which serves a similar purpose.
     This is associated with a significant dry bias relative to observations in the SMS simulations, especially in the first meter of the soil column.
     PHS reduces soil moisture RMSE by up to 55\% relative to SMS (Figure \ref{fig:sm}).
     
@@ -734,6 +712,9 @@ Because SMS does not resolve water potential through the vegetation substrate, t
     PHS features less structure in the relationship between transpiration bias and soil potential and less bias overall (Figure \ref{fig:cool}c,d).
     Likewise PHS yields a stronger relationship than SMS between soil potential and sap flux observations during TFE (Figure \ref{supp:cool}b,f).
     This represents a major development, given repeated calls to improve vegetation water stress in the next generation of terrestrial biosphere models \citep{powell2013,rogers2017}.
+
+    In the literature, $\psi_c$ is often associated with its role governing transpiration and photosynthesis response to soil moisture \citep{powell2013,bonan2014,rogers2017}.
+
 
 \subsection{Benefits and limitations of PHS}
 
