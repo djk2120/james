@@ -284,7 +284,7 @@ In this paper we therefore:
 
 
   PHS solves for vegetation water potential at four locations: $\psi_{\text{root}}$, $\psi_{\text{stem}}$, $\psi_{\text{shade-leaf}}$, and $\psi_{\text{sun-leaf}}$.
-  The number of nodes is chosen as the strict minimum to allow allow for differences in segment parameterizations \citep{simonin2015, sperry2015}, while also conforming to existing CLM model structure (vertically discretized soil layers, 2-big-leaf).
+  The number of nodes is chosen as the strict minimum to allow for differences in segment parameterizations \citep{simonin2015, sperry2015}, while also conforming to existing CLM model structure (vertically discretized soil layers, 2-big-leaf).
   At each node in the circuit diagram in Figure \ref{circuit} we model water potential, and, between nodes, we resolve the flux of water based on Darcy's law. 
   Water uptake from the different soil layers is assumed to operate in parallel; a typical assumption justified by higher resistance in lateral versus central roots (e.g. \cite{williams2001}). 
   Two resistors operate in series between each $\psi_{\text{soil}}$ and $\psi_{\text{root}}$, to represent the path across the soil matrix and then through the root tissue \citep{williams1996}. 
@@ -654,24 +654,23 @@ PHS, TFE & 0.449 & 0.741 \\
 \subsection{Structural improvements in modeling root water uptake}
     Whereas the previous two subsections discuss model transpiration and water stress, the next three pertain to the dynamics of root water uptake and soil moisture.
 PHS uses dynamic root water potential ($\psi_{\text{root}}$) as the sink for measuring the hydraulic gradient governing root water uptake (Figure \ref{fig:vwp}).
-Because SMS does not resolve water potential through the vegetation substrate, the model uses a constant parameter, $\psi_c$ to define the hydraulic gradient.
+Because SMS does not resolve water potential through the vegetation substrate, the model instead uses a constant parameter, $\psi_c$ to define the hydraulic gradient.
     As such, PHS provides a critical structural improvement for modeling root water uptake, consistent with extensive evidence of dynamic vegetation water potential (e.g. \cite{fisher2006}).
 
-    
-    Root water uptake is equal to the product of $\Delta\psi$ and hydraulic conductance $k$. 
-    The conductance varies by soil layer and, with PHS, features mechanistic reductions based on root xylem vulnerability and soil hydraulic properties, 
-    as is appropriate for hydraulic-based models \citep{cai2014,warren2015}.
+    Root water uptake dynamics are driven by either changes in $\Delta\psi$, as discussed above, or by changes in hydraulic conductance, $k$. 
+    PHS features mechanistic reductions in $k$ based on root xylem vulnerability and soil hydraulic properties, 
+    conforming to soil-root hydraulic theory \citep{cai2014,warren2015}.
     As a result the soil-root conductance features a strong, positive relationship with soil potential, decreasing by almost three orders of magnitude as the soil dries (Supp Fig \ref{supp:cond}).
     Hydraulic conductance is not explicitly modeled with SMS, but the values implied by the transpiration partitioning function (see Section \ref{sect:smsrwu}), actually increase as soils dry over the domain of $\psi_c<\psi_{\text{soil}}<\psi_o$ (Supp Fig \ref{supp:cond}).
     
-        Furthermore, whereas SMS uses a relative notion to scale uptake by root abundance (root fraction), PHS opts for an absolute measure (root area), which can better capture dynamic allocation decisions in response to drying.
+        Furthermore, whereas SMS uses a relative notion to scale uptake by root abundance (root fraction), PHS opts for an absolute measure (root area), which can better capture dynamic carbon allocation in response to drying.
     With SMS, if root mass were to double in every soil layer, the root fraction remains unchanged, yielding no advantage in accessing soil water.
     With PHS, as root area in a soil layer increases so does the hydraulic conductance, even if the layer root fraction remains constant.
     
-    PHS appropriately penalizes extraction from depth, due to increasing distance between roots, increasing xylem length, and contributions from gravity (all missing from SMS).
+    PHS appropriately penalizes extracting soil water from deep in the soil column, associated with increased distance between roots, increased xylem length, and contributions from gravity (all missing from SMS).
     As a result, PHS favors surface extraction when water is available (Figure \ref{fig:qwet}).
-    The model can overcome these penalties, with compensatory root water uptake observed with increased extraction from beyond 2 meters depth during the TFE dry season (Figure \ref{fig:qdry}).
-    Dynamic root water potential (and conductance) gives the system more play, allowing the model to switch root water uptake to the lower layers as the surface dries out.
+    The model can overcome these penalties, featuring compensatory root water uptake where extraction (during the dry season) from beyond 2 meters depth increases significantly in response to TFE (Figure \ref{fig:qdry}).
+    Dynamic root water potential (and conductance) gives PHS more flexibility, allowing the model to switch root water uptake to the lower layers as the surface dries out.
    
      Finally, PHS eschews the unsubstantiated constraints on $\Delta\psi$ imposed by SMS ($0\ge\Delta\psi\ge\psi_c-\psi_o$, see Section \ref{sect:fwsms}).
     Allowing $\Delta\psi$ to change sign yields a representation of hydraulic redistribution, which has been observed in Amazonian forests \citep{oliveira2005}.
