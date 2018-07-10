@@ -90,7 +90,7 @@ hh(36:40) = [0,0,0,0,0];
 hh(41:45) = [0,0,0,0,0];
 hh(46:50) = [0,0,0,0,0];
 hh(51:55) = [0,0,0,0,0];
-hh(56:60) = [0,0,0,1,0];
+hh(56:60) = [0,0,1,0,0];
 
 
 
@@ -138,28 +138,79 @@ end
 
 
 if hh(59)>0
-    ix = year>2001;
-    a= 1800*sum(fpsn(:,ix),2);  %umol/m2
-    xf = 12/1e6/2; %gC/m2/yr
-    a = xf*a;
+
+    mms = 'janfebmaraprmayjunjulaugsepoctnovdec';
+    g = (year-2002)*12+month;
+    ix = year==2002;
+    x = splitapply(@mean,fctr(:,ix)',g(ix)');
     
+    disp('PHS')
+    disp('---')
+
+    [a,b]=max(x(:,1));
+    yy = 2002;
+    mm = mms((1:3)+(b-1)*3);
+    [num2str(a*4e-7*24*60*60),' in ',...
+    mm,'-',num2str(yy)]
+
+    disp('SMS')
+    disp('---')
+
+    [a,b]=max(x(:,3));
+    yy = 2002;
+    mm = mms((1:3)+(b-1)*3);
+    [num2str(a*4e-7*24*60*60),' in ',...
+    mm,'-',num2str(yy)]
+
     
+    ix = (year==2002&month>8)|year==2003;
+    g  = findgroups(month(ix)+(year(ix)-2001)*12);
+    x = splitapply(@mean,fctr(:,ix)',g');
     
+
+    disp('PHS')
+    disp('---')
+    [a,b]=min(x(:,1));
+    if b<5
+        yy=2002;
+        mm=mms((1:3)+(b+7)*3);
+    else
+        yy=2003;
+        mm=mms((1:3)+(b-5)*3);
+    end
+    [num2str(a*4e-7*24*60*60),' in ',...
+    mm,'-',num2str(yy)]
+
+    disp('SMS')
+    disp('---')
+    [a,b]=min(x(:,3));
+    if b<5
+        yy=2002;
+        mm=mms((1:3)+(b+7)*3);
+    else
+        yy=2003;
+        mm=mms((1:3)+(b-5)*3);
+    end
+    [num2str(a*4e-7*24*60*60),' in ',...
+    mm,'-',num2str(yy)]
     
     
 end
 
 if hh(58)>0
-    
-    ix = year>2000&month>8&month<12;
-    mean(zr*smp(41:60,ix))/101972
-    mean(vegwp(4,ix&mcsec==diurn(10)))/101972
-    ix = year>2001&month>8&month<12;
-    mean(zr*smp(61:80,ix))/101972
-    mean(vegwp(8,ix&mcsec==diurn(10)))/101972
+
+
     
     
+    g = findgroups(year*365+doy);
+    x = 4e-7*24*60*60*splitapply(@mean,fctr',g');
     
+    a=quantile(x(:,3),[0.1,0.9]);
+    disp([a,a(2)-a(1)])
+    a=quantile(x(:,1),[0.1,0.9]);
+disp([a,a(2)-a(1)])
+
+
     
 end
 
