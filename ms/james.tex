@@ -22,7 +22,7 @@ Pierre Gentine\affil{1}
 \begin{keypoints}
 \item A simplified soil-plant-atmosphere continuum model based on hydraulic theory is implemented in the Community Land Model (version 5).
 \item Prognostic leaf water potential replaces soil matric potential as the basis for stomatal conductance water stress. 
-\item Prognostic root water potential is used to implement hydraulic root water uptake, replacing the heuristic soil 'wilting' factor .
+\item Prognostic root water potential is used to implement hydraulic root water uptake, replacing the heuristic soil `wilting' factor .
 \end{keypoints}
 
 
@@ -145,6 +145,7 @@ In this paper we therefore:
     In this study, we preserve the location of water stress used in CLM4.5, while experimenting with how $f_w$ responds to environmental conditions.
     
     \subsubsection{Soil Moisture Stress (control model)}
+    \label{sect:fwsms}
     
     The control model for our study is Soil Moisture Stress (SMS), which we compare to the model of interest, Plant Hydraulic Stress (PHS). 
     PHS is the default configuration of CLM5.
@@ -200,6 +201,7 @@ In this paper we therefore:
     \end{linenomath*} 
 
 \subsubsection{SMS}
+\label{sect:smsrwu}
     
     In the SMS configuration, a heuristic function is used to determine $q_i$.
     Transpiration is partitioned among the soil layers layers based on the product of the root fraction and the wilting factor, which must be normalized by $f_w$. 
@@ -613,16 +615,16 @@ PHS values correspond to predawn root water potential.}
     This imparts a diurnal cycle to the water stress factor (Figure \ref{fig:stress1}), following the midday drop in leaf water potential induced by leaf-level VPD transpiration demand.
     As such, stress now depends on transpiration demand, and, in turn, leaf-level VPD and radiation (Figures \ref{fig:stress2},\ref{supp:fsds}).
     This water stress implementation tries to capture xylem tension stress, where vegetation must limit transpiration to avoid cavitation and embolism. 
-    This is in addition to the VPD response of the Medlyn stomatal conductance model (replaced Ball-Berry in CLM5),
+    This is in addition to the VPD response of the Medlyn stomatal conductance model (replaced Ball-Berry in the updates from CLM4.5 to CLM5),
     where stomatal conductance is proportional to VPD$^{-0.5}$, which optimizes carbon gain versus water losses \citep{medlyn2011}.
     Support for a hydraulics-based stress implementation exists in the literature \citep{novick2016a,sperry2017}, but the field has not yet reached a consensus on the best functional form for this type of water stress \citep{zhou2013}. 
     
     The PHS water stress factor exhibits a seasonal cycle, with lower values (indicating more stress) during the dry season.  
     However, the seasonal variation in water stress is smaller than with the control model (Figure \ref{fig:gpp}a-d).
     As a result PHS features less seasonal variability in GPP, especially under ambient conditions (Figure \ref{fig:gpp}e-h).
-    The xylem tension constraint in PHS induces a negative feedback on GPP.
-    Indeed, factors increasing GPP (e.g. more light) also increase xylem tension and stress, which opposes increases in GPP.
-    \cite{restrepo2017} show that GPP increases at Caxiuana during the dry season, suggesting that PHS may improve the GPP seasonal cycle relative to the control model.
+    The PHS water stress factor induces a negative feedback on GPP.
+    Factors increasing GPP (e.g. more light) also increase xylem tension and stress, which opposes increases in GPP.
+    \cite{restrepo2017} show that GPP increases at Caxiuan\~a during the dry season, suggesting that PHS may improve the GPP seasonal cycle relative to the control model.
     
     PHS underestimates the seasonal cycle in transpiration under ambient predictions, and exhibits less seasonal variability than sap flux observations (Figure \ref{fig:t}a,c).
     Both models produce a high bias in transpiration under TFE, similar to previous evidence showing that models tend to underestimate the effect of TFE \citep{powell2013}.
@@ -631,9 +633,15 @@ PHS values correspond to predawn root water potential.}
     In our experiment, PHS does improve transpiration predictions, 
     with lower RMSE and higher correlation compared to the control model, albeit with the advantage of model tuning (Figure \ref{fig:t}).
 
-\subsection{The undue influence of $\psi_c$}
+\subsection{The extensive influence of $\psi_c$}
+
+    [will be removed]
+    
+    [as pierre has noted, this section doesn't really work on its own, I'm currently working to incorporate the main points into the other sections]
+
+
     Whereas the previous two subsections discuss model transpiration and water stress, the next four subsections pertain to the dynamics of root water uptake and soil moisture.
-    In the SMS model configuration these dynamics are strongly influenced by 
+    In the SMS model configuration, these dynamics are strongly influenced by 
     $\psi_c$, the soil potential at which stomates are fully closed.
     For the Broadleaf Evergreen Tropical PFT (BET), $\psi_c$ equals -2.5 MPa \citep{oleson2013}.
     
@@ -649,25 +657,33 @@ PHS values correspond to predawn root water potential.}
     As such, $\psi_c$ has strong influence on model output for both transpiration and soil moisture, despite limited empirical or physical basis \citep{rogers2017}.
     
 \subsection{Structural improvements in modeling root water uptake}
+    Whereas the previous two subsections discuss model transpiration and water stress, the next three pertain to the dynamics of root water uptake and soil moisture.
+PHS uses dynamic root water potential ($\psi_{\text{root}}$) as the sink for measuring the hydraulic gradient governing root water uptake (Figure \ref{fig:vwp}).
+Because SMS does not resolve water potential through the vegetation substrate, the model uses a constant parameter, $\psi_c$ to define the hydraulic gradient.
+    As such, PHS provides a critical structural improvement for modeling root water uptake, consistent with extensive evidence of dynamic vegetation water potential (e.g. \cite{fisher2006}).
 
-    Using $\psi_c$ is required with SMS, because water potential is not resolved through the vegetation substrate.
-    Instead of a constant parameter, PHS uses dynamic root water potential ($\psi_{\text{root}}$) as the sink for measuring the hydraulic gradient for root water uptake (Figure \ref{fig:vwp}).
-    This provides a critical structural improvement for modeling root water uptake, consistent with extensive evidence of dynamic vegetation water potential (e.g. \cite{fisher2006}).
-    PHS also eschews the constraints on $\Delta\psi$ imposed by SMS (see section zqz).
     
     Root water uptake is equal to the product of $\Delta\psi$ and hydraulic conductance $k$. 
     The conductance varies by soil layer and, with PHS, features mechanistic reductions based on root xylem vulnerability and soil hydraulic properties, 
-    as is appropriate for hydraulic-based models \citep{cai2014,warren2014}.
+    as is appropriate for hydraulic-based models \citep{cai2014,warren2015}.
     As a result the soil-root conductance features a strong, positive relationship with soil potential, decreasing by almost three orders of magnitude as the soil dries (Supp Fig \ref{supp:cond}).
-    PHS $k_{sr}$ appropriately penalizes extraction from depth, due to decreasing root density and increasing xylem length, 
-    whereby PHS favors surface extraction when water is available (Figure \ref{fig:qwet}).
+    Hydraulic conductance is not explicitly modeled with SMS, but the values implied by the transpiration partitioning function (see Section \ref{sect:smsrwu}), actually increase as soils dry over the domain of $\psi_c<\psi_{\text{soil}}<\psi_o$ (Supp Fig \ref{supp:cond}).
+    
+        Furthermore, whereas SMS uses a relative notion to scale uptake by root abundance (root fraction), PHS opts for an absolute measure (root area), which can better capture dynamic allocation decisions in response to drying.
+    With SMS, if root mass were to double in every soil layer, the root fraction remains unchanged, yielding no advantage in accessing soil water.
+    With PHS, as root area in a soil layer increases so does the hydraulic conductance, even if the layer root fraction remains constant.
+    
+    PHS appropriately penalizes extraction from depth, due to increasing distance between roots, increasing xylem length, and contributions from gravity (all missing from SMS).
+    As a result, PHS favors surface extraction when water is available (Figure \ref{fig:qwet}).
     The model can overcome these penalties, with compensatory root water uptake observed with increased extraction from beyond 2 meters depth during the TFE dry season (Figure \ref{fig:qdry}).
-    Dynamic root water potential (in tandem with declining $k$) gives the system more play, allowing the model to switch to the lower layers as the surface dries out.
-    PHS allows $\Delta\psi$ to change sign, yielding a representation of hydraulic redistribution, which has been observed in Amazonian forests \citep{oliveira2005}.
+    Dynamic root water potential (and conductance) gives the system more play, allowing the model to switch root water uptake to the lower layers as the surface dries out.
+   
+        PHS also eschews the unsubstantiated constraints on $\Delta\psi$ imposed by SMS ($0\ge\Delta\psi\ge\psi_c-\psi_o$, see Section \ref{sect:fwsms}).
+    Allowing $\Delta\psi$ to change sign yields a representation of hydraulic redistribution, which has been observed in Amazonian forests \citep{oliveira2005}.
     
 \subsection{Hydraulic Redistribution (HR)}
-    During 2003, modeled HR totals to 38.9 cm under ambient conditions and 40.0 cm with TFE (Figure \ref{fig:hr}) in PHS.
-    In our simulations, as observed in the field \citep{burgess1998}, HR occurs in both directions vertically (Supp Fig \ref{supp:hr}).
+    In our experiment, modeled HR totals to 38.9 cm over the course of 2003 under ambient conditions and 40.0 cm with TFE (Figure \ref{fig:hr}).
+    HR occurs in both directions vertically (Supp Fig \ref{supp:hr}), consistent with field observations \citep{burgess1998}, .
     Modeled HR is mostly downwards, sending water shallower water from rain events deeper into the soil column and thus saving it for when it is most needed, i.e. dry season.
     This would seem to convey an advantage to deep-rooted individuals, banking water for later use out of reach of shallow-rooted competitors.
     HR can offer significant water subsidies during dry periods \citep{jackson2000} and has been highlighted as an important missing feature in CLM \citep{lee2005}.
