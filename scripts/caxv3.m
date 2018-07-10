@@ -90,7 +90,7 @@ hh(36:40) = [0,0,0,0,0];
 hh(41:45) = [0,0,0,0,0];
 hh(46:50) = [0,0,0,0,0];
 hh(51:55) = [0,0,0,0,0];
-hh(56:60) = [0,0,0,0,1];
+hh(56:60) = [0,0,0,1,0];
 
 
 
@@ -138,37 +138,11 @@ end
 
 
 if hh(59)>0
-    ix = year==2003&month==11;
-    for ee = 1:4
-        subplot(2,2,ee)
-    plot(mean(smp((1:14)+(ee-1)*20,ix),2)/101972,-z(1:14))
-    if ee<3
-        xlim([-1,0])
-    else
-        xlim([-3,0])
-    end
-    end
+    ix = year>2001;
+    a= 1800*sum(fpsn(:,ix),2);  %umol/m2
+    xf = 12/1e6/2; %gC/m2/yr
+    a = xf*a;
     
-    figure
-    ix = year==2003&month>4;
-    for ee=1:4
-        subplot(2,2,ee)
-        plot(splitapply(@mean,smp(7+(ee-1)*20,ix),findgroups(doy(ix)))/101972)
-        if ee<3
-            ylim([-1,0])
-        else
-            ylim([-3,0])
-        end
-    end
-    
-    figure
-    ix = year==2003&month>5;
-        for ee=1:4
-        subplot(2,2,ee)
-        plot(-1+doy(ix)+mcsec(ix)/max(diurn),180*cumsum(qrootsink(7+(ee-1)*20,ix)))
-        ylim([0,6])
-        xlim([150,365])
-        end
     
     
     
