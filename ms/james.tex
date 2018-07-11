@@ -617,7 +617,7 @@ PHS, TFE & 0.449 & 0.741 \\
     with lower values within the stem and leaves at midday and during the dry season (Figure \ref{fig:vwp}).
     The bulk of our analysis and discussion pertains to how these vegetation water potential variables can be used to improve the representation of transpiration, root water uptake, and soil moisture dynamics within the CLM. 
 
-    Support for hydraulic models include improvements in modeling mortality and productivity \citep{mcdowell2018,choat2012}.
+    Incorporating hydraulic theory into Earth System Models is a well established ambition in the field of ecohydrology \citep{sperry2015},  supported by potential improvements in modeling mortality and productivity \citep{choat2012,mcdowell2018}.
     However, concerns exist in the literature regarding hydraulic model complexity and parameterization \citep{verhoef2014,drake2017}, 
     which led to a series of simplifications implemented in our model design (see Section 2).
     Recent work suggests model complexity can be managed, given the significant coordination of hydraulic traits \citep{bartlett2016,christoffersen2016}.
@@ -652,9 +652,9 @@ PHS, TFE & 0.449 & 0.741 \\
     with lower RMSE and higher correlation compared to the control model, albeit with the advantage of model tuning (Figure \ref{fig:t}).
     
 \subsection{Structural improvements in modeling root water uptake}
-    Whereas the previous two subsections discuss model transpiration and water stress, the next three pertain to the dynamics of root water uptake and soil moisture.
-PHS uses dynamic root water potential ($\psi_{\text{root}}$) as the sink for measuring the hydraulic gradient governing root water uptake (Figure \ref{fig:vwp}).
-Because SMS does not resolve water potential through the vegetation substrate, the model instead uses a constant parameter, $\psi_c$ to define the hydraulic gradient.
+    In addition to modulating water stress and transpiration, vegetation water potential can be used to improve the CLM representation of root water uptake.
+PHS uses dynamic root water potential ($\psi_{\text{root}}$, Figure \ref{fig:vwp}) as the sink for measuring the hydraulic gradient governing root water uptake ($\Delta\psi$).
+Because SMS does not resolve water potential through the vegetation substrate, the model instead uses a constant parameter, $\psi_c$ in its definition of $\Delta\psi$.
     As such, PHS provides a critical structural improvement for modeling root water uptake, consistent with extensive evidence of dynamic vegetation water potential (e.g. \cite{fisher2006}).
 
     Root water uptake dynamics are driven by either changes in $\Delta\psi$, as discussed above, or by changes in hydraulic conductance, $k$. 
@@ -735,26 +735,6 @@ Modeling stomatal conductance and photosynthesis, especially subject to water st
     Parameter estimation for root functioning is significantly more challenging, given the difficulty in underground trait observations.
     Likewise observational constraints of vertically-resolved states and fluxes underground are scarce.
     Follow-up work will be geared towards parameter estimation and assessing model skill.
-
-\subsection{Inconsistencies in SMS}
-[I plan to delete this section, after double-checking that the main points are covered either in the model description or the previous discussion sections.]
-    
-    \subsubsection{Constant pulling potential}
-    With SMS, the water potential gradient is implicitly defined for each soil layer as the difference between the soil water potential in that layer ($\psi_i$) and a constant parameter, the soil water potential when stomata are fully closed ($\psi_{c}$). This parameter serves as the vegetation ``pulling'' potential for calculating the soil transpiration sink.
-    
-    Using a constant wilting point is inconsistent with extensive evidence from the field of dynamic vegetation water potential, and cohesion tension theory (CITATIONS NEEDED) driving the transpiration flow. Likewise the values for $\psi_{c}$ are quite negative, (-2.5 MPa for broadleaf evergreen tropical, BET, forests). \cite{fisher2006} measured midday stem potential consistently higher than -0.5 MPa during the wet season, and on average -1.69 and -1.53 MPa during the dry season in the control and exclusion plots, respectively.
-    
-    \subsubsection{Conductance dynamics}
-    In SMS, in lieu of dynamic vegetation water potential, intra-day SMS soil sink dynamics derive from a highly variable conductance (CLARIFY). As inferred in Equation \ref{kb}, SMS conductance is modeled as a function of $T_{max}$, and three constant parameters. $T_{max}$ is highly dynamic, responding to the diurnal course in transpiration demand. This is inconsistent with general principles of porous media flow, where conductivity is a function of the hydraulic architecture and its wetted status.    Likewise, this representation of conductance does not represent the characteristic phenomenon where vessels lose conductance with drying.
-      
-    \subsubsection{No dependence on belowground carbon allocation}
-    As is typical in water stress parameterizations, the SMS conductance is scaled by layer using an area basis, here using the relative vertical root fraction is used. With PHS, an absolute measure of root biomass is used (see Appendix Equation \ref{eq:rai}), so that the belowground water cycle interacts with carbon allocation to the roots. An absolute measure better conforms with the physics of porous media flow and better responds to varying carbon allocation strategies. For example, with SMS, if root mass doubles in every soil layer, the root access to water remains unchanged.
-
-    \subsubsection{Lacks penalties for extraction from depth}
-    Both PHS and SMS account for the effect of decreasing root area with depth (PHS, root area; SMS, root fraction), but PHS implements two other penalties for extracting water from deep in the soil column that are missing from SMS. The first is minor, but water extracted from depth must overcome gravity, amounting to about 0.01 MPa per meter in depth. This is missing from SMS and included with PHS.  Likewise, SMS ignores the fact that hydraulic conductance is generally taken to scale with the inverse of conducting length. Deeper roots feature longer root tissue conducting length, and root spacing within the soil is less dense, requiring longer conducting distances across the soil matrix.In PHS, both these processes result in diminished hydraulic conductance (UNCLEAR).
-
-    \subsubsection{Constraints}
-    With SMS, the gradient in water potential is constrained between 0 and the range of soil potential between parameters for stomata fully open and closed (Equation \ref{kb}). The upper constraint caps the gradient in water potential when soil potential reaches the value for stomata fully open ($\psi_o$=-0.65 MPa for BET). Darcy's Law predicts that the gradient in water potential would continue to increase until saturation matric potential. The lower constraint caps the gradient in water potential at zero, disallowing negative gradients. However, reversed water fluxes, caused by positive gradients in water potential from root to soil, have been observed in the field \citep{burgess1998}. Both constraints are eschewed with PHS.     
 
 \section{Conclusion}
 
