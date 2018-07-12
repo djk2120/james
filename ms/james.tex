@@ -58,32 +58,34 @@ SPAC models involve new parameters, which presents challenges \citep{drake2017},
 Such data have been shown to be informative of species vulnerability to drought \citep{choat2012}.
 Likewise vegetation water status observations are now available from remote sensing platforms, at a scale that is directly comparable to model development \citep{konings2016,grant2016} and therefore can be used to validate model results \citep{momen2017,konings2017b}.
 
-Specifically, the empirical representation of vegetation water stress in the Community Land Model (CLM) and other land surface models has been a known deficiency, with implications for the representation of the dry/wet season in tropical rainforests for example \citep{powell2013,ukkola2016}. Indeed, recent studies suggest that the soil water stress parameterization introduces model bias in turbulent fluxes \citep{bonan2014} and contributes to unrealistic drought response of photosynthesis and stomatal conductance \citep{powell2013}.
+In this study, we develop a new plant water stress parameterization based on hydraulic theory within the recently released Community Land Model, version 5 (CLM5, the land component of the Community Earth System Model version 2). 
+We refer to this hydraulics-based implementation as the `Plant Hydraulic Stress' (PHS) configuration. 
+Previous versions of the CLM, similar to many land surface models, employed an empirical $\beta$-form soil moisture stress function.
+Such functions lack a strong physical basis and have been shown to systematically overestimate the effect of soil moisture drought on evaporative fluxes \citep{ukkola2016,bonan2014}.
+In Amazonia, which is the focus area of our experiments, studies suggest that the CLM (version 3.5) simultaneously underestimates the effect of experimental drought treatment \citep{powell2013} and overestimates dry-season reductions in GPP \citep{restrepo2017}.
 
-In this study, we develop a new plant water stress parameterization based on hydraulic theory within the recently released CLM version 5 (CLM5), which we refer to as the 'Plant Hydraulic Stress' (PHS) configuration. 
 
-Representing the SPAC introduces modeled vegetation water potential (discretized into leaf, stem and root elements) into the CLM, as well as an explicit representation of water supply, from the soil through the vegetation substrate. 
-Transpiration is attenuated in the model with drought stress according to leaf water status, capturing dynamic vegetation water use regulation. 
+PHS, by explicitly representing the SPAC, introduces modeled vegetation water potential (discretized into leaf, stem and root elements) into the CLM, as well as a physical model of water supply, from the soil through the vegetation substrate. 
+Transpiration is attenuated in the model according to leaf water status, capturing dynamic vegetation water use regulation in response to both soil moisture and atmospheric evaporative demand. 
 These changes in the parameterization framework have numerous implications, including 
 
-1. Leaf water potential serves as a metric for water status compared to soil water or soil matric potential. As such, it reflects vegetation sensitivity to both soil and atmospheric drying, while serving as a diagnostic for excessive xylem tension and cavitation risk. 
+\begin{enumerate}
+\item Leaf water potential serves as a metric for water status compared to soil water or soil matric potential. As such, it reflects vegetation sensitivity to both soil and atmospheric drying, while serving as a diagnostic for excessive xylem tension and cavitation risk. 
+\item Modeling plant hydrodynamics allows representing hydraulic redistribution \citep{lee2005}, as the flow respects Darcy's law and thus is always directed down gradients of water potentials. 
+\item Further, root water potential can be used to predict gradient-based root water uptake based on Darcy's law, replacing the previous empirical transpiration partitioning heuristic. This provides the means to vary, for example, the mean depth of extraction with changing soil water conditions.
+\item The new model can represent a range of water use strategies (i.e. isohydricity and anisohydricity), improving the connection between plant carbon allocation and water availability.
+\item Modeling vegetation water potential allows improved connection to remote sensing observations of vegetation water status (Vegetation Optical Depth) \citep{konings2016}. 
+\end{enumerate}
 
-2. Modeling plant hydrodynamics allows representing hydraulic redistribution \citep{lee2005}, as the flow respects Darcy's law and thus is always directed down gradients of water potentials. 
-
-3. Further, root water potential can be used to predict gradient-based root water uptake based on Darcy's law, replacing the previous empirical transpiration partitioning heuristic. This provides the means to vary, for example, the mean depth of extraction with changing soil water conditions.
-
-4. The new model can represent a range of water use strategies (i.e. isohydricity and anisohydricity), improving the connection between plant carbon allocation and water availability.
-
-5. Modeling vegetation water potential allows improved connection to remote sensing observations of vegetation water status (Vegetation Optical Depth) \citep{konings2016}. 
-
-To assess the new model formulation, we carried out site-level simulations at Caxiuan\~a National Forest in Brazil, which features a critical biome (terra-firme moist tropical evergreen forest) \citep{fisher2006}.  Starting in 2001, a plot at this site was subjected to an approximately 50\% percent precipitation through-fall exclusion. Due to the large drop in soil moisture at the precipitation exclusion site, significant vegetation water stress regulation of transpiration and photosynthesis was present at the site, providing a natural experiment to test the model \citep{fisher2007}.
+To assess the new model formulation, we carried out site-level simulations at Caxiuan\~a National Forest in Brazil, which features a critical biome (terra-firme moist tropical evergreen forest) \citep{fisher2006}.  Starting in 2001, a plot at this site was subjected to an approximately 50\% percent precipitation throughfall exclusion. Due to the large drop in soil moisture at the precipitation exclusion site, significant vegetation water stress regulation of transpiration and photosynthesis was present at the site, providing a natural experiment to test the model \citep{fisher2007}.
 
 In this paper we therefore:
-1. Introduce the PHS theory and implementation in the CLM (Section 2)
-2. Analyze the dynamics of modeled water stress, root water uptake and soil moisture profiles (Section 4)
-3. Compare PHS to the behavior of the previous CLM water stress configuration (Section 5)
-4. Discuss the benefits and limitations of the new model (Section 5.7)
-
+\begin{enumerate}
+\item Introduce the PHS theory and implementation in the CLM (Section 2)
+\item Analyze the dynamics of modeled water stress, root water uptake and soil moisture profiles (Section 4)
+\item Compare PHS to the behavior of the previous CLM water stress configuration (Section 5)
+\item Discuss the benefits and limitations of the new model (Section 5.7)
+\end{enumerate}
 
 %====================
 %  MODEL DESCRIPTION
