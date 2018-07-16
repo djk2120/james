@@ -185,7 +185,7 @@ In this paper we therefore:
     Leaf water potential is modulated by supply of sap to the leaves and by evaporative demand, as regulated by stomatal dynamics \citep{novick2016a}. 
     As a result, low soil water (bottom-up stress) induces stress due to limited water supply, but in addition, high atmospheric VPD can induce stress with the associated increases in the gradient in water potential across the plant xylem (top-down stress). 
     This latter mechanism was absent from the previous water stress function (dependent on soil water potential only), by construction.
-    Given the importance of rising VPD, it appears critical to include such mechanistic dependence of water stress.
+    Given the observed increase in VPD with global warming, it appears critical to include such mechanistic dependence of water stress.
     The new stress factor formulation reflects the concept of hydraulic safety, with vegetation avoiding excessive xylem tension associated with risk of cavitation.
     While the Medlyn stomatal conductance model does depend on VPD, this captures water `costs' and not xylem tension.
 
@@ -206,7 +206,7 @@ In this paper we therefore:
 \label{sect:smsrwu}
     
     In the SMS configuration, a heuristic function is used to determine $q_i$.
-    Transpiration is partitioned among the soil layers layers based on the product of the root fraction and the wilting factor, which must be normalized by $f_w$. 
+    Transpiration is partitioned among the soil layers based on the product of the root fraction and the wilting factor, which must be normalized by $f_w$. 
     
     \begin{linenomath*}
     \begin{equation}
@@ -226,7 +226,7 @@ In this paper we therefore:
     \\[1pt]
         \dfrac{T}{f_w} \dfrac{r_i}{\psi_{o}-\psi_{c}} \left(\psi_{\text{soil},i}-\psi_{c} \right)     & \text{if } \psi_{c} \le \psi_{\text{soil},i} \le \psi_{o} \\
     \\[1pt]
-    \dfrac{T}{f_w} r_i    & \text{if } \psi_{c} \le \psi_{\text{soil},i} \le \psi_{o}
+    \dfrac{T}{f_w} r_i    & \text{if } \psi_{\text{soil},i} > \psi_{o}
     \end{cases}
     \end{equation}
     \end{linenomath*}
@@ -253,12 +253,12 @@ In this paper we therefore:
     
     \subsubsection{PHS}
     
-    PHS installs an alternative to the SMS heuristic approach, using a mechanistic representation of root water uptake, following Darcy's Law.
-    Instead of a constant parameter ($\psi_c$) defining $\Delta\psi$, PHS installs a physical model of vegetation water potential (described in Section \ref{sect:vwp}).
+    PHS implements an alternative to the SMS heuristic approach, using a mechanistic representation of root water uptake, following Darcy's Law.
+    Instead of a constant parameter ($\psi_c$) defining $\Delta\psi$, PHS implements a physical model of vegetation water potential (described in Section \ref{sect:vwp}).
     The water flux from a given soil layer is driven by the gradient between soil potential ($\psi_{\text{soil},i}$) and the water potential in the root collar ($\psi_{\text{root}}$), 
     after accounting for the effects of gravity ($\rho g z_i$, where $z_i$ is the soil layer depth).
     Hydraulic conductance across the soil and roots ($k_{sr}$) is modeled based on soil hydraulic properties and xylem vulnerability, 
-    accounting for both the path across the soil matrix and through the xylem conduits (details in Appendix zqz).
+    accounting for both the path across the soil matrix and through the xylem conduits (details in Appendix B).
     
     \begin{linenomath*}
     \begin{equation}
