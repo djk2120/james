@@ -110,7 +110,7 @@ if hh(64)>0
     
     tstr = 'PHSambPHStfeSMSambSMStfe';
     
-    ix = mcsec>0;%=diurn(25)&mcsec<=diurn(28);
+    ix = mcsec>=diurn(25)&mcsec<=diurn(28);
     
     tt = repmat(vegwp(4,mcsec==diurn(10)),48,1);
     targ = tt(1:n);

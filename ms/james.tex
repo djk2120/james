@@ -481,7 +481,7 @@ No tuning was used for the SMS configuration.
 \subsection{Vegetation water potential}
 
     Under ambient conditions, 2003 dry season (September-October-November) model average sunlit leaf water potential is -1.65 MPa at midday (local time 12-14h, Figure \ref{fig:vwp}a). 
-    The midday pressure drop is overwhelmingly between $\psi_{root}$ and $\psi_{stem}$ ($\Delta\psi$=-1.47 MPa), representing the root collar and upper stem, respectively. There is relatively little drop in root water potential between predawn and midday (-0.05MPa) and only -0.02MPa difference between stem and sunlit leaf potential at midday (and -0.01 MPa between stem and shade leaf).
+    The midday pressure drop primarily occurs between $\psi_{root}$ and $\psi_{stem}$ ($\Delta\psi$=-1.47 MPa), representing the root collar and upper stem, respectively. There is relatively little drop in root water potential between predawn and midday (-0.05MPa) and only -0.02MPa difference between stem and sunlit leaf potential at midday (and -0.01 MPa between stem and shade leaf).
     
     Under TFE, model midday leaf water potential decreases to -2.31 MPa (Figure \ref{fig:vwp}b). 
     Partitioned among the segments of the SPAC, the changes in leaf water potential (totaling -0.66MPa) due to TFE are:
@@ -504,7 +504,7 @@ No tuning was used for the SMS configuration.
     While the SMS stress factor has minimal diurnal variability (Figure \ref{fig:stress1}a),
     PHS features increased stress at midday (Figure \ref{fig:stress1}b), corresponding to the drop in leaf water potential (Figure \ref{fig:vwp}b,c).
     Indeed, the PHS stress factor responds to both soil moisture and VPD (Figure \ref{fig:stress2}c,d), while SMS responds only to soil moisture (Figure \ref{fig:stress2}a,b).
-    This dependence on VPD results in more wet season  stress with PHS (as compared to SMS) under both ambient and TFE conditions (Figure \ref{fig:gpp}a-d).
+    This dependence on VPD results in more wet season stress with PHS (as compared to SMS) under both ambient and TFE conditions (Figure \ref{fig:gpp}a-d).
 
 \begin{table}
 \caption{Root-zone soil potential $^a$ (MPa) terciles for Figure \ref{fig:stress2}}
@@ -530,15 +530,15 @@ PHS values correspond to predawn root water potential.}
     Seasonal variability in GPP is smaller with PHS, especially under ambient conditions. 
     The standard deviations of daily GPP (2002-2003) are 0.49 and 1.55 gC/m2/d for AMB/TFE, 
     as compared to 1.53, 2.73 gC/m2/d with SMS.
-    PHS has a stress response to high levels of transpiration due to the associated drops in leaf water potential.
-    This negative feedback on  limits maximal photosynthesis and reduces GPP variability 
-    
-    
-    
+    Lower maximal photosynthesis and less variability in GPP are both related to updates to the water stress factor implemented with PHS.
+
+    PHS has a stress response to high levels of transpiration (Supp Fig \ref{supp:tstress}c,d) due to the associated drops in leaf water potential.
+    This negative feedback limits maximal transpiration and photosyntheis, while reducing variability.  
     Transpiration shows a seasonal pattern in both models (Figure \ref{fig:t}a,b), but with a larger amplitude for SMS.
     For example, under ambient conditions, the 10th and 90th percentiles for daily total transpiration with SMS are 1.65 and 4.22 mm/d ($\Delta$=2.57 mm/d).
-    That range exceeds the span between the same values for PHS: 1.85 and 3.49 mm/d ($\Delta$=1.64 mm/d). 
-    PHS, though it does seem to underestimate seasonal variability, yields a better overall fit to field observations of daily sap flux, with higher R$^2$  and lower RMSE compared to SMS 
+    That range exceeds the span between the same values for PHS: 1.85 and 3.49 mm/d ($\Delta$=1.64 mm/d).
+    Under ambient conditions, PHS underestimates transpiration variability as compared to sap flux observations (Figure \ref{fig:t}e).
+    However PHS yields a better overall fit to the field observations, with higher R$^2$  and lower RMSE compared to SMS 
     under both ambient and TFE conditions (Figure \ref{fig:t}c-f, Table 3).
     
     \begin{table}[h]
