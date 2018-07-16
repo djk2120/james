@@ -481,7 +481,8 @@ No tuning was used for the SMS configuration.
 \subsection{Vegetation water potential}
 
     Under ambient conditions, 2003 dry season (September-October-November) model average sunlit leaf water potential is -1.65 MPa at midday (local time 12-14h, Figure \ref{fig:vwp}a). 
-    The midday pressure drop is primarily between $\psi_{root}$ and $\psi_{stem}$, representing the root collar and upper stem, respectively.
+    The midday pressure drop is overwhelmingly between $\psi_{root}$ and $\psi_{stem}$ ($\Delta\psi$=-1.47 MPa), representing the root collar and upper stem, respectively. There is relatively little drop in root water potential between predawn and midday (-0.05MPa) and only -0.02MPa difference between stem and sunlit leaf potential at midday (and -0.01 MPa between stem and shade leaf).
+    
     Under TFE, model midday leaf water potential decreases to -2.31 MPa (Figure \ref{fig:vwp}b). 
     Partitioned among the segments of the SPAC, the changes in leaf water potential (totaling -0.66MPa) due to TFE are:
     -0.44MPa soil potential,
@@ -492,7 +493,7 @@ No tuning was used for the SMS configuration.
     
     Modeled root water potential values match wet season observations, but are less negative than dry season observations under ambient conditions \citep{fisher2006}.
     Midday leaf water potential features a seasonal cycle, with lower values during the dry season (Figure \ref{fig:vwp}c).
-    Modeled leaf water potential values under ambient conditions are less negative than averages reported by \cite{fisher2006} (1.71 MPa during the wet season and -2.47 MPa during the dry season), but are within the range of observations.
+    Modeled leaf water potential values under ambient conditions are less negative than averages reported by \cite{fisher2006} (1.71 MPa during the wet season (February-March-April) and -2.47 MPa during the dry season), but are within the range of observations.
     The model seems to underestimate isohydricity (i.e. minimal leaf water potential drop during drought) in response to TFE, showing a drop in leaf water potential of 0.66MPa (dry season, 2003), whereas observations showed no significant difference \citep{fisher2006}. 
 
 \subsection{Stress factor}
@@ -503,7 +504,7 @@ No tuning was used for the SMS configuration.
     While the SMS stress factor has minimal diurnal variability (Figure \ref{fig:stress1}a),
     PHS features increased stress at midday (Figure \ref{fig:stress1}b), corresponding to the drop in leaf water potential (Figure \ref{fig:vwp}b,c).
     Indeed, the PHS stress factor responds to both soil moisture and VPD (Figure \ref{fig:stress2}c,d), while SMS responds only to soil moisture (Figure \ref{fig:stress2}a,b).
-    This dependence on VPD results in more wet season (February-March-April) stress with PHS (as compared to SMS) under both ambient and TFE conditions (Figure \ref{fig:gpp}a-d).
+    This dependence on VPD results in more wet season  stress with PHS (as compared to SMS) under both ambient and TFE conditions (Figure \ref{fig:gpp}a-d).
 
 \begin{table}
 \caption{Root-zone soil potential $^a$ (MPa) terciles for Figure \ref{fig:stress2}}
@@ -528,7 +529,11 @@ PHS values correspond to predawn root water potential.}
     but GPP is lower for PHS under ambient conditions (2.43 kgC/m$^2$/yr) as compared to SMS (2.73 kgC/m$^2$/yr, Figure \ref{fig:gpp}e-h).
     Seasonal variability in GPP is smaller with PHS, especially under ambient conditions. 
     The standard deviations of daily GPP (2002-2003) are 0.49 and 1.55 gC/m2/d for AMB/TFE, 
-    as compared to 1.53, 2.73 gC/m2/d with SMS. 
+    as compared to 1.53, 2.73 gC/m2/d with SMS.
+    PHS has a stress response to high levels of transpiration due to the associated drops in leaf water potential.
+    This negative feedback on  limits maximal photosynthesis and reduces GPP variability 
+    
+    
     
     Transpiration shows a seasonal pattern in both models (Figure \ref{fig:t}a,b), but with a larger amplitude for SMS.
     For example, under ambient conditions, the 10th and 90th percentiles for daily total transpiration with SMS are 1.65 and 4.22 mm/d ($\Delta$=2.57 mm/d).
@@ -931,6 +936,15 @@ Modeling stomatal conductance and photosynthesis, especially subject to water st
      \label{supp:fsds}
        \end{figure}
          \clearpage
+
+  \begin{figure}[h]
+     \centering
+     \includegraphics[width=30pc]{../figs3/supptstress.pdf}
+     \caption{Midday transpiration vs. stress. 
+     Data are colored by soil potential, subdivided into wettest, driest, and intermediate terciles.}
+     \label{supp:tstress}
+  \end{figure}
+  \clearpage
 
   
   \begin{figure}[h]

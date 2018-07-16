@@ -90,7 +90,8 @@ hh(36:40) = [0,0,0,0,0];
 hh(41:45) = [0,0,0,0,0];
 hh(46:50) = [0,0,0,0,0];
 hh(51:55) = [0,0,0,0,0];
-hh(56:60) = [0,0,1,0,0];
+hh(56:60) = [0,0,0,0,0];
+hh(61:65) = [0,0,0,1,0];
 
 
 
@@ -104,6 +105,156 @@ hh(56:60) = [0,0,1,0,0];
 %18 = hr
 %19 = smp full profile time series
 %20 = h2osoi with obs
+
+if hh(64)>0
+    
+    tstr = 'PHSambPHStfeSMSambSMStfe';
+    
+    ix = mcsec>0;%=diurn(25)&mcsec<=diurn(28);
+    
+    tt = repmat(vegwp(4,mcsec==diurn(10)),48,1);
+    targ = tt(1:n);
+    tt = repmat(vegwp(8,mcsec==diurn(10)),48,1);
+    targ = [targ;tt(1:n)];
+    g  = findgroups(year*365+doy);
+    tt = repmat(splitapply(@mean,zr*smp(41:60,:),g),48,1);
+    targ = [targ;tt(1:n)];
+    tt = repmat(splitapply(@mean,zr*smp(61:80,:),g),48,1);
+    targ = [targ;tt(1:n)];
+    
+    xdk = figure;
+    pp = {'(c)','(d)','(a)','(b)'};
+    cc = [3,4,1,2];
+    for i=1:4
+        subplot(2,2,cc(i))
+        qvals = [-inf,quantile(targ(i,ix),[1/3,2/3]),0];
+        for qq = [3,1,2]
+            ix2 = ix&targ(i,:)>qvals(qq)&targ(i,:)<=qvals(qq+1);
+        plot(btran(i,ix2),fctr(i,ix2),'.')
+        hold on
+        xlim([0,1])
+        ylim([0,550])
+        end
+        title(tstr((1:6)+6*(i-1)))
+        xlabel('Stress factor (-)')
+        ylabel('Transpiration (W/m2)')
+        text(0.04,500,pp{i},'FontSize',14,'FontWeight','bold')
+        if i==2
+            legend({'Wettest','Driest','Intermediate'},'Location','NorthEast')
+        end
+        box off
+    end
+    
+    xdk.Units = 'inches';
+    xdk.Position = [2,2,7,5];
+    xdk.PaperSize = [7,5];
+    xdk.PaperPosition = [0,0,7,5];
+    
+    if hh(64)>1
+        print(xdk,'../figs3/supptstress','-dpdf')
+    end
+
+    
+end
+
+
+if hh(63)>0
+    
+    for dd = 308:335
+
+        x = 1800*sum(qrootsink(1:20,year==2001&doy==dd),2);
+        plot(flipud(cumsum(flipud(x))),-z,'k')
+        title(dd)
+        xlim([0,4])
+        ylim([-4,0])
+        
+        hold on
+        x = 1800*sum(qrootsink(41:60,year==2001&doy==dd),2);
+        plot(flipud(cumsum(flipud(x))),-z,'Color',0.7*ones(1,3))
+
+        title(dd)
+        pause(0.5)
+        
+    end
+    
+end
+
+
+if hh(62)>0
+    
+    %how far into the soil column before you extract 1mm of water?
+    lvls = [1,2,3,4];
+    
+    for ee=[2,0]
+        out = zeros(1095,length(lvls))+inf;
+        aa = 0;
+        for yy=2001:2003
+            for dd = 1:365
+                aa = aa+1;
+                x  = 1800*sum(qrootsink((1:20)+20*ee,year==yy&doy==dd),2);
+                j  = 1;
+                for i=1:20
+                    hv = sum(x(1:i));
+                    go = 1;
+                    while go&&j<=length(lvls)
+                        
+                        if hv>lvls(j)
+                            out(aa,j) = zs(i)+(zs(i+1)-zs(i))*(lvls(j)-(hv-x(i)))/x(i);
+                            j = j+1;
+                        else
+                            go = 0;
+                        end
+                        
+                        
+                    end
+                end
+            end
+        end
+        
+        subplot(2,1,1+(ee==2))
+        for i=1:3
+            plot(-out(300:350,i))
+            hold on
+        end
+    end
+end
+
+
+
+
+if hh(61)>0
+    out = zeros(1095,2);
+    for ee = [0,2]
+        eeix = 1+(ee==2);
+        
+        aa = 1;
+        for yy = 2001:2003
+            for dd =1:365
+                aa = aa+1;
+
+                x  = 1800*sum(qrootsink((1:20)+20*ee,year==yy&doy==dd),2);
+                tt = sum(x);
+                go =1;
+                i = 0;
+                while go
+                    i = i+1;
+                    hv = sum(x(1:i));
+                    if hv>0.5*tt
+                        out(aa,eeix) = zs(i)+(zs(i+1)-zs(i))*(0.5*tt-(hv-x(i)))/x(i);
+                        go = 0;
+                    end
+                    if i>19
+                        go = 0;
+                    end
+                end
+            end
+        end
+    end
+    
+
+    
+    
+end
 
 
 if hh(60)>0
@@ -3840,7 +3991,9 @@ if hh(1)>0
     disp('delta drop')
     disp(mean(out(4,25:28))-mean(out(3,25:28))-(mean(out(8,25:28))-mean(out(7,25:28))))
     
-    
+
+    disp('AMB MD SHADE & drop')
+    disp([mean(out(2,25:28)),mean(out(3,25:28))-mean(out(2,25:28))])
     
     disp('AMB MD SUN & drop')
     disp([mean(out(1,25:28)),mean(out(3,25:28))-mean(out(1,25:28))])
