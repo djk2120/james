@@ -697,24 +697,38 @@ Because SMS does not resolve water potential through the vegetation substrate, t
     We view this first implementation of HR into the default versions of the CLM as a `null' hypothesis for the functioning of this process, and as a platform to allow further refinement from the plant hydraulics community. 
     Isotopologues of water could be used as a tool to further constrain this redistribution in CLM in the future. 
 
-\subsection{Soil moisture and its influence on transpiration}
+\subsection{Soil moisture dynamics}
     \label{sect:smt}
 
     Partly due to HR, vertical and temporal gradients in soil potential are significantly reduced in PHS (Figure \ref{fig:sm}).
-    This is also related to the root water extraction hydraulic gradient ($\Delta\psi$), which is significantly smaller in PHS (Supp Fig \ref{supp:cond2}).
-    The SMS sink potential ($\psi_c$, -2.5MPa), is significantly lower than $\psi_{\text{root}}$ in PHS (Figure \ref{fig:vwp}), which serves a similar purpose.
-    This is associated with a significant dry bias relative to observations in the SMS simulations, especially in the first meter of the soil column.
+    This can also be attributed to the root water extraction hydraulic gradient ($\Delta\psi$), which is significantly smaller in PHS (Supp Fig \ref{supp:cond2}).
+    In turn, SMS features a significant dry bias relative to soil moisture observations, especially in the first meter of the soil column.
+    This indicates that SMS root water uptake is `pulling' too hard, and that $\psi_c$ is too low, at least regarding soil moisture dynamics.
     PHS reduces soil moisture RMSE by up to 55\% relative to SMS (Figure \ref{fig:sm}).
     
-    The relationship with soil water potential seems to bias SMS predictions of transpiration relative to sap flux observations (Figure \ref{fig:cool}a,b).
-    Under ambient conditions, soil water shows little relationship with sap flux observations with either model configuration (Figure \ref{supp:cool}b,f), 
-    but SMS modeled transpiration decreases strongly in response to soil drying.
-    This is in line with \cite{bonan2014}, where the water stress factor was found to impose too much attenuation of transpiration.
-    PHS features less structure in the relationship between transpiration bias and soil potential and less bias overall (Figure \ref{fig:cool}c,d).
-    Likewise PHS yields a stronger relationship than SMS between soil potential and sap flux observations during TFE (Figure \ref{supp:cool}b,f).
-    This represents a major development, given repeated calls to improve vegetation water stress in the next generation of terrestrial biosphere models \citep{powell2013,rogers2017}.
+    In the literature, $\psi_c$ is primarily associated with its role governing the response of transpiration and photosynthesis to soil moisture \citep{powell2013,bonan2014,rogers2017}.
+    We show that it likewise has significant control over soil moisture, itself. 
+    Throughout the four simulations, $\psi_c$ (equals -2.5MPa) is significantly lower than $\psi_{root}$, yielding a larger hydraulic gradient, and the dry bias in soil moisture.
+    Likewise, during dry periods, soil potential has a tendency to take on the specific value of $\psi_c$ over significant areas of space/time.
+    Constrained to the top 2 meters of the soil column (which contains 98\% of the total root fraction, Figure \ref{roots}), 38.9\% of the space-time area in Figure \ref{fig:sm}a is within 0.1 MPa of $\psi_c$.
+    This can occur even without TFE, where Soil Layer 8 (spanning 68 to 92cm below ground) spends 23.2\% of the time during 2003 within 0.1 MPa of $\psi_c$ (Supp Fig \ref{supp:sm}a) under ambient conditions.
+    Through its effect on root water uptake (Equation \ref{eq:btrwu}) $\psi_c$ serves as an effective minimum soil water potential (outside of layers influenced by soil evaporation).
+    And due to the discontinuity of the root water uptake equation that occurs at $\psi_c$, soil water potential has a tendency to trend towards and then stick at $\psi_c$ during dry periods.
+    PHS instead adopts a more physical model for root water uptake (Equation \ref{phs:sink}) that avoids this discontinuity, preserves some soil moisture variability during dry periods (Figure \ref{fig:sm}), and better conforms to hydraulic theory.
+    
+\subsection{The influence of soil moisture on transpiration}
+    
+    The stress effects of declining soil water potential seems to bias SMS predictions of transpiration relative to sap flux observations (Figure \ref{fig:cool}a,b).
+    Under ambient conditions, soil water shows little relationship with sap flux observations with either model configuration (Supp Figure \ref{supp:cool}b,f),
+    however SMS modeled transpiration decreases strongly in response to soil drying (Supp Figure \ref{supp:cool}a).
+    This creates a bias where SMS underestimates transpiration during the drier soil conditions, 
+    which is in line with \cite{bonan2014}, where the water stress factor was found to impose too much attenuation of transpiration (in CLM4.5).
+    With PHS the transpiration bias does not seem to strongly depend on soil potential, while also featuring less bias overall (Figure \ref{fig:cool}c,d).
+    Likewise PHS yields a stronger relationship than SMS between soil potential and sap flux observations during TFE (Figure \ref{supp:cool}d,h).
+    This could indicate that PHS better models the relationship between soil potential and water stress and/or the soil moisture dynamics itself. 
+    The reduction in bias introduced by the water stress function (especially as it depends on soil potential) represents a major development, given repeated calls to improve vegetation water stress in the next generation of terrestrial biosphere models \citep{powell2013,rogers2017}.
 
-    In the literature, $\psi_c$ is often associated with its role governing transpiration and photosynthesis response to soil moisture \citep{powell2013,bonan2014,rogers2017}.
+    
 
 
 \subsection{Benefits and limitations of PHS}
