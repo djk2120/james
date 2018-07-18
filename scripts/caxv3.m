@@ -91,7 +91,8 @@ hh(41:45) = [0,0,0,0,0];
 hh(46:50) = [0,0,0,0,0];
 hh(51:55) = [0,0,0,0,0];
 hh(56:60) = [0,0,0,0,0];
-hh(61:65) = [0,0,0,1,0];
+hh(61:65) = [0,0,0,0,0];
+hh(66:70) = [1,0,0,0,0];
 
 
 
@@ -105,6 +106,85 @@ hh(61:65) = [0,0,0,1,0];
 %18 = hr
 %19 = smp full profile time series
 %20 = h2osoi with obs
+
+if hh(66)>0
+    
+    sum(dz(1:11))+12/40*dz(12);
+    sum(zr(1:11))+12/40*zr(12);
+    
+    dzv = [dz(1:11),0.12];
+    
+    ix = year>2002;
+    nn = sum(ix);
+    pp = zeros(12,1);
+    for i=1:12
+        subplot(3,4,i)
+        plot(smp(60+i,ix)/101972)
+        pp(i) = sum(smp(60+i,ix)/101972<=-2.4&smp(60+i,ix)/101972>=-2.6);
+        ylim([-3,0])
+        text(1000,-2.75,[num2str(round(100*pp(i)/nn)),'%'])
+    end
+    
+    dzv*pp/nn/2
+    
+    figure
+    pp = zeros(6,1);
+    ix = mcsec>0;
+    nn = sum(ix);
+    for i=4:9
+        subplot(2,3,i-3)
+        
+    plot(smp(40+i,ix)/101972)
+    pp(i-3) = sum(smp(40+i,ix)/101972<=-2.4&smp(40+i,ix)/101972>=-2.6);
+    ylim([-3,0])
+    text(1000,-2.75,[num2str(round(100*pp(i-3)/nn,1)),'%'])
+    title(i)
+    end
+end
+
+
+
+if hh(65)>0
+    g = findgroups(year*365+doy);
+   f = 4e-7*1800*splitapply(@sum,fctr',g');
+   b = zeros(1095,4);
+   %b = splitapply(@mean,btran',g');
+   b(:,[3:4]) = splitapply(@mean,btran([3:4],:)',g');
+   ix = fsds>5;%mcsec>=diurn(25)&mcsec<=diurn(28);
+   b(:,[1:2]) = splitapply(@mean,btran([1:2],ix)',g(ix)');
+   
+   for i=1:4
+       subplot(4,2,1+(i-1)*2)
+       plot(b(:,i),f(:,i),'.')
+       ylim([0,5.5])
+       xlim([0,1])
+   end
+   
+   jj = [1,2,1,2];
+   for i=1:4
+       j = jj(i);
+       subplot(4,2,2*i)
+       ix = p(:,j)>0;
+       plot(b(ix,i),p(ix,j),'.')
+       ylim([0,5.5])
+       xlim([0,1])
+   end
+   
+   figure
+   for i=1:4
+       j = jj(i);
+       subplot(2,2,i)
+       ix = p(:,j)>0;
+       plot(b(ix,i),f(ix,i)-p(ix,j),'.')
+       ylim([-3,3])
+       xlim([0,1])
+   end
+    
+    
+    
+end
+
+
 
 if hh(64)>0
     

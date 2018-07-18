@@ -91,21 +91,10 @@ In this paper we therefore:
 %  MODEL DESCRIPTION
 %====================
 \section{Model Description}
-This study uses CLM5 to compare two parameterizations of root water uptake (Section \ref{sect:rwu}) and water stress (Section \ref{sect:wsf}).  The first, which we refer to as Soil Moisture Stress (SMS), is the default parameterization used in CLM4.5.  The second is called Plant Hydraulic Stress (PHS); PHS is the default configuration of CLM5.
+This study uses CLM5 to compare two parameterizations of water stress (Sections \ref{sect:fwsms} and \ref{sect:fwphs}) and root water uptake (Sections \ref{sect:smsrwu} and \ref{sect:phsrwu}).  The first parameterization, which we refer to as Soil Moisture Stress (SMS), deploys the CLM4.5 default root water uptake and water stress implementations within CLM5.  The second is called Plant Hydraulic Stress (PHS); PHS is the default configuration of CLM5. In Sections \ref{sect:gs}-\ref{sect:wsf}, we describe components that the two configurations share in common. In Sections \ref{sect:sms} and \ref{sect:phs}, we describe SMS and PHS respectively.
+    
     
 %Photosynthesis
-\subsection{Photosynthesis}
-\label{sect:A}
-    The CLM5 photosynthesis model is described in detail in \citet{bonan2011}, \citet{thornton2007},
-    and \citet{oleson2013}. Photosynthesis is limited by three factors: Rubisco-limitations, light-limitations, and export-limitations 
-    following \citet{farquhar1980} and \citet{harley1992}. The implementation extends \citet{sellers1996a,sellers1996b} with 
-    co-limitation following \citet{collatz1991}. 
-    
-    The CLM5 photosynthesis module, in its default configuration, is a two-big-leaf model, with a sunlit and shaded leaf for each plant functional type \citep{thornton2007, dai2004, oleson2013}. 
-    The canopy fluxes module iterates the solution for leaf temperatures to satisfy the leaf surface energy balances on both sunlit and shaded leaves, in response to forcing conditions.
-    Within this, the photosynthesis module further iterates to solve for stomatal conductance and intercellular CO$_2$ concentration, balancing stomatal flux of CO$_2$ with photosynthetic assimilation flux of CO$_2$.
-
-%Stomatal Conductance
 \subsection{Stomatal Conductance}
 \label{sect:gs}
     CLM5 implements the Medlyn stomatal conductance model, which reconciles the empirical and optimal approaches to 
@@ -125,7 +114,18 @@ This study uses CLM5 to compare two parameterizations of root water uptake (Sect
     resolve concurrent limitations to stomatal conductance associated with declining soil water. 
     To represent soil water stress, and its impact on leaf-gas exchange, land surface models typically include a `water stress factor'. 
 
+\subsection{Photosynthesis}
+\label{sect:A}
+    The CLM5 photosynthesis model is described in detail in \citet{bonan2011}, \citet{thornton2007},
+    and \citet{oleson2013}. Photosynthesis is limited by three factors: carboxylation-limitations, light-limitations, and export-limitations 
+    following \citet{farquhar1980} and \citet{harley1992}. Water stress (as discussed in the next section) is applied within the carboxylation-limited regime, by attenuating the maximum rate of carboxylation ($V_{\text{cmax}}$). The implementation extends \citet{sellers1996a,sellers1996b} with 
+    co-limitation following \citet{collatz1991}. 
     
+    The CLM5 photosynthesis module, in its default configuration, is a two-big-leaf model, with a sunlit and shaded leaf for each plant functional type \citep{thornton2007, dai2004, oleson2013}. 
+    The canopy fluxes module iterates the solution for leaf temperatures to satisfy the leaf surface energy balances on both sunlit and shaded leaves, in response to forcing conditions.
+    Within this, the photosynthesis module further iterates to solve for stomatal conductance and intercellular CO$_2$ concentration, balancing stomatal flux of CO$_2$ with photosynthetic assimilation flux of CO$_2$ (see Supp Fig B.1 for a flow chart of these iterations).
+
+
 \subsection{Water stress factor}
 \label{sect:wsf}
     In the CLM the water stress factor ($f_w$) multiplies the `well-watered rate' of maximum carboxylation ($V_{\text{cmax,ww}}$) to effect water stress (as described in \citet{oleson2013}). 
@@ -147,7 +147,9 @@ This study uses CLM5 to compare two parameterizations of root water uptake (Sect
     For now, applying water stress through $V_{\text{cmax}}$ seems well-supported, but future refinements may well be appropriate.
     In this study, we preserve the location of water stress used in CLM4.5, while experimenting with how $f_w$ responds to environmental conditions.
     
-    \subsubsection{CLM4.5 Stress Factor: SMS}
+    \subsection{SMS (CLM4.5 default)}
+    \label{sect:sms}
+    \subsubsection{SMS Water Stress Factor}
     \label{sect:fwsms}
     
     In SMS, the scalar $f_w$ is calculated as the summation of a soil wilting factor ($w_i$) across the $n$ soil layers, weighted by root fraction ($r_i$) \citep{oleson2013}.
@@ -165,8 +167,8 @@ This study uses CLM5 to compare two parameterizations of root water uptake (Sect
     \end{equation}
     \end{linenomath*}
     
-subsection{Root Water Uptake}
-\label{sect:rwu}
+\subsubsection{SMS Root Water Uptake}
+\label{sect:smsrwu}
     The CLM features a vertically discretized soil column with variable soil layer thicknesses.
     The number of soil layers ($n$) can vary, depending on the depth to bedrock.
     Soil water movement in each soil layer is governed by Richards' equation, with root water uptake ($q_i$) incorporated as a sink term.
@@ -177,9 +179,6 @@ subsection{Root Water Uptake}
     T = \sum^n_i{q_i}
     \end{equation}
     \end{linenomath*} 
-
-\subsubsection{SMS}
-\label{sect:smsrwu}
     
     In the SMS configuration, a heuristic function is used to determine $q_i$.
     Transpiration is partitioned among the soil layers based on the product of the root fraction and the wilting factor, which must be normalized by $f_w$. 
@@ -229,7 +228,48 @@ subsection{Root Water Uptake}
     
    
 % Plant Hydraulics
-\subsection{Modeling Vegetation Water Potential}
+\subsection{PHS (CLM5 default)}
+    \label{sect:phs}
+    \subsubsection{PHS Water stress factor}
+    \label{sect:fwphs}
+    
+    PHS introduces a new formulation of $f_w$, which is based on leaf water potential ($\psi_{\text{leaf}}$) instead of soil potential (described further in Section \ref{sect:demand}).
+    The relationship is modeled with a sigmoidal function, subject to two parameters: the water potential at 50\% loss of stomatal conductance ($\psi_{50}$) and a shape-fitting parameter ($c_k$).
+    
+    \begin{linenomath*}
+    \begin{equation}
+    f_{w,\text{PHS}} = 2^{-\left(\dfrac{\psi_{\text{leaf}}}{\psi_{50}}\right)^{c_k}}
+    \end{equation}
+    \end{linenomath*}
+    
+    Utilizing leaf water potential (instead of soil water potential) for drought stress introduces a new interpretation of vegetation water stress to the model. 
+    Leaf water potential is modulated by supply of sap to the leaves and by evaporative demand, as regulated by stomatal dynamics \citep{novick2016a}. 
+    As a result, low soil water (bottom-up stress) induces stress due to limited water supply, but in addition, high atmospheric VPD can induce stress with the associated increases in the gradient in water potential across the plant xylem (top-down stress). 
+    This latter mechanism was absent from the previous water stress function (dependent on soil water potential only), by construction.
+    Given the observed increase in VPD with global warming, it appears critical to include such mechanistic dependence of water stress.
+    While the Medlyn stomatal conductance model does depend on VPD, the model does not (given constant $g_1$) reflect the risk of hydraulic failure \citep{zhou2013}.
+    The new stress factor formulation reflects the dual risks of soil moisture deficit and atmospheric demand on hydraulic safety \citep{williams2013}, requiring vegetation to avoid excessive xylem tension associated with risk of cavitation.
+
+    \subsubsection{PHS Root Water Uptake}
+        \label{sect:phsrwu}
+    
+    PHS implements an alternative to the SMS heuristic approach, using a mechanistic representation of root water uptake, following Darcy's Law.
+    Instead of a constant parameter ($\psi_c$) defining $\Delta\psi$, PHS implements a physical model of vegetation water potential (described in Section \ref{sect:vwp}).
+    The water flux from a given soil layer is driven by the gradient between soil potential ($\psi_{\text{soil},i}$) and the water potential in the root collar ($\psi_{\text{root}}$), 
+    after accounting for the effects of gravity ($\rho g z_i$, where $z_i$ is the soil layer depth).
+    Hydraulic conductance across the soil and roots ($k_{sr}$) is modeled based on soil hydraulic properties and xylem vulnerability, 
+    accounting for both the path across the soil matrix and through the xylem conduits (details in Appendix B).
+    
+    \begin{linenomath*}
+    \begin{equation}
+        \begin{aligned}
+    q_i &= -k_{sr,i}  \left(\psi_{\text{root}}-\psi_{\text{soil},i}+\rho g z_i\right)
+    \label{phs:sink}
+    \end{aligned}
+    \end{equation}
+    \end{linenomath*}
+
+\subsubsection{Modeling Vegetation Water Potential}
 \label{sect:vwp}
   The PHS model within CLM5 uses Darcy's law to model the flow of water through the SPAC, which can be represented with an electrical circuit analogy (Figure \ref{circuit}).
   PHS solves for vegetation water potential along the path from soil-to-atmosphere.
@@ -374,45 +414,10 @@ subsection{Root Water Uptake}
      \end{linenomath*}
      
 
-     
-    \subsubsection{CLM5 Stress Factor: PHS}
-    
-    PHS introduces a new formulation of $f_w$, which is based on leaf water potential ($\psi_{\text{leaf}}$) instead of soil potential (described further in Section \ref{sect:demand}).
-    The relationship is modeled with a sigmoidal function, subject to two parameters: the water potential at 50\% loss of stomatal conductance ($\psi_{50}$) and a shape-fitting parameter ($c_k$).
-    
-    \begin{linenomath*}
-    \begin{equation}
-    f_{w,\text{PHS}} = 2^{-\left(\dfrac{\psi_{\text{leaf}}}{\psi_{50}}\right)^{c_k}}
-    \end{equation}
-    \end{linenomath*}
-    
-    Utilizing leaf water potential (instead of soil water potential) for drought stress introduces a new paradigm to the model. 
-    Leaf water potential is modulated by supply of sap to the leaves and by evaporative demand, as regulated by stomatal dynamics \citep{novick2016a}. 
-    As a result, low soil water (bottom-up stress) induces stress due to limited water supply, but in addition, high atmospheric VPD can induce stress with the associated increases in the gradient in water potential across the plant xylem (top-down stress). 
-    This latter mechanism was absent from the previous water stress function (dependent on soil water potential only), by construction.
-    Given the observed increase in VPD with global warming, it appears critical to include such mechanistic dependence of water stress.
-    The new stress factor formulation reflects the concept of hydraulic safety, with vegetation avoiding excessive xylem tension associated with risk of cavitation.
-    While the Medlyn stomatal conductance model does depend on VPD, this captures water `costs' and not xylem tension.
-
-    \subsubsection{PHS Root Water Uptake}
-    
-    PHS implements an alternative to the SMS heuristic approach, using a mechanistic representation of root water uptake, following Darcy's Law.
-    Instead of a constant parameter ($\psi_c$) defining $\Delta\psi$, PHS implements a physical model of vegetation water potential (described in Section \ref{sect:vwp}).
-    The water flux from a given soil layer is driven by the gradient between soil potential ($\psi_{\text{soil},i}$) and the water potential in the root collar ($\psi_{\text{root}}$), 
-    after accounting for the effects of gravity ($\rho g z_i$, where $z_i$ is the soil layer depth).
-    Hydraulic conductance across the soil and roots ($k_{sr}$) is modeled based on soil hydraulic properties and xylem vulnerability, 
-    accounting for both the path across the soil matrix and through the xylem conduits (details in Appendix B).
-    
-    \begin{linenomath*}
-    \begin{equation}
-        \begin{aligned}
-    q_i &= -k_{sr,i}  \left(\psi_{\text{root}}-\psi_{\text{soil},i}+\rho g z_i\right)
-    \label{phs:sink}
-    \end{aligned}
-    \end{equation}
-    \end{linenomath*}
  
-\%====================
+
+ 
+%====================
 %  EXP DESCRIPTION
 %====================
 \section{Experiment Description}
