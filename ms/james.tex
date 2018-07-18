@@ -91,7 +91,8 @@ In this paper we therefore:
 %  MODEL DESCRIPTION
 %====================
 \section{Model Description}
-
+This study uses CLM5 to compare two parameterizations of root water uptake (Section \ref{sect:rwu}) and water stress (Section \ref{{sect:wsf}).  The first, which we refer to as Soil Moisture Stress (SMS), is the default parameterization used in CLM4.5.  The second is called Plant Hydraulic Stress (PHS); PHS is the default configuration of CLM5.
+    
 %Photosynthesis
 \subsection{Photosynthesis}
 \label{sect:A}
@@ -126,7 +127,7 @@ In this paper we therefore:
 
     
 \subsection{Water stress factor}
-
+\label{sect:wsf}
     In the CLM the water stress factor ($f_w$) multiplies the `well-watered rate' of maximum carboxylation ($V_{\text{cmax,ww}}$) to effect water stress (as described in \citet{oleson2013}). 
     
     \begin{equation}
@@ -146,14 +147,8 @@ In this paper we therefore:
     For now, applying water stress through $V_{\text{cmax}}$ seems well-supported, but future refinements may well be appropriate.
     In this study, we preserve the location of water stress used in CLM4.5, while experimenting with how $f_w$ responds to environmental conditions.
     
-    \subsubsection{Soil Moisture Stress (control model)}
+    \subsubsection{CLM4.5 Stress Factor: SMS}
     \label{sect:fwsms}
-    
-    The control model for our study is Soil Moisture Stress (SMS), which we compare to the model of interest, Plant Hydraulic Stress (PHS). 
-    PHS is the default configuration of CLM5.
-    SMS is a re-configuration of CLM5, substituting in the CLM4.5 representations of 
-    (1) root water uptake (Section \ref{sect:rwu}) and (2) water stress (described here).
-    Otherwise PHS and SMS are identical.
     
     In SMS, the scalar $f_w$ is calculated as the summation of a soil wilting factor ($w_i$) across the $n$ soil layers, weighted by root fraction ($r_i$) \citep{oleson2013}.
     The soil wilting factor is a bounded linear function of soil matric potential ($\psi_{\text{soil},i}$).
@@ -170,26 +165,7 @@ In this paper we therefore:
     \end{equation}
     \end{linenomath*}
     
-    \subsubsection{Plant Hydraulic Stress (new model)}
-    
-    PHS introduces a new formulation of $f_w$, which is based on leaf water potential ($\psi_{\text{leaf}}$) instead of soil potential (described further in Section \ref{sect:demand}).
-    The relationship is modeled with a sigmoidal function, subject to two parameters: the water potential at 50\% loss of stomatal conductance ($\psi_{50}$) and a shape-fitting parameter ($c_k$).
-    
-    \begin{linenomath*}
-    \begin{equation}
-    f_{w,\text{PHS}} = 2^{-\left(\dfrac{\psi_{\text{leaf}}}{\psi_{50}}\right)^{c_k}}
-    \end{equation}
-    \end{linenomath*}
-    
-    Utilizing leaf water potential (instead of soil water potential) for drought stress introduces a new paradigm to the model. 
-    Leaf water potential is modulated by supply of sap to the leaves and by evaporative demand, as regulated by stomatal dynamics \citep{novick2016a}. 
-    As a result, low soil water (bottom-up stress) induces stress due to limited water supply, but in addition, high atmospheric VPD can induce stress with the associated increases in the gradient in water potential across the plant xylem (top-down stress). 
-    This latter mechanism was absent from the previous water stress function (dependent on soil water potential only), by construction.
-    Given the observed increase in VPD with global warming, it appears critical to include such mechanistic dependence of water stress.
-    The new stress factor formulation reflects the concept of hydraulic safety, with vegetation avoiding excessive xylem tension associated with risk of cavitation.
-    While the Medlyn stomatal conductance model does depend on VPD, this captures water `costs' and not xylem tension.
-
-\subsection{Root Water Uptake}
+subsection{Root Water Uptake}
 \label{sect:rwu}
     The CLM features a vertically discretized soil column with variable soil layer thicknesses.
     The number of soil layers ($n$) can vary, depending on the depth to bedrock.
@@ -251,25 +227,8 @@ In this paper we therefore:
     \end{linenomath*}
     
     
-    \subsubsection{PHS}
-    
-    PHS implements an alternative to the SMS heuristic approach, using a mechanistic representation of root water uptake, following Darcy's Law.
-    Instead of a constant parameter ($\psi_c$) defining $\Delta\psi$, PHS implements a physical model of vegetation water potential (described in Section \ref{sect:vwp}).
-    The water flux from a given soil layer is driven by the gradient between soil potential ($\psi_{\text{soil},i}$) and the water potential in the root collar ($\psi_{\text{root}}$), 
-    after accounting for the effects of gravity ($\rho g z_i$, where $z_i$ is the soil layer depth).
-    Hydraulic conductance across the soil and roots ($k_{sr}$) is modeled based on soil hydraulic properties and xylem vulnerability, 
-    accounting for both the path across the soil matrix and through the xylem conduits (details in Appendix B).
-    
-    \begin{linenomath*}
-    \begin{equation}
-        \begin{aligned}
-    q_i &= -k_{sr,i}  \left(\psi_{\text{root}}-\psi_{\text{soil},i}+\rho g z_i\right)
-    \label{phs:sink}
-    \end{aligned}
-    \end{equation}
-    \end{linenomath*}
-    
-% Plant Hydaulics
+   
+% Plant Hydraulics
 \subsection{Modeling Vegetation Water Potential}
 \label{sect:vwp}
   The PHS model within CLM5 uses Darcy's law to model the flow of water through the SPAC, which can be represented with an electrical circuit analogy (Figure \ref{circuit}).
@@ -292,6 +251,54 @@ In this paper we therefore:
   Two resistors operate in series between each $\psi_{\text{soil}}$ and $\psi_{\text{root}}$, to represent the path across the soil matrix and then through the root tissue \citep{williams1996}. 
   Specifics on the parameterization of hydraulic conductance for each segment are provided in Appendix B.1.
 
+%PHS solution
+    \subsubsection{PHS solution}
+    \label{sect:solution}
+    
+    PHS solves for the set of vegetation water potential values ($\psi$) that matches water supply (root water uptake) to water demand (transpiration), while satisfying continuity across the four water flow segments (soil-to-root, root-to-stem, stem-to-leaf, and leaves-to-transpiration). 
+    Beginning from an initial condition of $\psi$ (from the previous timestep), PHS computes the flux divergence $f$ (representing the mismatch of flow in and out of each segment) and iteratively updates $\psi$ until $f\to0$.
+    
+    \begin{linenomath*}
+    \begin{equation} 
+    \psi = \left[
+    \begin{array}{c}
+    \psi_{\text{sun}} \\ 
+    \psi_{\text{shade}} \\ 
+    \psi_{\text{stem}} \\ 
+    \psi_{\text{root}}            
+    \end{array} \right]
+    \end{equation}
+    \end{linenomath*}
+    
+    \begin{linenomath*}
+    \begin{equation}
+    f\left(\psi\right) = \left[ 
+    \begin{array}{c}
+    E_{sun}-q_{sun}\\
+    E_{shade}-q_{shade}\\
+    q_{sun}+q_{shade}-q_{stem}\\
+    q_{stem}-\sum_{j=1}^n{q_{root,j}}
+    \end{array} \right]
+    \end{equation}
+    \end{linenomath*}
+    
+    \begin{linenomath*}
+    \begin{equation}
+    A = \dfrac{df}{d\psi}
+    \end{equation}
+    \end{linenomath*}    
+    
+    While $\left|f\right|>0$
+    \begin{linenomath*}
+    \begin{equation} \begin{aligned}
+    \label{eq:iter}
+    \Delta\psi &=A^{-1}f\left(\psi_i\right) \\
+    \psi_{i+1}  &= \psi_i + \Delta\psi
+    \end{aligned} \end{equation}
+    \end{linenomath*}    
+    
+    The numerics are tractable because $f$ has continuous, analytical derivatives and $A$ (a 4x4 matrix with six null entries) is easy to invert when well-conditioned. Supply and demand converge, because transpiration demand decreases with more negative leaf water potentials and supply increases with more negative leaf water potentials. The PHS loop is nested within iterations for intercellular CO$_2$ concentration and leaf temperature. As described earlier, within a set of PHS iterations (\ref{eq:iter}), transpiration is assumed to be linear with $f_w$.  The non-linear relationship between $f_w$ and transpiration is resolved through iteration for converging $f_w$ alongside intercellular CO$_2$. Details on the numerical implementation are provided in Appendix Section B.1.
+   
 %Water Supply
     \subsubsection{Water supply}
     \label{sect:supply}
@@ -368,55 +375,44 @@ In this paper we therefore:
      
 
      
-%PHS solution
-    \subsubsection{PHS solution}
-    \label{sect:solution}
+    \subsubsection{CLM5 Stress Factor: PHS}
     
-    PHS solves for the set of vegetation water potential values ($\psi$) that matches water supply (root water uptake) to water demand (transpiration), while satisfying continuity across the four water flow segments (soil-to-root, root-to-stem, stem-to-leaf, and leaves-to-transpiration). 
-    Beginning from an initial condition of $\psi$ (from the previous timestep), PHS computes the flux divergence $f$ (representing the mismatch of flow in and out of each segment) and iteratively updates $\psi$ until $f\to0$.
-    
-    \begin{linenomath*}
-    \begin{equation} 
-    \psi = \left[
-    \begin{array}{c}
-    \psi_{\text{sun}} \\ 
-    \psi_{\text{shade}} \\ 
-    \psi_{\text{stem}} \\ 
-    \psi_{\text{root}}            
-    \end{array} \right]
-    \end{equation}
-    \end{linenomath*}
+    PHS introduces a new formulation of $f_w$, which is based on leaf water potential ($\psi_{\text{leaf}}$) instead of soil potential (described further in Section \ref{sect:demand}).
+    The relationship is modeled with a sigmoidal function, subject to two parameters: the water potential at 50\% loss of stomatal conductance ($\psi_{50}$) and a shape-fitting parameter ($c_k$).
     
     \begin{linenomath*}
     \begin{equation}
-    f\left(\psi\right) = \left[ 
-    \begin{array}{c}
-    E_{sun}-q_{sun}\\
-    E_{shade}-q_{shade}\\
-    q_{sun}+q_{shade}-q_{stem}\\
-    q_{stem}-\sum_{j=1}^n{q_{root,j}}
-    \end{array} \right]
+    f_{w,\text{PHS}} = 2^{-\left(\dfrac{\psi_{\text{leaf}}}{\psi_{50}}\right)^{c_k}}
     \end{equation}
     \end{linenomath*}
     
+    Utilizing leaf water potential (instead of soil water potential) for drought stress introduces a new paradigm to the model. 
+    Leaf water potential is modulated by supply of sap to the leaves and by evaporative demand, as regulated by stomatal dynamics \citep{novick2016a}. 
+    As a result, low soil water (bottom-up stress) induces stress due to limited water supply, but in addition, high atmospheric VPD can induce stress with the associated increases in the gradient in water potential across the plant xylem (top-down stress). 
+    This latter mechanism was absent from the previous water stress function (dependent on soil water potential only), by construction.
+    Given the observed increase in VPD with global warming, it appears critical to include such mechanistic dependence of water stress.
+    The new stress factor formulation reflects the concept of hydraulic safety, with vegetation avoiding excessive xylem tension associated with risk of cavitation.
+    While the Medlyn stomatal conductance model does depend on VPD, this captures water `costs' and not xylem tension.
+
+    \subsubsection{PHS Root Water Uptake}
+    
+    PHS implements an alternative to the SMS heuristic approach, using a mechanistic representation of root water uptake, following Darcy's Law.
+    Instead of a constant parameter ($\psi_c$) defining $\Delta\psi$, PHS implements a physical model of vegetation water potential (described in Section \ref{sect:vwp}).
+    The water flux from a given soil layer is driven by the gradient between soil potential ($\psi_{\text{soil},i}$) and the water potential in the root collar ($\psi_{\text{root}}$), 
+    after accounting for the effects of gravity ($\rho g z_i$, where $z_i$ is the soil layer depth).
+    Hydraulic conductance across the soil and roots ($k_{sr}$) is modeled based on soil hydraulic properties and xylem vulnerability, 
+    accounting for both the path across the soil matrix and through the xylem conduits (details in Appendix B).
+    
     \begin{linenomath*}
     \begin{equation}
-    A = \dfrac{df}{d\psi}
+        \begin{aligned}
+    q_i &= -k_{sr,i}  \left(\psi_{\text{root}}-\psi_{\text{soil},i}+\rho g z_i\right)
+    \label{phs:sink}
+    \end{aligned}
     \end{equation}
-    \end{linenomath*}    
-    
-    While $\left|f\right|>0$
-    \begin{linenomath*}
-    \begin{equation} \begin{aligned}
-    \label{eq:iter}
-    \Delta\psi &=A^{-1}f\left(\psi_i\right) \\
-    \psi_{i+1}  &= \psi_i + \Delta\psi
-    \end{aligned} \end{equation}
-    \end{linenomath*}    
-    
-    The numerics are tractable because $f$ has continuous, analytical derivatives and $A$ (a 4x4 matrix with six null entries) is easy to invert when well-conditioned. Supply and demand converge, because transpiration demand decreases with more negative leaf water potentials and supply increases with more negative leaf water potentials. The PHS loop is nested within iterations for intercellular CO$_2$ concentration and leaf temperature. As described earlier, within a set of PHS iterations (\ref{eq:iter}), transpiration is assumed to be linear with $f_w$.  The non-linear relationship between $f_w$ and transpiration is resolved through iteration for converging $f_w$ alongside intercellular CO$_2$. Details on the numerical implementation are provided in Appendix Section B.1.
-   
-%====================
+    \end{linenomath*}
+ 
+\%====================
 %  EXP DESCRIPTION
 %====================
 \section{Experiment Description}
