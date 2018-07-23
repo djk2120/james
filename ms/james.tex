@@ -8,7 +8,7 @@
 \title{Implementing plant hydraulics in the Community Land Model}
 \authors{Daniel Kennedy\affil{1},
 Sean Swenson\affil{2},
-Keith Oleson\affil{2},
+Keith W. Oleson\affil{2},
 David M. Lawrence\affil{2},
 Rosie Fisher\affil{2},
 Pierre Gentine\affil{1}
@@ -208,7 +208,7 @@ This study uses CLM5 to compare two parameterizations of water stress (Sections 
     \end{linenomath*}
     
     In the Darcy framework, water fluxes are the product of hydraulic conductance ($k_i$) and hydraulic gradient ($\Delta\psi$).
-    Upon inspection of (\ref{eq:btrwu}), we can define hydraulic analogs resulting from the transpiration partitioning heuristic function, 
+    Although SMS does not explicitly calculate hydraulic conductance, (\ref{eq:btrwu}) can be used to define hydraulic analogs resulting from the transpiration partitioning heuristic function, 
     allowing easy comparison to the PHS root water uptake implementation.
     
     \begin{linenomath*}
