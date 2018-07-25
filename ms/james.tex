@@ -822,6 +822,78 @@ Modeling stomatal conductance and photosynthesis, especially subject to water st
 \clearpage    
 
 \section{Figures}
+
+  \begin{figure}[h]
+     \centering
+     \includegraphics[width=30pc]{../figs3/fctr_ts.pdf}
+     \caption{Modeled and observed daily total transpiration. Observations are derived from field observations of sap flux velocity (see Section \ref{sect:exp}).
+     (a,b) Modeled (lines, monthly mean) and observed (dots, daily total) transpiration over time.
+     (c-f) Modeled versus observed daily transpiration (mm/d).
+     }
+     \label{fig:t1}
+  \end{figure}
+  
+    \clearpage   
+  \begin{figure}[h]
+     \centering
+     \includegraphics[width=30pc]{../figs3/T.pdf}
+     \caption{Modeled and observed daily total transpiration. Observations are derived from field observations of sap flux velocity (see Section \ref{sect:exp}).
+     (a,b) Modeled (lines, monthly mean) and observed (dots, daily total) transpiration over time.
+     (c-f) Modeled versus observed daily transpiration (mm/d).
+     }
+     \label{fig:t}
+  \end{figure}
+
+        \clearpage
+    \begin{figure}[h]
+     \centering
+     \includegraphics[width=30pc]{../figs3/sm2.pdf}
+     \caption{Volumetric soil moisture (-) over time under ambient and TFE conditions at depth of 50cm.
+     (a/b) SMS
+     (c/d) PHS.
+     RMSE are 0.048, 0.049, 0.022, and 0.029 [move to plot].
+     Arrows indicate start of TFE. Figure \ref{supp:sm2} shows the same plots at 7 other soil depths. }
+     \label{fig:sm2}
+  \end{figure}
+
+
+
+  \begin{figure}[h]
+     \centering
+     \includegraphics[width=30pc]{../figs3/rwu.pdf}
+     \caption{Binned boxplot of root water uptake versus soil potential for Soil Layer 5 (2002-3).
+     Red lines mark the median, with boxes spanning the interquartile range.
+     Bin widths are 0.25 MPa for SMS and 0.1 MPa for PHS.
+     Soil Layer 5 is shown, because it is close enough to the surface (20 to 32 cm) to experience a significant range in soil potential, and it has a large root fraction (14.4\%, only Soil Layer 6 has a larger root fraction).
+     Only midday (12h-14h) timesteps are used to highlight the relationship with soil potential.}
+     \label{fig:rwu}
+  \end{figure}
+  \clearpage
+  
+
+        \clearpage
+    \begin{figure}[h]
+     \centering
+     \includegraphics[width=30pc]{../figs3/qdry.pdf}
+     \caption{2003 dry season (SON) cumulative root water uptake and precipitation. 
+     (a) Cumulative precipitation over time under ambient conditions
+     (b,c) Cumulative water uptake over time from above and below 0.2m, respectively.
+     (d) Cumulative root water uptake with depth.
+     }
+     \label{fig:qdry}
+  \end{figure}
+  
+    \clearpage
+    \begin{figure}[h]
+     \centering
+     \includegraphics[width=30pc]{../figs3/hr.pdf}
+     \caption{Total hydraulic redistribution (cm) by month across 2003. For (a) ambient through-fall conditions, and (b) 60\% throughfall exclusion. 
+     Darker shading shows portion of HR at night [6pm,6am), lighter shading shows portion of HR during day [6am,6pm).
+     Total HR refers to the sum of all negative root water uptake flows, when water is deposited by roots into a given soil layer.}
+     \label{fig:hr}
+  \end{figure}
+
+
   \begin{figure}[h]
      \centering
      \includegraphics[width=30pc]{../figs3/vwp.pdf}
@@ -869,75 +941,8 @@ Modeling stomatal conductance and photosynthesis, especially subject to water st
      }
      \label{fig:gpp}
   \end{figure} 
-         
-  \clearpage   
-  \begin{figure}[h]
-     \centering
-     \includegraphics[width=30pc]{../figs3/fctr_ts.pdf}
-     \caption{Modeled and observed daily total transpiration. Observations are derived from field observations of sap flux velocity (see Section \ref{sect:exp}).
-     (a,b) Modeled (lines, monthly mean) and observed (dots, daily total) transpiration over time.
-     (c-f) Modeled versus observed daily transpiration (mm/d).
-     }
-     \label{fig:t1}
-  \end{figure}
-  
-    \clearpage   
-  \begin{figure}[h]
-     \centering
-     \includegraphics[width=30pc]{../figs3/T.pdf}
-     \caption{Modeled and observed daily total transpiration. Observations are derived from field observations of sap flux velocity (see Section \ref{sect:exp}).
-     (a,b) Modeled (lines, monthly mean) and observed (dots, daily total) transpiration over time.
-     (c-f) Modeled versus observed daily transpiration (mm/d).
-     }
-     \label{fig:t}
-  \end{figure}
+           
 
-  \begin{figure}[h]
-     \centering
-     \includegraphics[width=30pc]{../figs3/rwu.pdf}
-     \caption{Binned boxplot of root water uptake versus soil potential for Soil Layer 5 (2002-3).
-     Red lines mark the median, with boxes spanning the interquartile range.
-     Bin widths are 0.25 MPa for SMS and 0.1 MPa for PHS.
-     Soil Layer 5 is shown, because it is close enough to the surface (20 to 32 cm) to experience a significant range in soil potential, and it has a large root fraction (14.4\%, only Soil Layer 6 has a larger root fraction).
-     Only midday (12h-14h) timesteps are used to highlight the relationship with soil potential.}
-     \label{fig:rwu}
-  \end{figure}
-  \clearpage
-  
-
-        \clearpage
-    \begin{figure}[h]
-     \centering
-     \includegraphics[width=30pc]{../figs3/qdry.pdf}
-     \caption{2003 dry season (SON) cumulative root water uptake and precipitation. 
-     (a) Cumulative precipitation over time under ambient conditions
-     (b,c) Cumulative water uptake over time from above and below 0.2m, respectively.
-     (d) Cumulative root water uptake with depth.
-     }
-     \label{fig:qdry}
-  \end{figure}
-  
-        \clearpage
-    \begin{figure}[h]
-     \centering
-     \includegraphics[width=30pc]{../figs3/qwet.pdf}
-     \caption{2003 wet season (FMA) cumulative root water uptake and precipitation. 
-     (a) Cumulative precipitation over time under ambient conditions
-     (b,c) Cumulative water uptake over time from above and below 0.2m, respectively.
-     (d) Cumulative root water uptake with depth.
-     }
-     \label{fig:qwet}
-  \end{figure}
-  
-    \clearpage
-    \begin{figure}[h]
-     \centering
-     \includegraphics[width=30pc]{../figs3/hr.pdf}
-     \caption{Total hydraulic redistribution (cm) by month across 2003. For (a) ambient through-fall conditions, and (b) 60\% throughfall exclusion. 
-     Darker shading shows portion of HR at night [6pm,6am), lighter shading shows portion of HR during day [6am,6pm).
-     Total HR refers to the sum of all negative root water uptake flows, when water is deposited by roots into a given soil layer.}
-     \label{fig:hr}
-  \end{figure}
 
   
       \clearpage
@@ -955,17 +960,6 @@ Modeling stomatal conductance and photosynthesis, especially subject to water st
      \label{fig:sm}
   \end{figure}
   
-        \clearpage
-    \begin{figure}[h]
-     \centering
-     \includegraphics[width=30pc]{../figs3/sm2.pdf}
-     \caption{Volumetric soil moisture (-) over time under ambient and TFE conditions at depth of 50cm.
-     (a/b) SMS
-     (c/d) PHS.
-     RMSE are 0.048, 0.049, 0.022, and 0.029 [move to plot].
-     Arrows indicate start of TFE. Figure \ref{supp:sm2} shows the same plots at 7 other soil depths. }
-     \label{fig:sm2}
-  \end{figure}
 
               \begin{figure}[h]
      \centering
@@ -999,6 +993,19 @@ Modeling stomatal conductance and photosynthesis, especially subject to water st
      \label{supp:ens}
        \end{figure}
          \clearpage
+
+        \clearpage
+    \begin{figure}[h]
+     \centering
+     \includegraphics[width=30pc]{../figs3/qwet.pdf}
+     \caption{2003 wet season (FMA) cumulative root water uptake and precipitation. 
+     (a) Cumulative precipitation over time under ambient conditions
+     (b,c) Cumulative water uptake over time from above and below 0.2m, respectively.
+     (d) Cumulative root water uptake with depth.
+     }
+     \label{fig:qwet}
+  \end{figure}
+
 
       \begin{figure}[h]
      \centering
