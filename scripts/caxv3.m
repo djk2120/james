@@ -2629,7 +2629,7 @@ if hh(20)>0
     yy = [0.08,0.08,0.53,0.53];
     rr = {'(c)','(d)','(a)','(b)'};
 
-    cc = [0,0,0.5,0.5]
+    cc = [0.1,0.1,0.5,0.5]
     
     xdk = figure;
     
@@ -2640,9 +2640,9 @@ if hh(20)>0
             'Color',cc(j)*ones(1,3),'LineWidth',1.5)
         hold on
         if j==1||j==3
-            plot(amb_sm(:,1),amb_sm(:,3)/100,'rx')
+            plot(amb_sm(:,1),amb_sm(:,3)/100,'r.','MarkerSize',10)
         else
-            plot(tfe_sm(:,1),tfe_sm(:,3)/100,'rx')
+            plot(tfe_sm(:,1),tfe_sm(:,3)/100,'r.','MarkerSize',10)
         end
         ylim([0.05,0.35])
         
@@ -2687,7 +2687,7 @@ if hh(20)>0
     xdk.Position = [2,2,7,5];
     xdk.PaperSize = [7,5];
     xdk.PaperPosition = [0,0,7,5];
-    if hh(20)>1
+    if hh(20)>0
         print(xdk,'../figs3/sm2','-dpdf')
     end
     
