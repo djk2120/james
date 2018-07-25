@@ -96,7 +96,8 @@ hh(46:50) = [0,0,0,0,0];
 hh(51:55) = [0,0,0,0,0];
 hh(56:60) = [0,0,0,0,0];
 hh(61:65) = [0,0,0,0,0];
-hh(66:70) = [0,0,0,0,1];
+hh(66:70) = [0,0,0,0,0];
+hh(71:75) = [1,0,0,0,0];
 
 
 
@@ -110,6 +111,80 @@ hh(66:70) = [0,0,0,0,1];
 %18 = hr
 %19 = smp full profile time series
 %20 = h2osoi with obs
+
+
+if hh(71)>0
+    g = (year-2001)*365+doy;
+    out  = 4e-7*1800*splitapply(@sum,fctr',g');
+    g = (year-2001)*12+month;
+    out2 = 4e-7*86400*splitapply(@mean,fctr',g');
+    
+    xx = [0.08,0.53];
+    yy = [0.1,0.54];
+    w = 0.4;
+    h = 0.41;
+    
+    dd = [0,0,0;0.5,0.5,0.5];
+    mm = {'(PHS)','(SMS)'};
+    xdk = figure;
+    ss = '(c)(d)(a)(b)';
+    for i=1:2
+        for j=1:2
+            ix = p(:,j)>0;
+            c = (i-1)*2+j;
+            subplot('Position',[xx(j),yy(i),w,h])
+            plot(p(ix,j),out(ix,c),'.','Color',dd(i,:))
+            
+            rr = corr(p(ix,j),out(ix,c))^2;
+            text(4.2,1.1,['R^2= ',num2str(round(rr,3))])
+            rmse = sqrt(mean((p(ix,j)-out(ix,c)).^2));
+            text(4.2,0.5,['RMSE= ',num2str(round(rmse,3))])
+            
+            std(out(:,c))
+            std(p(ix,j))
+            
+            xlim([0,6])
+            ylim([0,6])
+            hold on
+            box off
+            plot([0,6],[0,6],'k:')
+            
+            if i==2
+                if j==1
+                title('AMB')
+                else
+                    title('TFE')
+                end
+            end
+            
+            if i==2
+                set(gca,'xticklabel',[])
+            else
+                xlabel('Observed Sap Flux (mm/d)')
+            end
+            if j==2
+                set(gca,'yticklabel',[])
+            else
+                ylabel(['Model ',mm{i}])
+            end
+            text(0.2,5.6,ss((1:3)+(c-1)*3),'FontSize',14,'FontWeight','bold')
+        end
+    end
+    
+    
+    
+    xdk.Units = 'inches';
+    xdk.Position = [2,2,7,6.5];
+    xdk.PaperSize = [7,6.5];
+    xdk.PaperPosition = [0,0,7,6.5];
+    
+    
+    if hh(71)>0
+        print(xdk,'../figs3/T','-dpdf')
+    end
+end
+
+
 
 if hh(70)>0
     g = findgroups(365*year+doy);
@@ -185,8 +260,9 @@ if hh(70)>0
    xdk.PaperSize = [7,5];
    xdk.PaperPosition = [0,0,7,5];
    
+   if hh(70)>0
    print(xdk,'../figs3/fctr_ts','-dpdf')
-    
+   end
 end
 
 
