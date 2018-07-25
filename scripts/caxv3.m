@@ -72,6 +72,10 @@ if ~exist('p','var')
     
     dz = zs(2:end)-zs(1:end-1);
 end
+
+if ~exist('s2','var'
+end
+
 %************************************************************************
 %------------------------------------------------------------------------
 
@@ -92,7 +96,7 @@ hh(46:50) = [0,0,0,0,0];
 hh(51:55) = [0,0,0,0,0];
 hh(56:60) = [0,0,0,0,0];
 hh(61:65) = [0,0,0,0,0];
-hh(66:70) = [1,0,0,0,0];
+hh(66:70) = [0,0,0,1,0];
 
 
 
@@ -106,6 +110,175 @@ hh(66:70) = [1,0,0,0,0];
 %18 = hr
 %19 = smp full profile time series
 %20 = h2osoi with obs
+
+if hh(69)>0
+    ix = year==2003&month>8;
+    for i=1:20
+        subplot(4,5,i)
+        plot(smp(i,ix)/101972,'.')
+        hold on
+        plot(smp(40+i,ix)/101972,'.')
+        xlim([0,sum(ix)])
+        if i>10
+            ylim([-0.25,0])
+        else
+        ylim([-3,0])
+        end
+    end
+    
+    
+    
+    
+    
+end
+
+if hh(68)>0
+   
+    g = findgroups(year*365+doy);
+    t = 4e-7*1800*splitapply(@sum,fctr',g');
+    
+    ot = (2001+(0.5:1095)/365)';
+    
+    
+    ss = vegwp(8,mcsec==diurn(10))/101972;
+    ss = [ss;splitapply(@mean,zr*max(-255000,smp(61:80,:)),g)/101972];
+
+    
+    xdk = figure;
+    
+    ix = p(:,2)>0&ot>2003;
+    subplot(3,2,2)
+    plot(ot(ix),p(ix,2),'.')
+    set(gca,'xtick',2003:0.25:2004)
+    set(gca,'xticklabel',{2003,'','','',2004})
+    xlim([2003,2004])
+    ylim([0,6])
+    grid on
+    title('OBS')
+    
+    subplot(3,2,3)
+    ix = ot>2003;
+    plot(ot(ix),t(ix,4),'.')
+    set(gca,'xtick',2003:0.25:2004)
+    set(gca,'xticklabel',{2003,'','','',2004})
+    xlim([2003,2004])
+    grid on
+    title('SMS')
+    
+    subplot(3,2,4)
+    ix = p(:,2)>0&ot>2003;
+    plot(ot(ix),t(ix,4)-p(ix,2),'.')
+    set(gca,'xtick',2003:0.25:2004)
+    set(gca,'xticklabel',{2003,'','','',2004})
+    xlim([2003,2004])
+    ylim([-6,3])
+    grid on
+    hold on
+    ix = ot>2003;
+    plot(ot(ix),ss(2,ix)-3,'.')
+    title('SMS-OBS')
+
+        subplot(3,2,5)
+    ix = ot>2003;
+    plot(ot(ix),t(ix,2),'.')
+    set(gca,'xtick',2003:0.25:2004)
+    set(gca,'xticklabel',{2003,'','','',2004})
+    xlim([2003,2004])
+    ylim([0,6])
+    grid on
+    title('PHS')
+    
+        subplot(3,2,6)
+    ix = p(:,2)>0&ot>2003;
+    plot(ot(ix),t(ix,2)-p(ix,2),'.')
+    set(gca,'xtick',2003:0.25:2004)
+    set(gca,'xticklabel',{2003,'','','',2004})
+    xlim([2003,2004])
+    ylim([-6,3])
+    grid on
+        hold on
+        ix = ot>2003;
+    plot(ot(ix),3*ss(1,ix)-3,'.')
+    title('PHS-OBS')
+    
+    
+end
+
+
+if hh(67)>0
+   
+    g = findgroups(year*365+doy);
+    t = 4e-7*1800*splitapply(@sum,fctr',g');
+    
+    ot = (2001+(0.5:1095)/365)';
+    
+    xdk = figure;
+    
+    ss = vegwp(4,mcsec==diurn(10))/101972;
+    ss = [ss;splitapply(@mean,zr*max(-255000,smp(41:60,:)),g)/101972];
+
+    ix = p(:,1)>0&ot>2003;
+    subplot(3,2,2)
+    plot(ot(ix),p(ix,1),'.')
+    set(gca,'xtick',2003:0.25:2004)
+    set(gca,'xticklabel',{2003,'','','',2004})
+    xlim([2003,2004])
+    grid on
+    title('OBS')
+    
+    subplot(3,2,3)
+    ix = ot>2003;
+    plot(ot(ix),t(ix,3),'.')
+    set(gca,'xtick',2003:0.25:2004)
+    set(gca,'xticklabel',{2003,'','','',2004})
+    xlim([2003,2004])
+    grid on
+    title('SMS')
+    
+    subplot(3,2,4)
+    ix = p(:,1)>0&ot>2003;
+    plot(ot(ix),t(ix,3)-p(ix,1),'.')
+    set(gca,'xtick',2003:0.25:2004)
+    set(gca,'xticklabel',{2003,'','','',2004})
+    xlim([2003,2004])
+    ylim([-6,3])
+    grid on
+    hold on
+    ix = ot>2003;
+    plot(ot(ix),ss(2,ix)-3,'r-','LineWidth',2)
+    title('SMS-OBS')
+
+        subplot(3,2,5)
+    ix = ot>2003;
+    plot(ot(ix),t(ix,1),'.')
+    set(gca,'xtick',2003:0.25:2004)
+    set(gca,'xticklabel',{2003,'','','',2004})
+    xlim([2003,2004])
+    ylim([0,6])
+    grid on
+    title('PHS')
+    
+        subplot(3,2,6)
+    ix = p(:,1)>0&ot>2003;
+    plot(ot(ix),t(ix,1)-p(ix,1),'.')
+    set(gca,'xtick',2003:0.25:2004)
+    set(gca,'xticklabel',{2003,'','','',2004})
+    xlim([2003,2004])
+    ylim([-6,3])
+    grid on
+        hold on
+        ix = ot>2003;
+    plot(ot(ix),6*ss(1,ix)-3,'r-','LineWidth',2)
+    title('PHS-OBS')
+    
+    legend({'Transpiration (mm/d)','[scaled] Soil Potential (for reference)'})
+    
+        xdk.Units = 'inches';
+    xdk.Position = [2,2,7,5];
+    xdk.PaperSize = [7,5];
+    xdk.PaperPosition = [0,0,7,5];
+end
+
 
 if hh(66)>0
     
