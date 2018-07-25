@@ -73,7 +73,7 @@ if ~exist('p','var')
     dz = zs(2:end)-zs(1:end-1);
 end
 
-if ~exist('s2','var'
+if ~exist('s2','var')
 end
 
 %************************************************************************
@@ -96,7 +96,7 @@ hh(46:50) = [0,0,0,0,0];
 hh(51:55) = [0,0,0,0,0];
 hh(56:60) = [0,0,0,0,0];
 hh(61:65) = [0,0,0,0,0];
-hh(66:70) = [0,0,0,1,0];
+hh(66:70) = [0,0,0,0,1];
 
 
 
@@ -110,6 +110,86 @@ hh(66:70) = [0,0,0,1,0];
 %18 = hr
 %19 = smp full profile time series
 %20 = h2osoi with obs
+
+if hh(70)>0
+    g = findgroups(365*year+doy);
+   f = 1800*4e-7*splitapply(@sum,fctr',g');
+   yy = (0.5:1095)/365+2001;
+   
+   targ = [p(:,1),f(:,3)-p(:,1),f(:,1)-p(:,1),...
+           p(:,2),f(:,4)-p(:,2),f(:,2)-p(:,2)];
+   
+   
+   pix = [1,1,1,2,2,2];
+   ss  = [1,3,5,2,4,6];
+   yi  = [0,-3,-3,0,-3,-3];
+   ya  = [6,3,3,6,3,3];
+   
+   tsr = '---(a)(c)(e)(b)(d)(f)';
+   
+   cc  = [0.8500,0.3250,0.0980;0.5*ones(1,3);zeros(1,3)];
+   cc  = repmat(cc,2,1);
+       
+   xp = [0.1,0.1,0.1,0.56,0.56,0.56];
+   yp = [0.7,0.4,0.1,0.7,0.4,0.1]-0.01;
+   
+   xdk = figure;
+   
+   for i=1:6
+       subplot('position',[xp(i),yp(i),0.41,0.27])
+       ix = p(:,pix(i))>0;
+     
+       plot(yy(ix),targ(ix,i),'.','Color',cc(i,:))
+       ylim([yi(i),ya(i)])
+       grid on
+       box off
+           
+       
+       if i~=1&&i~=4
+           set(gca,'ytick',-3:3:3)
+       elseif i==4
+           title('TFE')
+       end
+       
+       if i==1
+           ylabel('OBS')
+           title('AMB')
+       end
+       if i==2
+           ylabel('SMS-OBS')
+       end
+       if i==3
+           ylabel('PHS-OBS')
+       end
+            
+       if i>3
+           set(gca,'yticklabel',[])
+       end
+       
+       if ss(i)<5
+           set(gca,'xticklabel',[])
+       else
+           set(gca,'xticklabel',{2002,'',2003,'',2004})
+           xlabel('Year')
+       end
+       
+       
+       text(2002.05,5.3+yi(i),tsr((1:3)+i*3),'FontSize',14,'FontWeight','bold')
+   end
+   
+   ax1 = axes('Position',[0 0 1 1],'Visible','off');
+   text(0.02,0.4,'Transpiration (mm/d)','Rotation',90)
+   
+   xdk.Units = 'inches';
+   xdk.Position = [2,2,7,5];
+   xdk.PaperSize = [7,5];
+   xdk.PaperPosition = [0,0,7,5];
+   
+   print(xdk,'../figs3/fctr_ts','-dpdf')
+    
+end
+
+
 
 if hh(69)>0
     ix = year==2003&month>8;
