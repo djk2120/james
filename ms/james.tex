@@ -52,7 +52,7 @@ This in turn feeds back onto surface and air temperature, through land-atmospher
 On longer timescales vegetation water use strategies regulate the global carbon and water cycles \citep{dekauwe2015}.
 
 Several recent studies have aimed at advancing the representation of water flow through the Soil-Plant-Atmosphere continuum (SPAC) in land-surface and ecosystem models \citep{xu2016,christoffersen2016,sperry2017}.
-Explicit modeling of water flow through the SPAC adds complexity, but is consistent with evidence of dynamic regulation of vegetation water use in response to both soil and atmospheric drying \citep{sperry2015}.
+Explicit modeling of water flow through the SPAC adds complexity, but is consistent with evidence of dynamic regulation of vegetation water use in response to both soil and atmospheric drying \citep{tardieu1998,sperry1998,sperry2015}.
 Furthermore, because they are based on Darcy's Law, SPAC models have a robust physical basis compared to empirical water stress formulations.
 SPAC models involve new parameters, which presents challenges \citep{drake2017}, but plant hydraulic trait data are available \citep{kattge2011,anderegg2015a}, providing constraints on parameter estimation.   
 Such data have been shown to be informative of species vulnerability to drought \citep{choat2012}.
@@ -62,7 +62,7 @@ In this study, we develop a new plant water stress parameterization based on hyd
 We refer to this hydraulics-based implementation as the `Plant Hydraulic Stress' (PHS) configuration. 
 Previous versions of the CLM, similar to many Land Surface Models, employed an empirical $\beta$-form soil moisture stress function.
 Such functions lack a strong physical basis and have been shown to systematically overestimate the effect of soil moisture drought on evaporative fluxes \citep{ukkola2016,bonan2014}.
-In Amazonia, which is the focus area of our test, studies suggest that the CLM (version 3.5) simultaneously underestimates the effect of experimental drought treatment \citep{powell2013} and overestimates dry-season reductions in GPP \citep{restrepo2017}.
+In Amazonia, which is the focus area of our model test runs, studies suggest that the CLM (version 3.5) simultaneously underestimates the effect of experimental drought treatment \citep{powell2013} and overestimates dry-season reductions in GPP \citep{restrepo2017}.
 
 PHS, by explicitly representing the SPAC, introduces modeled vegetation water potential (discretized into leaf, stem and root elements) into the CLM, as well as a physical model of water supply, from the soil through the vegetation substrate. 
 Transpiration is attenuated in the model according to leaf water status, capturing dynamic vegetation water use regulation in response to both soil moisture and atmospheric evaporative demand. 
@@ -91,7 +91,7 @@ In this paper we therefore:
 %  MODEL DESCRIPTION
 %====================
 \section{Model Description}
-This study uses CLM5 to compare two parameterizations of water stress (Sections \ref{sect:fwsms} and \ref{sect:fwphs}) and root water uptake (Sections \ref{sect:smsrwu} and \ref{sect:phsrwu}). The first parameterization, which we refer to as Soil Moisture Stress (SMS), deploys the CLM4.5 default root water uptake and water stress implementations within CLM5. The second is called Plant Hydraulic Stress (PHS); PHS is the default configuration of CLM5. In Sections \ref{sect:gs}-\ref{sect:wsf}, we describe components that the two configurations share in common and their differences. In Sections \ref{sect:sms} and \ref{sect:phs}, we describe SMS and PHS respectively.
+This study uses CLM5 to compare two parameterizations of water stress (Sections \ref{sect:fwsms} and \ref{sect:fwphs}) and root water uptake (Sections \ref{sect:smsrwu} and \ref{sect:phsrwu}). The first parameterization, which we refer to as Soil Moisture Stress (SMS), deploys the CLM4.5 default root water uptake and water stress implementations within CLM5. The second is called Plant Hydraulic Stress (PHS); PHS is the default configuration of CLM5. In Sections \ref{sect:gs}-\ref{sect:wsf}, we describe components that the two configurations share in common. In Sections \ref{sect:sms} and \ref{sect:phs}, we describe their differences.
     
     
 %Photosynthesis
@@ -181,7 +181,7 @@ This study uses CLM5 to compare two parameterizations of water stress (Sections 
     \end{linenomath*} 
     
     In the SMS configuration, a heuristic function is used to determine $q_i$.
-    Transpiration is partitioned among the soil layers based on the product of the root fraction and the wilting factor, which is then normalized by $f_w$ so that 100% of the total is partitioned across the differnt root layers. 
+    Transpiration is partitioned among the soil layers based on the product of the root fraction and the wilting factor, which is then normalized by $f_w$ so that 100% of the total is partitioned across the different root layers. 
     
     \begin{linenomath*}
     \begin{equation}
@@ -677,7 +677,7 @@ Because SMS does not resolve water potential through the vegetation substrate, t
     Substantial HR is simulated at our test site, both upwards and downwards (Figure \ref{fig:hr}, Supp Fig \ref{supp:hr}), as has been observed in the field \citep{burgess1998}.
     Modeled HR is dominated by downward transfers, moving near-surface water from rain events deeper into the soil column and thus saving it for when it is most needed such as during the dry season.
     This would seem to convey an advantage to deep-rooted individuals, banking water for later use out of reach of shallow-rooted competitors.
-    HR can offer significant water saving during dry periods \citep{jackson2000} and has been highlighted as an important missing feature in CLM \citep{lee2005}. We should note that observations of HR are extremely difficult and rare, and the degree to which HR actually occurs in real-world systems remains unclear. 
+    HR can offer significant water subsidies during dry periods \citep{jackson2000} and has been highlighted as an important missing feature in CLM \citep{lee2005}. We should note that observations of HR are extremely difficult and rare, and the degree to which HR actually occurs in real-world systems remains unclear. 
     Unequivocal detection of HR involves the observation of reverse flow along transport roots, typically at rates close to the detection threshold of sap flow monitoring systems. 
     
     One challenge we faced was that in an initial implementation of PHS, HR seemed to oversupply the top layer of the soil column (spanning 0 to 2 cm below the ground surface) and thus significantly degraded modeled soil evaporation (not shown). 
