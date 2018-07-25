@@ -40,21 +40,20 @@ Pierre Gentine\affil{1}
 Trees face emerging climate change risk globally \citep{allen2010,anderegg2013b}.
 In addition to stress from soil moisture drought, vegetation is susceptible to increasing atmospheric demand \citep{restaino2016,novick2016b,lemordant2018}.
 Increases in vapor pressure deficit (VPD) are occurring with global warming \citep{ficklin2017,seager2015}, and are associated with impacts on vegetation such as large-scale die-off \citep{williams2013,mcdowell2015}.
-Understanding vegetation response is an important priority, both for discerning climate impacts and for modeling feedbacks to the carbon and hydrological cycles \citep{lemordant2018}.
-Significant uncertainty remains regarding how vegetation will respond to changes in hydroclimate within Earth System Models, feeding back onto the carbon cycle as vegetation mediates carbon uptake \citep{dekauwe2017,friedlingstein2014,trugman2018}.
+Understanding vegetation response is important both for discerning future climate impacts on forests and for modeling feedbacks to the carbon and hydrological cycles \citep{lemordant2018}.
+Significant uncertainty remains in Earth System model predictions of the carbon cycle caused by the response of vegetation to changes in hydroclimate \citep{dekauwe2017,friedlingstein2014,trugman2018}.
 
-Plant water stress parameterizations are important in Earth System Models, as they define vegetation regulation of surface fluxes (photosynthesis, transpiration) in response to water fluctuations \citep{egea2011,verhoef2014}.
-Vegetation water use strategies modulate carbon uptake, creating a critical coupling between the Earth System's carbon and hydrological cycles \citep{green2017}.
-Drought stress parameterizations (functions which relate a metric of soil moisture status to leaf gas exchange) are widely used to define the response of stomatal conductance to vegetation water status, serving to attenuate transpiration, photosynthesis, and root water uptake with drying.
-The dynamics of this water stress representation in models have broad effects on critical land surface processes \citep{joetzjer2014}, such as photosynthesis rates.
+Plant water stress parameterizations are used by Earth System Models to determine the regulation of surface fluxes (photosynthesis, transpiration) by vegetation in response to water fluctuations \citep{egea2011,verhoef2014}.
+These parameterizations, which relate a metric of soil moisture status to leaf gas exchange, are widely used to define the response of stomatal conductance to vegetation water status, serving to attenuate transpiration, photosynthesis, and root water uptake with drying.
+Because vegetation water use strategies modulate carbon uptake, creating a close coupling between the Earth System's carbon and hydrological cycles \citep{green2017}, the dynamics of the water stress representation in models have broad effects on critical land surface processes \citep{joetzjer2014}, such as photosynthesis rates.
 On daily and weekly time scales, water stress parameterizations influence the partitioning of latent versus sensible heat, modifying the Bowen ratio \citep{gentine2007,gentine2011}. 
 This in turn feeds back onto surface and air temperature, through land-atmosphere feedbacks \citep{bonan2008,seneviratne2006}.
 On longer timescales vegetation water use strategies regulate the global carbon and water cycles \citep{dekauwe2015}.
 
-Several recent studies have aimed at advancing the representation of water flow through the Soil-Plant-Atmosphere continuum (SPAC) in land-surface and ecosystem models \citep{xu2016,christoffersen2016,sperry2017}.
-Explicit modeling of water flow through the SPAC adds complexity, but is consistent with evidence of dynamic regulation of vegetation water use in response to both soil and atmospheric drying \citep{tardieu1998,sperry1998,sperry2015}.
-Furthermore, because they are based on Darcy's Law, SPAC models have a robust physical basis compared to empirical water stress formulations.
-SPAC models involve new parameters, which presents challenges \citep{drake2017}, but plant hydraulic trait data are available \citep{kattge2011,anderegg2015a}, providing constraints on parameter estimation.   
+Several recent studies have aimed at advancing the representation of water flow through the Soil-Plant-Atmosphere continuum (SPAC) in land-surface and ecosystem models \citep{xu2016,christoffersen2016,sperry2017} by incorporating plant hydraulic theory.  
+Explicit modeling of water flow through the vegetation adds complexity, but is consistent with evidence of dynamic regulation of vegetation water use in response to both soil and atmospheric drying \citep{tardieu1998,sperry1998,sperry2015}.
+Furthermore, because they are based on Darcy's Law, plant hydraulic models have a robust physical basis compared to models that utilize empirical water stress formulations.
+Plant hydraulic models involve new parameters, which presents challenges \citep{drake2017}, but plant hydraulic trait data are available \citep{kattge2011,anderegg2015a}, providing constraints on parameter estimation.   
 Such data have been shown to be informative of species vulnerability to drought \citep{choat2012}.
 Likewise vegetation water status observations are now available from remote sensing platforms, at a scale that is directly comparable to model development \citep{konings2016,grant2016} and therefore can be used to validate model results \citep{momen2017,konings2017b}.
 
@@ -64,7 +63,7 @@ Previous versions of the CLM, similar to many Land Surface Models, employed an e
 Such functions lack a strong physical basis and have been shown to systematically overestimate the effect of soil moisture drought on evaporative fluxes \citep{ukkola2016,bonan2014}.
 In Amazonia, which is the focus area of our model test runs, studies suggest that the CLM (version 3.5) simultaneously underestimates the effect of experimental drought treatment \citep{powell2013} and overestimates dry-season reductions in GPP \citep{restrepo2017}.
 
-PHS, by explicitly representing the SPAC, introduces modeled vegetation water potential (discretized into leaf, stem and root elements) into the CLM, as well as a physical model of water supply, from the soil through the vegetation substrate. 
+PHS, by explicitly representing plant hydraulics, introduces modeled vegetation water potential (discretized into leaf, stem and root elements) into the CLM, as well as a physical model of water supply, from the soil through the vegetation substrate. 
 Transpiration is attenuated in the model according to leaf water status, capturing dynamic vegetation water use regulation in response to both soil moisture and atmospheric evaporative demand. 
 These changes in the parameterization framework have numerous implications, including: 
 
@@ -626,7 +625,7 @@ PHS, TFE & 0.449 & 0.741 \\
     replacing the previous version based on soil water potential (SMS).
     Using leaf water potential permits a representation of xylem tension stress and its diurnal variations, where vegetation must limit transpiration to avoid cavitation and embolism.
     This limitation is in addition to the VPD response of the Medlyn stomatal conductance model,
-    where stomatal conductance is proportional to VPD$^{-0.5}$, which optimizes carbon gain versus water losses \citep{medlyn2011}.
+     which optimizes carbon gain versus water losses \citep{medlyn2011}.
     Opting for xylem tension stress (PHS), in lieu of soil moisture stress (SMS), inserts an alternative physical interpretation of water stress and also yields different stress dynamics, which has significant support in the literature \citep{novick2016a,sperry2017}.
     
     Basing stress on leaf water potential imparts a diurnal cycle to the water stress factor (Figure \ref{fig:stress1}), following the midday drop in leaf water potential induced by high leaf-level VPD and photosynthesis.
