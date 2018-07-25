@@ -86,7 +86,7 @@ ff = zeros(200,1);
 hh(1:5)   = [0,0,0,0,0];
 hh(6:10)  = [0,0,0,0,0];
 hh(11:15) = [0,0,0,0,0];
-hh(16:20) = [0,0,0,0,0];
+hh(16:20) = [0,0,0,0,1];
 hh(21:25) = [0,0,0,0,0];
 hh(26:30) = [0,0,0,0,0];
 hh(31:35) = [0,0,0,0,0];
@@ -97,7 +97,7 @@ hh(51:55) = [0,0,0,0,0];
 hh(56:60) = [0,0,0,0,0];
 hh(61:65) = [0,0,0,0,0];
 hh(66:70) = [0,0,0,0,0];
-hh(71:75) = [1,0,0,0,0];
+hh(71:75) = [0,0,0,0,0];
 
 
 
@@ -179,7 +179,7 @@ if hh(71)>0
     xdk.PaperPosition = [0,0,7,6.5];
     
     
-    if hh(71)>0
+    if hh(71)>1
         print(xdk,'../figs3/T','-dpdf')
     end
 end
@@ -2629,12 +2629,15 @@ if hh(20)>0
     yy = [0.08,0.08,0.53,0.53];
     rr = {'(c)','(d)','(a)','(b)'};
 
+    cc = [0,0,0.5,0.5]
+    
     xdk = figure;
     
     ss = [3,4,1,2];
     for j=1:4
         subplot('Position',[xx(j),yy(j),0.4,0.41])
-        plot(xv,splitapply(@mean,h2osoi(zzix(3)+(j-1)*20,:),g),'LineWidth',1.5)
+        plot(xv,splitapply(@mean,h2osoi(zzix(3)+(j-1)*20,:),g),...
+            'Color',cc(j)*ones(1,3),'LineWidth',1.5)
         hold on
         if j==1||j==3
             plot(amb_sm(:,1),amb_sm(:,3)/100,'rx')
@@ -2661,16 +2664,19 @@ if hh(20)>0
         else
             set(gca,'yticklabel',[])
         end
-
+        
         box off
         
         if j==2||j==4
-                plot(2001+[10/12,10/12],[.3*4/30+.05,.3*1/30+.05],'k-','LineWidth',2)
-    plot(2001+[10/12,9.7/12],[.3*12/300+.05,.2*4/30+.05],'k-','LineWidth',2)
-    plot(2001+[10/12,10.3/12],[.3*12/300+.05,.2*4/30+.05],'k-','LineWidth',2)
+            plot(2001+[10/12,10/12],[.3*4/30+.05,.3*1/30+.05],'k-','LineWidth',2)
+            plot(2001+[10/12,9.7/12],[.3*12/300+.05,.2*4/30+.05],'k-','LineWidth',2)
+            plot(2001+[10/12,10.3/12],[.3*12/300+.05,.2*4/30+.05],'k-','LineWidth',2)
         end
-                if j==2
-            legend({'Model','Obs'},'Location','Northeast')
+        if j==2
+            legend({'PHS','Obs'},'Location','Northeast')
+        end
+        if j==4
+            legend({'SMS','Obs'},'Location','Northeast')
         end
     end
     
