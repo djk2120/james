@@ -86,7 +86,7 @@ ff = zeros(200,1);
 hh(1:5)   = [0,0,0,0,0];
 hh(6:10)  = [0,0,0,0,0];
 hh(11:15) = [0,0,0,0,0];
-hh(16:20) = [0,0,0,0,1];
+hh(16:20) = [0,0,0,0,0];
 hh(21:25) = [0,0,0,0,0];
 hh(26:30) = [0,0,0,0,0];
 hh(31:35) = [0,0,0,0,0];
@@ -96,7 +96,7 @@ hh(46:50) = [0,0,0,0,0];
 hh(51:55) = [0,0,0,0,0];
 hh(56:60) = [0,0,0,0,0];
 hh(61:65) = [0,0,0,0,0];
-hh(66:70) = [0,0,0,0,0];
+hh(66:70) = [0,0,0,0,1];
 hh(71:75) = [0,0,0,0,0];
 
 
@@ -191,70 +191,68 @@ if hh(70)>0
    f = 1800*4e-7*splitapply(@sum,fctr',g');
    yy = (0.5:1095)/365+2001;
    
-   targ = [p(:,1),f(:,3)-p(:,1),f(:,1)-p(:,1),...
-           p(:,2),f(:,4)-p(:,2),f(:,2)-p(:,2)];
+   targ = [p(:,1),f(:,3),f(:,1),f(:,3)-p(:,1),f(:,1)-p(:,1),...
+           p(:,2),f(:,4),f(:,2),f(:,4)-p(:,2),f(:,2)-p(:,2)];
    
+   yls = {'OBS','SMS','PHS','SMS-OBS','PHS-OBS'};
    
-   pix = [1,1,1,2,2,2];
-   ss  = [1,3,5,2,4,6];
-   yi  = [0,-3,-3,0,-3,-3];
-   ya  = [6,3,3,6,3,3];
+   pix = [1,0,0,1,1,2,0,0,2,2];
+   ss  = [1,3,5,7,9,2,4,6,8,10];
+   yi  = [0,0,0,-3,-3,0,0,0,-3,-3];
+   ya  = [6,6,6,3,3,6,6,6,3,3];
    
-   tsr = '---(a)(c)(e)(b)(d)(f)';
+   tsr = '---(a)(c)(e)(g)(i)(b)(d)(f)(h)(j)';
    
-   cc  = [0.8500,0.3250,0.0980;0.5*ones(1,3);zeros(1,3)];
+   cc  = [0.8500,0.3250,0.0980;0.5*ones(1,3);zeros(1,3);0.5*ones(1,3);zeros(1,3)];
    cc  = repmat(cc,2,1);
        
-   xp = [0.1,0.1,0.1,0.56,0.56,0.56];
-   yp = [0.7,0.4,0.1,0.7,0.4,0.1]-0.01;
+   xp = [0.1*ones(1,5),0.56*ones(1,5)];
+   yp = repmat([0.82:-0.1733:0.45,0.26:-0.1733:0],1,2);
    
    xdk = figure;
    
-   for i=1:6
-       subplot('position',[xp(i),yp(i),0.41,0.27])
+   for i=1:10
+       subplot('position',[xp(i),yp(i),0.41,0.14])
+       
+       if pix(i)==0
+           ix = yy>2002;
+       else
        ix = p(:,pix(i))>0;
-     
+       end
        plot(yy(ix),targ(ix,i),'.','Color',cc(i,:))
        ylim([yi(i),ya(i)])
        grid on
        box off
-           
        
-       if i~=1&&i~=4
+       if ss(i)<7
+           set(gca,'ytick',0:3:6)
+       else
            set(gca,'ytick',-3:3:3)
-       elseif i==4
-           title('TFE')
        end
-       
-       if i==1
-           ylabel('OBS')
-           title('AMB')
-       end
-       if i==2
-           ylabel('SMS-OBS')
-       end
-       if i==3
-           ylabel('PHS-OBS')
-       end
-            
-       if i>3
-           set(gca,'yticklabel',[])
-       end
-       
-       if ss(i)<5
+       if ss(i)<9
            set(gca,'xticklabel',[])
        else
            set(gca,'xticklabel',{2002,'',2003,'',2004})
            xlabel('Year')
        end
+       if i<6
+           ylabel(yls{i})
+       end
        
+       if i==1
+           title('AMB')
+       end
+       if i==6
+           title('TFE')
+       end
+           
        
-       text(2002.05,5.3+yi(i),tsr((1:3)+i*3),'FontSize',14,'FontWeight','bold')
+       text(2002.02,5.3+yi(i),tsr((1:3)+i*3),'FontSize',14,'FontWeight','bold')
    end
    
-   ax1 = axes('Position',[0 0 1 1],'Visible','off');
-   text(0.02,0.4,'Transpiration (mm/d)','Rotation',90)
-   
+   ax1 = axes('Position',[0 0 1 1],'Visible','off'); 
+   text(0.02,0.39,'Transpiration (mm/d)','Rotation',90)
+   text(0.08,0.445,repmat('.',1,162),'FontWeight','bold')
    xdk.Units = 'inches';
    xdk.Position = [2,2,7,5];
    xdk.PaperSize = [7,5];
