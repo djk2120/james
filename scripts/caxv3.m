@@ -96,8 +96,8 @@ hh(46:50) = [0,0,0,0,0];
 hh(51:55) = [0,0,0,0,0];
 hh(56:60) = [0,0,0,0,0];
 hh(61:65) = [0,0,0,0,0];
-hh(66:70) = [0,0,0,0,1];
-hh(71:75) = [0,0,0,0,0];
+hh(66:70) = [0,0,0,0,0];
+hh(71:75) = [0,0,0,0,1];
 
 
 
@@ -111,6 +111,149 @@ hh(71:75) = [0,0,0,0,0];
 %18 = hr
 %19 = smp full profile time series
 %20 = h2osoi with obs
+
+if hh(75)>0
+    ix = p(:,1)>0;
+    g  = findgroups(365*year+doy);
+    t  = 4e-7*1800*splitapply(@sum,fctr',g');
+    
+    yy = (0.5:1095)'/365+2001;
+    
+    ix = p(:,1)>0;
+    plot(yy(ix,1),abs(t(ix,3)-p(ix,1)),'.')
+    sum(abs(t(ix,3)-p(ix,1))>1)
+    sum(abs(t(ix,1)-p(ix,1))>1)
+    sum(abs(t(ix,3)-p(ix,1))>2)
+    sum(abs(t(ix,1)-p(ix,1))>2)
+    
+    ix2 = abs(t(:,3)-p(:,1))>2;
+    t(ix&ix2,3)-p(ix&ix2,1)
+    
+    std(t(ix,1))
+    std(p(ix,1))
+    
+end
+
+
+if hh(74)>0
+    g  = findgroups(365*year+doy);
+    f  = splitapply(@mean,fsds',g');
+    t  = 1800*4e-7*splitapply(@sum,fctr',g');
+    
+    yy = (0.5:1095)'/365+2001;
+    ix = p(:,2)>0&yy>2003;
+    
+    
+    plot(yy(ix),t(ix,2)-p(ix,2),'.')
+    ylim([-3,3])
+    hold on
+    plot([2003,2004],[0,0],'k:')
+    figure
+    plot(yy(ix),t(ix,4)-p(ix,2),'.')
+    hold on
+    plot([2003,2004],[0,0],'k:')
+    ylim([-3,3])
+end
+
+
+if hh(73)>0
+    yy = 2001+(0.5:1095)/365;
+    
+    g = findgroups(365*year+doy);
+    f = 4e-7*1800*splitapply(@sum,fctr',g');
+    ix = p(:,1)>0;
+    
+    a = abs(f(:,1)-p(:,1))-abs(f(:,3)-p(:,1));
+    
+    ix2 = f(:,1)>f(:,3);
+    ix3 = a>0;
+    
+    plot(yy(ix&ix2&ix3),a(ix&ix2&ix3),'k.','MarkerSize',10)
+    hold on
+    plot(yy(ix&~ix2&ix3),a(ix&~ix2&ix3),'r.','MarkerSize',10)
+    plot(yy(ix&ix2&~ix3),a(ix&ix2&~ix3),'r.','MarkerSize',10)
+    plot(yy(ix&~ix2&~ix3),a(ix&~ix2&~ix3),'k.','MarkerSize',10)
+    plot([2002,2004],[0,0],'k:')
+    grid on
+    
+    set(gca,'xtick',2002+cumsum([0,eomday(2001,1:12),eomday(2001,1:12)])/365)
+    set(gca,'xticklabel',{'',repmat(1:12,1,2)})
+    
+    figure
+    
+    ix = p(:,2)>0;
+    
+    a = abs(f(:,2)-p(:,2))-abs(f(:,4)-p(:,2));
+    
+    ix2 = f(:,2)>f(:,4);
+    ix3 = a>0;
+    
+    plot(yy(ix&ix2&ix3),a(ix&ix2&ix3),'k.','MarkerSize',10)
+    hold on
+    plot(yy(ix&~ix2&ix3),a(ix&~ix2&ix3),'r.','MarkerSize',10)
+    plot(yy(ix&ix2&~ix3),a(ix&ix2&~ix3),'r.','MarkerSize',10)
+    plot(yy(ix&~ix2&~ix3),a(ix&~ix2&~ix3),'k.','MarkerSize',10)
+    plot([2002,2004],[0,0],'k:')
+    grid on
+    
+    set(gca,'xtick',2002+cumsum([0,eomday(2001,1:12),eomday(2001,1:12)])/365)
+    set(gca,'xticklabel',{'',repmat(1:12,1,2)})
+    
+    figure
+    bar(splitapply(@mean,vpd,month))
+    
+    ix = p(:,1)>0;
+    mean(f(ix,[1,3]))
+    mean(p(ix,1))
+    
+end
+
+if hh(72)>0
+   
+   
+   g = findgroups(365*year+doy);
+   f = splitapply(@mean,fsds,g)';
+   v = splitapply(@mean,vpd,g)';
+   l = splitapply(@mean,elai,g)';
+   
+   ix = p(:,2)>0;
+   plot(f(ix),p(ix,2),'.')
+    lm0 = fitlm(f(ix),p(ix,2))
+    m = lm0.Coefficients.Estimate
+    hold on
+    plot(f(ix),lm0.Fitted,'r.')
+   
+   w = 10;
+   pp =zeros(1095,1);
+   for i=366:1095
+       %aa = i-w+1:i; %yes today
+       aa = i-w:i-1; %no today
+       yy = 2001+floor(aa/365.01);
+       dd = aa-365*(yy-2001);
+       ix = 0*fsds;
+       for j=1:w
+           ix = ix|(year==yy(j)&doy==dd(j));
+       end    
+       pp(i) = 1800*sum(prec(ix))-m(1)-sum(m(2)*fsds(ix))/48;
+   end
+   
+   
+   ix = p(:,1)>0;
+   lm1 =fitlm([f(ix),v(ix),pp(ix),l(ix)],p(ix,1))
+
+   figure
+   plot(lm1.Fitted,p(ix,1),'.')
+   xlim([0,6])
+   ylim([0,6])
+   hold on
+   plot([0,6],[0,6],'k:')
+
+   figure
+   ix = p(:,2)>0;
+   plot(pp(ix),p(ix,2),'.')
+
+end
+
 
 
 if hh(71)>0

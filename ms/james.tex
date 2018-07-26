@@ -477,6 +477,29 @@ No tuning was used for the SMS configuration.
 %  RESULTS
 %====================
 \section{Results}  
+
+\subsection{Comparison with observations}
+
+We tested two configurations of CLM5 with simulations of the Caxiuan\~a throughfall exclusion experiment over 2002-2004. We compare modeled transpiration with observations derived from sap flux velocity and modeled soil moisture with observations using TDR sensors (see Section \ref{sect:exp} for experiment and observation details).
+
+\subsubsection{Transpiration, Ambient Conditions}
+Under ambient conditions, PHS reduces error and improves correlation between modeled and observed transpiration (compared to SMS, Figure \ref{fig:t}a,c).
+SMS tends to make larger errors modeling transpiration (Figure \ref{fig:t2}g). 
+The absolute value of SMS-OBS exceeds 1 mm/d in 67 of the 414 days with available observations, as compared to just 23 with PHS.
+And while PHS error is limited to a maximum of 1.6 mm/d, SMS error exceeds 2 mm/d twelve times (all of which underestimate transpiration relative to observations).
+The major limitation of the PHS simulation is that it seems to underestimate transpiration variability, with a standard deviation of 0.61 mm/d compared to 0.87 mm/d in the observations.
+This contributes to a low bias for high transpiration values and a high bias for low transpiration values (Figure \ref{fig:t}c).
+
+\subsubsection{Transpiration, TFE}
+Both models have a harder time modeling transpiration under TFE, with higher RMSE and lower correlation compared to the ambient simulations (Figure \ref{fig:t}b,d).
+This has precedent, as previous studies have demonstrated that the effect of TFE is not captured well by the CLM (nor other DGVMs) \citep{restrepo2017,powell2013}.
+PHS improves on SMS, with lower RMSE and higher correlation, but with a significant high bias (Figure \ref{fig:t}b,d).
+The PHS bias seems to decrease over time (Figure \ref{fig:t2}), suggesting that the model may lag in its response to the TFE.
+
+\subsubsection{Soil Moisture, Ambient Conditions}
+
+\subsubsection{Soil Moisture, TFE}
+
 \subsection{Vegetation water potential}
 
     Under ambient conditions, the PHS modeled 2003 dry season (September-October-November) average sunlit leaf water potential is -1.65 MPa at midday (local time 12-14h, Figure \ref{fig:vwp}a). 
@@ -825,17 +848,6 @@ Modeling stomatal conductance and photosynthesis, especially subject to water st
 
   \begin{figure}[h]
      \centering
-     \includegraphics[width=30pc]{../figs3/fctr_ts.pdf}
-     \caption{Modeled and observed daily total transpiration. Observations are derived from field observations of sap flux velocity (see Section \ref{sect:exp}).
-     (a,b) Modeled (lines, monthly mean) and observed (dots, daily total) transpiration over time.
-     (c-f) Modeled versus observed daily transpiration (mm/d).
-     }
-     \label{fig:t1}
-  \end{figure}
-  
-    \clearpage   
-  \begin{figure}[h]
-     \centering
      \includegraphics[width=30pc]{../figs3/T.pdf}
      \caption{Modeled and observed daily total transpiration. Observations are derived from field observations of sap flux velocity (see Section \ref{sect:exp}).
      (a,b) Modeled (lines, monthly mean) and observed (dots, daily total) transpiration over time.
@@ -843,6 +855,19 @@ Modeling stomatal conductance and photosynthesis, especially subject to water st
      }
      \label{fig:t}
   \end{figure}
+  
+    \clearpage   
+      \begin{figure}[h]
+     \centering
+     \includegraphics[width=30pc]{../figs3/fctr_ts.pdf}
+     \caption{Modeled and observed daily total transpiration. Observations are derived from field observations of sap flux velocity (see Section \ref{sect:exp}).
+     (a,b) Modeled (lines, monthly mean) and observed (dots, daily total) transpiration over time.
+     (c-f) Modeled versus observed daily transpiration (mm/d).
+     }
+     \label{fig:t2}
+  \end{figure}
+    
+
 
         \clearpage
     \begin{figure}[h]
