@@ -503,17 +503,18 @@ Reproducing the effect of TFE has precedent in the literature, and has not been 
 The second source of observations for model evaluation are volumetric soil moisture. 
 These are valuable, because the parameterization of root water uptake is updated with PHS.
 Modeled soil moisture values (at a depth of 50 cm) are comparable during the wet season (February-March-April) under ambient conditions, both yielding averages of 28\% (Figure \ref{fig:sm2}a,c).
-With sufficient water, soil moisture is largely determined by the soil field capacity.
-With water shortfalls, the models diverge.
+Under these conditions (excess rainfall), soil moisture is largely determined by the soil field capacity.
+With water shortfalls, the root water uptake parameterizations drive the soil moisture dynamics, and the models diverge, 
+with SMS consistently generating lower soil moisture values (than PHS) within the first meter of the soil column (Figure \ref{fig:sm2}, Supp Fig \ref{supp:sm2}).
+Soil moisture averages to 10\% during the dry season (September-October-November, ambient case, depth=50cm) with SMS, as compared to 16\% with PHS.
+PHS better comports with observations, reducing RMSE by 57\% relative to SMS (Figure \ref{fig:sm2}a,c).
 
+Under TFE, SMS minimum soil moisture is again limited to 10\%, but holds there for a longer duration (Figure \ref{fig:sm2}).
+Contrastingly, PHS achieves lower dry season soil moisture values under TFE.
+Again PHS better comports with observations, reducing RMSE by 42\% relative to SMS (Figure \ref{fig:sm2}a,c).
+We highlight the soil moisture at 50 cm depth, but similar patterns are observed throughout the first meter of the soil column (Supp Fig \ref{supp:sm2}).
+To emphasize the effect of root water uptake, we opt for the depth of 50 cm, because it features higher root fraction than the deeper soil layers, but avoids the high frequency dynamics of the top soil layer from soil evaporation and precipitation events.
 
-    During the dry season, SMS simulations yield much lower values for soil matric potential (Figure \ref{fig:sm}, Supp Fig \ref{supp:sm}). 
-    SMS root-fraction-weighted average soil potential is -1.42 MPa under ambient conditions (dry season), compared to -0.14 MPa with PHS (average predawn root water potential).
-    With TFE, SMS dry season soil potential drops to -2.51 MPa and PHS to -0.50 MPa.
-
-    PHS better matches observations of soil moisture, with RMSE lower by up to 55\% (Figure \ref{fig:sm2}, Supp Fig \ref{supp:sm2}).
-    The SMS values correspond to a significant dry bias (Figure \ref{fig:sm2}), especially in the first meter of the soil column.
-    This is associated with the soil wilting parameter ($\psi_c$), which takes the value -2.5MPa for the broadleaf evergreen tropical PFT \citep{oleson2013}.
 
 
 \subsection{Vegetation water potential}

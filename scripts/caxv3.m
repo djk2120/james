@@ -98,7 +98,7 @@ hh(56:60) = [0,0,0,0,0];
 hh(61:65) = [0,0,0,0,0];
 hh(66:70) = [0,0,0,0,0];
 hh(71:75) = [0,0,0,0,0];
-hh(76:80) = [0,0,1,0,0];
+hh(76:80) = [1,0,0,0,0];
 
 
 
@@ -114,36 +114,7 @@ hh(76:80) = [0,0,1,0,0];
 %20 = h2osoi with obs
 
 
-if hh(78)>0
-   [a,b1,c,~,explained,mu]=pca(qrootsink((2:20)+40,:)') ;
-   for i=1:5
-       subplot(2,6,i)
-       plot(a(:,i))
-   end
-   c(1)/sum(c)
-   subplot(2,6,6)
-   bar(c(1:10)/sum(c))
-   xlim([0,11])
-   ylim([0,1])
-   
-   [a,b2,c]=pca(qrootsink((2:20),:)') ;
-   for i=1:5
-       subplot(2,6,i+6)
-       plot(a(:,i))
-   end
-   subplot(2,6,12)
-   bar(c(1:10)/sum(c))
-   xlim([0,11])
-   ylim([0,1])
-    
-   figure
-   subplot(2,1,1)
-   plot(b1(:,1))
-   subplot(2,1,2)
-   plot(b2(:,1))
-   
-    
-end
+
 
 if hh(77)>0
    [a,b1,c,~,explained,mu]=pca(smp((2:20)+40,:)') ;
@@ -183,8 +154,8 @@ if hh(76)>0
     tfe_sm = csvread('../goodsim/tfe_sm.csv');
     tfe_sm(tfe_sm==0) = nan;
     
-    amb_sm(:,1) = 2001+(amb_sm(:,1)+0.5)/365;
-    tfe_sm(:,1) = 2001+(tfe_sm(:,1)+0.5)/365;
+    %amb_sm(:,1) = 2001+(amb_sm(:,1)+0.5)/365;
+    %tfe_sm(:,1) = 2001+(tfe_sm(:,1)+0.5)/365;
     
     %which soil layer
     depths = [nan,0.15,0.5,1,2,3,4,5];
@@ -212,6 +183,29 @@ if hh(76)>0
     mean(h2osoi(7:20:80,ix),2)
     
     
+    mvs = [0,cumsum(repmat(eomday(2001,1:12),1,3))];
+    ix  = 0*amb_sm(:,1);
+    for yy=1:2
+        for mm=9:11
+            j  = 12*yy+mm;
+            ix = ix|(amb_sm>mvs(j)&amb_sm<=mvs(j+1));
+        end
+    end
+    
+    mean(amb_sm(ix,3))
+    mean(tfe_sm(ix,3))
+    
+    g = findgroups(365*year+doy);
+    h = splitapply(@mean,h2osoi',g');
+    
+    for i=1:15
+    subplot(3,5,i)
+    
+    hold on
+    plot(h(:,i+40),'.')
+    plot(h(:,i),'.')
+    title(zs(i+1))
+    end
     
 end
 
@@ -2890,7 +2884,7 @@ if hh(20)>0
     g = (year-2001)*365+doy;
     smv = splitapply(@mean,h2osoi(zzix(3)+(0:20:60),:)',g');
     
-    
+    rmse_vals = zeros(4,1);
     xv = 2001+(0.5:1095)/365;
     i=3;
     
@@ -2922,6 +2916,8 @@ if hh(20)>0
             rmse = sqrt(mean((smv(ix,j)-tfe_sm(:,3)/100).^2))
             text(2002.25,0.08,['RMSE = ',num2str(round(rmse,3)),' (-)'])
         end
+        rmse_vals(j) = rmse;
+        
         ylim([0.05,0.35])
         
         set(gca,'xtick',2001:2004)
