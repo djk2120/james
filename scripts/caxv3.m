@@ -97,7 +97,7 @@ hh(51:55) = [0,0,0,0,0];
 hh(56:60) = [0,0,0,0,0];
 hh(61:65) = [0,0,0,0,0];
 hh(66:70) = [0,0,0,0,0];
-hh(71:75) = [0,0,0,0,1];
+hh(71:75) = [0,0,0,1,0];
 
 
 
@@ -113,46 +113,69 @@ hh(71:75) = [0,0,0,0,1];
 %20 = h2osoi with obs
 
 if hh(75)>0
-    ix = p(:,1)>0;
+    ix1 = p(:,1)>0;
     g  = findgroups(365*year+doy);
     t  = 4e-7*1800*splitapply(@sum,fctr',g');
     
-    yy = (0.5:1095)'/365+2001;
+    mean(t(ix1,[1,3]))
+    mean(p(ix1,1))
+    ix2 = p(:,2)>0;
+    mean(t(ix2,[2,4]))
+    mean(p(ix2,2))
+    100*(1-mean(t(ix2,[2,4]))./mean(t(ix1,[1,3])))
+    100*(1-mean(p(ix2,2))/mean(p(ix1,1)))
+
     
-    ix = p(:,1)>0;
-    plot(yy(ix,1),abs(t(ix,3)-p(ix,1)),'.')
-    sum(abs(t(ix,3)-p(ix,1))>1)
-    sum(abs(t(ix,1)-p(ix,1))>1)
-    sum(abs(t(ix,3)-p(ix,1))>2)
-    sum(abs(t(ix,1)-p(ix,1))>2)
-    
-    ix2 = abs(t(:,3)-p(:,1))>2;
-    t(ix&ix2,3)-p(ix&ix2,1)
-    
-    std(t(ix,1))
-    std(p(ix,1))
     
 end
 
 
+
 if hh(74)>0
+    ix = p(:,1)>0;
     g  = findgroups(365*year+doy);
-    f  = splitapply(@mean,fsds',g');
-    t  = 1800*4e-7*splitapply(@sum,fctr',g');
-    
-    yy = (0.5:1095)'/365+2001;
-    ix = p(:,2)>0&yy>2003;
+    t  = 4e-7*1800*splitapply(@sum,fctr',g');
     
     
-    plot(yy(ix),t(ix,2)-p(ix,2),'.')
-    ylim([-3,3])
+    x1 = sort(abs(t(ix,1)-p(ix,1)));
+    x2 = sort(abs(t(ix,3)-p(ix,1)));
+    
+    plot(x1,x2,'.')
+    xlim([0,3])
+    ylim([0,3])
     hold on
-    plot([2003,2004],[0,0],'k:')
+    plot([0,3],[0,3],'k:')
+    
+    sum(x1<0.15)
+    sum(x2<0.15)
+    
     figure
-    plot(yy(ix),t(ix,4)-p(ix,2),'.')
+    
+    yy = (0.5:1095)/365+2001;
+    
+    subplot(1,2,1)
+    plot(t(yy>2002,1),t(yy>2002,3),'.')
     hold on
-    plot([2003,2004],[0,0],'k:')
-    ylim([-3,3])
+    plot([0,5],[0,5],'k:')
+        subplot(1,2,2)
+    plot(t(yy>2002,2),t(yy>2002,4),'.')
+    hold on
+    plot([0,5],[0,5],'k:')
+    
+    
+    ix = p(:,1)>0;
+    u = mean(p(ix,1))
+    rmse_u = sqrt(mean((p(ix,1)-u).^2))
+    
+    
+    ix = p(:,2)>0;
+    u = mean(p(ix,2))
+    rmse_u = sqrt(mean((p(ix,2)-u).^2))
+    
+    
+    f = splitapply(@mean,fsds,g);
+    lm = fitlm(t(ix,2),p(ix,2))
+    
 end
 
 
@@ -2738,13 +2761,13 @@ if hh(21)>0
 end
 
 if hh(20)>0
-        amb_sm = csvread('../goodsim/control_sm.csv');
+    amb_sm = csvread('../goodsim/control_sm.csv');
     amb_sm(amb_sm==0) = nan;
     tfe_sm = csvread('../goodsim/tfe_sm.csv');
     tfe_sm(tfe_sm==0) = nan;
     
-    amb_sm(:,1) = 2001+amb_sm(:,1)/365;
-    tfe_sm(:,1) = 2001+tfe_sm(:,1)/365;
+    amb_sm(:,1) = 2001+(amb_sm(:,1)+0.5)/365;
+    tfe_sm(:,1) = 2001+(tfe_sm(:,1)+0.5)/365;
     
     %which soil layer
     depths = [nan,0.15,0.5,1,2,3,4,5];
@@ -2762,6 +2785,9 @@ if hh(20)>0
     end
     
     g = (year-2001)*365+doy;
+    smv = splitapply(@mean,h2osoi(zzix(3)+(0:20:60),:)',g');
+    
+    
     xv = 2001+(0.5:1095)/365;
     i=3;
     
@@ -2770,20 +2796,28 @@ if hh(20)>0
     yy = [0.08,0.08,0.53,0.53];
     rr = {'(c)','(d)','(a)','(b)'};
 
-    cc = [0.1,0.1,0.5,0.5]
+    cc = [0.1,0.1,0.5,0.5];
     
     xdk = figure;
     
     ss = [3,4,1,2];
     for j=1:4
         subplot('Position',[xx(j),yy(j),0.4,0.41])
-        plot(xv,splitapply(@mean,h2osoi(zzix(3)+(j-1)*20,:),g),...
+        plot(xv,smv(:,j),...
             'Color',cc(j)*ones(1,3),'LineWidth',1.5)
         hold on
         if j==1||j==3
             plot(amb_sm(:,1),amb_sm(:,3)/100,'r.','MarkerSize',10)
+            ix = ismember(xv,amb_sm(:,1));
+            r2 = corr(smv(ix,j),amb_sm(:,3)/100)^2
+            rmse = sqrt(mean((smv(ix,j)-amb_sm(:,3)/100).^2))
+            text(2002.25,0.08,['RMSE = ',num2str(round(rmse,3)),' (-)'])
         else
             plot(tfe_sm(:,1),tfe_sm(:,3)/100,'r.','MarkerSize',10)
+            ix = ismember(xv,tfe_sm(:,1));
+            r2 = corr(smv(ix,j),tfe_sm(:,3)/100)^2
+            rmse = sqrt(mean((smv(ix,j)-tfe_sm(:,3)/100).^2))
+            text(2002.25,0.08,['RMSE = ',num2str(round(rmse,3)),' (-)'])
         end
         ylim([0.05,0.35])
         
@@ -2799,9 +2833,9 @@ if hh(20)>0
         set(gca,'ytick',0.05:0.1:0.35)
         
         if j==1
-            ylabel({'PHS (depth = 50cm)';'Volumetric Soil Moisture (-)'})
+            ylabel({'PHS (depth = 50cm)';'Volumetric Soil Water Content'})
         elseif j==3
-            ylabel({'SMS (depth = 50cm)';'Volumetric Soil Moisture (-)'})
+            ylabel({'SMS (depth = 50cm)';'Volumetric Soil Water Content'})
         else
             set(gca,'yticklabel',[])
         end
@@ -2820,6 +2854,8 @@ if hh(20)>0
             legend({'SMS','Obs'},'Location','Northeast')
         end
     end
+    
+    
     
     
     

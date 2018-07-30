@@ -484,19 +484,23 @@ We tested two configurations of CLM5 with simulations of the Caxiuan\~a throughf
 
 \subsubsection{Transpiration, Ambient Conditions}
 Under ambient conditions, PHS reduces error and improves correlation between modeled and observed transpiration (compared to SMS, Figure \ref{fig:t}a,c).
-SMS tends to make larger errors modeling transpiration (Figure \ref{fig:t2}g). 
-The absolute value of SMS-OBS exceeds 1 mm/d in 67 of the 414 days with available observations, as compared to just 23 with PHS.
+While the two models make a similar number of small errors (PHS/SMS model transpiration within 0.15 mm/d of observations in 106/94 of the 414 days with available observations), SMS commits more large errors.
+The absolute value of SMS-OBS (Figure \ref{fig:t2}g) exceeds 1 mm/d in 67 times, as compared to just 23 with PHS.
 And while PHS error is limited to a maximum of 1.6 mm/d, SMS error exceeds 2 mm/d twelve times (all of which underestimate transpiration relative to observations).
-The major limitation of the PHS simulation is that it seems to underestimate transpiration variability, with a standard deviation of 0.61 mm/d compared to 0.87 mm/d in the observations.
-This contributes to a low bias for high transpiration values and a high bias for low transpiration values (Figure \ref{fig:t}c).
+
+Notwithstanding improvements regarding RMSE and correlation, the PHS simulation seems to underestimate transpiration variability, with a standard deviation of 0.61 mm/d compared to 0.87 mm/d in the observations (with SMS, the standard deviation is 0.97 mm/d).
+As such, PHS features a low bias for high transpiration values and a high bias for low transpiration values (Figure \ref{fig:t}c).
+The difference in modeled transpiration between PHS and SMS derives from divergent water stress dynamics, which are presented in Section zqz.
 
 \subsubsection{Transpiration, TFE}
 Both models have a harder time modeling transpiration under TFE, with higher RMSE and lower correlation compared to the ambient simulations (Figure \ref{fig:t}b,d).
-This has precedent, as previous studies have demonstrated that the effect of TFE is not captured well by the CLM (nor other DGVMs) \citep{restrepo2017,powell2013}.
 PHS improves on SMS, with lower RMSE and higher correlation, but with a significant high bias (Figure \ref{fig:t}b,d).
+Observations show a 41\% reduction in transpiration due to TFE, as compared to a 21\% reduction in modeled transpiration with PHS (and 32\% with SMS).
 The PHS bias seems to decrease over time (Figure \ref{fig:t2}), suggesting that the model may lag in its response to the TFE.
+Reproducing the effect of TFE has precedent in the literature, and has not been captured well by the CLM (nor other DGVMs) \citep{restrepo2017,powell2013}.
 
 \subsubsection{Soil Moisture, Ambient Conditions}
+The second source of observations for model evaluation are volumetric soil moisture. 
 
 \subsubsection{Soil Moisture, TFE}
 
@@ -873,7 +877,7 @@ Modeling stomatal conductance and photosynthesis, especially subject to water st
     \begin{figure}[h]
      \centering
      \includegraphics[width=30pc]{../figs3/sm2.pdf}
-     \caption{Volumetric soil moisture (-) over time under ambient and TFE conditions at depth of 50cm.
+     \caption{Volumetric soil water content (-) over time under ambient and TFE conditions at depth of 50cm.
      (a/b) SMS
      (c/d) PHS.
      RMSE are 0.048, 0.049, 0.022, and 0.029 [move to plot].
