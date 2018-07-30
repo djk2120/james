@@ -499,10 +499,22 @@ Observations show a 41\% reduction in transpiration due to TFE, as compared to a
 The PHS bias seems to decrease over time (Figure \ref{fig:t2}), suggesting that the model may lag in its response to the TFE.
 Reproducing the effect of TFE has precedent in the literature, and has not been captured well by the CLM (nor other DGVMs) \citep{restrepo2017,powell2013}.
 
-\subsubsection{Soil Moisture, Ambient Conditions}
+\subsubsection{Soil Moisture}
 The second source of observations for model evaluation are volumetric soil moisture. 
+These are valuable, because the parameterization of root water uptake is updated with PHS.
+Modeled soil moisture values (at a depth of 50 cm) are comparable during the wet season (February-March-April) under ambient conditions, both yielding averages of 28\% (Figure \ref{fig:sm2}a,c).
+With sufficient water, soil moisture is largely determined by the soil field capacity.
+With water shortfalls, the models diverge.
 
-\subsubsection{Soil Moisture, TFE}
+
+    During the dry season, SMS simulations yield much lower values for soil matric potential (Figure \ref{fig:sm}, Supp Fig \ref{supp:sm}). 
+    SMS root-fraction-weighted average soil potential is -1.42 MPa under ambient conditions (dry season), compared to -0.14 MPa with PHS (average predawn root water potential).
+    With TFE, SMS dry season soil potential drops to -2.51 MPa and PHS to -0.50 MPa.
+
+    PHS better matches observations of soil moisture, with RMSE lower by up to 55\% (Figure \ref{fig:sm2}, Supp Fig \ref{supp:sm2}).
+    The SMS values correspond to a significant dry bias (Figure \ref{fig:sm2}), especially in the first meter of the soil column.
+    This is associated with the soil wilting parameter ($\psi_c$), which takes the value -2.5MPa for the broadleaf evergreen tropical PFT \citep{oleson2013}.
+
 
 \subsection{Vegetation water potential}
 
@@ -614,14 +626,7 @@ PHS, TFE & 0.449 & 0.741 \\
     Likewise HR occurs during both the wet and dry seasons.
     The seasonality changes with TFE, as AMB has more HR during Sept-Jan, while TFE features more HR during Feb-Apr.
 
-\subsection{Soil moisture}
-    During the dry season, SMS simulations yield much lower values for soil matric potential (Figure \ref{fig:sm}, Supp Fig \ref{supp:sm}). 
-    SMS root-fraction-weighted average soil potential is -1.42 MPa under ambient conditions (dry season), compared to -0.14 MPa with PHS (average predawn root water potential).
-    With TFE, SMS dry season soil potential drops to -2.51 MPa and PHS to -0.50 MPa.
 
-    PHS better matches observations of soil moisture, with RMSE lower by up to 55\% (Figure \ref{fig:sm2}, Supp Fig \ref{supp:sm2}).
-    The SMS values correspond to a significant dry bias (Figure \ref{fig:sm2}), especially in the first meter of the soil column.
-    This is associated with the soil wilting parameter ($\psi_c$), which takes the value -2.5MPa for the broadleaf evergreen tropical PFT \citep{oleson2013}.
  
 \subsection{Soil moisture effect on transpiration}    
     Model soil potential shows limited relationship to sap flux observations under ambient conditions (Supp Fig \ref{supp:cool}b,f), which is indicative of limited soil moisture stress.

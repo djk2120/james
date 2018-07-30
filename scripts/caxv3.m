@@ -97,7 +97,8 @@ hh(51:55) = [0,0,0,0,0];
 hh(56:60) = [0,0,0,0,0];
 hh(61:65) = [0,0,0,0,0];
 hh(66:70) = [0,0,0,0,0];
-hh(71:75) = [0,0,0,1,0];
+hh(71:75) = [0,0,0,0,0];
+hh(76:80) = [0,0,1,0,0];
 
 
 
@@ -111,6 +112,108 @@ hh(71:75) = [0,0,0,1,0];
 %18 = hr
 %19 = smp full profile time series
 %20 = h2osoi with obs
+
+
+if hh(78)>0
+   [a,b1,c,~,explained,mu]=pca(qrootsink((2:20)+40,:)') ;
+   for i=1:5
+       subplot(2,6,i)
+       plot(a(:,i))
+   end
+   c(1)/sum(c)
+   subplot(2,6,6)
+   bar(c(1:10)/sum(c))
+   xlim([0,11])
+   ylim([0,1])
+   
+   [a,b2,c]=pca(qrootsink((2:20),:)') ;
+   for i=1:5
+       subplot(2,6,i+6)
+       plot(a(:,i))
+   end
+   subplot(2,6,12)
+   bar(c(1:10)/sum(c))
+   xlim([0,11])
+   ylim([0,1])
+    
+   figure
+   subplot(2,1,1)
+   plot(b1(:,1))
+   subplot(2,1,2)
+   plot(b2(:,1))
+   
+    
+end
+
+if hh(77)>0
+   [a,b1,c,~,explained,mu]=pca(smp((2:20)+40,:)') ;
+   for i=1:5
+       subplot(2,6,i)
+       plot(a(:,i))
+   end
+   c(1)/sum(c)
+   subplot(2,6,6)
+   bar(c(1:10)/sum(c))
+   xlim([0,11])
+   ylim([0,1])
+   
+   [a,b2,c]=pca(smp((2:20),:)') ;
+   for i=1:5
+       subplot(2,6,i+6)
+       plot(a(:,i))
+   end
+   subplot(2,6,12)
+   bar(c(1:10)/sum(c))
+   xlim([0,11])
+   ylim([0,1])
+    
+   figure
+   subplot(2,1,1)
+   plot(b1(:,1))
+   subplot(2,1,2)
+   plot(b2(:,1))
+   
+    
+end
+
+
+if hh(76)>0
+    amb_sm = csvread('../goodsim/control_sm.csv');
+    amb_sm(amb_sm==0) = nan;
+    tfe_sm = csvread('../goodsim/tfe_sm.csv');
+    tfe_sm(tfe_sm==0) = nan;
+    
+    amb_sm(:,1) = 2001+(amb_sm(:,1)+0.5)/365;
+    tfe_sm(:,1) = 2001+(tfe_sm(:,1)+0.5)/365;
+    
+    %which soil layer
+    depths = [nan,0.15,0.5,1,2,3,4,5];
+    zzix   = nan(8,1);
+    for i=3:8
+        j  = 0;
+        go = 1;
+        while go
+            j = j+1;
+            if zs(j)>depths(i)
+                zzix(i)=j-1;
+                go = 0;
+            end
+        end
+    end
+    
+    ix = month>1&month<5;
+    g  = findgroups(year(ix));
+    splitapply(@mean,h2osoi(7:20:80,ix)',g')
+    mean(h2osoi(7:20:80,ix),2)
+    
+    ix = month>8&month<12;
+    g  = findgroups(year(ix));
+    splitapply(@mean,h2osoi(7:20:80,ix)',g')
+    mean(h2osoi(7:20:80,ix),2)
+    
+    
+    
+end
 
 if hh(75)>0
     ix1 = p(:,1)>0;
@@ -2841,6 +2944,7 @@ if hh(20)>0
         end
         
         box off
+        grid on
         
         if j==2||j==4
             plot(2001+[10/12,10/12],[.3*4/30+.05,.3*1/30+.05],'k-','LineWidth',2)
@@ -2864,7 +2968,7 @@ if hh(20)>0
     xdk.Position = [2,2,7,5];
     xdk.PaperSize = [7,5];
     xdk.PaperPosition = [0,0,7,5];
-    if hh(20)>0
+    if hh(20)>1
         print(xdk,'../figs3/sm2','-dpdf')
     end
     
