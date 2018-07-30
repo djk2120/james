@@ -516,32 +516,34 @@ We highlight the soil moisture at 50 cm depth, but similar patterns are observed
 To emphasize the effect of root water uptake, we opt for the depth of 50 cm, because it features higher root fraction than the deeper soil layers, but avoids the high frequency dynamics of the top soil layer from soil evaporation and precipitation events.
 
 
-
 \subsection{Vegetation water potential}
 
-    Under ambient conditions, the PHS modeled 2003 dry season (September-October-November) average sunlit leaf water potential is -1.65 MPa at midday (local time 12-14h, Figure \ref{fig:vwp}a). 
-    The midday pressure drop primarily occurs between $\psi_{root}$ and $\psi_{stem}$ ($\Delta\psi$=-1.47 MPa), representing the root collar and upper stem, respectively. There is relatively little drop in root water potential between predawn and midday (-0.05MPa) and only -0.02MPa difference between stem and sunlit leaf potential at midday (and -0.01 MPa between stem and shade leaf).
+PHS updates both the water stress and root water uptake parameterizations based on modeling vegetation water potential.
+Leaf water potential shows typical diurnal drop, reaching -1.65 MPa at midday (Figure \ref{fig:vwp}a).
+Most of the midday pressure drop occurs between $\psi_{root}$ and $\psi_{stem}$ ($\Delta$=-1.47 MPa), representing the root collar and upper stem, respectively.
+Stem shade and leaf are all identical.
     
     Under TFE, model midday leaf water potential decreases to -2.31 MPa (Figure \ref{fig:vwp}b). 
-    Partitioned among the segments of the SPAC, the changes in leaf water potential (totaling -0.66MPa) due to TFE are:
-    -0.44MPa soil potential,
-    -0.66MPa soil-to-root,
-    +0.45MPa root-to-stem, and 
-    -0.001MPa stem-to-leaf.
+    This change derives from a decrease in predawn root water potential (lower soil moisture) and an increase in the drop in root water potential between predawn and midday (due to reduced soil-to-root conductance).
     This comports with previous evidence that seasonal changes in hydraulic resistance are larger belowground \citep{fisher2006}.
-    
-    Modeled root water potential values match wet season observations, but are less negative than dry season observations under ambient conditions \citep{fisher2006}.
-    Midday leaf water potential features a seasonal cycle, with lower values during the dry season (Figure \ref{fig:vwp}c).
-    Modeled leaf water potential values under ambient conditions are less negative than field observations (-1.71 MPa during the wet season and -2.47 MPa during the dry season, from \cite{fisher2006}), but are within the range of observations.
-    The model seems to underestimate isohydricity (which would be reflected by minimal leaf water potential drop during drought) in response to TFE, showing a significant drop in leaf water potential of 0.66MPa (dry season, 2003), whereas observations showed no significant difference \citep{fisher2006}. 
+    Despite reduced stem conductance, the pressure drop from root-to-stem actually decreases to -1.02 MPa, with transpiration reduced by 54\%.
+    In this way, stomatal regulation serves to mitigate the drop in leaf water potential due to soil drying and reduced hydraulic conductance. 
+
+    Midday leaf water potential features seasonal cycle, with lower values during the dry season.
+    Under ambient conditions, modeled root water potential values match wet season observations, but are less negative than dry season observations \citep{fisher2006}.
+    Modeled leaf water potential values under ambient conditions are less negative than field observations (\cite{fisher2006} report average $\psi_{leaf}$ of -1.71 MPa during the wet season and -2.47 MPa during the dry season), 
+    but are within the range of observations.
+    The parameter values used here may underestimate isohydricity (which would be reflected by minimal leaf water potential drop during drought) in response to TFE, showing a significant drop in leaf water potential of 0.66MPa (dry season, 2003), whereas observations showed no significant difference \citep{fisher2006}. 
 
 \subsection{Stress factor}
     
-    Average midday stress values are comparable during the 2003 dry season (Figure \ref{fig:stress1}) between the two model configurations.
-    Under ambient conditions, the average stress factor values are 0.59 and 0.54 for SMS and PHS, respectively (dry season, midday), 
-    decreasing to 0.16 and 0.21, with TFE.
+    Modeling vegetation water potential enables a diurnal mode of variability in vegetation water stress.
     While the SMS stress factor has minimal diurnal variability (Figure \ref{fig:stress1}a),
     PHS features increased stress at midday (Figure \ref{fig:stress1}b), corresponding to the drop in leaf water potential (Figure \ref{fig:vwp}b,c).
+    While average midday stress values are comparable during the 2003 dry season (Figure \ref{fig:stress1}) between the two model configurations, 
+    PHS achieves more photosynthesis (Supp Fig \ref{supp:fpsn}), due to the lower stress in the mornings and afternoons.
+    
+
     Indeed, the PHS stress factor responds to both soil moisture and VPD (Figure \ref{fig:stress2}c,d), while SMS responds only to soil moisture (Figure \ref{fig:stress2}a,b).
     This dependence on VPD results in more wet season stress with PHS (as compared to SMS) under both ambient and TFE conditions (Figure \ref{fig:gpp}a-d).
 
@@ -563,7 +565,7 @@ PHS values correspond to predawn root water potential.}
 \end{table}
 
 
-\subsection{GPP and Transpiration}
+\subsection{GPP}
     The two models predict similar GPP during the TFE simulation (2002-2003), with 1.98 kgC/m$^2$/yr for SMS and 2.00 kgC/m$^2$/yr for PHS, 
     but GPP is lower for PHS under ambient conditions (2.43 kgC/m$^2$/yr) as compared to SMS (2.73 kgC/m$^2$/yr, Figure \ref{fig:gpp}e-h).
     Seasonal variability in GPP is smaller with PHS, especially under ambient conditions. 
@@ -849,6 +851,11 @@ Modeling stomatal conductance and photosynthesis, especially subject to water st
     Likewise observational constraints of vertically-resolved states and fluxes underground are scarce.
     Follow-up work will be geared towards parameter estimation and assessing model skill.
 
+    Partitioned among the segments of the SPAC, the changes in leaf water potential (totaling -0.66MPa) due to TFE are:
+    -0.44MPa soil potential,
+    -0.66MPa soil-to-root,
+    +0.45MPa root-to-stem, and 
+    -0.001MPa stem-to-leaf.
 
 \section{Acknowledgments}
 
@@ -889,33 +896,6 @@ Modeling stomatal conductance and photosynthesis, especially subject to water st
      RMSE are 0.048, 0.049, 0.022, and 0.029 [move to plot].
      Arrows indicate start of TFE. Figure \ref{supp:sm2} shows the same plots at 7 other soil depths. }
      \label{fig:sm2}
-  \end{figure}
-
-
-
-  \begin{figure}[h]
-     \centering
-     \includegraphics[width=30pc]{../figs3/rwu.pdf}
-     \caption{Binned boxplot of root water uptake versus soil potential for Soil Layer 5 (2002-3).
-     Red lines mark the median, with boxes spanning the interquartile range.
-     Bin widths are 0.25 MPa for SMS and 0.1 MPa for PHS.
-     Soil Layer 5 is shown, because it is close enough to the surface (20 to 32 cm) to experience a significant range in soil potential, and it has a large root fraction (14.4\%, only Soil Layer 6 has a larger root fraction).
-     Only midday (12h-14h) timesteps are used to highlight the relationship with soil potential.}
-     \label{fig:rwu}
-  \end{figure}
-  \clearpage
-  
-
-        \clearpage
-    \begin{figure}[h]
-     \centering
-     \includegraphics[width=30pc]{../figs3/qdry.pdf}
-     \caption{2003 dry season (SON) cumulative root water uptake and precipitation. 
-     (a) Cumulative precipitation over time under ambient conditions
-     (b,c) Cumulative water uptake over time from above and below 0.2m, respectively.
-     (d) Cumulative root water uptake with depth.
-     }
-     \label{fig:qdry}
   \end{figure}
   
   
@@ -966,7 +946,46 @@ Modeling stomatal conductance and photosynthesis, especially subject to water st
      }
      \label{fig:gpp}
   \end{figure} 
-           
+
+    \clearpage
+    \begin{figure}[h]
+     \centering
+     \includegraphics[width=30pc]{../figs3/hr.pdf}
+     \caption{Total hydraulic redistribution (cm) by month across 2003. For (a) ambient through-fall conditions, and (b) 60\% throughfall exclusion. 
+     Darker shading shows portion of HR at night [6pm,6am), lighter shading shows portion of HR during day [6am,6pm).
+     Total HR refers to the sum of all negative root water uptake flows, when water is deposited by roots into a given soil layer.}
+     \label{fig:hr}
+  \end{figure}
+
+        \clearpage
+    \begin{figure}[h]
+     \centering
+     \includegraphics[width=30pc]{../figs3/qdry.pdf}
+     \caption{2003 dry season (SON) cumulative root water uptake and precipitation. 
+     (a) Cumulative precipitation over time under ambient conditions
+     (b,c) Cumulative water uptake over time from above and below 0.2m, respectively.
+     (d) Cumulative root water uptake with depth.
+     }
+     \label{fig:qdry}
+  \end{figure}
+  
+
+
+  \begin{figure}[h]
+     \centering
+     \includegraphics[width=30pc]{../figs3/rwu.pdf}
+     \caption{Binned boxplot of root water uptake versus soil potential for Soil Layer 5 (2002-3).
+     Red lines mark the median, with boxes spanning the interquartile range.
+     Bin widths are 0.25 MPa for SMS and 0.1 MPa for PHS.
+     Soil Layer 5 is shown, because it is close enough to the surface (20 to 32 cm) to experience a significant range in soil potential, and it has a large root fraction (14.4\%, only Soil Layer 6 has a larger root fraction).
+     Only midday (12h-14h) timesteps are used to highlight the relationship with soil potential.}
+     \label{fig:rwu}
+  \end{figure}
+  \clearpage
+  
+
+
+             
 
 
   
@@ -985,15 +1004,7 @@ Modeling stomatal conductance and photosynthesis, especially subject to water st
      \label{fig:sm}
   \end{figure}
 
-    \clearpage
-    \begin{figure}[h]
-     \centering
-     \includegraphics[width=30pc]{../figs3/hr.pdf}
-     \caption{Total hydraulic redistribution (cm) by month across 2003. For (a) ambient through-fall conditions, and (b) 60\% throughfall exclusion. 
-     Darker shading shows portion of HR at night [6pm,6am), lighter shading shows portion of HR during day [6am,6pm).
-     Total HR refers to the sum of all negative root water uptake flows, when water is deposited by roots into a given soil layer.}
-     \label{fig:hr}
-  \end{figure}
+
   
 
               \begin{figure}[h]
@@ -1030,6 +1041,16 @@ Modeling stomatal conductance and photosynthesis, especially subject to water st
          \clearpage
 
         \clearpage
+
+    \begin{figure}[h]
+     \centering
+     \includegraphics[width=20pc]{../figs3/suppfpsn.pdf}
+     \caption{2003 dry season diurnal mean photosynthesis under ambient and TFE conditions for the two model configurations.
+     }
+     \label{supp:fpsn}
+  \end{figure}
+
+
     \begin{figure}[h]
      \centering
      \includegraphics[width=30pc]{../figs3/qwet.pdf}

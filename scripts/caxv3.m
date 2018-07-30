@@ -98,7 +98,7 @@ hh(56:60) = [0,0,0,0,0];
 hh(61:65) = [0,0,0,0,0];
 hh(66:70) = [0,0,0,0,0];
 hh(71:75) = [0,0,0,0,0];
-hh(76:80) = [1,0,0,0,0];
+hh(76:80) = [0,0,1,0,0];
 
 
 
@@ -113,6 +113,45 @@ hh(76:80) = [1,0,0,0,0];
 %19 = smp full profile time series
 %20 = h2osoi with obs
 
+if hh(78)>0
+   
+    ix = month>8&month<12&year==2003;
+    
+    g = findgroups(mcsec(ix));
+    f = splitapply(@mean,fpsn(:,ix)',g');
+    
+    xdk = figure;
+    c = [zeros(1,3);zeros(1,3);0.7*ones(1,3);0.7*ones(1,3)];
+    xv = 0.25:0.5:24;
+    ll = {'-',':','-',':'};
+    for i=[3,4,1,2]
+        plot(xv,f(:,i),'Color',c(i,:),'LineWidth',2,'Linestyle',ll{i})
+        hold on
+    end
+    set(gca,'xtick',0:3:24)
+    xlim([0,24])
+    legend({'SMSamb','SMStfe','PHSamb','PHStfe'})
+    grid on
+    box off
+    ylabel({'2003 Dry Season Mean';'Photosynthesis (umol/m2/s)'})
+    xlabel('Hour')
+    
+    ix = month>8&month<12&year==2003&mcsec<=diurn(20);
+    12*86400/1e6*mean(fpsn(:,ix),2)
+    
+    ix = month>8&month<12&year==2003&mcsec>=diurn(25)&mcsec<=diurn(28);
+    12*86400/1e6*mean(fpsn(:,ix),2)
+
+    xdk.Units = 'inches';
+    xdk.Position = [2,2,5,3];
+    xdk.PaperSize = [5,3];
+    xdk.PaperPosition = [0,0,5,3];
+    
+    if hh(78)>0
+    print(xdk,'../figs3/suppfpsn','-dpdf')
+    end
+    
+end
 
 
 
