@@ -98,7 +98,8 @@ hh(56:60) = [0,0,0,0,0];
 hh(61:65) = [0,0,0,0,0];
 hh(66:70) = [0,0,0,0,0];
 hh(71:75) = [0,0,0,0,0];
-hh(76:80) = [0,0,1,0,0];
+hh(76:80) = [0,0,0,0,0];
+hh(81:85) = [0,1,0,0,0];
 
 
 
@@ -112,6 +113,135 @@ hh(76:80) = [0,0,1,0,0];
 %18 = hr
 %19 = smp full profile time series
 %20 = h2osoi with obs
+
+
+if hh(82)>0
+   
+    ix = year==2003&month>7;
+    dp = 0*fctr(:,ix);
+    for i=1:4
+    dp(i,:) = 1800*cumsum(prec(ix))-1800*4e-7*cumsum(fctr(i,ix));
+    end
+
+    subplot(2,2,1)
+    plot(dp(3,:),'.')
+    subplot(2,2,3)
+    plot(btran(3,ix),'.')
+
+    n = sum(ix);
+    nd = floor(n/48)+1;
+    g  = repmat(1:nd,48,1);
+    g  = g(1:n);
+    
+    
+    
+    
+    subplot(2,2,2)
+    plot(splitapply(@mean,dp(1,:),g),...
+    splitapply(@mean,btran(1,ix),g),'.')
+
+
+    
+    
+end
+
+
+
+
+if hh(81)>0
+    
+    ix = year>2001&month>1&month<5;
+    cwet = 12*1800/1e6*sum(fpsn(:,ix),2);
+    100*(1-cwet(4)/cwet(3));
+    100*(1-cwet(2)/cwet(1));
+    
+    ix = year>2001&month>8&month<12;
+    cwet = 12*1800/1e6*sum(fpsn(:,ix),2);
+    100*(1-cwet(4)/cwet(3));
+    100*(1-cwet(2)/cwet(1));
+    
+    ix = month>1&month<5&fsds>0;
+    
+    subplot(1,3,1)
+    plot(fsds(ix),btran(1,ix),'.')
+    subplot(1,3,2)
+    plot(vpd(ix),btran(1,ix),'.')
+    subplot(1,3,3)
+    plot(vpd(ix),fsds(1,ix),'.')
+    
+end
+
+if hh(80)>0
+    ix = year==2003;
+    out = zeros(12,2);
+    out2= zeros(12,2);
+    out3= zeros(12,2);
+    ct = 0;
+    for ee = [1,3]
+        ct = ct+1;
+    for mm= 1:12
+        c=12*1800/1e6*sum(fpsn(ee,ix&month==mm)); %gC/m2
+        t=4e-7*1800*sum(fctr(ee,ix&month==mm));   %kgH2O/m2
+        out2(mm,ct) = c;
+        out3(mm,ct) = t;
+        out(mm,ct) = c/t; %gC/kgH2O
+        %4e-7*1800*sum(fctr(1+2*(ee==2),ix&month==mm));
+    end
+    end
+    subplot(3,1,1)
+    bar(out2)
+        subplot(3,1,2)
+    bar(out3)
+    subplot(3,1,3)
+    bar(out)
+end
+
+
+if hh(79)>0
+    g = findgroups(365*year+doy);
+    f = 12*86400/1e6*splitapply(@mean,fpsn',g');
+    
+    ot = (0.5:1095)/365+2001;
+    ix = ot>2002;
+    subplot(1,2,1)
+    plot(ot(ix),f(ix,3)-f(ix,4),'.')
+    ylim([0,10])
+    subplot(1,2,2)
+    plot(ot(ix),f(ix,1)-f(ix,2),'.')
+    ylim([0,10])
+    
+
+    xf = 12*86400/1e6;
+    xf*mean(fpsn(4,year>2001))
+    xf*mean(fpsn(3,year>2001))
+    100*(1-mean(fpsn(4,year>2001))/mean(fpsn(3,year>2001)))
+    xf*mean(fpsn(2,year>2001))
+    xf*mean(fpsn(1,year>2001))
+    100*(1-mean(fpsn(2,year>2001))/mean(fpsn(1,year>2001)))
+    
+    ss = 0*fsds;
+    ee = 8;
+    ss(1:10) = vegwp(ee,10);
+    for i=1:1094
+        ix = (1:48)+(i-1)*48+9;
+        p1 = vegwp(ee,10+(i-1)*48);
+        p2 = vegwp(ee,10+i*48);
+        ss(ix) = p1:(p2-p1)/48:p2-(p2-p1)/48;
+    end
+    ss(max(ix):end)=p2;
+    ss2 = repmat(vegwp(8,mcsec==diurn(10)),48,1);
+    ss2 = ss2(1:n);
+    
+    figure
+    ix = fsds>300&fsds<400;
+    subplot(1,2,1)
+    plot(ss(ix),btran(2,ix),'.')
+    
+    subplot(1,2,2)
+    plot(ss2(ix),btran(2,ix),'.')
+end
+
+
 
 if hh(78)>0
    
@@ -3865,9 +3995,9 @@ if hh(9)>0
     end
     
     
-    xx = [0.09,0.54,0.09,0.54];
+    xx = [0.09,0.555,0.09,0.555];
     yy = [0.55,0.55,0.78,0.78];
-    w  = 0.44;
+    w  = 0.43;
     h  = 0.17;
     cc = [0,0,0.7,0.7];
     ss = '(c)(d)(a)(b)';

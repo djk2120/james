@@ -237,6 +237,7 @@ This study uses CLM5 to compare two parameterizations of water stress (Sections 
     \begin{linenomath*}
     \begin{equation}
     f_{w,\text{PHS}} = 2^{-\left(\dfrac{\psi_{\text{leaf}}}{\psi_{50}}\right)^{c_k}}
+    \label{eq:fwphs}
     \end{equation}
     \end{linenomath*}
     
@@ -535,20 +536,23 @@ Stem shade and leaf are all identical.
     but are within the range of observations.
     The parameter values used here may underestimate isohydricity (which would be reflected by minimal leaf water potential drop during drought) in response to TFE, showing a significant drop in leaf water potential of 0.66MPa (dry season, 2003), whereas observations showed no significant difference \citep{fisher2006}. 
 
-\subsection{Stress factor}
+\subsection{Stress dynamics}
     
     Modeling vegetation water potential enables a diurnal mode of variability in vegetation water stress.
-    While the SMS stress factor has minimal diurnal variability (Figure \ref{fig:stress1}a),
-    PHS features increased stress at midday (Figure \ref{fig:stress1}b), corresponding to the drop in leaf water potential (Figure \ref{fig:vwp}b,c).
-    While average midday stress values are comparable during the 2003 dry season (Figure \ref{fig:stress1}) between the two model configurations, 
-    PHS achieves more photosynthesis (Supp Fig \ref{supp:fpsn}), due to the lower stress in the mornings and afternoons.
+    While the SMS stress factor has minimal diurnal variability
+    PHS features increased stress at midday (Figure \ref{fig:stress1}a,b), corresponding to the drop in leaf water potential induced by increasing demand for transpiration (Figure \ref{fig:vwp}b,c).
+    Average midday stress values are comparable during the 2003 dry season (Figure \ref{fig:stress1}) between the two model configurations, 
+    but PHS achieves more photosynthesis (Supp Fig \ref{supp:fpsn}), due to lower stress in the mornings and afternoons.
     
-
-    Indeed, the PHS stress factor responds to both soil moisture and VPD (Figure \ref{fig:stress2}c,d), while SMS responds only to soil moisture (Figure \ref{fig:stress2}a,b).
-    This dependence on VPD results in more wet season stress with PHS (as compared to SMS) under both ambient and TFE conditions (Figure \ref{fig:gpp}a-d).
+    The SMS stress factor lacks diurnal variability, because it is based on average root-zone soil matric potential (Equation \ref{bt:1}), which evolves over longer timescales.
+    PHS utilizes leaf water potential to calculate stress (Equation \ref{eq:fwphs}), which responds to both water supply and transpiration demand.
+    As such, the PHS stress factor responds to both soil moisture and VPD, while SMS responds only to soil moisture (Figure \ref{fig:stress2})..
+    Under ambient conditions, SMS features significant stress associated with declining soil water status, but PHS stress is primarily demand-driven, with less impact from soil moisture (Figure \ref{fig:stress2}a,c).
+    With TFE, stress increases in both model configurations, and the effect of soil moisture on PHS stress increases markedly (Figure \ref{fig:stress2}d).
+    PHS water stress reflects a requirement that plants avoid excessive xylem tension, which is associated with cavitation and mortality \citep{rowland2015}. 
 
 \begin{table}
-\caption{Root-zone soil potential $^a$ (MPa) terciles for Figure \ref{fig:stress2}}
+\caption{Root-zone soil potential $^a$ (MPa) terciles. The two cut-points are used to divide the points in each subplot of Figure \ref{fig:stress2} into three groups, based on root-zone soil moisture.}
 \label{tab:tercile}
 \centering
 \begin{tabular}{c c c }
@@ -559,13 +563,29 @@ SMS, TFE & -0.29 & -1.74 \\
 PHS, Ambient & -0.01 & -0.05 \\
 PHS, TFE & -0.05 & -0.33 \\
 \hline
-\multicolumn{2}{p{.5\linewidth}}{$^{a}$SMS values correspond to daily mean root-fraction weighted soil potential.
+\multicolumn{2}{p{.8\linewidth}}{$^{a}$SMS values correspond to daily mean root-fraction weighted soil potential.
 PHS values correspond to predawn root water potential.}
 \end{tabular}
 \end{table}
 
 
 \subsection{GPP}
+
+The two stress parameterizations feature differing seasonal cycles, with PHS experiencing less seasonal variability in stress (Figure \ref{fig:gpp}a-d).
+Under ambient conditions, SMS predicts little to no stress ($f_w$=1) during the wetter months (January through July).
+Meanwhile PHS models significant stress, with $f_w$ as low as 0.5.
+Despite abundant soil water, PHS still imposes stress, especially when VPD and downwelling solar radiation are high.
+This results in lower wet season GPP than with SMS (Figure \ref{fig:gpp}e,g).
+Contrastingly, SMS imposes more stress than PHS during the dry season (Figure \ref{fig:gpp}b,d), 
+resulting in lower dry season GPP.
+Obs suggest GPP should increase during dry season \citep{restrepo2017}
+
+Effect of TFE, primarily during dry season. 
+Larger for SMS -27\%, versus -18\%
+
+
+
+
     The two models predict similar GPP during the TFE simulation (2002-2003), with 1.98 kgC/m$^2$/yr for SMS and 2.00 kgC/m$^2$/yr for PHS, 
     but GPP is lower for PHS under ambient conditions (2.43 kgC/m$^2$/yr) as compared to SMS (2.73 kgC/m$^2$/yr, Figure \ref{fig:gpp}e-h).
     Seasonal variability in GPP is smaller with PHS, especially under ambient conditions. 
