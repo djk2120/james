@@ -117,30 +117,51 @@ hh(81:85) = [0,1,0,0,0];
 
 if hh(82)>0
    
-    ix = year==2003&month>7;
-    dp = 0*fctr(:,ix);
-    for i=1:4
-    dp(i,:) = 1800*cumsum(prec(ix))-1800*4e-7*cumsum(fctr(i,ix));
+    ix = year>2001&month>1&month<5;
+    100*(1-sum(fpsn(2,ix))/sum(fpsn(1,ix)))
+    100*(1-sum(fpsn(4,ix))/sum(fpsn(3,ix)))
+    
+    ix = year>2001&month>8&month<12;
+    100*(1-sum(fpsn(2,ix))/sum(fpsn(1,ix)))
+    100*(1-sum(fpsn(4,ix))/sum(fpsn(3,ix)))
+
+    ixm = 0*(1:1095)';
+    for yy=2
+    for mm=2:4
+        ix = yy*365+sum(eomday(2001,1:mm-1))+(1:eomday(2001,mm));
+        ixm(ix) = 1;
     end
+    end
+        
+    ot = 0.5:1095;
+    ix1 = p(:,1)>0;
+    ix2 = p(:,2)>0;
 
-    subplot(2,2,1)
-    plot(dp(3,:),'.')
-    subplot(2,2,3)
-    plot(btran(3,ix),'.')
-
-    n = sum(ix);
-    nd = floor(n/48)+1;
-    g  = repmat(1:nd,48,1);
-    g  = g(1:n);
+    
+    disp('..........')
+    disp('wet season')
+    ix = year>2002&month>1&month<5;
+    100*(1-sum(fctr(2,ix))/sum(fctr(1,ix)))
+    100*(1-sum(fctr(4,ix))/sum(fctr(3,ix)))
+    
+    100*(1-mean(p(ixm&ix2,2))/mean(p(ixm&ix1,1)))
+    
+    disp('..........')
+    disp('dry season')
+    
+    ixm = 0*(1:1095)';
+    for yy=2
+    for mm=9:11
+        ix = yy*365+sum(eomday(2001,1:mm-1))+(1:eomday(2001,mm));
+        ixm(ix) = 1;
+    end
+    end
     
     
-    
-    
-    subplot(2,2,2)
-    plot(splitapply(@mean,dp(1,:),g),...
-    splitapply(@mean,btran(1,ix),g),'.')
-
-
+    ix = year>2002&month>8&month<12;
+    100*(1-sum(fctr(2,ix))/sum(fctr(1,ix)))
+    100*(1-sum(fctr(4,ix))/sum(fctr(3,ix)))
+    100*(1-mean(p(ixm&ix2,2))/mean(p(ixm&ix1,1)))
     
     
 end

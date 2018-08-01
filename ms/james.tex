@@ -494,10 +494,11 @@ As such, PHS features a low bias for high transpiration values and a high bias f
 The difference in modeled transpiration between PHS and SMS derives from divergent water stress dynamics, which are presented in Section zqz.
 
 \subsubsection{Transpiration, TFE}
+\label{sect:ttfe}
 Both models have a harder time modeling transpiration under TFE, with higher RMSE and lower correlation compared to the ambient simulations (Figure \ref{fig:t}b,d).
 PHS improves on SMS, with lower RMSE and higher correlation, but with a significant high bias (Figure \ref{fig:t}b,d).
-Observations show a 41\% reduction in transpiration due to TFE, as compared to a 21\% reduction in modeled transpiration with PHS (and 32\% with SMS).
-The PHS bias seems to decrease over time (Figure \ref{fig:t2}), suggesting that the model may lag in its response to the TFE.
+Wet season OBS -32\%, PHS -1.6\%, SMS -4\%
+Dry season OBS -60\%, PHS -48\%, SMS -62\%
 Reproducing the effect of TFE has precedent in the literature, and has not been captured well by the CLM (nor other DGVMs) \citep{restrepo2017,powell2013}.
 
 \subsubsection{Soil Moisture}
@@ -578,44 +579,14 @@ Despite abundant soil water, PHS still imposes stress, especially when VPD and d
 This results in lower wet season GPP than with SMS (Figure \ref{fig:gpp}e,g).
 Contrastingly, SMS imposes more stress than PHS during the dry season (Figure \ref{fig:gpp}b,d), 
 resulting in lower dry season GPP.
-Obs suggest GPP should increase during dry season \citep{restrepo2017}
+Observations show increased GPP during the dry season \citep{restrepo2017}, suggesting that both model configurations, 
+but especially SMS, may overestimate dry season water stress under ambient conditions.  
 
-Effect of TFE, primarily during dry season. 
-Larger for SMS -27\%, versus -18\%
-
-
-
-
-    The two models predict similar GPP during the TFE simulation (2002-2003), with 1.98 kgC/m$^2$/yr for SMS and 2.00 kgC/m$^2$/yr for PHS, 
-    but GPP is lower for PHS under ambient conditions (2.43 kgC/m$^2$/yr) as compared to SMS (2.73 kgC/m$^2$/yr, Figure \ref{fig:gpp}e-h).
-    Seasonal variability in GPP is smaller with PHS, especially under ambient conditions. 
-    The standard deviations of daily GPP (2002-2003) are 0.49 and 1.55 gC/m2/d for AMB/TFE, 
-    as compared to 1.53, 2.73 gC/m2/d with SMS.
-    Lower maximal photosynthesis and less variability in GPP are both related to updates to the water stress factor implemented with PHS.
-
-    PHS has a stress response to high levels of transpiration (Supp Fig \ref{supp:tstress}c,d) due to the associated drops in leaf water potential.
-    This negative feedback limits maximal transpiration and photosyntheis, while reducing variability.  
-    Transpiration shows a seasonal pattern in both models (Figure \ref{fig:t}a,b), but with a larger amplitude for SMS.
-    For example, under ambient conditions, the 10th and 90th percentiles for daily total transpiration with SMS are 1.65 and 4.22 mm/d ($\Delta$=2.57 mm/d).
-    That range exceeds the span for PHS: 1.85 and 3.49 mm/d ($\Delta$=1.64 mm/d).
-    Under ambient conditions, PHS underestimates transpiration variability as compared to sap flux observations (Figure \ref{fig:t}e).
-    However PHS yields a better overall fit to the field observations, with higher R$^2$  and lower RMSE compared to SMS 
-    under both ambient and TFE conditions (Figure \ref{fig:t}c-f, Table 3).
-    
-    \begin{table}[h]
-\caption{Summary statistics evaluating the relationship between modeled transpiration and sap flux observations (plotted in Figure \ref{fig:t})}
-\label{tab:sapflux}
-\centering
-\begin{tabular}{c c c }
-Simulation & R$^2$ & RMSE (mm/d) \\
-\hline
-SMS, Ambient & 0.434 & 0.764 \\
-PHS, Ambient & 0.742 & 0.508 \\
-SMS, TFE & 0.303 & 1.026 \\
-PHS, TFE & 0.449 & 0.741 \\
-\hline
-\end{tabular}
-\end{table}
+The modeled effect of TFE is relatively small during the wet season, with modeled reductions in GPP of 1.3 and 3.8\% for PHS and SMS, respectively.
+Based on transpiration observations (see Section \ref{sect:ttfe}), both configurations likely underestimate the drought effect during the wet season (discussed further in Section zqz).
+SMS imposes more dry season stress, resulting in a 63\% reduction of GPP due to TFE, compared to 44\% with PHS.
+Comparing wet season to dry season, and ambient conditions to TFE, PHS features less stress than SMS resulting from precipitation shortfalls.
+The xylem tension stress of PHS imparts a negative feedback on photosynthesis and transpiration, described in Section zqz.
 
     
 \subsection{Root water uptake: dynamics}
@@ -839,6 +810,24 @@ Because SMS does not resolve water potential through the vegetation substrate, t
     In lieu of this type of assessment, we propose that the new PHS model structure 1) is more closely aligned with known plant hydraulics theory, 2) provides significantly improved connections to real-world observational data streams (of leaf and stem water status, sap flow, percent loss conductance) and 3) represents known features of ecohydrological function that the default model cannot capture, including hydraulic redistribution, changes in the depth of water uptake with drought stress, plant embolism impacts on gas exchange and responses of water uptake to changes in leaf:root ratios. 
     
 \section{Cut from other sections}
+
+
+    The two models predict similar GPP during the TFE simulation (2002-2003), with 1.98 kgC/m$^2$/yr for SMS and 2.00 kgC/m$^2$/yr for PHS, 
+    but GPP is lower for PHS under ambient conditions (2.43 kgC/m$^2$/yr) as compared to SMS (2.73 kgC/m$^2$/yr, Figure \ref{fig:gpp}e-h).
+    Seasonal variability in GPP is smaller with PHS, especially under ambient conditions. 
+    The standard deviations of daily GPP (2002-2003) are 0.49 and 1.55 gC/m2/d for AMB/TFE, 
+    as compared to 1.53, 2.73 gC/m2/d with SMS.
+    Lower maximal photosynthesis and less variability in GPP are both related to updates to the water stress factor implemented with PHS.
+
+    PHS has a stress response to high levels of transpiration (Supp Fig \ref{supp:tstress}c,d) due to the associated drops in leaf water potential.
+    This negative feedback limits maximal transpiration and photosynthesis, while reducing variability.  
+    Transpiration shows a seasonal pattern in both models (Figure \ref{fig:t}a,b), but with a larger amplitude for SMS.
+    For example, under ambient conditions, the 10th and 90th percentiles for daily total transpiration with SMS are 1.65 and 4.22 mm/d ($\Delta$=2.57 mm/d).
+    That range exceeds the span for PHS: 1.85 and 3.49 mm/d ($\Delta$=1.64 mm/d).
+    Under ambient conditions, PHS underestimates transpiration variability as compared to sap flux observations (Figure \ref{fig:t}e).
+    However PHS yields a better overall fit to the field observations, with higher R$^2$  and lower RMSE compared to SMS 
+    under both ambient and TFE conditions (Figure \ref{fig:t}c-f, Table 3).
+
     Plant hydraulics can potentially improve model predictions of vegetation response to climate change \citep{sperry2015}, 
     especially if parameter ranges and model complexity can be constrained \citep{rogers2017}.
     Numerous site-level models have deployed plant hydraulics (e.g. \citet{williams1996,sperry1998,bohrer2005}), and studies show
