@@ -592,9 +592,16 @@ The xylem tension stress of PHS imparts a negative feedback on photosynthesis an
 
 \subsection{Root water uptake}
 
-root water uptake affects the vertical distribution of water
-sms gets tends to achieve more negative soil potentials, whereas phs spreads the drying over a larger vertical extent.
-phs RWU is more sensitive to soil potential (Figure \ref{fig:rwu})
+In addition to updating water stress, PHS implements a new parameterization of root water uptake, consistent with hydraulic theory.
+The parameterization of root water uptake affects the vertical distribution of soil water (Figure \ref{fig:sm}, Supp Fig \ref{supp:sm}), as
+SMS tends to achieve drier upper soil layers, whereas PHS spreads the drying over a larger vertical extent.
+As described in Section zqz (Figure \ref{fig:sm2}), this is associated with a dry bias in the root-zone for SMS (within the dry season).
+With PHS, RWU is more sensitive to soil potential (Figure \ref{fig:rwu}), decreasing sharply as soils dry.
+
+while this is one site and subject to the exact parameter values, the result is likely generalizable given the values on the CLM parameter file for $\psi_c$, which range from -2.2 to -4.2 MPa \citep{oleson2013}.
+hydraulic conductance based on xylem vulnerability and soil hydraulics.
+soil conductivity declines by 3 orders of magnitude 
+
 
 
 main points working towards:

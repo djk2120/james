@@ -93,13 +93,13 @@ hh(31:35) = [0,0,0,0,0];
 hh(36:40) = [0,0,0,0,0];
 hh(41:45) = [0,0,0,0,0];
 hh(46:50) = [0,0,0,0,0];
-hh(51:55) = [0,0,0,0,0];
+hh(51:55) = [0,1,0,0,0];
 hh(56:60) = [0,0,0,0,0];
 hh(61:65) = [0,0,0,0,0];
 hh(66:70) = [0,0,0,0,0];
 hh(71:75) = [0,0,0,0,0];
 hh(76:80) = [0,0,0,0,0];
-hh(81:85) = [0,0,0,0,1];
+hh(81:85) = [0,0,0,0,0];
 hh(86:90) = [0,0,0,0,0];
 
 
@@ -114,6 +114,39 @@ hh(86:90) = [0,0,0,0,0];
 %18 = hr
 %19 = smp full profile time series
 %20 = h2osoi with obs
+
+if hh(87)>0
+    ix = year>2001&mcsec>=diurn(25)&mcsec<=diurn(28);
+
+    
+    subplot(1,2,1)
+    g = 1/101972*min(189000,max(0,smp(45,:) + 255000));
+    plot(smp(45,:)/101972,g,'.')
+    hold on
+    g = 1/101972*min(189000,max(0,smp(65,:) + 255000));
+    plot(smp(65,:)/101972,g,'.')
+    xlim([-3,0])
+    ylim([0,2])
+    
+    
+    subplot(1,2,2)
+    g  = (smp(5,:)-vegwp(4,:))/101972;
+    plot(smp(5,ix)/101972,g(ix),'.')
+    g  = (smp(25,:)-vegwp(8,:))/101972;
+    hold on
+    plot(smp(25,ix)/101972,g(ix),'.')
+    set(gca,'ColorOrderIndex',1)
+    g  = (smp(5,:)-vegwp(4,:))/101972;
+    plot(smp(5,ix)/101972,g(ix),'.')
+        xlim([-3,0])
+    ylim([0,2])
+    
+    
+    
+    
+    
+end
+
 
 if hh(86)>0
     ix = year==2003;
@@ -1506,8 +1539,8 @@ if hh(52)>0
     xv = cell(1,12);
     for i=1:12
         if mod(i,2)==1
-            xv{1,i} = -3+i*0.25;
-            xv{2,i} = -1.2+i*0.1;
+            xv{1,i} = -2.75+i*0.25;
+            xv{2,i} = -1.1+i*0.1;
         else
             xv{1,i} = '';
             xv{2,i} = '';
@@ -1521,6 +1554,9 @@ if hh(52)>0
     for i=41:80
         dp(i,:) = [0,min(189000,smp(i,1:end-1)+255000)];   %model uses last timestep smp!
     end
+    for i=1:40
+        dp(i,:) = [0,smp(i,1:end-1)-vegwp(4+4*(i>20),2:end)];
+    end
     dp(dp<100) = nan;
     k = qrootsink./dp;
     k(isnan(k))=0;
@@ -1528,6 +1564,8 @@ if hh(52)>0
     ot  = 1:n;
     ix  = year>2001&mcsec>=diurn(25)&mcsec<=diurn(28);
     ix2 = ot(ix)-1;
+    
+    
     subplot(2,2,1)
     plot(smp(ss+60,ix2)/101972,log10(k(ss+60,ix)),'.','Color',...
          [0.8500    0.3250    0.0980])
@@ -1536,10 +1574,10 @@ if hh(52)>0
         [0    0.4470    0.7410])
     xlim([-2.75,0])
     ylim([-13,-7])
-        set(gca,'xtick',-2.75:0.25:0)
+        set(gca,'xtick',-2.5:0.25:0)
     set(gca,'xticklabel',xv(1,:))
     xlabel('Soil Potential (MPa)')
-    ylabel({'Log of (implied)';'conductance [log10(s-1)]'})
+    ylabel({'Log of (modeled)';'conductance [log10(s-1)]'})
     title('SMS')
     box off
     text(10.5/11*-2.75,-13+23/25*6,'(a)','FontSize',14,'FontWeight','bold')
@@ -1552,7 +1590,7 @@ if hh(52)>0
         [0    0.4470    0.7410])
     xlim([-1.1,0])
     ylim([-13,-7])
-    set(gca,'xtick',-1.1:0.1:0)
+    set(gca,'xtick',-1:0.1:0)
     set(gca,'xticklabel',xv(2,:))
     xlabel('Soil Potential (MPa)')
     ylabel({'Log of (modeled)';'conductance [log10(s-1)]'})
@@ -1560,6 +1598,37 @@ if hh(52)>0
     box off
     text(10.5/11*-1.1,-13+23/25*6,'(b)','FontSize',14,'FontWeight','bold')
     
+    subplot(2,2,3)
+    plot(smp(65,ix2)/101972,dp(65,ix)/101972,'.','Color',[0.8500    0.3250    0.0980])
+    hold on
+    plot(smp(45,ix2)/101972,dp(45,ix)/101972,'.','Color',[0    0.4470    0.7410])
+    xlim([-2.75,0])
+    set(gca,'xtick',-2.5:0.25:0)
+    set(gca,'xticklabel',xv(1,:))
+    text(10.5/11*-2.75,23/25*2,'(c)','FontSize',14,'FontWeight','bold')
+    xlabel('Soil Potential (MPa)')
+    ylabel('\Delta\psi (MPa)')
+    
+    subplot(2,2,4)
+    plot(smp(5,ix2)/101972,dp(5,ix)/101972,'.','Color',[0    0.4470    0.7410])
+    hold on
+    plot(smp(25,ix2)/101972,dp(25,ix)/101972,'.','Color',[0.8500    0.3250    0.0980])
+    
+    plot(smp(5,ix2)/101972,dp(5,ix)/101972,'.','Color',[0    0.4470    0.7410])
+    xlim([-2.75,0])
+    set(gca,'xtick',-2.5:0.25:0)
+    set(gca,'xticklabel',xv(1,:))
+    xlim([-1.1,0])
+    set(gca,'xtick',-1:0.1:0)
+    set(gca,'xticklabel',xv(2,:))
+    ylim([0,2])
+    legend({'AMB','TFE'})
+    text(10.5/11*-1.1,23/25*2,'(d)','FontSize',14,'FontWeight','bold')
+    xlabel('Soil Potential (MPa)')
+    ylabel('\Delta\psi (MPa)')
+    
+    
+    if 1==2
     
     out = zeros(11,1);
     ix  = year>2001&mcsec>=diurn(25)&mcsec<=diurn(28);
@@ -1580,7 +1649,7 @@ if hh(52)>0
         
 
     
-    subplot(2,2,3)
+    subplot(3,2,5)
     b=bar(out(:,3:4));
     b(2).FaceColor = [0.8500    0.3250    0.0980];
     b(1).FaceColor = [0    0.4470    0.7410];
@@ -1592,7 +1661,7 @@ if hh(52)>0
     text(1,2300,'(c)','FontSize',14,'FontWeight','bold')
     box off
     
-    subplot(2,2,4)
+    subplot(3,2,6)
     b=bar(out(:,1:2));
     b(2).FaceColor = [0.8500    0.3250    0.0980];
     b(1).FaceColor = [0    0.4470    0.7410];
@@ -1605,12 +1674,14 @@ if hh(52)>0
     text(1,2300,'(d)','FontSize',14,'FontWeight','bold')
     box off
     
+    end
+    
     xdk.Units = 'inches';
     xdk.Position = [2,2,7,5];
     xdk.PaperSize = [7,5];
     xdk.PaperPosition = [0,0,7,5];
     
-    if hh(52)>1
+    if hh(52)>0
         print(xdk,'../figs3/suppcond','-dpdf')
     end
     
