@@ -596,11 +596,16 @@ In addition to updating water stress, PHS implements a new parameterization of r
 The parameterization of root water uptake affects the vertical distribution of soil water (Figure \ref{fig:sm}, Supp Fig \ref{supp:sm}), as
 SMS tends to achieve drier upper soil layers, whereas PHS spreads the drying over a larger vertical extent.
 As described in Section zqz (Figure \ref{fig:sm2}), this is associated with a dry bias in the root-zone for SMS (within the dry season).
-With PHS, RWU is more sensitive to soil potential (Figure \ref{fig:rwu}), decreasing sharply as soils dry.
+With PHS, RWU (within a given soil layer) is more sensitive to soil potential (Figure \ref{fig:rwu}), decreasing more sharply as soils dry as compared to SMS.
 
-while this is one site and subject to the exact parameter values, the result is likely generalizable given the values on the CLM parameter file for $\psi_c$, which range from -2.2 to -4.2 MPa \citep{oleson2013}.
+The dynamics in RWU are a combination of changes in the conductance ($k$) for water flow and the gradient ($\Delta\psi$) in water potential.
+With PHS, reductions in RWU with drying are imposed by declining conductance (Supp Fig \ref{supp:cond}).
+At the same time, the hydraulic gradient tends to increase with drying (due to dynamic $\psi_{\text{root}}$), partially mitigating those reductions.
+With SMS, the opposite is true: reductions in RWU are imposed by declining hydraulic gradient (as soil potential approaches the constant $\psi_c$, -2.5MPa) and are (to a small extent) mitigated by increases in the (implied) conductance. 
 hydraulic conductance based on xylem vulnerability and soil hydraulics.
-soil conductivity declines by 3 orders of magnitude 
+PHS results in higher sensitivity to soil potential, because conductance falls off by almost 3 orders of magnitude as soil potential declines from 0 to -1 MPa.
+This derives mostly from the exponential dynamics of soil conductivity \citep{brooks1964}.
+On the other hand, SMS $\Delta\psi$ decreases by less than half an order of magnitude over the same range.
 
 
 
@@ -1131,10 +1136,15 @@ Modeling stomatal conductance and photosynthesis, especially subject to water st
   \begin{figure}[h]
      \centering
      \includegraphics[width=30pc]{../figs3/suppcond.pdf}
-     \caption{Log of conductance versus soil potential for Soil Layer 5 (2002-3).
-     Only midday (12h-14h) timesteps are shown to emphasize the relationship with soil potential.
+     \caption{(a,b) Log of conductance versus soil potential for Soil Layer 5.
+     (c,d) Hydraulic gradient ($\Delta\psi$) versus soil potential for Soil Layer 5.
+     PHS conductance decreases by almost 3 orders of magnitude between 0 and -1MPa, 
+     while SMS $\Delta\psi$ decreases by less than 1 order of magnitude between 0 and -2MPa, 
+     leading to higher sensitivity to soil potential with PHS, see Figure \ref{fig:rwu}.
+     
+     Only midday (12h-14h, 2002-2003) timesteps are shown to emphasize the relationship with soil potential.
      With SMS, conductance is not modeled explicitly, but rather calculated as $k$=$q/\Delta\psi$ (see Section zqz). 
-     Beyond 2.5MPa, SMS implied conductance equals 0.
+     For soil potentials greater than or equal to 2.5MPa, $\Delta\psi$=0, and SMS implied conductance is undefined, but could probably be considered to equal 0.
      PHS conductance captures both root tissue and soil matrix resistances (operating in series).}
      \label{supp:cond}
   \end{figure}

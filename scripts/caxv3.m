@@ -1580,6 +1580,7 @@ if hh(52)>0
     ylabel({'Log of (modeled)';'conductance [log10(s-1)]'})
     title('SMS')
     box off
+    grid on
     text(10.5/11*-2.75,-13+23/25*6,'(a)','FontSize',14,'FontWeight','bold')
     
     subplot(2,2,2)
@@ -1596,37 +1597,39 @@ if hh(52)>0
     ylabel({'Log of (modeled)';'conductance [log10(s-1)]'})
     title('PHS')
     box off
+    grid on
     text(10.5/11*-1.1,-13+23/25*6,'(b)','FontSize',14,'FontWeight','bold')
     
     subplot(2,2,3)
-    plot(smp(65,ix2)/101972,dp(65,ix)/101972,'.','Color',[0.8500    0.3250    0.0980])
+    plot(smp(65,ix2)/101972,log10(dp(65,ix)/.101972),'.','Color',[0.8500    0.3250    0.0980])
     hold on
-    plot(smp(45,ix2)/101972,dp(45,ix)/101972,'.','Color',[0    0.4470    0.7410])
+    plot(smp(45,ix2)/101972,log10(dp(45,ix)/.101972),'.','Color',[0    0.4470    0.7410])
     xlim([-2.75,0])
     set(gca,'xtick',-2.5:0.25:0)
     set(gca,'xticklabel',xv(1,:))
-    text(10.5/11*-2.75,23/25*2,'(c)','FontSize',14,'FontWeight','bold')
+    text(10.5/11*-2.75,3+23/25*4,'(c)','FontSize',14,'FontWeight','bold')
     xlabel('Soil Potential (MPa)')
-    ylabel('\Delta\psi (MPa)')
+    ylabel('Log of \Delta\psi [log10(Pa)]')
         box off
+        grid on
     subplot(2,2,4)
-    plot(smp(5,ix2)/101972,dp(5,ix)/101972,'.','Color',[0    0.4470    0.7410])
+    plot(smp(5,ix2)/101972,log10(dp(5,ix)/.101972),'.','Color',[0    0.4470    0.7410])
     hold on
-    plot(smp(25,ix2)/101972,dp(25,ix)/101972,'.','Color',[0.8500    0.3250    0.0980])
+    plot(smp(25,ix2)/101972,log10(dp(25,ix)/.101972),'.','Color',[0.8500    0.3250    0.0980])
     
-    plot(smp(5,ix2)/101972,dp(5,ix)/101972,'.','Color',[0    0.4470    0.7410])
-    xlim([-2.75,0])
+    plot(smp(5,ix2)/101972,log10(dp(5,ix)/.101972),'.','Color',[0    0.4470    0.7410])
     set(gca,'xtick',-2.5:0.25:0)
     set(gca,'xticklabel',xv(1,:))
     xlim([-1.1,0])
     set(gca,'xtick',-1:0.1:0)
     set(gca,'xticklabel',xv(2,:))
-    ylim([0,2])
-    legend({'AMB','TFE'})
-    text(10.5/11*-1.1,23/25*2,'(d)','FontSize',14,'FontWeight','bold')
+    ylim([3,7])
+    legend({'AMB','TFE'},'Location','Southwest')
+    text(10.5/11*-1.1,3+23/25*4,'(d)','FontSize',14,'FontWeight','bold')
     xlabel('Soil Potential (MPa)')
-    ylabel('\Delta\psi (MPa)')
+    ylabel('Log of \Delta\psi [log10(Pa)]')
         box off
+        grid on
     
     if 1==2
     
@@ -1681,12 +1684,25 @@ if hh(52)>0
     xdk.PaperSize = [7,5];
     xdk.PaperPosition = [0,0,7,5];
     
-    if hh(52)>1
+    if hh(52)>0
         print(xdk,'../figs3/suppcond','-dpdf')
     end
     
 
-        
+    figure
+    
+    plot(smp(25,ix2),log10(dp(25,ix)),'.')
+    bins = -120000:10000:0;
+    g = nan*smp(25,:);
+    for i = 1:length(bins)-1
+        ix = smp(25,:)>bins(i)&smp(25,:)<=bins(i+1);
+        g(ix) = i;
+    end
+    
+        ot  = 1:n;
+    ix  = year>2001&mcsec>=diurn(25)&mcsec<=diurn(28);
+    ix2 = ot(ix)-1;
+    splitapply(@nanmean,log10(dp(25,ix)),g(ix2))
     
     
 end
