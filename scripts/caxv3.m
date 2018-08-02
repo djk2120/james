@@ -1608,7 +1608,7 @@ if hh(52)>0
     text(10.5/11*-2.75,23/25*2,'(c)','FontSize',14,'FontWeight','bold')
     xlabel('Soil Potential (MPa)')
     ylabel('\Delta\psi (MPa)')
-    
+        box off
     subplot(2,2,4)
     plot(smp(5,ix2)/101972,dp(5,ix)/101972,'.','Color',[0    0.4470    0.7410])
     hold on
@@ -1626,7 +1626,7 @@ if hh(52)>0
     text(10.5/11*-1.1,23/25*2,'(d)','FontSize',14,'FontWeight','bold')
     xlabel('Soil Potential (MPa)')
     ylabel('\Delta\psi (MPa)')
-    
+        box off
     
     if 1==2
     
@@ -1681,7 +1681,7 @@ if hh(52)>0
     xdk.PaperSize = [7,5];
     xdk.PaperPosition = [0,0,7,5];
     
-    if hh(52)>0
+    if hh(52)>1
         print(xdk,'../figs3/suppcond','-dpdf')
     end
     
