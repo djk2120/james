@@ -480,6 +480,7 @@ No tuning was used for the SMS configuration.
 \section{Results}  
 
 \subsection{Comparison with observations}
+\label{sect:obs}
 
 We tested two configurations of CLM5 with simulations of the Caxiuan\~a throughfall exclusion experiment over 2002-2004. We compare modeled transpiration with observations derived from sap flux velocity and modeled soil moisture with observations using TDR sensors (see Section \ref{sect:exp} for experiment and observation details).
 
@@ -644,11 +645,16 @@ Finally I could point out non-linearity in (Supp Fig \ref{supp:cond}) to explain
     creating four new water potential prognostic variables ($\psi_{\text{root}}$, $\psi_{\text{stem}}$, $\psi_{\text{shade-leaf}}$, and $\psi_{\text{sun-leaf}}$).  
     The model is able to capture expected diurnal and seasonal dynamics of vegetation water potential, 
     with lower values within the stem and leaves at midday and during the dry season (Figure \ref{fig:vwp}).
+    PHS uses the new vegetation water potential variables to advance the physical basis for representing the SPAC, particularly with regard to modeling vegetation water stress and root water uptake.
     
-    Beyond matching observations of leaf and stem water potentials, the ambition of plant hydraulic models is to advance the physical basis for modeling the SPAC, while improving predictions of water and carbon fluxes. 
-    Following from this, the bulk of our analysis and discussion pertains to how modeling vegetation water potential can be used to improve the representations of transpiration, root water uptake, and soil moisture dynamics within the CLM. 
+    To demonstrate the new model dynamics, we utilized a site-level experiment testing PHS by simulating the Caxiuan\~a throughfall exclusion experiment \citep{fisher2007}.
+    We found that PHS improves output for both transpiration and soil moisture relative to observations as compared to the control model (see Section \ref{sect:obs}, Figures \ref{fig:t},\ref{fig:sm2}).
+    This improvement in model skill is not generalizable, but rather is specific to the site and experiment described herein, and model skill will need to be re-evaluated in a broader context.
+    Instead, the value of opting for a single site (in lieu of global simulations) resides in the opportunity to perform more detailed analyses to elucidate the new model dynamics to complement this first description of PHS.
+    
 
 \subsection{Water stress and stomatal conductance}
+\subsubsection{Soil moisture stress vs. Xylem tension stress}
     \label{sect:stress}
     PHS uses leaf water potential as the input to the water stress factor, 
     replacing the previous version based on soil water potential (SMS).
