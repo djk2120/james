@@ -602,52 +602,18 @@ The dynamics in RWU are a combination of changes in the conductance ($k$) for wa
 With PHS, reductions in RWU with drying are imposed by declining conductance (Supp Fig \ref{supp:cond}).
 At the same time, the hydraulic gradient tends to increase with drying (due to dynamic $\psi_{\text{root}}$), partially mitigating those reductions.
 With SMS, the opposite is true: reductions in RWU are imposed by declining hydraulic gradient (as soil potential approaches the constant $\psi_c$, -2.5MPa) and are (to a small extent) mitigated by increases in the (implied) conductance. 
-hydraulic conductance based on xylem vulnerability and soil hydraulics.
 PHS results in higher sensitivity to soil potential, because conductance falls off by almost 3 orders of magnitude as soil potential declines from 0 to -1 MPa.
 This derives mostly from the exponential dynamics of soil conductivity \citep{brooks1964}.
 On the other hand, SMS $\Delta\psi$ decreases by less than half an order of magnitude over the same range.
 
+While RWU within a given soil layer is more sensitive to soil potential with PHS (than with SMS), this does not mean that transpiration overall is more sensitive to shortfalls in precipitation.
+As described in Section zqz (Figure \ref{fig:t2}), transpiration is less sensitive to dry season onset and to TFE than SMS.
+This is because RWU within PHS has more flexibility to compensate for dry layers by increasing extraction from moist layers.
+As such, RWU is more sensitive to soil potential, but PHS can spread the transpiration sink over a larger vertical extent.
+PHS is less sensitive to TFE, due to increases in RWU below 2 meters in depth (Figure \ref{fig:qdry}d).
+The shifting of water extraction based on water availability is also present under ambient conditions, as PHS shifts RWU from near-surface (0-0.2m depth) to the deeper soil layers (beyond 0.2m) during drydowns (Figure \ref{fig:qdry}a-c).
 
-
-main points working towards:
-\begin{itemize}
-\item soil water sensitivity
-\item compensatory RWU
-\item better model structure
-\item SMS dry bias
-\item SMS non-linearity
-\end{itemize}
-
-PHS is more sensitive to soil water.
-
-
-End with non-linearity
-
-\subsection{Root water uptake: dynamics}
-    Root water uptake is more sensitive to soil potential with PHS (Figure \ref{fig:rwu}),
-    which follows from sharp declines in hydraulic conductance with drying.
-    Hydraulic conductance decreases by approximately three orders of magnitude across the range of PHS soil potential (Supp Figure \ref{supp:cond}b).
-    In contrast, the SMS-implied conductance increases with drying over most of the soil potential domain, until $\psi_{\text{soil}}$ reaches -2.5MPa, beyond which it is defined to equal 0 (Supp Figure \ref{supp:cond}a).
-    Root water uptake still decreases with SMS as soils dry beyond -2.5MPa, but only because of the decrease in $\Delta\psi$ (Supp Figure \ref{supp:cond2}c).
-    Whereas PHS imparts a diurnal cycle to root water uptake via dynamic root water potential, 
-    the hydraulic gradient with SMS is defined by $\psi_c$, which is constant, requiring a diurnal cycle in the (implied) hydraulic conductance (Supp Figure \ref{supp:cond2}).
-    
-\subsection{Root water uptake: profiles}
-    Overall, the two model configurations feature comparable transpiration during the dry season under ambient conditions (PHS: 28.3cm, SMS: 28.5cm).
-    However they feature distinct vertical profiles, as PHS removes less water from intermediate soil layers (0.5-1.5meters) (Figure \ref{fig:qdry}d).
-    SMS removes more water from these layers, due to the lower sensitivity of root water uptake to soil potential.
-    Likewise, partitioning of root water uptake within the soil column is more sensitive to precipitation in PHS (Figure \ref{fig:qdry}a-c). In PHS, during the longer periods without rain, surface extraction plateaus and transpiration is fueled by the deeper soil water.
-    After rain events, surface extraction renews, while at depth, root water fluxes reverse, with water deposited through root hydraulic redistribution instead of being extracted.
-    Both models decrease surface extraction under TFE (Figure \ref{fig:qdry}b), but PHS has a larger compensation from below 0.2m (Figure \ref{fig:qdry}c),
-    allowing more overall transpiration (14.6 vs. 10.8 cm).
-    
-    During the wet season PHS utilizes more water from the near-surface soil layers (Figure \ref{fig:qwet}b), 
-    with zero net root water uptake below soil depth of 35.2 cm in ambient conditions (or beyond 9.6cm under TFE).
-    SMS extracts 49.8\% (AMB) and 81.5\% (TFE) of total transpiration from beyond those levels (Figure \ref{fig:qwet}). 
-    PHS does extract some water from beyond 35.2/9.6cm into the soil profile, but in service of hydraulic redistribution, 
-    sending the extracted water deeper into the soil column.
-       
-       
+Finally I could point out non-linearity in (Supp Fig \ref{supp:cond}) to explain why SMS $\psi_s$ gets stuck at $\psi_c$.
 
         
 \subsection{Hydraulic redistribution}

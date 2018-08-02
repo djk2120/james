@@ -93,14 +93,14 @@ hh(31:35) = [0,0,0,0,0];
 hh(36:40) = [0,0,0,0,0];
 hh(41:45) = [0,0,0,0,0];
 hh(46:50) = [0,0,0,0,0];
-hh(51:55) = [0,1,0,0,0];
+hh(51:55) = [0,0,0,0,0];
 hh(56:60) = [0,0,0,0,0];
 hh(61:65) = [0,0,0,0,0];
 hh(66:70) = [0,0,0,0,0];
 hh(71:75) = [0,0,0,0,0];
 hh(76:80) = [0,0,0,0,0];
 hh(81:85) = [0,0,0,0,0];
-hh(86:90) = [0,0,0,0,0];
+hh(86:90) = [0,0,1,0,0];
 
 
 
@@ -114,6 +114,21 @@ hh(86:90) = [0,0,0,0,0];
 %18 = hr
 %19 = smp full profile time series
 %20 = h2osoi with obs
+
+if hh(88)>0
+    
+   a = [0.17/dz(8),0.08/dz(9)]
+    
+   ix = year==2003&month>8&month<12;
+   [(1:12)',sum(qrootsink(1:12,ix),2),sum(qrootsink((1:12)+40,ix),2)]
+   
+   [180*sum(sum(qrootsink(8:9,ix))),180*sum(sum(qrootsink((8:9)+40,ix)))]
+   [180*sum(sum(qrootsink(9:10,ix))),180*sum(sum(qrootsink((9:10)+40,ix)))]
+   [180*sum(sum(qrootsink(8:10,ix))),180*sum(sum(qrootsink((8:10)+40,ix)))]
+   
+   
+end
+
 
 if hh(87)>0
     ix = year>2001&mcsec>=diurn(25)&mcsec<=diurn(28);
