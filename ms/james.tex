@@ -511,11 +511,13 @@ with SMS consistently generating lower soil moisture values (than PHS) within th
 Soil moisture averages to 10\% during the dry season (September-October-November, ambient case, depth=50cm) with SMS, as compared to 16\% with PHS.
 PHS better comports with observations, reducing RMSE by 57\% relative to SMS (Figure \ref{fig:sm2}a,c).
 
+We highlight the soil moisture at 50 cm depth, but similar patterns are observed throughout the first meter of the soil column (Supp Fig \ref{supp:sm2}).
+The 50-cm depth emphasizes the effect of modeled root water uptake, because it features higher root fraction than the deeper soil layers (Figure \ref{roots}), 
+but avoids the high frequency dynamics of the top soil layer from soil evaporation and precipitation events that do not relate to differences between PHS and SMS.
 Under TFE, SMS minimum soil moisture is again limited to 10\%, but holds there for a longer duration (Figure \ref{fig:sm2}).
 Contrastingly, PHS achieves lower dry season soil moisture values under TFE.
-Again PHS better comports with observations, reducing RMSE by 42\% relative to SMS (Figure \ref{fig:sm2}a,c).
-We highlight the soil moisture at 50 cm depth, but similar patterns are observed throughout the first meter of the soil column (Supp Fig \ref{supp:sm2}).
-To emphasize the effect of root water uptake, we opt for the depth of 50 cm, because it features higher root fraction than the deeper soil layers, but avoids the high frequency dynamics of the top soil layer from soil evaporation and precipitation events.
+PHS better comports with observations, reducing RMSE by 42\% relative to SMS (Figure \ref{fig:sm2}a,c).
+However both models seem to feature a high bias in soil moisture in the root-zone (under TFE) during the wet season (Figure \ref{fig:sm2}, Supp Fig \ref{supp:sm2}).
 
 
 \subsection{Vegetation water potential}
@@ -588,7 +590,27 @@ SMS imposes more dry season stress, resulting in a 63\% reduction of GPP due to 
 Comparing wet season to dry season, and ambient conditions to TFE, PHS features less stress than SMS resulting from precipitation shortfalls.
 The xylem tension stress of PHS imparts a negative feedback on photosynthesis and transpiration, described in Section zqz.
 
-    
+\subsection{Root water uptake}
+
+root water uptake affects the vertical distribution of water
+sms gets tends to achieve more negative soil potentials, whereas phs spreads the drying over a larger vertical extent.
+phs RWU is more sensitive to soil potential (Figure \ref{fig:rwu})
+
+
+main points working towards:
+\begin{itemize}
+\item soil water sensitivity
+\item compensatory RWU
+\item better model structure
+\item SMS dry bias
+\item SMS non-linearity
+\end{itemize}
+
+PHS is more sensitive to soil water.
+
+
+End with non-linearity
+
 \subsection{Root water uptake: dynamics}
     Root water uptake is more sensitive to soil potential with PHS (Figure \ref{fig:rwu}),
     which follows from sharp declines in hydraulic conductance with drying.
@@ -612,6 +634,9 @@ The xylem tension stress of PHS imparts a negative feedback on photosynthesis an
     SMS extracts 49.8\% (AMB) and 81.5\% (TFE) of total transpiration from beyond those levels (Figure \ref{fig:qwet}). 
     PHS does extract some water from beyond 35.2/9.6cm into the soil profile, but in service of hydraulic redistribution, 
     sending the extracted water deeper into the soil column.
+       
+       
+
         
 \subsection{Hydraulic redistribution}
     SMS precludes hydraulic redistribution (HR) setting root water uptake to zero when reversed gradients in water potential occur (contrary to PHS).
@@ -956,15 +981,31 @@ Modeling stomatal conductance and photosynthesis, especially subject to water st
      \label{fig:gpp}
   \end{figure} 
 
-    \clearpage
+
+
+      \clearpage
     \begin{figure}[h]
      \centering
-     \includegraphics[width=30pc]{../figs3/hr.pdf}
-     \caption{Total hydraulic redistribution (cm) by month across 2003. For (a) ambient through-fall conditions, and (b) 60\% throughfall exclusion. 
-     Darker shading shows portion of HR at night [6pm,6am), lighter shading shows portion of HR during day [6am,6pm).
-     Total HR refers to the sum of all negative root water uptake flows, when water is deposited by roots into a given soil layer.}
-     \label{fig:hr}
+     \includegraphics[width=30pc]{../figs3/smp.jpg}
+     \caption{Vertical profile of soil water content (by volume) over time under 60\% throughfall exclusion, for
+     (a) SMS, and 
+     (b) PHS.
+     Soil potential under ambient conditions is shown in Supp Fig \ref{supp:sm}.
+ }
+     \label{fig:sm}
   \end{figure}
+
+  \begin{figure}[h]
+     \centering
+     \includegraphics[width=30pc]{../figs3/rwu.pdf}
+     \caption{Binned boxplot of root water uptake versus soil potential for Soil Layer 5 (2002-3).
+     Red lines mark the median, with boxes spanning the interquartile range.
+     Bin widths are 0.25 MPa for SMS and 0.1 MPa for PHS.
+     Soil Layer 5 is shown, because it is close enough to the surface (20 to 32 cm) to experience a significant range in soil potential, and it has a large root fraction (14.4\%, only Soil Layer 6 has a larger root fraction).
+     Only midday (12h-14h) timesteps are used to highlight the relationship with soil potential.}
+     \label{fig:rwu}
+  \end{figure}
+  \clearpage
 
         \clearpage
     \begin{figure}[h]
@@ -980,38 +1021,23 @@ Modeling stomatal conductance and photosynthesis, especially subject to water st
   
 
 
-  \begin{figure}[h]
-     \centering
-     \includegraphics[width=30pc]{../figs3/rwu.pdf}
-     \caption{Binned boxplot of root water uptake versus soil potential for Soil Layer 5 (2002-3).
-     Red lines mark the median, with boxes spanning the interquartile range.
-     Bin widths are 0.25 MPa for SMS and 0.1 MPa for PHS.
-     Soil Layer 5 is shown, because it is close enough to the surface (20 to 32 cm) to experience a significant range in soil potential, and it has a large root fraction (14.4\%, only Soil Layer 6 has a larger root fraction).
-     Only midday (12h-14h) timesteps are used to highlight the relationship with soil potential.}
-     \label{fig:rwu}
-  \end{figure}
-  \clearpage
+
   
 
 
              
-
-
-  
-      \clearpage
+    \clearpage
     \begin{figure}[h]
      \centering
-     \includegraphics[width=30pc]{../figs3/smp.jpg}
-     \caption{Vertical profile of soil water potential (MPa) over time under 60\% throughfall exclusion, for
-     (a) SMS, and 
-     (b) PHS.
-     Note that color axes are different.
-     SMS soil potential spends long periods at -2.5MPa, which is the value of soil-wilting parameter, $\psi_c$.
-     Figure \ref{fig:sm2} subsets this data at 0.5m depth (dotted line), plotted alongside observations.
-     Soil potential under ambient conditions is shown in Supp Fig \ref{supp:sm}.
- }
-     \label{fig:sm}
+     \includegraphics[width=30pc]{../figs3/hr.pdf}
+     \caption{Total hydraulic redistribution (cm) by month across 2003. For (a) ambient through-fall conditions, and (b) 60\% throughfall exclusion. 
+     Darker shading shows portion of HR at night [6pm,6am), lighter shading shows portion of HR during day [6am,6pm).
+     Total HR refers to the sum of all negative root water uptake flows, when water is deposited by roots into a given soil layer.}
+     \label{fig:hr}
   \end{figure}
+
+  
+
 
 
   
@@ -1129,10 +1155,9 @@ Modeling stomatal conductance and photosynthesis, especially subject to water st
     \begin{figure}[h]
      \centering
      \includegraphics[width=30pc]{../figs3/suppsmp.jpg}
-     \caption{Vertical profile of soil water potential (MPa) through time under ambient through-fall conditions, for
+     \caption{Vertical profile of soil water content (by volume) through time under ambient through-fall conditions, for
      (a) PHS, and 
-     (b) SMS.
-     Note that color axes are different. }
+     (b) SMS. }
      \label{supp:sm}
   \end{figure}
   

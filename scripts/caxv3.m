@@ -99,7 +99,8 @@ hh(61:65) = [0,0,0,0,0];
 hh(66:70) = [0,0,0,0,0];
 hh(71:75) = [0,0,0,0,0];
 hh(76:80) = [0,0,0,0,0];
-hh(81:85) = [0,1,0,0,0];
+hh(81:85) = [0,0,0,0,1];
+hh(86:90) = [0,0,0,0,0];
 
 
 
@@ -114,6 +115,178 @@ hh(81:85) = [0,1,0,0,0];
 %19 = smp full profile time series
 %20 = h2osoi with obs
 
+if hh(86)>0
+    ix = year==2003;
+    hold on
+    plot([0.01,0.045],[0.01,0.045],'k')
+   plot(dz(1:3)*h2osoi((1:3)+20,ix),dz(1:3)*h2osoi((1:3)+60,ix),'.')
+   
+   
+
+
+    
+    
+end
+
+
+if hh(85)>0
+    yy=2002;
+    xdk = figure;
+    n = length(fsds);
+    %resample to height
+    x = 0;
+    ymax = [-1.2,-3];
+    vsn  = {'PHS','SMS'};
+    pnl  = {'(b)','(a)'};
+    cc   = [2,1];
+    for ss=[0,40]
+        x = x+1;
+        nz  = round(100*(zs(2:end)-zs(1:end-1)));
+        out = zeros(860,n);
+        ct  = 0;
+        
+        for i=1:20
+            ix = ct+(1:nz(i));
+            out(ix,:) =  repmat(h2osoi(ss+i,:),nz(i),1);
+            ct = ct+nz(i);
+        end
+        addpath('/Users/kennedy/Documents/MATLAB/othercolor')
+        colormap(othercolor('BrBG4'))
+        subplot(2,1,cc(x))
+        imagesc((1:n)/(48*365)+2001,(1:860)/100,out,[0.1,0.3])
+        title(vsn{x})
+        xlim([2003,2004])
+        ylim([0,4])
+        ylabel('Depth (m)')
+        if x==1
+            xlabel('Month (of 2003)')
+        end
+        aa={'2003','','','','2004'};
+        
+        set(gca,'xtick',cumsum([0,eomday(2001,1:12)])/365+2003)
+        set(gca,'ytick',0:2:8)
+        set(gca,'xticklabel',0:12)
+        c = colorbar;
+        ylabel(c,'Soil Water Content','FontSize',11)
+        text(2003.02,3.5,pnl{x},'FontSize',14,'FontWeight','bold','Color',[0.1,0.1,0.1])
+    
+    end
+    
+    xdk.Units = 'inches';
+    xdk.Position = [2,2,7,5];
+    xdk.PaperSize = [7,5];
+    xdk.PaperPosition = [0,0,7,5];
+    
+    if hh(85)>0
+        print(xdk,'../figs3/suppsmp','-djpeg','-r400')
+    end
+end
+
+
+if hh(84)>0
+    
+   ix = year==2003&month>8&month<12;
+   
+   bk = 10;
+   f  = .3;
+   
+   a1 = [ones(1,bk-1),f/dz(bk)];
+   a2 = [(dz(bk)-f)/dz(bk),ones(1,20-bk)];
+   
+   
+   
+   subplot(2,2,1)
+   plot(1800*cumsum(a1*qrootsink((1:bk)+40,ix)),'.')
+   hold on
+   plot(1800*cumsum(a1*qrootsink(1:bk,ix)),'.')
+   
+   subplot(2,2,2)
+   plot(1800*cumsum(a2*qrootsink((bk:20)+40,ix)),'.')
+   hold on
+   plot(1800*cumsum(a2*qrootsink(bk:20,ix)),'.')
+   
+   subplot(2,2,3)
+   plot(1800*cumsum(a1*qrootsink((1:bk)+60,ix)),'.')
+   hold on
+   plot(1800*cumsum(a1*qrootsink((1:bk)+20,ix)),'.')
+   
+   subplot(2,2,4)
+   plot(1800*cumsum(a2*qrootsink((bk:20)+60,ix)),'.')
+   hold on
+   plot(1800*cumsum(a2*qrootsink((bk:20)+20,ix)),'.')
+   
+   
+   
+end
+
+
+if hh(83)>0
+   x = 0*fctr;
+   nn = 10;
+   for i=1:4
+       x(i,:) = dz(1:nn)*h2osoi((1:nn)+(i-1)*20,:);
+   end
+   
+   ix = fsds>300&fsds<350;
+   subplot(2,1,1)
+   plot(x(3,ix)/sum(dz(1:nn)),fpsn(3,ix),'.')
+   xlim([0,0.4])
+   ylim([0,25])
+   
+   subplot(2,1,2)
+   plot(x(1,ix)/sum(dz(1:nn)),fpsn(1,ix),'.')
+   xlim([0,0.4])
+   ylim([0,25])
+   
+   figure
+   
+   ss = 5;
+   ix = year==2003;
+   subplot(2,2,1)
+   hist(h2osoi(40+ss,ix),0.01:0.01:0.4)
+   xlim([0,0.4])
+   ylim([0,10000])
+   
+      subplot(2,2,2)
+   hist(h2osoi(60+ss,ix),0.01:0.01:0.4)
+   xlim([0,0.4])
+   ylim([0,10000])
+   
+   subplot(2,2,3)
+   hist(h2osoi(ss,ix),0.01:0.01:0.4)
+   xlim([0,0.4])
+   ylim([0,10000])
+   
+   subplot(2,2,4)
+   hist(h2osoi(20+ss,ix),0.01:0.01:0.4)
+   xlim([0,0.4])
+   ylim([0,10000])
+   
+   if 1==2
+   figure
+   ss = 5;
+   ix = year==2003;
+   subplot(2,2,1)
+   hist(smp(40+ss,ix)/101972,-3:0.1:0)
+   xlim([-3,0.2])
+   ylim([0,12000])
+   subplot(2,2,2)
+   hist(smp(60+ss,ix)/101972,-3:0.1:0)
+   xlim([-3,0.2])
+   ylim([0,12000])
+   subplot(2,2,3)
+   hist(smp(ss,ix)/101972,-3:0.1:0)
+   xlim([-3,0.2])
+   ylim([0,12000])
+   subplot(2,2,4)
+   hist(smp(ss+20,ix)/101972,-3:0.1:0)
+   xlim([-3,0.2])
+   ylim([0,12000])
+   end
+
+   
+   
+end
 
 if hh(82)>0
    
@@ -3450,29 +3623,38 @@ if hh(16)>0
     end
     
     %create cumulative timeseries
-    ct = 0;
-    out2 = zeros(8,5000);
-    for w=[0,1]
-        if ~w
-            ix = year==2003&month>8&month<12;
-        else
-            ix = year==2003&month>1&month<5;
-        end
-        n  = sum(ix);
-        for d = [0,1]
-            if ~d
-                sv = 1:4;
-                %sv = 1:5;
-            else
-                sv=5:20;
-                %sv = 6:20;
-            end
-            for i=1:4
-                ct = ct+1;
-                out2(ct,1:n) = 180*cumsum(sum(qrootsink(sv+(i-1)*20,ix)));
-            end
-        end
+    out2 = zeros(8,sum(ix));
+    zbreak = 0.2;
+    if sum(zs==zbreak)==1
+    [a,b] = max(zs==zbreak); 
+    a1 = ones(1,b-1);
+    z1 = (1:b-1);
+    a2 = ones(1,21-b);
+    z2 = b:20;
+    else
+    ot = 1:length(zs);
+    bk = max(ot(zs<zbreak))
+    r  = 1.5-sum(dz(1:bk-1))
+    a1 = [ones(1,bk-1),r/dz(bk)]
+    z1 = 1:bk;
+    a2 = [1-r/dz(bk),ones(1,20-bk)]
+    z2 = bk:20;
     end
+    
+    for d=0:1
+    for i=1:4
+        if d
+            a  = a2;
+            iz = z2;  
+        else
+            a = a1;
+            iz = z1;
+        end
+        out2(d*4+i,:) = 180*cumsum(a*qrootsink(iz+(i-1)*20,ix));
+    end
+    end
+    
+    
     
     %first subplot
     xdk = figure;
@@ -3498,6 +3680,7 @@ if hh(16)>0
     text(2,-3.75,'(d)','FontWeight','bold','FontSize',14)
     box off
     
+    
     %other 3
     ix = year==2003&month>8&month<12;
     n  = sum(ix);
@@ -3522,7 +3705,7 @@ if hh(16)>0
             plot(doy(ix)+mcsec(ix)/max(diurn),180*cumsum(prec(ix)),'LineWidth',2)
             set(gca,'xticklabel',[])
         end
-        
+        grid on
         ylim([0,ymax(i)])
         text(242,0.9*ymax(i),t{i})
         text(330,0.12*ymax(i),p{i},'FontWeight','bold','FontSize',14)
