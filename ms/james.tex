@@ -649,30 +649,34 @@ Finally I could point out non-linearity in (Supp Fig \ref{supp:cond}) to explain
     
     To demonstrate the new model dynamics, we utilized a site-level experiment testing PHS by simulating the Caxiuan\~a throughfall exclusion experiment \citep{fisher2007}.
     We found that PHS improves output for both transpiration and soil moisture relative to observations as compared to the control model (see Section \ref{sect:obs}, Figures \ref{fig:t},\ref{fig:sm2}).
-    This improvement in model skill is not generalizable, but rather is specific to the site and experiment described herein, and model skill will need to be re-evaluated in a broader context.
-    Instead, the value of opting for a single site (in lieu of global simulations) resides in the opportunity to perform more detailed analyses to elucidate the new model dynamics to complement this first description of PHS.
+    While this is encouraging, especially given the nature of the previous bias (see Section zqz), the improvement is specific to the site and experiment described herein, and model skill will need to be re-evaluated in a broader context.
+    Instead, the value of opting for a single site (in lieu of global simulations) resides in the opportunity to perform the detailed analyses to elucidate the new model dynamics in order to complement this first description of PHS.
     
 
 \subsection{Stomatal conductance: Soil moisture stress vs. Xylem tension stress}
     \label{sect:stress}
     
-    The Medlyn stomatal conductance model requires a notion of water stress to attenuate stomatal conductance in order to reflect changes in water supply,
-    with various implementations in the literature (see Section zqz).
+    The first of these analyses is of the response of stomatal conductance stress to environmental factors, namely: soil moisture, vapor pressure deficit, and solar radiation.
+    The Medlyn stomatal conductance model, as implemented in the CLM, requires a notion of water stress to attenuate stomatal conductance in order to capture the effects of diminishing water supply,
+    with various relevent implementations described in the literature (see Section zqz).
     We tested two such approaches, which alternatively base stress on either soil water potential (SMS) or leaf water potential (PHS).
-    The result is significantly different stress dynamics on both diurnal and seasonal timescales (Figures \ref{fig:stress1},\ref{fig:gpp}, following from the contrasting relationships of stress with key forcing variables, including: soil moisture, vapor pressure deficit, and downwelling solar radiation (Figures \ref{fig:stress2}, Supp Fig \ref{supp:fsds}).
-    Using leaf water potential (as in PHS) interprets water stress as the result of increasing xylem tension, where vegetation will (according to the specific hydraulic parameter values) limit transpiration to avoid cavitation and embolism associated with overly negative water potentials, which has significant support in the literature \citep{novick2016a,sperry2017}.
-    There is no such physical interpretation for the SMS stress paradigm, but neither does it offer an easier route to parameter estimation, due to scarce observations of its input variable, root-fraction-weighted soil potential.
+    The result is significantly different stress dynamics on both diurnal and seasonal timescales (Figures \ref{fig:stress1},\ref{fig:gpp}).     
     
-    Leaf water potential, on the other hand, is more easily measured in situ, and has been shown to correlate with remote sensing products, offering better observational constraints.
+    Using leaf water potential (as in PHS) utilizes a physical justification, interpreting water stress as the result of increasing xylem tension, where vegetation will (according to the specific hydraulic parameter values) limit transpiration in order to avoid cavitation and embolism associated with overly negative water potentials, which has significant support in the literature \citep{novick2016a,sperry2017}.
+    Soil water potential approaches (as in SMS) lack a straightforward physical basis, empirically relating stomatal conductance and/or photosynthetic parameters with soil potential (or soil moisture).
+    However, in the case of SMS, the empirical relationship is very difficult to constrain, due to scarce observations of the stress driver, root-fraction-weighted soil potential.
+    Leaf water potential, on the other hand, is more easily measured in situ \citep{boyer1967}, and has been shown to correlate with remote sensing products \citep{momen2017}, which may offer better observational constraints for PHS.
+
     Leaf water potential is (in simplified terms) the sum of soil water potential and the gradient of water potential from soil-to-leaf ($\psi_l=\psi_s+\Delta\psi$).
-    Using $\psi_l$ to calculate stress preserves the relationship between stress and soil potential, but now also represents the contribution to water stress of xylem tension due to increasing demand for transpiration (which is proportional to $\Delta\psi$).
-    As such, PHS stress responds to changing soil moisture, but unlike SMS, also responds to VPD and downwelling solar radiation (which affect transpiration demand).
-    This imparts a diurnal pattern to PHS stress, with higher stress around midday, whereas with SMS, stress is relatively constant throughout the day.
+    Therefore using $\psi_l$ as the driver of water stress preserves the relationship between stress and soil potential, but now also represents the contribution to water stress of xylem tension due to increasing demand for transpiration (reflected by increases in $\Delta\psi$).
+    As such, PHS stress responds to changing soil moisture, but unlike SMS, also responds to VPD and downwelling solar radiation (Figure \ref{stress2}), which affect transpiration demand.
+    This imparts a diurnal pattern to PHS stress, with higher stress around midday, whereas with SMS, stress is relatively constant throughout the day (Figure \ref{fig:stress1}).
     
     Another key difference is that PHS stress imparts a negative feedback on GPP and transpiration.
     Conditions favoring increased GPP (e.g. more light) also increase transpiration demand, leading to more xylem tension and stress, which opposes increases in GPP.
-    In our PHS simulations, this suppresses variability in GPP relative to SMS, and leads to underestimating the range of transpiration compared to sap flux observations. 
-    With PHS, the relative contributions (to water stress) of changes in transpiration demand versus changes in soil potential (and likewise the strength of that negative feedback) can be varied by adjusting the hydraulic parameters, establishing a flexible representation of vegetation water use dynamics that can be used to test hypotheses about drought resilience and water use strategies.
+    In the PHS simulations, this suppresses variability in GPP relative to SMS, and leads to underestimating the range of transpiration compared to sap flux observations (Figure \ref{fig:t}). 
+    With PHS, the relative contributions (to water stress) of changes in transpiration demand versus changes in soil potential (and likewise the strength of that negative feedback) can be varied by adjusting the hydraulic parameters. 
+    establishing a flexible representation of vegetation water use dynamics that can be used to test hypotheses about drought resilience and water use strategies.
     
 
 \subsection{Structural improvements in modeling root water uptake}
