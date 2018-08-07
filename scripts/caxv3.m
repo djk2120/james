@@ -74,6 +74,25 @@ if ~exist('p','var')
 end
 
 if ~exist('s2','var')
+        s2 = 0*fctr;
+    for ee = 1:2
+        d1 = [2,1,1];
+        
+        last_s = vegwp(4+(ee-1)*4,doy==1&year==2001&diurn(10)==mcsec);
+        s2(ee,1:10) = last_s;
+        for yy=2001:2003
+            for dd = d1(yy-2000):365
+                ix = (-37:10)+(dd-1)*48+(yy-2001)*365*48;
+                new_s = vegwp(4+(ee-1)*4,doy==dd&year==yy&diurn(10)==mcsec);
+                del = (new_s-last_s)/48;
+                s2(ee,ix) = last_s+del:del:new_s;
+                last_s = new_s;
+            end
+        end
+        s2(ee,end-28:end)=last_s;    
+    end
+    s2(3,:) = zr*max(-255000,smp(41:60,:));
+    s2(4,:) = zr*max(-255000,smp(61:80,:)); 
 end
 
 %************************************************************************
@@ -100,7 +119,7 @@ hh(66:70) = [0,0,0,0,0];
 hh(71:75) = [0,0,0,0,0];
 hh(76:80) = [0,0,0,0,0];
 hh(81:85) = [0,0,0,0,0];
-hh(86:90) = [0,0,1,0,0];
+hh(86:90) = [0,0,0,1,0];
 
 
 
@@ -114,6 +133,19 @@ hh(86:90) = [0,0,1,0,0];
 %18 = hr
 %19 = smp full profile time series
 %20 = h2osoi with obs
+
+if hh(89)>0
+    
+    g = findgroups(365*year+doy);
+    t = 1800*4e-7*splitapply(@sum,(fctr./btran)',g');
+    ix = mcsec>=diurn(25)&mcsec<=diurn(28);
+    bt = splitapply(@mean,btran(:,ix)',g(ix)');
+    plot(bt(731:end,3),t(731:end,3),'.')
+hold on
+plot(bt(731:end,1),t(731:end,1),'.')
+ylim([0,10])
+        
+end
 
 if hh(88)>0
     
