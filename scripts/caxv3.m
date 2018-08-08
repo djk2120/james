@@ -137,14 +137,30 @@ hh(86:90) = [0,0,0,1,0];
 if hh(89)>0
     
     g = findgroups(365*year+doy);
-    t = 1800*4e-7*splitapply(@sum,(fctr./btran)',g');
+    t = 1800*4e-7*splitapply(@sum,(fctr)',g');
     ix = mcsec>=diurn(25)&mcsec<=diurn(28);
     bt = splitapply(@mean,btran(:,ix)',g(ix)');
-    plot(bt(731:end,3),t(731:end,3),'.')
-hold on
-plot(bt(731:end,1),t(731:end,1),'.')
-ylim([0,10])
-        
+
+    ix = p(:,1)>0;
+    
+    subplot(2,2,1)
+    plot(bt(ix,1),t(ix,1)-p(ix,1),'.')
+    xlim([0,1])
+
+    subplot(2,2,2)
+    plot(bt(ix,3),t(ix,3)-p(ix,1),'.')
+    xlim([0,1])
+    
+        ix = p(:,2)>0;
+    
+    subplot(2,2,3)
+    plot(bt(ix,2),t(ix,2)-p(ix,2),'.')
+    xlim([0,1])
+
+    subplot(2,2,4)
+    plot(bt(ix,4),t(ix,4)-p(ix,2),'.')
+    xlim([0,1])
+
 end
 
 if hh(88)>0

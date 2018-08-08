@@ -20,7 +20,7 @@ Pierre Gentine\affil{1}
 \correspondingauthor{Daniel Kennedy}{djk2120@columbia.edu}
 
 \begin{keypoints}
-\item A simplified soil-plant-atmosphere continuum model based on hydraulic theory is implemented in the Community Land Model (version 5).
+\item An updated soil-plant-atmosphere continuum model based on hydraulic theory is implemented in the Community Land Model (version 5).
 \item Prognostic leaf water potential replaces soil matric potential as the basis for stomatal conductance water stress. 
 \item Prognostic root water potential is used to implement hydraulic root water uptake, replacing the heuristic soil `wilting' point.
 \end{keypoints}
@@ -28,7 +28,12 @@ Pierre Gentine\affil{1}
 
 
 \begin{abstract}
-= enter abstract here =
+CLM5 introduces the Plant Hydraulic Stress (PHS) configuration, which is described and compared with the corresponding parameterization from CLM4.5.
+PHS updates vegetation water stress and root water uptake to better reflect plant hydraulic theory.
+The new configuration introduce prognostic vegetation water potential to the CLM, modeled at the root, stem, and leaf levels.
+Leaf water potential replaces soil matric potential as the basis for stomatal conductance water stress, and
+root water potential is used to implement hydraulic root water uptake, replacing a transpiration-partitioning heuristic.
+Point simulations of a tropical forest site (Caxiuan\~a, Brazil) under ambient conditions and partial precipitation throughfall exclusion are carried out to highlight the differences between PHS and the previous plant hydrodynamics scheme. 
 \end{abstract}
 
 %====================
@@ -51,7 +56,7 @@ This in turn feeds back onto surface and air temperature, through land-atmospher
 On longer timescales vegetation water use strategies regulate the global carbon and water cycles \citep{dekauwe2015}.
 
 Several recent studies have aimed at advancing the representation of water flow through the Soil-Plant-Atmosphere continuum (SPAC) in land-surface and ecosystem models \citep{xu2016,christoffersen2016,sperry2017} by incorporating plant hydraulic theory.  
-Explicit modeling of water flow through the vegetation adds complexity, but is consistent with evidence of dynamic regulation of vegetation water use in response to both soil and atmospheric drying \citep{tardieu1998,sperry1998,sperry2015}.
+Explicit modeling of water flow through the vegetation increases model complexity, but is consistent with evidence of dynamic regulation of vegetation water use in response to both soil and atmospheric drying \citep{tardieu1998,sperry1998,sperry2015}.
 Furthermore, because they are based on Darcy's Law, plant hydraulic models have a robust physical basis compared to models that utilize empirical water stress formulations.
 Plant hydraulic models involve new parameters, which presents challenges \citep{drake2017}, but plant hydraulic trait data are available \citep{kattge2011,anderegg2015a}, providing constraints on parameter estimation.   
 Such data have been shown to be informative of species vulnerability to drought \citep{choat2012}.
@@ -80,10 +85,10 @@ To assess the new model formulation, we carried out site-level simulations at Ca
 In this paper we therefore:
 \begin{enumerate}
 \item Introduce the PHS theory and implementation in the CLM (Section 2)
-\item Describe the details of the experiment setup
+\item Describe the details of the experiment setup (Section 3)
 \item Analyze the dynamics of modeled water stress, root water uptake and soil moisture profiles (Section 4)
-\item Compare PHS to the behavior of the previous CLM water stress configuration (Section 5)
-\item Discuss the benefits and limitations of the new model (Section 5.7)
+\item Discuss differences between PHS and the previous CLM water stress configuration (Section 5)
+\item Outline the benefits and limitations of the new model (Section 5.7)
 \end{enumerate}
 
 %====================
@@ -272,8 +277,8 @@ This study uses CLM5 to compare two parameterizations of water stress (Sections 
 \label{sect:vwp}
   The PHS model within CLM5 uses Darcy's law to model the flow of water through the SPAC, which can be represented with an electrical circuit analogy (Figure \ref{circuit}).
   PHS solves for vegetation water potential along the path from soil-to-atmosphere.
-  Vegetation water supply (root water uptake) and demand (transpiration) are both coupled to vegetation water potential, 
-  such that the solution for vegetation water potential is the set of values that matches supply with demand.
+  Vegetation water supply and demand are both coupled to vegetation water potential, as described in the previous two sections.
+  The solution for vegetation water potential is the set of values that matches supply with demand, maintaining water balance across each of the vegetation water potential nodes.
 
   \begin{figure}[h]
      \centering
@@ -285,12 +290,88 @@ This study uses CLM5 to compare two parameterizations of water stress (Sections 
 
   PHS solves for vegetation water potential at four locations: $\psi_{\text{root}}$, $\psi_{\text{stem}}$, $\psi_{\text{shade-leaf}}$, and $\psi_{\text{sun-leaf}}$.
   The number of nodes is chosen as the strict minimum to allow for differences in segment parameterizations \citep{simonin2015, sperry2015}, while also conforming to existing CLM model structure (vertically discretized soil layers, 2-big-leaf).
-  At each node in the circuit diagram in Figure \ref{circuit} we model water potential, and, between nodes, we resolve the flux of water based on Darcy's law. 
+  At each node in the circuit diagram (Figure \ref{circuit}), we model water potential, and, between nodes, we resolve the flux of water based on Darcy's law. 
   Water uptake from the different soil layers is assumed to operate in parallel; a typical assumption justified by higher resistance in lateral versus central roots (e.g. \cite{williams2001}). 
   Two resistors operate in series between each $\psi_{\text{soil}}$ and $\psi_{\text{root}}$, to represent the path across the soil matrix and then through the root tissue \citep{williams1996}. 
   Specifics on the parameterization of hydraulic conductance for each segment are provided in Appendix B.1.
+  Solving for vegetation water potential requires matching vegetation water supply (root water uptake, sap flux through the stem) with vegetation water demand (sunlit and shaded leaf transpiration).
 
-%PHS solution
+   
+%Water Supply
+    \subsubsection{Water supply}
+    \label{sect:supply}
+    Water supply is modeled via Darcy's Law, where flux of water ($q$) is the product of the path hydraulic conductance ($k$) and the gradient in water potential ($\psi_2-\psi_1$) after accounting for gravitational potential ($\rho g \Delta z$).  
+    Equation \ref{eq:darcy} represents the flow from a generic node 1 to node 2. 
+    
+     \begin{linenomath*}
+     \begin{equation}
+     \label{eq:darcy}
+     q = -k\left(\psi_2 - \psi_1 + \rho g \Delta z\right)
+     \end{equation}
+     \end{linenomath*}
+    
+    For simplicity, PHS does not represent plant tissue water storage (or capacitance, using the electrical circuit analogy), which is in line with recent supply-loss theory \citep{sperry2015}.  
+    Capacitance significantly complicates the water potential solution \citep{celia1990} and is challenging to parameterize \citep{bartlett2016}. 
+    However, buffering of water stress provided by tissue water storage could potentially be important especially on sub-daily timescales \citep{meinzer2009,epila2017}, 
+    whereby its inclusion may be warranted in future model versions.
+
+     Hydraulic conductance through vegetation segments is modeled following empirical xylem vulnerability curves \citep{tyree1989}, where segments lose conductance with increasing xylem tension related to cavitation and embolism \citep{holbrook2001}.
+      The vulnerability curves model loss of conductance relative to maximum conductance ($k_{\text{max}}$) using two parameters: 
+      $c_k$, a sigmoidal shape-fitting parameter, and $p_{50}$, the water potential at 50\% loss of segment conductance (following \cite{gentine2016}). 
+     
+     \begin{linenomath*}
+     \begin{equation}
+     \label{eq:vulnerability}
+     k = k_{\text{max}} \, 2^{-\left(\dfrac{\psi_1}{p_{50}}\right)^{c_k}}
+     \end{equation}
+     \end{linenomath*}
+     
+     Both $c_k$ and  $p_{50}$ can be estimated from field experiments \citep{sack2002}, and $p_{50}$ is available in the TRY trait database \citep{kattge2011}. 
+     Parameterization based on $p_{50}$ aligns with the call for a transition to models that use a wider range of plant functional trait data in their parameterization \citep{anderegg2015a}. 
+     The loss of xylem conductivity is based on lower terminal water potential ($\psi_1$) as is typical in other simplified models \citep{xu2016}, but 
+     may underestimate the integrated loss of conductivity \citep{sperry2015}. 
+         
+     PHS models root, stem, and leaf tissue conductances according to equation \ref{eq:vulnerability}. 
+     The parameterization of $k_{\text{max}}$ varies by hydraulic segment (see details in Appendix B1). 
+     The conductances across the soil matrix ($k_{s,1}$,...,$k_{s,n}$) to the root surface follows \citet{williams2001} and \citet{bonan2014}, which scales
+     soil conductivity \citep{brooks1964,clapp1978} by an appropriate conducting distance based on the root distribution.
+     Details are provided in Appendix B1.
+    
+%Water demand
+    \subsubsection{Water demand}
+    \label{sect:demand}
+    
+    Water demand is calculated using the Medlyn stomatal conductance model (see Section \ref{sect:gs}) modulated by the CLM water stress factor.
+    As discussed earlier $f_w$ is based on leaf water potential in PHS, where stress increases as leaf water potential becomes more negative \citep{klein2014}.
+    Because leaf water potential is modeled separately for sunlit and shaded leaves, $f_w$ takes on distinct sunlit and shaded values.
+    
+     \begin{linenomath*}
+     \begin{equation}
+     \begin{aligned}
+     \label{eq:d1}
+     f_{w,sun} &= 2^{-\left(\dfrac{\psi_{\text{sun-leaf}}}{\psi_{50}}\right)^{c_k}} \\
+     f_{w,shade} &= 2^{-\left(\dfrac{\psi_{\text{shade-leaf}}}{\psi_{50}}\right)^{c_k}}
+     \end{aligned}     
+     \end{equation}
+     \end{linenomath*}
+     
+     Shaded and sunlit leaf transpiration ($E_{\text{sun}}$, $E_{\text{shade}}$) are calculated by attenuating maximal transpiration ($E_{\text{sun,max}}$,$E_{\text{shade,max}}$) according to $f_w$. 
+     $E_{\text{sun,max}}$ and $E_{\text{shade,max}}$ are calculated at the beginning of each timestep by running the stomatal conductance model with $f_w=1$.
+     Equations (\ref{eq:d1}) and (\ref{eq:d2}) reflect a simplification used within iterations of the PHS module, 
+     neglecting non-linear components of the relationship between stress and transpiration (described further in Section zqz).
+     
+     \begin{linenomath*}
+     \begin{equation}
+     \begin{aligned}
+     \label{eq:d2}
+     E_{\text{sun}} & = f_wE_{\text{sun,max}} \\
+     E_{\text{shade}} & = f_wE_{\text{shade,max}}
+     \end{aligned}     
+     \end{equation}
+     \end{linenomath*}
+     
+
+ %PHS solution
     \subsubsection{PHS solution}
     \label{sect:solution}
     
@@ -336,83 +417,7 @@ This study uses CLM5 to compare two parameterizations of water stress (Sections 
     \end{aligned} \end{equation}
     \end{linenomath*}    
     
-    The numerics are tractable because $f$ has continuous, analytical derivatives and $A$ (a 4x4 matrix with six null entries) is easy to invert when well-conditioned. Supply and demand converge, because transpiration demand decreases with more negative leaf water potentials and supply increases with more negative leaf water potentials. The PHS loop is nested within iterations for intercellular CO$_2$ concentration and leaf temperature. As described earlier, within a set of PHS iterations (\ref{eq:iter}), transpiration is assumed to be linear with $f_w$. The non-linear relationship between $f_w$ and transpiration is resolved through iteration for converging $f_w$ alongside intercellular CO$_2$. Details on the numerical implementation are provided in Appendix Section B.1.
-   
-%Water Supply
-    \subsubsection{Water supply}
-    \label{sect:supply}
-    Water supply is modeled via Darcy's Law, where flux of water ($q$) is the product of the path hydraulic conductance ($k$) and the gradient in water potential ($\psi_2-\psi_1$) after accounting for gravitational potential ($\rho g \Delta z$).  
-    Equation \ref{eq:darcy} represents the flow from a generic node 1 to node 2. 
-    
-     \begin{linenomath*}
-     \begin{equation}
-     \label{eq:darcy}
-     q = -k\left(\psi_2 - \psi_1 + \rho g \Delta z\right)
-     \end{equation}
-     \end{linenomath*}
-    
-    For simplicity, PHS does not represent plant tissue water storage (or capacitance, using the electrical circuit analogy), and is in line with recent supply-loss theory \citep{sperry2015}.  
-    Capacitance significantly complicates the water potential solution \citep{celia1990} and is challenging to parameterize \citep{bartlett2016}. 
-    However, buffering of water stress provided by tissue water storage could potentially be important especially on sub-daily timescales \citep{meinzer2009,epila2017}, 
-    whereby its inclusion may be warranted in future model versions.
-
-     Hydraulic conductance through vegetation segments is modeled following empirical xylem vulnerability curves \citep{tyree1989}, where segments lose conductance with increasing xylem tension related to cavitation and embolism \citep{holbrook2001}.
-      The vulnerability curves model loss of conductance relative to maximum conductance ($k_{\text{max}}$) using two parameters: 
-      $c_k$, a sigmoidal shape-fitting parameter, and $p_{50}$, the water potential at 50\% loss of segment conductance (following \cite{gentine2016}). 
-     
-     \begin{linenomath*}
-     \begin{equation}
-     \label{eq:vulnerability}
-     k = k_{\text{max}} \, 2^{-\left(\dfrac{\psi_1}{p_{50}}\right)^{c_k}}
-     \end{equation}
-     \end{linenomath*}
-     
-     Both $c_k$ and  $p_{50}$ can be estimated from field experiments \citep{sack2002}, and $p_{50}$ is available in the TRY trait database \citep{kattge2011}. 
-     Parameterization based on $p_{50}$ aligns with the call for a transition to models that use a wider range of plant functional trait data in their parameterization \citep{anderegg2015a}. 
-     The loss of xylem conductivity is based on lower terminal water potential ($\psi_1$) as is typical in other simplified models \citep{xu2016}, but 
-     may underestimate the integrated loss of conductivity \citep{sperry2015}. 
-         
-     PHS models root, stem, and leaf tissue conductances according to equation \ref{eq:vulnerability}. 
-     The parameterization of $k_{\text{max}}$ varies by hydraulic segment (see details in Appendix B1). 
-     The conductance across the soil matrix to the root surface follows \citet{williams2001} and \citet{bonan2014}. 
-     Bulk soil resistivity is based on \citet{clapp1978} as described in \citet{oleson2013}. 
-     Details are provided in Appendix B1.
-    
-%Water demand
-    \subsubsection{Water demand}
-    \label{sect:demand}
-    
-    Water demand is calculated using the Medlyn stomatal conductance model (see Section \ref{sect:gs}) modulated by the CLM water stress factor.
-    As discussed earlier $f_w$ is based on leaf water potential in PHS, where stress increases as leaf water potential becomes more negative \citep{klein2014}.
-    Because leaf water potential is modeled separately for sunlit and shaded leaves, $f_w$ takes on distinct sunlit and shaded values.
-    
-     \begin{linenomath*}
-     \begin{equation}
-     \begin{aligned}
-     \label{eq:d1}
-     f_{w,sun} &= 2^{-\left(\dfrac{\psi_{\text{sun-leaf}}}{\psi_{50}}\right)^{c_k}} \\
-     f_{w,shade} &= 2^{-\left(\dfrac{\psi_{\text{shade-leaf}}}{\psi_{50}}\right)^{c_k}}
-     \end{aligned}     
-     \end{equation}
-     \end{linenomath*}
-     
-     Shaded and sunlit leaf transpiration ($E_{\text{sun}}$, $E_{\text{shade}}$) are calculated by attenuating maximal transpiration ($E_{\text{sun,max}}$,$E_{\text{shade,max}}$) according to $f_w$. 
-     $E_{\text{sun,max}}$ and $E_{\text{shade,max}}$ are calculated at the beginning of each timestep by running the stomatal conductance model with $f_w=1$.
-     Equations (\ref{eq:d1}) and (\ref{eq:d2}) reflect a simplification used within iterations of the PHS module, 
-     neglecting non-linear components of the relationship between stress and transpiration (described further in Section zqz).
-     
-     \begin{linenomath*}
-     \begin{equation}
-     \begin{aligned}
-     \label{eq:d2}
-     E_{\text{sun}} & = f_wE_{\text{sun,max}} \\
-     E_{\text{shade}} & = f_wE_{\text{shade,max}}
-     \end{aligned}     
-     \end{equation}
-     \end{linenomath*}
-     
-
- 
+    The numerics are tractable because $f$ has continuous, analytical derivatives and $A$ (a 4x4 matrix with six null entries) is easy to invert when well-conditioned. Supply and demand converge, because transpiration demand decreases with more negative leaf water potentials and supply increases with more negative leaf water potentials. The PHS loop is nested within iterations for intercellular CO$_2$ concentration and leaf temperature. The non-linear relationship between $f_w$ and transpiration is resolved through iteration for converging $f_w$ alongside intercellular CO$_2$. Details on the numerical implementation are provided in Appendix Section B.1.
 
  
 %====================
@@ -622,10 +627,10 @@ Finally I could point out non-linearity in (Supp Fig \ref{supp:cond}) to explain
 \subsection{Hydraulic redistribution}
     SMS precludes hydraulic redistribution (HR) setting root water uptake to zero when reversed gradients in water potential occur (contrary to PHS).
     With PHS, HR totals to 38.9 cm under ambient conditions and 40.0 cm under TFE over the course of 2003, with the majority (28.0, 26.7 cm) of this HR occurring at night (Figure \ref{fig:hr}).
+    in line with established theory \citep{jackson2000}.
     HR occurs in both directions (Supp Fig \ref{supp:hr}), but is predominately downwards (AMB: 30.7cm, TFE: 33.8cm).
-    Likewise HR occurs during both the wet and dry seasons.
-    The seasonality changes with TFE, as AMB has more HR during Sept-Jan, while TFE features more HR during Feb-Apr.
-
+    The amount of HR is difficult to constrain due to scarce observations.
+    The simplicity of the hydraulic representation may lead to overestimating HR, which is discussed further in Section zqz.
 
  
 \subsection{Soil moisture effect on transpiration}    
@@ -709,6 +714,25 @@ Finally I could point out non-linearity in (Supp Fig \ref{supp:cond}) to explain
 \item Due to constant vegetation potential ($\psi_c$) and no drying response to conductance, SMS lacks the flexibility to achieve this type of CRWU.
 \end{itemize}
 \subsubsection{Hydraulic redistribution}
+PHS simulates substantial HR at our test site, both upwards and downwards (Figure \ref{fig:hr}, Supp Fig \ref{supp:hr}), which conforms with field observations \citep{burgess1998,oliveira2005}.
+    Modeled HR is weighted towards downward transfers, moving near-surface water from rain events deeper into the soil column and thus saving it for when it is most needed such as during the dry season.
+    This would seem to convey an advantage to deep-rooted individuals, banking water for later use out of reach of shallow-rooted competitors.
+    HR can offer significant water subsidies during dry periods \citep{jackson2000} and has been highlighted as an important missing feature in CLM \citep{lee2005}. 
+    However, we should note that observations of HR are extremely difficult and rare, and the degree to which HR actually occurs in real-world systems remains unclear. 
+    Unequivocal detection of HR involves the observation of reverse flow along transport roots, typically at rates close to the detection threshold of sap flow monitoring systems. 
+    
+    Installing a representation of HR was not a primary objective in the development of PHS.
+    Rather it was the natural consequence of our simplified Darcy's Law implementation for root water uptake.
+    However, it remains to be seen whether HR, as modeled in this implementation, is a feature or a liability.
+    One challenge we faced was that in an initial implementation of PHS, HR seemed to oversupply the top layer of the soil column (spanning 0 to 2 cm below the ground surface) and thus significantly degraded modeled soil evaporation (not shown). 
+    To remedy this problem, we set the hydraulic conductance to zero in the uppermost soil layer, disallowing any root water uptake there.
+    
+    PHS may overestimate HR, given the simplified root system architecture \citep{bouda2017} 
+    and the lack of an explicit representation of fine-root cavitation \citep{kotowska2015}.
+    In our simulations, HR increases annual total root water uptake by up to 52\% relative to transpiration alone (2003, TFE). 
+    Other models, similar to the SMS paradigm, disallow HR by constraining root water uptake to be positive \citep{xu2016}.
+    We view the PHS implementation of HR into the default versions of the CLM as a `null' hypothesis for the functioning of this process, and as a platform to allow further refinement from the plant hydraulics community. 
+    Isotopologues of water could be used as a tool to further constrain this redistribution in the CLM in the future. 
 
 
 \subsubsection{No-brainers}
@@ -720,50 +744,8 @@ Finally I could point out non-linearity in (Supp Fig \ref{supp:cond}) to explain
 \end{itemize}
 
 
+\subsubsection{Influence on soil moisture dynamics and transpiration}
 
-
-    In addition to modulating water stress and transpiration, vegetation water potential can be used to improve the CLM representation of root water uptake.
-PHS uses dynamic root water potential ($\psi_{\text{root}}$, Figure \ref{fig:vwp}) as the sink for measuring the hydraulic gradient governing root water uptake ($\Delta\psi$).
-Because SMS does not resolve water potential through the vegetation substrate, the model instead uses a constant parameter, $\psi_c$, in its definition of $\Delta\psi$.
-    As such, PHS provides a critical structural improvement for modeling root water uptake, consistent with extensive evidence of dynamic vegetation water potential (e.g. \cite{fisher2006}).
-
-    Root water uptake dynamics are driven by either changes in $\Delta\psi$, as discussed above, or by changes in hydraulic conductance, $k$. 
-    PHS features mechanistic reductions in $k$ based on root xylem vulnerability and soil hydraulic properties, 
-    conforming to soil-root hydraulic theory \citep{cai2014,warren2015}.
-    As a result the soil-root conductance features a strong, positive relationship with soil potential, decreasing by almost three orders of magnitude as the soil dries (Supp Fig \ref{supp:cond}).
-    Hydraulic conductance is not explicitly modeled with SMS, but the values implied by the transpiration partitioning function (see Section \ref{sect:smsrwu}), actually increase as soils dry over the domain of $\psi_c<\psi_{\text{soil}}<\psi_o$ (Supp Fig \ref{supp:cond}).
-    
-        Furthermore, whereas SMS uses a relative notion to scale uptake by root abundance (root fraction), PHS opts for an absolute measure (root area), which can better capture dynamic carbon allocation in response to drying.
-    With SMS, if root mass were to double in every soil layer, the root fraction remains unchanged, yielding no advantage in accessing soil water.
-    With PHS, as root area in a soil layer increases so does the hydraulic conductance, even if the layer root fraction remains constant.
-    
-    PHS appropriately penalizes extraction of soil water from deep in the soil column, associated with increased distance between roots, increased xylem length, and contributions from gravity (all factors not represented in SMS).
-    As a result, PHS favors surface extraction when water is available (Figure \ref{fig:qwet}).
-    The model can overcome these penalties, featuring compensatory root water uptake where extraction (during the dry season) from beyond 2-meter depth increases significantly in response to TFE (Figure \ref{fig:qdry}).
-    Dynamic root water potential (and conductance) gives PHS more flexibility, allowing the model to switch root water uptake to the lower layers as the surface dries out.
-   
-     Finally, PHS eschews the unsubstantiated constraints on $\Delta\psi$ imposed by SMS ($0\ge\Delta\psi\ge\psi_c-\psi_o$, see Section \ref{sect:fwsms}).
-    Allowing $\Delta\psi$ to change sign yields a representation of hydraulic redistribution, which has been observed in Amazonian forests \citep{oliveira2005}.
-    
-\subsection{Hydraulic Redistribution (HR)}
-    Substantial HR is simulated at our test site, both upwards and downwards (Figure \ref{fig:hr}, Supp Fig \ref{supp:hr}), as has been observed in the field \citep{burgess1998}.
-    Modeled HR is dominated by downward transfers, moving near-surface water from rain events deeper into the soil column and thus saving it for when it is most needed such as during the dry season.
-    This would seem to convey an advantage to deep-rooted individuals, banking water for later use out of reach of shallow-rooted competitors.
-    HR can offer significant water subsidies during dry periods \citep{jackson2000} and has been highlighted as an important missing feature in CLM \citep{lee2005}. We should note that observations of HR are extremely difficult and rare, and the degree to which HR actually occurs in real-world systems remains unclear. 
-    Unequivocal detection of HR involves the observation of reverse flow along transport roots, typically at rates close to the detection threshold of sap flow monitoring systems. 
-    
-    One challenge we faced was that in an initial implementation of PHS, HR seemed to oversupply the top layer of the soil column (spanning 0 to 2 cm below the ground surface) and thus significantly degraded modeled soil evaporation (not shown). 
-    To remedy this problem, we set the hydraulic conductance to zero in the uppermost soil layer, disallowing any root water uptake there.
-    
-    In our simulations, HR increases root water uptake by up to 52\% relative to transpiration alone (2003, TFE). 
-    
-    PHS naturally represents HR, as it follows directly from Darcy's Law, occurring when water potential in a given soil layer is more negative than $\psi_{\text{root}}$.
-    However, it remains to be seen whether HR, as modeled in this implementation, is a feature or a liability.
-    PHS may overestimate HR, given the simplified root system architecture \citep{bouda2017} 
-    and the lack of an explicit representation of fine-root cavitation \citep{kotowska2015}.
-    Other models, similar to the SMS paradigm, disallow HR by constraining root water uptake to be positive \citep{xu2016}.
-    We view this first implementation of HR into the default versions of the CLM as a `null' hypothesis for the functioning of this process, and as a platform to allow further refinement from the plant hydraulics community. 
-    Isotopologues of water could be used as a tool to further constrain this redistribution in CLM in the future. 
 
 \subsection{Soil moisture dynamics}
     \label{sect:smt}
@@ -804,42 +786,55 @@ Because SMS does not resolve water potential through the vegetation substrate, t
 \subsubsection{Benefits}
 
 \begin{enumerate}
-    \item parameters are better represented in trait database
-    \item creates an interface to VOD data
-    \item platform for testing various hydraulics hypotheses
+    \item Advances the physical basis of the CLM
+        \begin{itemize}
+        \item Mechanistic xylem tension stress replaces empirical soil moisture stress
+        \item Root water uptake reflects established hydraulic theory
+        \item More appropriate response of water availability to root abundance 
+        \end{itemize}
+    \item Improves modeled vegetation hydrodynamics
+    	\begin{itemize}
+	\item Better match to observations of soil moisture and transpiration (higher correlation, lower RMSE)
+	\item Importantly, the improvements modeling transpiration are achieved by removing a bias associated with soil water status
+	\item Permits representation of compensatory root water uptake and hydraulic redistribution
+	\item Avoids excessive soil layer drying observed with SMS
+	\end{itemize}
+    \item Creates an interface to new observational constraints
+        \begin{itemize}
+        \item Parameters are better represented in trait databases (e.g. $k_{max}$, $p_{50}$).
+        \item New state variables modeling vegetation water potential are introduced, which are measured in situ and are shown to correlate with remote sensing products
+        \item And given that vegetation water potential is downstream of soil water potential, this may actually provide an important constraint on root-zone soil moisture.
+        \end{itemize}
+    \item Enables a platform for testing various hydraulics-oriented hypotheses within the ESM context
     \begin{itemize}
-        \item xylem tension and/or hydraulic cost limitation to g$_s$
-        \item drought-informed dynamic allocation
+        \item What are the relative contributions to water stress of VPD vs. soil moisture?
+        \item Does the spectrum of isohydric vs. anisohydric regulation of vegetation water potential explain patterns in the terrestrial carbon and hydrological cycles?
+        \item Are certain regions of the concatenated hydraulic-parameter / climate space particularly vulnerable to climate change?
     \end{itemize}
-     \item improved soil moisture and transpiration dynamics (subject to asymmetrical tuning)
-     \item advanced physical realism for RWU
-     \begin{itemize}
-         \item reflects dynamic veg water potenial
-         \item responds to absolute measure of root biomass
-         \item eschews constraints that on one side preclude HR and the other set an effective minimum $\psi_{soil}$
-     \end{itemize}
 \end{enumerate}
 
 \subsubsection{Limitations}
 \begin{enumerate}
-    \item hydraulics are simplified
+    \item Plant hydraulics are highly simplified
     \begin{itemize}
-        \item no capacitance
-        \item vulnerability not integrated across veg tissue or soil matrix
-        \item stem-to-leaf resistance is not fully deployed
-        \item simplified root system architecture
-        \item but the simplifications do add up to a nice null hypothesis for further testing and yield a relatively light-weight model
+        \item No capacitance
+        \item Vulnerability not integrated across vegetation tissue or soil matrix
+        \item Stem-to-leaf resistance is not fully deployed
+        \item Simplified root system architecture
+        \item These simplifications create a null hypothesis for further testing by the hydraulic community and yield a relatively light-weight model
     \end{itemize}
-    \item uncertainty regarding the application of water stress
+    \item Uncertainty regarding the parameterization of water stress
     \begin{itemize}
-        \item we apply to $V_{\text{cmax}}$
+        \item PHS fits water stress ($f_w$) to leaf water potential via a sigmoidal function
+        \item $f_w$ is then used to attenuate $V_{\text{cmax}}$
+        \item Many other approaches have been described in the literature, without a clear winner to date.
     \end{itemize}
-    \item more parameters
-    \item scale mismatch to reported parameter values in trait database 
+    \item Increased model complexity
     \begin{itemize}
-        \item likewise does not necessarily comport well with PFT paradigm
+    	\item Can potentially be mitigated by hydraulic trait coordination and improved priors and observational constraints on vegetation water potential
+        \item Scale mismatch to reported parameter values in trait database 
     \end{itemize}
-    \item we don't provide a definitive assessment on model skill
+    \item We don't provide a definitive assessment on model skill
     \begin{itemize}
         \item asymmetrical model tuning
         \item especially when taking into account the increased number of parameters
@@ -858,6 +853,29 @@ Because SMS does not resolve water potential through the vegetation substrate, t
     
 \section{Cut from other sections}
 
+    In addition to modulating water stress and transpiration, vegetation water potential can be used to improve the CLM representation of root water uptake.
+PHS uses dynamic root water potential ($\psi_{\text{root}}$, Figure \ref{fig:vwp}) as the sink for measuring the hydraulic gradient governing root water uptake ($\Delta\psi$).
+Because SMS does not resolve water potential through the vegetation substrate, the model instead uses a constant parameter, $\psi_c$, in its definition of $\Delta\psi$.
+    As such, PHS provides a critical structural improvement for modeling root water uptake, consistent with extensive evidence of dynamic vegetation water potential (e.g. \cite{fisher2006}).
+
+    Root water uptake dynamics are driven by either changes in $\Delta\psi$, as discussed above, or by changes in hydraulic conductance, $k$. 
+    PHS features mechanistic reductions in $k$ based on root xylem vulnerability and soil hydraulic properties, 
+    conforming to soil-root hydraulic theory \citep{cai2014,warren2015}.
+    As a result the soil-root conductance features a strong, positive relationship with soil potential, decreasing by almost three orders of magnitude as the soil dries (Supp Fig \ref{supp:cond}).
+    Hydraulic conductance is not explicitly modeled with SMS, but the values implied by the transpiration partitioning function (see Section \ref{sect:smsrwu}), actually increase as soils dry over the domain of $\psi_c<\psi_{\text{soil}}<\psi_o$ (Supp Fig \ref{supp:cond}).
+    
+        Furthermore, whereas SMS uses a relative notion to scale uptake by root abundance (root fraction), PHS opts for an absolute measure (root area), which can better capture dynamic carbon allocation in response to drying.
+    With SMS, if root mass were to double in every soil layer, the root fraction remains unchanged, yielding no advantage in accessing soil water.
+    With PHS, as root area in a soil layer increases so does the hydraulic conductance, even if the layer root fraction remains constant.
+    
+    PHS appropriately penalizes extraction of soil water from deep in the soil column, associated with increased distance between roots, increased xylem length, and contributions from gravity (all factors not represented in SMS).
+    As a result, PHS favors surface extraction when water is available (Figure \ref{fig:qwet}).
+    The model can overcome these penalties, featuring compensatory root water uptake where extraction (during the dry season) from beyond 2-meter depth increases significantly in response to TFE (Figure \ref{fig:qdry}).
+    Dynamic root water potential (and conductance) gives PHS more flexibility, allowing the model to switch root water uptake to the lower layers as the surface dries out.
+   
+     Finally, PHS eschews the unsubstantiated constraints on $\Delta\psi$ imposed by SMS ($0\ge\Delta\psi\ge\psi_c-\psi_o$, see Section \ref{sect:fwsms}).
+    Allowing $\Delta\psi$ to change sign yields a representation of hydraulic redistribution, which has been observed in Amazonian forests \citep{oliveira2005}.
+    
 
     
     PHS uses leaf water potential ($\psi_l$) to calculate the water stress factor, 
@@ -1249,15 +1267,15 @@ PHS resolves flow across four different segments, soil-to-root, root-to-stem, st
 Stem-to-leaf. The area bases are sunlit and shaded leaf area, respectively. 
 Note that gravity is assumed negligible here. 
 Likewise there is no length scaling applied to maximum conductance. 
-Therefore the input parameters for $k_{1,\text{max}}$ should be conductances ($s^{-1}$).
+Therefore the input parameter for $k_{leaf,\text{max}}$ should be a conductance ($s^{-1}$).
 
 \begin{linenomath*} \begin{equation} \begin{aligned}
-q_{1a} &= k_{1} \cdot \text{LAI-sun}  \cdot \left( \psi_{\text{stem}}-\psi_{\text{sun-leaf}}\right) \\
-q_{1b} &= k_{1} \cdot \text{LAI-shade} \cdot  \left( \psi_{\text{stem}}-\psi_{\text{shade-leaf}}\right)
+q_{sun} &= k_{sun} \cdot \text{LAI-sun}  \cdot \left( \psi_{\text{stem}}-\psi_{\text{sun-leaf}}\right) \\
+q_{shade} &= k_{shade} \cdot \text{LAI-shade} \cdot  \left( \psi_{\text{stem}}-\psi_{\text{shade-leaf}}\right)
 \end{aligned} \end{equation} \end{linenomath*}
 
 \begin{linenomath*} \begin{equation}
-k_{1} = k_{1,\text{max}} \cdot f\left(\psi_{\text{stem}}\right)
+k_{sun} = k_{shade} = k_{leaf,\text{max}} \cdot f\left(\psi_{\text{stem}}\right)
 \end{equation} \end{linenomath*}
 
 \begin{linenomath*} \begin{equation} \begin{aligned}
@@ -1265,31 +1283,31 @@ f\left(\psi\right)=2^{-\left(\dfrac{\psi}{p_{50}}\right)^{c_k}}
 \end{aligned} \end{equation} \end{linenomath*}
 
 Root-to-stem. The area basis is stem area index. 
-The parameter is maximum stem xylem conductivity ($K_{2,\text{max}}$).
-Stem conductance ($k_2$) is the result of scaling maximum conductivity by the tree height ($h$)
+The input parameter is maximum stem xylem conductivity ($K_{stem,\text{max}}$).
+Stem conductance ($k_{stem}$) is the result of scaling maximum conductivity by the tree height ($h$)
 and applying loss relative to maximum conductance via the vulnerability curve $f\left(\psi_{\text{root}}\right)$. 
 \begin{linenomath*} \begin{equation}
-q_2 = k_2 \cdot  \text{SAI}  \cdot \left( \psi_{\text{root}}-\psi_{\text{stem}}-\rho g h\right)
+q_{stem} = k_{stem} \cdot  \text{SAI}  \cdot \left( \psi_{\text{root}}-\psi_{\text{stem}}-\rho g h\right)
 \end{equation} \end{linenomath*}
 \begin{linenomath*} \begin{equation}
-k_2 = \dfrac{K_{2,\text{max}}}{h} \cdot f\left(\psi_{\text{root}}\right)
+k_{stem} = \dfrac{K_{stem,\text{max}}}{h} \cdot f\left(\psi_{\text{root}}\right)
 \end{equation} \end{linenomath*}
 
 Soil-to-root. Area basis is RAI in soil layer $i$, which is based on the layer root fraction times the
-total root area. Total root area we have as the summed stem and leaf area indices multiplied by a relative
+total root area. Total root area is calculated as the sum of stem and leaf area indices multiplied by a relative
 root area parameter ($f_{\text{root}}$).
 The vertical root distribution is defined by the layer root fraction ($r_i$), which follows a one-parameter 
 (by PFT) power law decay following \citet{jackson1996}.
 
 \begin{linenomath*} \begin{equation}
-q_{3,i} = k_{3,i} \cdot  \text{RAI}_i  \cdot \left( \psi_{\text{soil,i}}-\psi_{\text{root}}-\rho g z_i\right)
+q_{sr,i} = k_{sr,i} \cdot  \text{RAI}_i  \cdot \left( \psi_{\text{soil,i}}-\psi_{\text{root}}-\rho g z_i\right)
 \end{equation} \end{linenomath*}
 \begin{linenomath*} \begin{equation}
 \text{RAI}_i=f_{\text{root}} \cdot \left( \text{SAI} + \text{LAI} \right) \cdot r_i
 \label{eq:rai}
 \end{equation} \end{linenomath*}
 \begin{linenomath*} \begin{equation}
-k_{3,i} = \dfrac{k_{r,i}+k_{s,i}}{k_{r,i}\cdot k_{s,i}}
+k_{sr,i} = \dfrac{k_{r,i}+k_{s,i}}{k_{r,i}\cdot k_{s,i}}
 \end{equation} \end{linenomath*}
 \begin{linenomath*} \begin{equation}
 k_{r,i} = \dfrac{K_{r,\text{max}}}{l_i} f \left(\psi_{\text{soil,i}}\right)
@@ -1301,18 +1319,16 @@ l_i = z_i + x
 k_{s,i} = \dfrac{K_{s,i}}{d}
 \end{equation} \end{linenomath*}
 
-The conductance $k_{3,i}$ reflects two resistors in series, from soil-to-root ($k_{s,i}$) and through the
+The soil-and-root conductance $k_{sr,i}$ reflects two resistors in series, from soil-to-root ($k_{s,i}$) and through the
 root tissue ($k_{r,i}$).
 The root tissue conductance is attenuated via the vulnerability curve framework. 
 The input parameter is maximum root xylem conductivity, on the basis of RAI as defined above.
 The root conductivity is scaled by the conducting length, which is estimated as the sum of soil layer depth ($z_i$)
 and average lateral extent ($x$, static parameter).
-The soil conductivity $K_{s,i}$ is calculated from the layer soil matric potential ($\psi_s$) 
-and soil properties following \citet{clapp1978} as described in \citet{oleson2013}.
+The soil conductivity $K_{s,i}$ is calculated from the layer soil matric potential ($\psi_{soil,i}$) 
+and soil properties as described in \citet{oleson2013} utilizing typical soil hydraulic theory \citep{brooks1964,clapp1978}.
 The soil conductance ($k_{s,i}$) is the result of scaling the conductivity by $d$, 
  the distance between roots estimated following \citet{williams1996} and \citet{bonan2014}
-
-The challenge here is obviously getting your head around all the parameters.
 
 % Details on water demand
 \subsection{Details of Water Demand}
@@ -1391,10 +1407,10 @@ The numerics have proven to be stable in practice, but future versions may aim t
 The continuity of water flow through the system yields four equations
    \begin{linenomath*} \begin{equation}
    \begin{aligned}
-   E_{sun}&=q_{1a}\\
-   E_{shade}&=q_{1b}\\
-   q_{1a}+q_{1b}&=q_2\\
-   q_2&=\sum_{i=1}^{nlevsoi}{q_{3,i}}
+   E_{sun}&=q_{sun}\\
+   E_{shade}&=q_{shade}\\
+   q_{sun}+q_{shade}&=q_{stem}\\
+   q_{stem}&=\sum_{i=1}^{nlevsoi}{q_{sr,i}}
    \end{aligned}
    \end{equation} \end{linenomath*}
 
@@ -1415,8 +1431,8 @@ Defining the transpiration fluxes:
 
    \begin{linenomath*} \begin{equation}
    \begin{aligned}
-   E_{sun} &= E_{sun,max} \cdot 2^{-\left(\dfrac{\psi_{sunleaf}}{p50_e}\right)^{c_k}} \\
-   E_{shade} &= E_{shade,max} \cdot 2^{-\left(\dfrac{\psi_{shadeleaf}}{p50_e}\right)^{c_k}} 
+   E_{sun} &= E_{sun,max} \cdot 2^{-\left(\dfrac{\psi_{sunleaf}}{p50}\right)^{c_k}} \\
+   E_{shade} &= E_{shade,max} \cdot 2^{-\left(\dfrac{\psi_{shadeleaf}}{p50}\right)^{c_k}} 
    \end{aligned}
    \end{equation} \end{linenomath*}
 
@@ -1424,15 +1440,16 @@ Defining the water supply fluxes:
 
    \begin{linenomath*} \begin{equation}
    \begin{aligned}
-   q_{1a}&=k_{1a,max}\cdot 2^{-\left(\dfrac{\psi_{stem}}{p50_1}\right)^{c_k}} \cdot\mbox{LAI}_{sun}\cdot\left(\psi_{stem}-\psi_{sunleaf} \right) \\
-   q_{1b}&=k_{1b,max}\cdot 2^{-\left(\dfrac{\psi_{stem}}{p50_1}\right)^{c_k}}\cdot\mbox{LAI}_{shade}\cdot\left(\psi_{stem}-\psi_{shadeleaf} \right) \\
-   q_2&=\dfrac{k_{2,max}}{z_2} \cdot 2^{-\left(\dfrac{\psi_{root}}{p50_2}\right)^{c_k}} \cdot SAI \cdot \left( \psi_{root} - \psi_{stem} - \Delta \psi_z  \right) \\
-   q_{soil}&=\sum_{i=1}^{nlevsoi}{q_{3,i}}=\sum_{i=1}^{nlevsoi}{k_{3,i}\cdot RAI\cdot\left(\psi_{soil,i}-\psi_{root} + \Delta\psi_{z,i} \right)}
+   q_{sun}&=k_{leaf,max}\cdot 2^{-\left(\dfrac{\psi_{stem}}{p50}\right)^{c_k}} \cdot\mbox{LAI}_{sun}\cdot\left(\psi_{stem}-\psi_{sunleaf} \right) \\
+   q_{shade}&=k_{leaf,max}\cdot 2^{-\left(\dfrac{\psi_{stem}}{p50}\right)^{c_k}}\cdot\mbox{LAI}_{shade}\cdot\left(\psi_{stem}-\psi_{shadeleaf} \right) \\
+   q_{stem}&=\dfrac{k_{stem,max}}{z_2} \cdot 2^{-\left(\dfrac{\psi_{root}}{p50}\right)^{c_k}} \cdot SAI \cdot \left( \psi_{root} - \psi_{stem} - \Delta \psi_z  \right) \\
+   q_{root}&=\sum_{i=1}^{nlevsoi}{q_{sr,i}}=\sum_{i=1}^{nlevsoi}{k_{sr,i}\cdot RAI\cdot\left(\psi_{soil,i}-\psi_{root} + \Delta\psi_{z,i} \right)}
    \end{aligned}
    \end{equation} \end{linenomath*}
 
-We're looking to find the vector $\psi$
-that fits with soil and atmospheric forcings while satisfying water flow continuity. 
+In the CLM parameter file, $p50$ and $c_k$ are allowed to vary by flux level (transpiration vs. stem flux vs. root flux), but in our experiment (and on the default CLM parameter file), a single value is used for each.
+PHS solves for the vector $\psi$
+that satisfying water flow continuity as forced by atmospheric state and soil moisture.
 Due to the model non-linearity, we use a linearized explicit approach, iterating with Newton's method. 
 The initial guess is the solution for $\psi$ (vector) from the previous time step. 
 The general framework, from iteration $m$ to $m+1$ is:
@@ -1444,31 +1461,31 @@ The general framework, from iteration $m$ to $m+1$ is:
    \end{aligned}
    \end{equation} \end{linenomath*}
 
-So for our first flux balance equation, at iteration $m+1$, we have:
+So for our first flux balance equation, which requires sunlit leaf transpiration equal the flux of water from the main stem to the sunlit leaf, we have (at iteration $m+1$):
 
    \begin{linenomath*} \begin{equation} 
-   E_{sun}^{m+1}=q_{1a}^{m+1}
+   E_{sun}^{m+1}=q_{sun}^{m+1}
    \end{equation} \end{linenomath*}
 
-Which can be linearized to:
+This can be linearized to:
 
    \begin{linenomath*} \begin{equation} 
-   E_{sun}^{m}+\dfrac{\delta E_{sun}}{\delta\psi}\Delta\psi=q_{1a}^{m}+\dfrac{\delta q_{1a}}{\delta\psi}\Delta\psi
+   E_{sun}^{m}+\dfrac{\delta E_{sun}}{\delta\psi}\Delta\psi=q_{sun}^{m}+\dfrac{\delta q_{sun}}{\delta\psi}\Delta\psi
    \end{equation} \end{linenomath*}
 
 And rearranged to be:
 
    \begin{linenomath*} \begin{equation} 
-   \dfrac{\delta q_{1a}}{\delta\psi}\Delta\psi-\dfrac{\delta E_{sun}}{\delta\psi}\Delta\psi=E_{sun}^{m}-q_{1a}^{m}
+   \dfrac{\delta q_{sun}}{\delta\psi}\Delta\psi-\dfrac{\delta E_{sun}}{\delta\psi}\Delta\psi=E_{sun}^{m}-q_{sun}^{m}
    \end{equation} \end{linenomath*}
 
 And for the other 3 flux balance equations:
 
    \begin{linenomath*} \begin{equation} 
    \begin{aligned}
-   \dfrac{\delta q_{1b}}{\delta\psi}\Delta\psi-\dfrac{\delta E_{sha}}{\delta\psi}\Delta\psi&=E_{sha}^{m}-q_{1b}^{m} \\
-   \dfrac{\delta q_2}{\delta\psi}\Delta\psi-\dfrac{\delta q_{1a}}{\delta\psi}\Delta\psi-\dfrac{\delta q_{1b}}{\delta\psi}\Delta\psi&=q_{1a}^{m}+q_{1b}^{m}-q_2^{m} \\
-   \dfrac{\delta q_{soil}}{\delta\psi}\Delta\psi-\dfrac{\delta q_2}{\delta\psi}\Delta\psi&=q_2^{m}-q_{soil}^{m}
+   \dfrac{\delta q_{shade}}{\delta\psi}\Delta\psi-\dfrac{\delta E_{sha}}{\delta\psi}\Delta\psi&=E_{sha}^{m}-q_{1b}^{m} \\
+   \dfrac{\delta q_{stem}}{\delta\psi}\Delta\psi-\dfrac{\delta q_{sun}}{\delta\psi}\Delta\psi-\dfrac{\delta q_{shade}}{\delta\psi}\Delta\psi&=q_{sun}^{m}+q_{shade}^{m}-q_{stem}^{m} \\
+   \dfrac{\delta q_{soil}}{\delta\psi}\Delta\psi-\dfrac{\delta q_{stem}}{\delta\psi}\Delta\psi&=q_{stem}^{m}-q_{soil}^{m}
    \end{aligned}
    \end{equation} \end{linenomath*}
 
@@ -1527,7 +1544,7 @@ $A\Delta\psi=b$
    \end {array} \right]
    \end{equation} \end{linenomath*}
 
-Now we compute all the entries for $A$ and $b$ based on the soil moisture and maximum transpiration forcings and can solve to find:
+We can compute all the entries for $A$ and $b$ based on the soil potential and maximum transpiration forcings and can solve to find:
 
    \begin{linenomath*} \begin{equation} 
    \Delta\psi=A^{-1}b
@@ -1537,25 +1554,24 @@ Now we compute all the entries for $A$ and $b$ based on the soil moisture and ma
    \psi_{m+1}=\psi_m+\Delta\psi
    \end{equation} \end{linenomath*}
 
-We iterate until $b\to 0$, signifying water flux balance through the system. The result is a final set of water potentials ( $\psi_{root}$, $\psi_{xylem}$, $\psi_{shadeleaf}$, $\psi_{sunleaf}$) satisfying non-divergent water flux through the system. 
+We iterate until $b\to 0$, signifying water flux balance through the system. The result is a final set of water potentials ( $\psi_{root}$, $\psi_{stem}$, $\psi_{shadeleaf}$, $\psi_{sunleaf}$) satisfying non-divergent water flux through the system. 
 
 \subsection{Parameter tuning exercise}
 \label{ens}
 
 We used a factorial design to create 972 ensemble members based on the parameter values below.
-We ran PHS simulations under both AMB and TFE conditions.
+We ran PHS simulations for each parameter vector under both AMB and TFE conditions.
 All simulations used the same initial conditions, which were the result of a previous simulation.
 We evaluated the ensemble members based on the fit to sap flux observations, selecting that which
  maximized $R^2_{amb}+R^2_{tfe}-RMSE_{amb}-RMSE_{tfe}$ (Supp Fig \ref{supp:ens}).
 
 Stem conductivity, $k_{\text{max}}$: 2e-8, 4e-8, 8e-8 s$^{-1}$ \\
 Root conductivity, $k_{\text{r,max}}$: 2e-9, 6e-8, 18e-9 s$^{-1}$ \\
-Root and stem vulnerability $\psi_{50}$: -1.75, -2.25, -2.75 MPa \\
-Stomatal $\psi_{50}$: above plus either 0 or 0.5MPa \\
+Root and stem vulnerability $p_{50}$: -1.75, -2.25, -2.75 MPa \\
+Stomatal $p_{50}$: above plus either 0 or 0.5MPa \\
 Vulnerability shape parameter, $c_k$: 2.95, 3.95, 5.45 (unitless) \\
 Medlyn slope, $g_1$: 6, 7 kPa$^{0.5}$ \\
 Rooting depth parameter, $\beta$: 0.95, 0.98, 0.993 (unitless) 
-
 
 
 \acknowledgments
