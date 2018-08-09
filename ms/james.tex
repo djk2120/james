@@ -95,7 +95,7 @@ In this paper we therefore:
 %  MODEL DESCRIPTION
 %====================
 \section{Model Description}
-This study uses CLM5 to compare two parameterizations of water stress (Sections \ref{sect:fwsms} and \ref{sect:fwphs}) and root water uptake (Sections \ref{sect:smsrwu} and \ref{sect:phsrwu}). The first parameterization, which we refer to as Soil Moisture Stress (SMS), deploys the CLM4.5 default root water uptake and water stress implementations within CLM5. The second is called Plant Hydraulic Stress (PHS); PHS is the default configuration of CLM5. In Sections \ref{sect:gs}-\ref{sect:wsf}, we describe components that the two configurations share in common. In Sections \ref{sect:sms} and \ref{sect:phs}, we describe their differences.
+This study uses CLM5 to compare two parameterizations of water stress (Sections \ref{sect:fwsms} and \ref{sect:fwphs}) and root water uptake (Sections \ref{sect:smsrwu} and \ref{sect:phsrwu}). The first parameterization, which we refer to as Soil Moisture Stress (SMS), deploys the CLM4.5 default root water uptake and water stress implementations within CLM5. The second is called Plant Hydraulic Stress (PHS); PHS is the default configuration of CLM5. In Sections \ref{sect:gs}-\ref{sect:wsf}, we describe the components that the two configurations share in common. In Sections \ref{sect:sms} and \ref{sect:phs}, we describe their differences.
     
     
 %Photosynthesis
@@ -103,13 +103,13 @@ This study uses CLM5 to compare two parameterizations of water stress (Sections 
 \label{sect:gs}
     CLM5 implements the Medlyn stomatal conductance model, which reconciles the empirical and optimal approaches to 
     stomatal conductance \citep{medlyn2011}.
-    Such "optimal" stomatal model aims at maximizing photosynthesis relative to transpiration costs. 
+    Such "optimal" stomatal conductance models serve to maximize photosynthesis relative to transpiration costs. 
     Stomatal conductance of CO$_2$ ($g_s$) is directly related to net photosynthesis ($A_n$) 
     and inversely related to the square root of the vapor pressure deficit near the leaf surface ($\sqrt{D}$) and the concentration of CO$_2$ at the leaf surface ($C_a$).
     \begin{equation}
     g_s=g_0+\left(1+\dfrac{g_1}{\sqrt{D}}\right)\dfrac{A}{C_a}
     \end{equation}
-    The model features two parameters $g_0$ ($\mu$mol / m$^2$ / s) and $g_1$ (kPa$^{0.5}$). 
+    The model features two parameters: $g_0$ ($\mu$mol / m$^2$ / s) and $g_1$ (kPa$^{0.5}$). 
     The $g_0$ parameter is the minimum stomatal conductance, representing cuticular and epidermal losses (small). 
     The $g_1$ parameter relates to the marginal water cost guiding the optimization of carbon assimilation. 
     These parameters are plant functional type dependent.
@@ -149,16 +149,16 @@ This study uses CLM5 to compare two parameterizations of water stress (Sections 
     On the other hand, the modeled $V_{\text{cmax}}$ is a bulk measure of $V_{\text{cmax}}$ and may implicitly account for mesophyll conductance changes \citep{rogers2017}, which has been shown to be water stress dependent \citep{flexas2012}.
 
     For now, applying water stress through $V_{\text{cmax}}$ seems well-supported, but future refinements may be appropriate.
-    In this study, we preserve the method of applying water stress used in CLM4.5, while experimenting with how $f_w$ responds to environmental conditions.
+    In this study, we preserve the method of applying water stress used in CLM4.5, while instead experimenting with how $f_w$ responds to environmental conditions.
     
     \subsection{SMS (CLM4.5 default)}
     \label{sect:sms}
     \subsubsection{SMS Water Stress Factor}
     \label{sect:fwsms}
     
-    In SMS, the water stress $f_w$ is calculated as the summation of a soil wilting factor ($w_i$) across the $n$ soil layers, weighted by root fraction ($r_i$) \citep{oleson2013}.
+    In SMS, the water stress $f_w$ is calculated as the summation of a soil layer wilting factor ($w_i$) across the $n$ soil layers, weighted by root fraction ($r_i$) \citep{oleson2013}.
     The soil wilting factor is a bounded linear function of soil matric potential ($\psi_{\text{soil},i}$).
-    The function is defined by two parameters, the soil potential at which stomates fully open ($\psi_o$) and the value at which stomates are fully closed ($\psi_c$).  
+    The function is defined by two parameters, the soil potential at (and above) which stomates are fully open ($\psi_o$) and the value at which stomates are fully closed ($\psi_c$).  
 
     \begin{linenomath*}
     \begin{equation}
@@ -184,9 +184,8 @@ This study uses CLM5 to compare two parameterizations of water stress (Sections 
     \end{equation}
     \end{linenomath*} 
     
-    In the SMS configuration, a heuristic function is used to determine $q_i$.
-    Transpiration is partitioned among the soil layers based on the product of the root fraction and the wilting factor, which is then normalized by $f_w$ so that 100% of the total is partitioned across the different root layers. 
-    
+    In the SMS configuration, a heuristic function (based on $f_{w,\text{SMS}}$) is used to determine $q_i$.
+    Transpiration is partitioned among the soil layers based on the product of the root fraction and the wilting factor, which is then normalized by $f_w$ to satisfy Equation 5.
     \begin{linenomath*}
     \begin{equation}
     \label{bt:4}
@@ -211,7 +210,7 @@ This study uses CLM5 to compare two parameterizations of water stress (Sections 
     \end{linenomath*}
     
     In the Darcy framework, water fluxes are the product of hydraulic conductance ($k_i$) and hydraulic gradient ($\Delta\psi$).
-    Although SMS does not explicitly calculate hydraulic conductance, (\ref{eq:btrwu}) can be used to define hydraulic analogs resulting from the transpiration partitioning heuristic function, 
+    Although SMS does not explicitly calculate hydraulic conductance, Equation \ref{eq:btrwu} can be used to define hydraulic analogs resulting from the transpiration partitioning heuristic function, 
     allowing easier comparison to the PHS root water uptake implementation.
     
     \begin{linenomath*}
@@ -531,14 +530,15 @@ However both models seem to feature a high bias in soil moisture in the root-zon
 \subsection{Vegetation water potential}
 
 PHS updates both the water stress and root water uptake parameterizations based on modeling vegetation water potential.
-Leaf water potential shows typical diurnal drop, reaching -1.65 MPa at midday (Figure \ref{fig:vwp}a).
+Leaf water potential shows the typical diurnal drop, reaching -1.65 MPa at midday (Figure \ref{fig:vwp}a).
 Most of the midday pressure drop occurs between $\psi_{root}$ and $\psi_{stem}$ ($\Delta$=-1.47 MPa), representing the root collar and upper stem, respectively.
-Stem shade and leaf are all identical.
+Stem, shade, and leaf curves are all roughly equal, resulting in overlapping lines in Figure \ref{fig:vwp}a, resulting from minimal stem-to-leaf resistance in the parameter values used in this experiment.
+As such, stem-to-leaf resistance is not fully deployed presently, but may be important to investigate further, given the diversity of leaf form and function \citep{sack2002}. 
     
     Under TFE, model midday leaf water potential decreases to -2.31 MPa (Figure \ref{fig:vwp}b). 
     This change derives from a decrease in predawn root water potential (lower soil moisture) and an increase in the drop in root water potential between predawn and midday (due to reduced soil-to-root conductance).
     This comports with previous evidence that seasonal changes in hydraulic resistance are larger belowground \citep{fisher2006}.
-    Despite reduced stem conductance, the pressure drop from root-to-stem actually decreases to -1.02 MPa, with transpiration reduced by 54\%.
+    Despite reduced stem conductance, the pressure drop from root-to-stem actually decreases to -1.02 MPa (from -1.47 MPa), following from 54\% reductions in transpiration.
     In this way, stomatal regulation serves to mitigate the drop in leaf water potential due to soil drying and reduced hydraulic conductance. 
 
     Midday leaf water potential features seasonal cycle, with lower values during the dry season.
@@ -550,14 +550,14 @@ Stem shade and leaf are all identical.
 \subsection{Stress dynamics}
     
     Modeling vegetation water potential enables a diurnal mode of variability in vegetation water stress.
-    While the SMS stress factor has minimal diurnal variability
+    While the SMS stress factor has minimal diurnal variability,
     PHS features increased stress at midday (Figure \ref{fig:stress1}a,b), corresponding to the drop in leaf water potential induced by increasing demand for transpiration (Figure \ref{fig:vwp}b,c).
-    Average midday stress values are comparable during the 2003 dry season (Figure \ref{fig:stress1}) between the two model configurations, 
-    but PHS achieves more photosynthesis (Supp Fig \ref{supp:fpsn}), due to lower stress in the mornings and afternoons.
+    Average midday stress values are comparable between the two model configurations during the 2003 dry season (Figure \ref{fig:stress1}), 
+    but PHS achieves more photosynthesis over the course of the average dry-season day (Supp Fig \ref{supp:fpsn}), due to lower stress in the mornings and afternoons.
     
     The SMS stress factor lacks diurnal variability, because it is based on average root-zone soil matric potential (Equation \ref{bt:1}), which evolves over longer timescales.
     PHS utilizes leaf water potential to calculate stress (Equation \ref{eq:fwphs}), which responds to both water supply and transpiration demand.
-    As such, the PHS stress factor responds to both soil moisture and VPD, while SMS responds only to soil moisture (Figure \ref{fig:stress2})..
+    As such, the PHS stress factor responds to both soil moisture and VPD, while SMS responds only to soil moisture (Figure \ref{fig:stress2}).
     Under ambient conditions, SMS features significant stress associated with declining soil water status, but PHS stress is primarily demand-driven, with less impact from soil moisture (Figure \ref{fig:stress2}a,c).
     With TFE, stress increases in both model configurations, and the effect of soil moisture on PHS stress increases markedly (Figure \ref{fig:stress2}d).
     PHS water stress reflects a requirement that plants avoid excessive xylem tension, which is associated with cavitation and mortality \citep{rowland2015}. 
@@ -593,32 +593,31 @@ Observations show increased GPP during the dry season \citep{restrepo2017}, sugg
 but especially SMS, may overestimate dry season water stress under ambient conditions.  
 
 The modeled effect of TFE is relatively small during the wet season, with modeled reductions in GPP of 1.3 and 3.8\% for PHS and SMS, respectively.
-Based on transpiration observations (see Section \ref{sect:ttfe}), both configurations likely underestimate the drought effect during the wet season (discussed further in Section zqz).
+Based on transpiration observations, both configurations likely underestimate the TFE effect during the wet season (discussed further in Section zqz).
 SMS imposes more dry season stress, resulting in a 63\% reduction of GPP due to TFE, compared to 44\% with PHS.
-Comparing wet season to dry season, and ambient conditions to TFE, PHS features less stress than SMS resulting from precipitation shortfalls.
-The xylem tension stress of PHS imparts a negative feedback on photosynthesis and transpiration, described in Section zqz.
+Comparing dry season stress to the wet season, and TFE conditions to ambient, precipitation shortfalls (and the associate reductions in soil moisture) lead to less added stress under PHS as compared to SMS.
+However, PHS experiences more stress overall, due to the effects of xylem tension imposed by the gradient of water potential from soil-to-leaf (discussed further in Section zqz).
 
-\subsection{Root water uptake}
+\subsection{Root water uptake (RWU)}
 
-In addition to updating water stress, PHS implements a new parameterization of root water uptake, consistent with hydraulic theory.
-The parameterization of root water uptake affects the vertical distribution of soil water (Figure \ref{fig:sm}, Supp Fig \ref{supp:sm}), as
+In addition to updating water stress, PHS implements updated RWU, consistent with hydraulic theory.
+The parameterization of RWU affects the vertical distribution of soil water (Figure \ref{fig:sm}, Supp Fig \ref{supp:sm}), as
 SMS tends to achieve drier upper soil layers, whereas PHS spreads the drying effects of transpiration over a larger vertical extent.
 As described in Section zqz (Figure \ref{fig:sm2}), this yields a dry bias relative to soil moisture observations in the root-zone for SMS (within the dry season).
-With PHS, RWU (within a given soil layer) is more sensitive to soil potential (Figure \ref{fig:rwu}), which prevents soil potential from getting much lower than -1 MPa. 
 
-RWU is the product of hydraulic conductance ($k$) for water flow and the gradient ($\Delta\psi$) in water potential.
-With PHS, reductions in RWU with drying are imposed by declining conductance (Supp Fig \ref{supp:cond}).
-On the other hand, the hydraulic gradient tends to increase with drying (due to dynamic $\psi_{\text{root}}$), partially mitigating those reductions.
-With SMS, the opposite is true: reductions in RWU are imposed by declining hydraulic gradient (as soil potential approaches the constant $\psi_c$, -2.5MPa) and are (to a small extent) mitigated by increases in the (implied) conductance. 
-PHS results in higher sensitivity to soil potential, because conductance falls off by almost 3 orders of magnitude as soil potential declines from 0 to -1 MPa.
+RWU is the product of hydraulic conductance ($k_{s,r}$) for water flow and the gradient ($\Delta\psi$) in water potential from $\psi_{\text{soil,i}}$ to $\psi_\text{root}$ (see Section zqz).
+With PHS, reductions in RWU with drying are imposed by declining conductance.
+On the other hand, $\Delta\psi$ tends to increase with drying (due to dynamic $\psi_{\text{root}}$), partially mitigating the reduction of RWU.
+PHS exhibits high sensitivity to soil potential, because $k_{s,r}$ falls off by almost 3 orders of magnitude as soil potential declines from 0 to -1 MPa (Supp Fig \ref{supp:cond}).
 This derives mostly from the exponential dynamics of soil conductivity \citep{brooks1964}.
-On the other hand, SMS $\Delta\psi$ decreases by less than half an order of magnitude over the same range.
+With SMS, the opposite is true: reductions in RWU are imposed by declining hydraulic gradient (as soil potential approaches the constant $\psi_c$, -2.5MPa) and are (to a small extent) mitigated by increases in the (implied) conductance. 
+As a result, RWU (within a given soil layer) is more sensitive to soil potential with PHS (Figure \ref{fig:rwu}), which prevents soil potential from getting much lower than -1 MPa, as compared to values as low as -2.5MPa under SMS.
 
-While RWU within a given soil layer is more sensitive to soil potential with PHS (than with SMS), transpiration overall is less sensitive to shortfalls in precipitation
+While RWU within a given soil layer is more sensitive to soil potential with PHS, transpiration overall is less sensitive to shortfalls in precipitation (as compared to SMS)
 associated with dry season onset and TFE (Figure \ref{fig:t2}).
-This is because, within PHS, there is more flexibility to compensate for dry layers by switching the water extraction for transpiration to moist layers.
-As such, RWU is more sensitive to soil potential, but PHS compensates by spreading the transpiration sink over a larger vertical extent.
-PHS is less sensitive to TFE, due to increases in RWU below 2 meters in depth (Figure \ref{fig:qdry}d).
+This is because, within PHS, there is more flexibility to compensate for dry layers by switching the RWU to moist layers.
+As such, PHS can compensate for the sensitivity to soil potential by spreading the drying associated with the transpiration sink over a larger vertical extent (Figure \ref{fig:sm}).
+Following from this, with PHS, dry season transpiration is less sensitive to TFE, due to increased RWU from below 2 meters in depth (Figure \ref{fig:qdry}d).
 The shifting of water extraction based on water availability is also present under ambient conditions, as PHS shifts RWU from near-surface (0-0.2m depth) to the deeper soil layers (beyond 0.2m) during drydowns (Figure \ref{fig:qdry}a-c).
 
 Finally I could point out non-linearity in (Supp Fig \ref{supp:cond}) to explain why SMS $\psi_s$ gets stuck at $\psi_c$.
@@ -1193,9 +1192,14 @@ Modeling stomatal conductance and photosynthesis, especially subject to water st
   \begin{figure}[h]
      \centering
      \includegraphics[width=30pc]{../figs3/suppcond.pdf}
-     \caption{(a,b) Log of conductance versus soil potential for Soil Layer 5.
-     (c,d) Hydraulic gradient ($\Delta\psi$) versus soil potential for Soil Layer 5.
-     PHS conductance decreases by almost 3 orders of magnitude between 0 and -1MPa, 
+     \caption{(a,b) Log of conductance ($k_{s,r}$) versus soil potential for Soil Layer 5.
+     (c,d) Log of hydraulic gradient ($\Delta\psi$) versus soil potential for Soil Layer 5.
+     Note that the soil potential axes vary for PHS vs. SMS. 
+     
+     Multiplied together $k_{s,r}$ and $\Delta\psi$ yield the Layer-5 root water uptake.
+     PHS conductance decreases by almost 3 orders of magnitude between 0 and -1MPa, which leads to reduced RWU, though this is offset (by about half) due to increases in $\Delta\psi$.
+     
+     
      while SMS $\Delta\psi$ decreases by less than 1 order of magnitude between 0 and -2MPa, 
      leading to higher sensitivity to soil potential with PHS, see Figure \ref{fig:rwu}.
      

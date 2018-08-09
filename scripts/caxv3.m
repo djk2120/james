@@ -119,7 +119,7 @@ hh(66:70) = [0,0,0,0,0];
 hh(71:75) = [0,0,0,0,0];
 hh(76:80) = [0,0,0,0,0];
 hh(81:85) = [0,0,0,0,0];
-hh(86:90) = [0,0,0,1,0];
+hh(86:90) = [0,0,0,0,1];
 
 
 
@@ -133,6 +133,28 @@ hh(86:90) = [0,0,0,1,0];
 %18 = hr
 %19 = smp full profile time series
 %20 = h2osoi with obs
+
+if hh(90)>0
+   ix = smp(25,:)/101972<-0.9&smp(25,:)/101972>-1&mcsec>=diurn(25)&mcsec<=diurn(28)&qrootsink(25,:)>0;
+   plot(smp(25,ix),qrootsink(25,ix),'.')
+   a1=log10(mean(qrootsink(25,ix)))
+   hold on
+   ix = smp(25,:)/101972<0&smp(25,:)/101972>-.1&mcsec>=diurn(25)&mcsec<=diurn(28)&qrootsink(25,:)>0;
+   plot(smp(25,ix),qrootsink(25,ix),'.')
+   a2=log10(mean(qrootsink(25,ix)))
+   
+   
+   
+   ix = smp(65,:)/101972<-2&mcsec>=diurn(25)&mcsec<=diurn(28)&qrootsink(65,:)>0;
+   plot(smp(65,ix),qrootsink(65,ix),'.')
+   a1=log10(mean(qrootsink(65,ix)))
+   hold on
+   ix = smp(65,:)/101972<0&smp(65,:)/101972>-.1&mcsec>=diurn(25)&mcsec<=diurn(28)&qrootsink(65,:)>0;
+   plot(smp(65,ix),qrootsink(65,ix),'.')
+   a2=log10(mean(qrootsink(65,ix)))
+   
+   
+end
 
 if hh(89)>0
     
