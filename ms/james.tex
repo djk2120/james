@@ -693,23 +693,22 @@ Finally I could point out non-linearity in (Supp Fig \ref{supp:cond}) to explain
 \begin{itemize}
 \item PHS introduces dynamic vegetation water potential
 \item Observed in nature
+\item Though at this point the sun and shaded leaf water potentials are not fully distinguished from stem water potential.
 \item Allows for dynamism in the gradient of water potential from soil-to-root, which controls RWU
-\item Important for representing the range of water use strategies, and/or testing hypotheses regarding these.
+\item Important for representing the range of water use strategies, and/or testing hypotheses regarding these, such as the effects of iso/anisohydry on leaf gas exchange and drought vulnerability.
 \end{itemize}
-\subsubsection{Hydraulic conductance, with response to drying}
+\subsubsection{Mechanistic hydraulic conductance, with response to drying}
 \begin{itemize}
-\item Likewise we have very solid science showing that hydraulic conductance declines with decreasing water potential in both plant vessels and soil substrate
-\item You might ask, why does it matter that SMS doesn't capture this mode of variability in its (implied) conductance
-\item After all, RWU does decline with soil drying!
+\item PHS implements mechanistic hydraulic conductance through the SPAC, reflecting declines in conductance associated with decreasing water potential in both plant vessels and soil substrate \citep{tyree1989,brooks1964}.
 \item Soil conductances feature an exponential relationship with soil potential, ranging three orders of magnitude over the range of soil potential observed in our simulations
-\item Not really captured well by the linear loss of RWU exhibited in SMS from $\psi_o$ to $\psi_c$
-\item As a result, PHS RWU is more sensitive to soil drying, which seems to ameliorate dry biases in soil moisture observed in SMS relative to observations.
+\item Not captured by the linear loss of RWU exhibited in SMS from $\psi_o$ to $\psi_c$ (Figure \ref{fig:rwu})
+\item As a result, PHS RWU is more sensitive to soil drying, which seems to ameliorate dry biases in soil moisture observed in SMS relative to observations (Figure \ref{fig:sm2})
 \end{itemize}
 \subsubsection{Compensatory RWU}
 \begin{itemize}
 \item Furthermore utilziing hydraulic approach enables compensatory root water uptake.
-\item where, for example, as surface soil layers dry, tap roots can be used to harness reserves of soil water at depth to compensate for reduced RWU near the surface and maintain high levels of transpiration and photosynthesis.
-\item This is observed in nature and its absence is a known shortcoming of the SMS-style transpiration sink
+\item where, for example, as surface soil layers dry, tap roots can be used to harness reserves of soil water at depth \citep{oliveira2005} to compensate for reduced RWU near the surface and maintain transpiration and photosynthesis.
+\item This is a known shortcoming of the SMS-style transpiration sink \citep{jarvis2011}.
 \item For example, PHS extracts 29\% of transpiration from beyond 2 meters depth under TFE (during the 2003 dry season) as compared to 13\% with SMS.
 \item In PHS, as the surface soil layers dry out, conductance decreases rapidly, leading to reduced RWU.
 \item In response, the vegetation `pulls' harder, lowering $\psi_{\text{root}}$, creating a larger gradient to the deeper soil layers, yielding increased RWU in the still-moist layers.
