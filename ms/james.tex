@@ -245,6 +245,13 @@ This study uses CLM5 to compare two parameterizations of water stress (Sections 
     \end{equation}
     \end{linenomath*}
     
+        \begin{linenomath*}
+    \begin{equation}
+\psi_{\text{leaf}} = \psi_{\text{soil}} + \Delta\psi
+    \label{eq:fwphs}
+    \end{equation}
+    \end{linenomath*}
+    
     Utilizing leaf water potential, instead of soil water potential, for drought stress introduces a new interpretation of vegetation water stress to the model. 
     Leaf water potential is modulated by supply of sap to the leaves and by evaporative demand, as regulated by stomatal dynamics \citep{novick2016a}. 
     As a result, low soil water (bottom-up stress) induces stress due to limited water supply, but in addition, high atmospheric VPD can induce stress with the associated increases in the gradient in water potential across the plant xylem (top-down stress). 
@@ -691,27 +698,32 @@ Finally I could point out non-linearity in (Supp Fig \ref{supp:cond}) to explain
 
 \subsubsection{Dynamic vegetation water potential}
 
-PHS introduces dynamic vegetation water potential, for the first time, into the default configuration of the CLM.
+PHS introduces dynamic vegetation water potential (Figure \ref{fig:vwp}), for the first time, into the default configuration of the CLM.
 Seasonally and diurnally dynamic leaf water potential are observed in the field \citep{fisher2006}, adjusting to variations in soil water supply and transpiration demand.
-The dynamism in the gradient of water potential from soil-to-leaf, according to Darcy's Law, should drive RWU \citep{jarvis2011}.
-A mechanistic representation of this process is important for modeling the range of water use strategies, and/or testing hypotheses regarding these on the ESM scale, such as the effects of iso/anisohydry on leaf gas exchange and drought vulnerability.
+Dynamism in the gradient of water potential from soil-to-leaf, according to Darcy's Law, drives RWU.
+This is especially important for partitioning the transpiration sink among soil layers with varying soil potential states \citep{jarvis2011}.
+A mechanistic representation of RWU with dynamic vegetation water potential allows for modeling a range of water use strategies, and/or testing hypotheses regarding such strategies on the ESM scale, including the effects of iso/anisohydry on leaf gas exchange and drought vulnerability.
 
 \subsubsection{Mechanistic hydraulic conductance, with response to drying}
 Likewise, PHS implements mechanistic hydraulic conductance through the SPAC, reflecting declines in conductance associated with decreasing water potential in both plant vessels and soil substrate \citep{tyree1989}.
-Hydraulic theory describes soil conductance as featuring an exponential relationship with soil potential \citep{brooks1964}, ranging three orders of magnitude over the range of soil potential observed in our simulations.
+Hydraulic theory describes soil conductance as featuring an exponential relationship with soil potential \citep{brooks1964}, ranging three orders of magnitude over the range of soil potential observed in our simulations (Supp Fig \ref{supp:cond}).
 This shapes the PHS response of RWU to soil drought, and is not captured by the linear loss of RWU exhibited in SMS (between the parameters: $\psi_o$ and $\psi_c$, Figure \ref{fig:rwu}).
-As a result, PHS RWU is more sensitive to drying soils, which seems to ameliorate dry biases in soil moisture observed in SMS relative to observations (Figure \ref{fig:sm2})
+As a result, PHS RWU is more sensitive to drying soils, which seems to ameliorate dry biases in soil moisture observed in SMS relative to observations (Figure \ref{fig:sm2}).
 
 \subsubsection{Compensatory RWU}
-\begin{itemize}
-\item Furthermore utilziing hydraulic approach enables compensatory root water uptake.
-\item where, for example, as surface soil layers dry, tap roots can be used to harness reserves of soil water at depth \citep{oliveira2005} to compensate for reduced RWU near the surface and maintain transpiration and photosynthesis.
-\item This is a known shortcoming of the SMS-style transpiration sink \citep{jarvis2011}.
-\item For example, PHS extracts 29\% of transpiration from beyond 2 meters depth under TFE (during the 2003 dry season) as compared to 13\% with SMS.
-\item In PHS, as the surface soil layers dry out, conductance decreases rapidly, leading to reduced RWU.
-\item In response, the vegetation `pulls' harder, lowering $\psi_{\text{root}}$, creating a larger gradient to the deeper soil layers, yielding increased RWU in the still-moist layers.
-\item Due to constant vegetation potential ($\psi_c$) and no drying response to conductance, SMS lacks the flexibility to achieve this type of CRWU.
-\end{itemize}
+Utilizing a hydraulic approach (with dynamic vegetation water potential and mechanistic hydraulic conductance) enables a more flexible representation of RWU.
+This includes the ability to model hydraulic redistribution (next Section) and compensatory RWU.
+Compensatory RWU occurs when soil water extraction switches soil layers to maintain transpiration through precipitation shortfalls.
+For example, as surface soil layers dry, tap roots can be used to harness reserves of soil water at depth \citep{oliveira2005}, partially compensating for reduced RWU near the surface.
+In an SMS-style paradigm, this process is not represented \citep{jarvis2011}.
+
+With identical rooting profiles, PHS extracts 29\% of transpiration from beyond 2 meters depth under TFE (during the 2003 dry season) as compared to 13\% with SMS.
+In PHS, as the surface soil layers dry out, conductance decreases rapidly, leading to reduced near-surface RWU.
+In response, the vegetation `pulls' harder, as $\psi_{\text{root}}$ becomes more negative, creating a larger gradient to the deeper soil layers, yielding increased RWU in those still-moist layers.
+Due to constant vegetation potential ($\psi_c$) and no drying response to conductance, SMS lacks the flexibility to achieve this type of compensatory RWU.
+As a result, PHS maintains higher levels of transpiration and photosynthesis than SMS during the dry season under both ambient and TFE conditions (Figures \ref{fig:t2},\ref{fig:gpp}).
+This process may be especially important for modeling evapotranspiration in semi-arid ecosystems \citep{jarvis2011}.
+
 \subsubsection{Hydraulic redistribution}
 PHS simulates substantial HR at our test site, both upwards and downwards (Figure \ref{fig:hr}, Supp Fig \ref{supp:hr}), which conforms with field observations \citep{burgess1998,oliveira2005}.
     Modeled HR is weighted towards downward transfers, moving near-surface water from rain events deeper into the soil column and thus saving it for when it is most needed such as during the dry season.

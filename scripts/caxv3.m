@@ -120,7 +120,7 @@ hh(71:75) = [0,0,0,0,0];
 hh(76:80) = [0,0,0,0,0];
 hh(81:85) = [0,0,0,0,0];
 hh(86:90) = [0,0,0,0,0];
-hh(91:95) = [1,0,0,0,0];
+hh(91:95) = [0,0,1,0,0];
 
 
 
@@ -135,9 +135,90 @@ hh(91:95) = [1,0,0,0,0];
 %19 = smp full profile time series
 %20 = h2osoi with obs
 
+if hh(93)>0
+    mstr = 'janfebmaraprmayjunjulaugsepoctnovdec';
+    ppp = zeros(1,3);
+    for i = 1:5:1081
+        subplot('Position',[0.1,0.1,0.7,0.85])
+        ww = 10;
+        ix = (1:48*ww)+(i-1)*48;
+        plot([0,0],[-9,0],'k:','LineWidth',2)
+        hold on
+        plot(mean(qrootsink((1:20)+20,ix),2),-zs(2:end))
+        plot(mean(qrootsink((1:20)+60,ix),2),-zs(2:end))
+        hold off
+        xlim([-1e-5,2e-5])
+        title(mstr((1:3)+(month(ix(48*ww/2+1))-1)*3))
+        xlabel('RWU')
+        ylabel('Soil Depth')
+        ylim([-6,0])
+        
+        
+        
+        subplot('Position',[0.85,0.1,0.12,0.85])
+        ppp = [ppp(2:3),1800*sum(prec(ix(48*ww/2+1:end)))];
+        bar(ppp)
+        title('5d Precip (mm)')
+        ylim([0,150])
+        set(gca,'xticklabel',{-2,-1,'t'})
+        pause(0.3)
+        
+   
+    end
+    
+    
+    
+end
+
+
+if hh(92)>0
+    
+    g  = findgroups(365*year+doy);
+    qr = splitapply(@sum,qrootsink',g')';
+    
+    
+    [a,b,c] = pca(qr(1:20,:)');
+    for i=1:5
+        subplot(2,6,i)
+        plot(a(:,i))
+        ylim([-0.6,0.6])
+    end
+    subplot(2,6,6)
+    bar(c(1:5)/sum(c))
+    ylim([0,1])
+    
+    [a,b,c] = pca(qr(41:60,:)');
+    for i=1:5
+        subplot(2,6,i+6)
+        plot(a(:,i))
+        ylim([-0.6,0.6])
+    end
+    subplot(2,6,12)
+    bar(c(1:5)/sum(c))
+    ylim([0,1])
+    
+end
+
 if hh(91)>0
     
+    [a,b,c] = pca(qrootsink(1:20,:)');
+    for i=1:5
+        subplot(2,6,i)
+        plot(a(:,i))
+        ylim([-0.6,0.6])
+    end
+    subplot(2,6,6)
+    bar(c(1:5)/sum(c))
+    ylim([0,1])
     
+    [a,b,c] = pca(qrootsink(41:60,:)');
+    for i=1:5
+        subplot(2,6,i+6)
+        plot(a(:,i))
+        ylim([-0.6,0.6])
+    end
+    subplot(2,6,12)
+    bar(c(1:5)/sum(c))
     
 end
 
