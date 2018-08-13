@@ -709,6 +709,7 @@ Likewise, PHS implements mechanistic hydraulic conductance through the SPAC, ref
 Hydraulic theory describes soil conductance as featuring an exponential relationship with soil potential \citep{brooks1964}, ranging three orders of magnitude over the range of soil potential observed in our simulations (Supp Fig \ref{supp:cond}).
 This shapes the PHS response of RWU to soil drought, and is not captured by the linear loss of RWU exhibited in SMS (between the parameters: $\psi_o$ and $\psi_c$, Figure \ref{fig:rwu}).
 As a result, PHS RWU is more sensitive to drying soils, which seems to ameliorate dry biases in soil moisture observed in SMS relative to observations (Figure \ref{fig:sm2}).
+At the same time, the mechanistic approach of PHS better reflects soil-root hydraulic theory \citep{cai2018,warren2015}.
 
 \subsubsection{Compensatory RWU}
 Utilizing a hydraulic approach (with dynamic vegetation water potential and mechanistic hydraulic conductance) enables a more flexible representation of RWU.
@@ -864,75 +865,6 @@ PHS simulates substantial HR at our test site, both upwards and downwards (Figur
     
 \section{Cut from other sections}
 
-    In addition to modulating water stress and transpiration, vegetation water potential can be used to improve the CLM representation of root water uptake.
-PHS uses dynamic root water potential ($\psi_{\text{root}}$, Figure \ref{fig:vwp}) as the sink for measuring the hydraulic gradient governing root water uptake ($\Delta\psi$).
-Because SMS does not resolve water potential through the vegetation substrate, the model instead uses a constant parameter, $\psi_c$, in its definition of $\Delta\psi$.
-    As such, PHS provides a critical structural improvement for modeling root water uptake, consistent with extensive evidence of dynamic vegetation water potential (e.g. \cite{fisher2006}).
-
-    Root water uptake dynamics are driven by either changes in $\Delta\psi$, as discussed above, or by changes in hydraulic conductance, $k$. 
-    PHS features mechanistic reductions in $k$ based on root xylem vulnerability and soil hydraulic properties, 
-    conforming to soil-root hydraulic theory \citep{cai2014,warren2015}.
-    As a result the soil-root conductance features a strong, positive relationship with soil potential, decreasing by almost three orders of magnitude as the soil dries (Supp Fig \ref{supp:cond}).
-    Hydraulic conductance is not explicitly modeled with SMS, but the values implied by the transpiration partitioning function (see Section \ref{sect:smsrwu}), actually increase as soils dry over the domain of $\psi_c<\psi_{\text{soil}}<\psi_o$ (Supp Fig \ref{supp:cond}).
-    
-        Furthermore, whereas SMS uses a relative notion to scale uptake by root abundance (root fraction), PHS opts for an absolute measure (root area), which can better capture dynamic carbon allocation in response to drying.
-    With SMS, if root mass were to double in every soil layer, the root fraction remains unchanged, yielding no advantage in accessing soil water.
-    With PHS, as root area in a soil layer increases so does the hydraulic conductance, even if the layer root fraction remains constant.
-    
-    PHS appropriately penalizes extraction of soil water from deep in the soil column, associated with increased distance between roots, increased xylem length, and contributions from gravity (all factors not represented in SMS).
-    As a result, PHS favors surface extraction when water is available (Figure \ref{fig:qwet}).
-    The model can overcome these penalties, featuring compensatory root water uptake where extraction (during the dry season) from beyond 2-meter depth increases significantly in response to TFE (Figure \ref{fig:qdry}).
-    Dynamic root water potential (and conductance) gives PHS more flexibility, allowing the model to switch root water uptake to the lower layers as the surface dries out.
-   
-     Finally, PHS eschews the unsubstantiated constraints on $\Delta\psi$ imposed by SMS ($0\ge\Delta\psi\ge\psi_c-\psi_o$, see Section \ref{sect:fwsms}).
-    Allowing $\Delta\psi$ to change sign yields a representation of hydraulic redistribution, which has been observed in Amazonian forests \citep{oliveira2005}.
-    
-
-    
-    PHS uses leaf water potential ($\psi_l$) to calculate the water stress factor, 
-    replacing the previous version based on soil water potential (SMS).
-    Using leaf water potential permits a representation of xylem tension stress and its diurnal variations, where vegetation must limit transpiration to avoid cavitation and embolism.
-    This limitation is in addition to the VPD response of the Medlyn stomatal conductance model,
-     which optimizes carbon gain versus water losses \citep{medlyn2011}.
-    Opting for xylem tension stress (PHS), in lieu of soil moisture stress (SMS), inserts an alternative physical interpretation of water stress and also yields different stress dynamics, 
-    
-    Basing stress on leaf water potential imparts a diurnal cycle to the water stress factor (Figure \ref{fig:stress1}), following the midday drop in leaf water potential induced by high leaf-level VPD and photosynthesis.
-    As such, water stress now depends on transpiration demand, and, in turn, leaf-level VPD and radiation (Figure \ref{fig:stress2}, Supp Fig \ref{supp:fsds}) and not only on soil moisture stress.
-    The PHS water stress factor also exhibits a seasonal cycle, with lower values (indicating more stress) during the dry season.  
-    However, the seasonal variation in water stress is smaller than with the control model (Figure \ref{fig:gpp}a-d).
-    
-    As a result, PHS (compared to SMS) features less seasonal variability in GPP and transpiration, especially under ambient conditions (Figures \ref{fig:gpp}e-h, \ref{fig:t}a,c).
-    Furthermore, PHS exhibits less variability in transpiration than observations derived from sap flux velocity (Figure \ref{fig:t}e,f).
-    This follows from a negative feedback on GPP induced by the PHS water stress factor.
-    Conditions favoring increased GPP (e.g. more light) also increase xylem tension and stress, which opposes increases in GPP.
-    This negative feedback could be loosened by adjusting parameters to increase the hydraulic safety margin, such as increasing maximum stem hydraulic conductance.
-        \cite{restrepo2017} show that GPP at Caxiuan\~a is highest during the dry season, suggesting that both models fail to capture the observed GPP seasonal cycle.
-
-    Likewise, both models produce a high bias in transpiration under TFE (Figure \ref{fig:t}a,b). 
-    A previous study testing the CLM (version 3.5) with the Caxiuan\~a TFE experiment also found that the model underestimated the effect of the drought treatment  \citep{powell2013}.
-    This might suggest model structural or parametrics deficiencies that are external to the water stress parameterization.
-    
-    Overall, PHS provides a better match to sap flux observations, featuring lower RMSE and higher correlation, especially under ambient conditions. This result should be tempered by the fact that model tuning was not symmetrical between the two configurations (see Section \ref{sect:exp}).
-    However, in Section \ref{sect:smt}, we discuss further evidence that suggests that PHS provides significant improvements in modeling water stress and its effect on transpiration.
-    
-
-
-    The two models predict similar GPP during the TFE simulation (2002-2003), with 1.98 kgC/m$^2$/yr for SMS and 2.00 kgC/m$^2$/yr for PHS, 
-    but GPP is lower for PHS under ambient conditions (2.43 kgC/m$^2$/yr) as compared to SMS (2.73 kgC/m$^2$/yr, Figure \ref{fig:gpp}e-h).
-    Seasonal variability in GPP is smaller with PHS, especially under ambient conditions. 
-    The standard deviations of daily GPP (2002-2003) are 0.49 and 1.55 gC/m2/d for AMB/TFE, 
-    as compared to 1.53, 2.73 gC/m2/d with SMS.
-    Lower maximal photosynthesis and less variability in GPP are both related to updates to the water stress factor implemented with PHS.
-
-    PHS has a stress response to high levels of transpiration (Supp Fig \ref{supp:tstress}c,d) due to the associated drops in leaf water potential.
-    This negative feedback limits maximal transpiration and photosynthesis, while reducing variability.  
-    Transpiration shows a seasonal pattern in both models (Figure \ref{fig:t}a,b), but with a larger amplitude for SMS.
-    For example, under ambient conditions, the 10th and 90th percentiles for daily total transpiration with SMS are 1.65 and 4.22 mm/d ($\Delta$=2.57 mm/d).
-    That range exceeds the span for PHS: 1.85 and 3.49 mm/d ($\Delta$=1.64 mm/d).
-    Under ambient conditions, PHS underestimates transpiration variability as compared to sap flux observations (Figure \ref{fig:t}e).
-    However PHS yields a better overall fit to the field observations, with higher R$^2$  and lower RMSE compared to SMS 
-    under both ambient and TFE conditions (Figure \ref{fig:t}c-f, Table 3).
-
     Plant hydraulics can potentially improve model predictions of vegetation response to climate change \citep{sperry2015}, 
     especially if parameter ranges and model complexity can be constrained \citep{rogers2017}.
     Numerous site-level models have deployed plant hydraulics (e.g. \citet{williams1996,sperry1998,bohrer2005}), and studies show
@@ -950,27 +882,6 @@ Because SMS does not resolve water potential through the vegetation substrate, t
 
 Modeling stomatal conductance and photosynthesis, especially subject to water stress, is an area of ongoing research. We use the Medlyn VPD-dependence model coupled to a hydraulic stress function that attenuates $V_{\text{cmax}}$. This complies with observations \citep{lin2018,zhou2013} that stress applied through $g_1$ underestimates attenuation of photosynthesis. However, there is no direct evidence of declines in $V_{\text{cmax}}$ at the leaf level with drought \citep{flexas2006}, whereby future work may seek to represent mesophyll conductance in CLM to correct such discrepancy.
     
-    The model hydraulic supply representation is simplified, to reduce the model parameter and computational burdens.
-    No capacitance.
-    No integration of xylem or soil conductances vulnerability, instead based on lower node.
-    No hysteresis in loss of conductance, xylem instantly regain conductance upon re-wetting.
-    Leaf conductance simplified.
-    Soil layers fully parallel, soil potential constant each time step.
-    
-    Parameter uncertainty is significant.
-    Notions of hydraulic architecture will never perfectly fit on this modeling scale, especially in a PFT paradigm.
-    Field measurements of hydraulic traits will help constrain parameter ranges, but mostly only aboveground.
-    Flux observations can help to tune stress parameters.
-    Parameter estimation for root functioning is significantly more challenging, given the difficulty in underground trait observations.
-    Likewise observational constraints of vertically-resolved states and fluxes underground are scarce.
-    Follow-up work will be geared towards parameter estimation and assessing model skill.
-
-    Partitioned among the segments of the SPAC, the changes in leaf water potential (totaling -0.66MPa) due to TFE are:
-    -0.44MPa soil potential,
-    -0.66MPa soil-to-root,
-    +0.45MPa root-to-stem, and 
-    -0.001MPa stem-to-leaf.
-
 \section{Acknowledgments}
 
 \clearpage    
@@ -980,9 +891,9 @@ Modeling stomatal conductance and photosynthesis, especially subject to water st
   \begin{figure}[h]
      \centering
      \includegraphics[width=30pc]{../figs3/T.pdf}
-     \caption{Modeled and observed daily total transpiration. Observations are derived from field observations of sap flux velocity (see Section \ref{sect:exp}).
-     (a,b) Modeled (lines, monthly mean) and observed (dots, daily total) transpiration over time.
-     (c-f) Modeled versus observed daily transpiration (mm/d).
+     \caption{Modeled versus observed daily total transpiration. Observations are derived from field observations of sap flux velocity (see Section \ref{sect:exp}).
+     (a,b) SMS configuation, under ambient conditions and 60\% TFE.
+     (c,d) PHS configuation, under ambient conditions and 60\% TFE.
      }
      \label{fig:t}
   \end{figure}
@@ -991,9 +902,9 @@ Modeling stomatal conductance and photosynthesis, especially subject to water st
       \begin{figure}[h]
      \centering
      \includegraphics[width=30pc]{../figs3/fctr_ts.pdf}
-     \caption{Modeled and observed daily total transpiration. Observations are derived from field observations of sap flux velocity (see Section \ref{sect:exp}).
-     (a,b) Modeled (lines, monthly mean) and observed (dots, daily total) transpiration over time.
-     (c-f) Modeled versus observed daily transpiration (mm/d).
+     \caption{(a-f) Time-series of daily total transpiration (mm/d), from (a,b) observations, (c,d) SMS model configuration, and (e,f) PHS model configuration under ambient and TFE conditions.
+     
+     (g-j) Difference between modeled and observed transpiration (mm/d), for (g,h) SMS and (i,j) PHS under ambient and TFE conditions.
      }
      \label{fig:t2}
   \end{figure}
@@ -1004,11 +915,10 @@ Modeling stomatal conductance and photosynthesis, especially subject to water st
     \begin{figure}[h]
      \centering
      \includegraphics[width=30pc]{../figs3/sm2.pdf}
-     \caption{Volumetric soil water content (-) over time under ambient and TFE conditions at depth of 50cm.
+     \caption{Volumetric soil water content (-) over time under ambient and TFE conditions at a depth of 50cm.
      (a/b) SMS
      (c/d) PHS.
-     RMSE are 0.048, 0.049, 0.022, and 0.029 [move to plot].
-     Arrows indicate start of TFE. Figure \ref{supp:sm2} shows the same plots at 7 other soil depths. }
+     Arrows indicate start of TFE. Figure \ref{supp:sm2} plots 7 other soil depths. }
      \label{fig:sm2}
   \end{figure}
   
@@ -1016,11 +926,12 @@ Modeling stomatal conductance and photosynthesis, especially subject to water st
     \begin{figure}[h]
      \centering
      \includegraphics[width=30pc]{../figs3/vwp.pdf}
-     \caption{(a,b) 2003 dry season diurnal mean of modeled vegetation water potential under ambient and 60\% TFE conditions.
+     \caption{(a,b) 2003 dry season (September-October-November) diurnal mean of modeled vegetation water potential under ambient and TFE conditions.
      Curves are drawn for sunlit leaf, shaded leaf, stem, and root water potentials, with the latter three overlapping.
+     
      (c) Monthly mean midday (12h-14h) vegetation water potential under ambient (solid line) and TFE (dotted line) conditions.
      Here curves are drawn only for sunlit leaf and root water potential.
-     Note that TFE begins Nov 1, 2001, as indicated by the vertical arrow. 
+     The arrow indicates the start of TFE.
      }
      \label{fig:vwp}
   \end{figure}
@@ -1055,7 +966,7 @@ Modeling stomatal conductance and photosynthesis, especially subject to water st
   \begin{figure}[h]
      \centering
      \includegraphics[width=30pc]{../figs3/gpp.pdf}
-     \caption{Daily stress factor (midday, averaged over 12h-14h) and GPP during 2002-2003 under ambient (left column) and TFE (right column) conditions.
+     \caption{(a-d) Daily stress factor (midday, averaged over 12h-14h) and (e-h) GPP (daily total) over 2002-2003 under ambient (left column) and TFE (right column) conditions.
      Output from the SMS configuration (a,b,e,f) are plotted with gray color, while output from the PHS configuration (c,d,g,h) are plotted in black.
      }
      \label{fig:gpp}
@@ -1067,10 +978,10 @@ Modeling stomatal conductance and photosynthesis, especially subject to water st
     \begin{figure}[h]
      \centering
      \includegraphics[width=30pc]{../figs3/smp.jpg}
-     \caption{Vertical profile of soil water content (by volume) over time under 60\% throughfall exclusion, for
+     \caption{Vertical profile of soil water content (by volume) over 2003 under 60\% throughfall exclusion, for
      (a) SMS, and 
      (b) PHS.
-     Soil potential under ambient conditions is shown in Supp Fig \ref{supp:sm}.
+     Soil water content under ambient conditions is shown in Supp Fig \ref{supp:sm}.
  }
      \label{fig:sm}
   \end{figure}
@@ -1094,7 +1005,7 @@ Modeling stomatal conductance and photosynthesis, especially subject to water st
      \caption{2003 dry season (SON) cumulative root water uptake and precipitation. 
      (a) Cumulative precipitation over time under ambient conditions
      (b,c) Cumulative water uptake over time from above and below 0.2m, respectively.
-     (d) Cumulative root water uptake with depth.
+     (d) Cumulative root water uptake over the soil column (accumulating from depth).
      }
      \label{fig:qdry}
   \end{figure}
@@ -1111,8 +1022,8 @@ Modeling stomatal conductance and photosynthesis, especially subject to water st
      \centering
      \includegraphics[width=30pc]{../figs3/hr.pdf}
      \caption{Total hydraulic redistribution (cm) by month across 2003. For (a) ambient through-fall conditions, and (b) 60\% throughfall exclusion. 
-     Darker shading shows portion of HR at night [6pm,6am), lighter shading shows portion of HR during day [6am,6pm).
-     Total HR refers to the sum of all negative root water uptake flows, when water is deposited by roots into a given soil layer.}
+     Darker shading shows portion of HR at night [6pm,6am), lighter shading shows portion of HR during the day [6am,6pm).
+     Total HR refers to the sum of all negative root water uptake flows, whenever water is deposited by roots into a given soil layer (instead of being extracted).}
      \label{fig:hr}
   \end{figure}
 
@@ -1125,12 +1036,12 @@ Modeling stomatal conductance and photosynthesis, especially subject to water st
               \begin{figure}[h]
      \centering
      \includegraphics[width=30pc]{../figs3/sm3.pdf}
-     \caption{Binned boxplot showing the difference between modeled and observed transpiration (mm/d) versus model soil potential.
+     \caption{Binned boxplot showing the difference between modeled and observed transpiration (mm/d) versus model soil potential, for (a,b) SMS and (c,d) PHS.
      Red lines are drawn at the median, with boxes spanning the interquartile range.
      The two models use different root water uptake paradigms, from which we define different operators for column effective soil potential.
      For SMS we average over the soil column weighted by root fraction and over time (daily mean).
      For PHS we use predawn (5h) root water potential.
-     Bin widths are 0.2 MPa for SMS (a,b) and 0.05 MPa for PHS (c,d); note the different x-axes. 
+     Bin widths are 0.2 MPa for SMS and 0.05 MPa for PHS; note the different x-axes. 
 }
      \label{fig:cool}
   \end{figure}
