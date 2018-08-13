@@ -120,7 +120,7 @@ hh(71:75) = [0,0,0,0,0];
 hh(76:80) = [0,0,0,0,0];
 hh(81:85) = [0,0,0,0,0];
 hh(86:90) = [0,0,0,0,0];
-hh(91:95) = [0,0,1,0,0];
+hh(91:95) = [0,0,0,1,0];
 
 
 
@@ -134,6 +134,19 @@ hh(91:95) = [0,0,1,0,0];
 %18 = hr
 %19 = smp full profile time series
 %20 = h2osoi with obs
+
+if hh(94)>0
+    out = [];
+    for i=1:20
+        ix = smp(60+i,:)>-256000&smp(60+i,:)<-254000;
+        out = [out,h2osoi(60+i,ix)];
+    end
+    
+    plot(out,'.')
+    
+    
+end
+
 
 if hh(93)>0
     mstr = 'janfebmaraprmayjunjulaugsepoctnovdec';
