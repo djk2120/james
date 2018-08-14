@@ -795,59 +795,40 @@ PHS simulates substantial HR at our test site, both upwards and downwards (Figur
 \begin{enumerate}
     \item Plant hydraulics are highly simplified
     \begin{itemize}
-        \item No capacitance
-        \item Vulnerability not integrated across vegetation tissue or soil matrix
+        \item Does not model vegetation tissue water storage (capacitance)
+        \item Loss of conductance (vulnerability) not integrated across vegetation tissue or soil matrix (based on lower terminus)
         \item Stem-to-leaf resistance is not fully deployed
         \item Simplified root system architecture
         \item These simplifications create a null hypothesis for further testing by the hydraulic community and yield a relatively light-weight model
     \end{itemize}
     \item Uncertainty regarding the parameterization of water stress
     \begin{itemize}
-        \item PHS fits water stress ($f_w$) to leaf water potential via a sigmoidal function
-        \item $f_w$ is then used to attenuate $V_{\text{cmax}}$
-        \item Many other approaches have been described in the literature, without a clear winner to date.
+        \item PHS models water stress ($f_w$) as a sigmoidal function of leaf water potential, which is used to attenuate $V_{\text{cmax}}$
+        \item Stress attenuation of $V_{\text{cmax}}$ was also utilized in CLM4.5/SMS, which allowed for easier comparison between model versions
+        \item Several other approaches have been described in the literature, and future research is needed to elucidate water stress dynamics and mechanisms
     \end{itemize}
     \item Increased model complexity
     \begin{itemize}
-    	\item Can potentially be mitigated by hydraulic trait coordination and improved priors and observational constraints on vegetation water potential
-        \item Scale mismatch to reported parameter values in trait database 
+    	\item Can potentially be mitigated by hydraulic trait coordination, improved parameter priors, and observational constraints on vegetation water potential
+        \item However, the spatial scale of the CLM does not match to the experiments associated with reported parameter values in trait database 
     \end{itemize}
-    \item We don't provide a definitive assessment on model skill
+    \item We do not provide a definitive assessment on model skill
     \begin{itemize}
-        \item asymmetrical model tuning
-        \item especially when taking into account the increased number of parameters
-        \item however PHS offers better alignment with established theory and shows promising result in removing bias introduced by the water stress factor
+        \item Single site
+        \item Results specific to experimental setup and parameter values
+        \item However, this allows for more detailed analysis of the model dynamics to supplement the model description
     \end{itemize}
     
 \end{enumerate}
 
 \section{Conclusion}
 
-    The PHS configuration of the CLM5 within the Community Earth System Model (CESM)is, to our knowledge, the first land-surface model within an ESM with a representation of plant water potential running in its default configuration. In this paper, we have described the model implementation, and illustrated a comparison of the model dynamics for a tropical rainforest site subjected to water limitation, given that prediction of rainforest responses to drought is one of the key uncertainties in the ESM predictions \citep{huntingford2013}. Overall, the new model behaviour differs from the default configuration in ways that are expected, given its structural properties, and in many cases, provides better correspondence with observations than the default structure. 
+    The PHS configuration of the CLM5 within the Community Earth System Model (CESM2) is, to our knowledge, the first land-surface model within an ESM with a representation of plant water potential running in its default configuration. In this paper, we have described the model implementation, and illustrated a comparison of the model dynamics for a tropical rainforest site subjected to water limitation, given that prediction of rainforest responses to drought is one of the key uncertainties in the ESM predictions \citep{huntingford2013}. Overall, the new model behavior differs from the default configuration in ways that are expected, given its structural properties, and in many cases, provides better correspondence with observations than the default structure. 
     
-    In this paper, however, we did not aimed at undertaking a comprehensive assessment of which model structure performs better, given the substantial parametric uncertainty in both models, and the dependence on numerous other features of the CLM external to water stress representation that contribute to model-observation divergences - in this case in particular, the overestimation of unstressed transpiration by both versions of the model compared to the observations. 
+    In this paper, however, we have not aimed at undertaking a comprehensive assessment of which model structure performs better, given the substantial parametric uncertainty in both models, and the dependence on numerous other features of the CLM external to water stress representation that contribute to model-observation divergences - in this case in particular, the overestimation of unstressed transpiration by both versions of the model compared to the observations. 
     
-    In lieu of this type of assessment, we propose that the new PHS model structure 1) is more closely aligned with known plant hydraulics theory, 2) provides significantly improved connections to real-world observational data streams (of leaf and stem water status, sap flow, percent loss conductance) and 3) represents known features of ecohydrological function that the default model cannot capture, including hydraulic redistribution, changes in the depth of water uptake with drought stress, plant embolism impacts on gas exchange and responses of water uptake to changes in leaf:root ratios. 
-    
-\section{Cut from other sections}
-
-    Plant hydraulics can potentially improve model predictions of vegetation response to climate change \citep{sperry2015}, 
-    especially if parameter ranges and model complexity can be constrained \citep{rogers2017}.
-    Numerous site-level models have deployed plant hydraulics (e.g. \citet{williams1996,sperry1998,bohrer2005}), and studies show
-    vegetation water potential can improve predictions of stomatal response to the environment \citep{sperry2017,anderegg2017},
-    More recently hydraulics have been coupled to global models \citep{bonan2014,xu2016,christoffersen2016}, 
-    but most Earth System Models do not provide a mechanistic representation of vegetation water dynamics.
-    
-  Incorporating hydraulic theory into Earth System Models is a well established ambition in the field of ecohydrology \citep{sperry2015}, supported by potential improvements in modeling mortality and productivity \citep{choat2012,mcdowell2018}.
-    However, concerns exist in the literature regarding hydraulic model complexity and parameterization \citep{verhoef2014,drake2017}, 
-    which led to a series of simplifications implemented in our model design (see Section 2).
-    Recent work suggests model complexity can be managed, given the significant coordination of hydraulic traits \citep{bartlett2016,christoffersen2016}.
-    Furthermore incorporating plant hydraulics provides access to new streams of observational data for model validation and parameterization.
-    Vegetation water potential can be monitored in the field \citep{boyer1967} and has been shown to correlate with microwave remote sensing products \citep{momen2017}.
-    Parameter values can be measured in the field \citep{sack2002} and are available in the TRY database \citep{kattge2011}.
-
-Modeling stomatal conductance and photosynthesis, especially subject to water stress, is an area of ongoing research. We use the Medlyn VPD-dependence model coupled to a hydraulic stress function that attenuates $V_{\text{cmax}}$. This complies with observations \citep{lin2018,zhou2013} that stress applied through $g_1$ underestimates attenuation of photosynthesis. However, there is no direct evidence of declines in $V_{\text{cmax}}$ at the leaf level with drought \citep{flexas2006}, whereby future work may seek to represent mesophyll conductance in CLM to correct such discrepancy.
-    
+    In lieu of this type of assessment, we propose that the new PHS model structure 1) is more closely aligned with known plant hydraulics theory, 2) provides significantly improved connections to real-world observational data streams (of leaf and stem water status, sap flow, percent loss conductance) and 3) represents known features of ecohydrological function that the default model cannot capture, including hydraulic redistribution, changes in the depth of water uptake with drought stress, plant embolism impacts on gas exchange, and responses of water uptake to changes in root abundance. 
+      
 \section{Acknowledgments}
 
 \clearpage    
