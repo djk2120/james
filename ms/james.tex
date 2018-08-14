@@ -5,7 +5,7 @@
 \begin{document}
 
 
-\title{Implementing plant hydraulics in the Community Land Model}
+\title{Implementing plant hydraulics in the Community Land Model, version 5}
 \authors{Daniel Kennedy\affil{1},
 Sean Swenson\affil{2},
 Keith W. Oleson\affil{2},
@@ -22,17 +22,17 @@ Pierre Gentine\affil{1}
 \begin{keypoints}
 \item An updated soil-plant-atmosphere continuum model based on hydraulic theory is implemented in the Community Land Model (version 5).
 \item Prognostic leaf water potential replaces soil matric potential as the basis for stomatal conductance water stress. 
-\item Prognostic root water potential is used to implement hydraulic root water uptake, replacing the heuristic soil `wilting' point.
+\item Prognostic root water potential is used to implement hydraulic root water uptake, replacing the heuristic function based on the soil `wilting' point.
 \end{keypoints}
 
 
 
 \begin{abstract}
-CLM5 introduces the Plant Hydraulic Stress (PHS) configuration of vegetation water use, which is described and compared with the corresponding parameterization from CLM4.5.
+Version 5 of the Community Land Model (CLM5) introduces the Plant Hydraulic Stress (PHS) configuration of vegetation water use, which is described and compared with the corresponding parameterization from CLM4.5.
 PHS updates vegetation water stress and root water uptake to better reflect plant hydraulic theory.
 The new configuration introduce prognostic vegetation water potential to the CLM, modeled at the root, stem, and leaf levels.
 Leaf water potential replaces soil matric potential as the basis for stomatal conductance water stress, and
-root water potential is used to implement hydraulic root water uptake, replacing a transpiration-partitioning heuristic.
+root water potential is used to implement hydraulic root water uptake, replacing a transpiration-partitioning heuristic function.
 Point simulations of a tropical forest site (Caxiuan\~a, Brazil) under ambient conditions and partial precipitation throughfall exclusion are carried out to highlight the differences between PHS and the previous plant hydrodynamics scheme. 
 \end{abstract}
 
@@ -42,30 +42,31 @@ Point simulations of a tropical forest site (Caxiuan\~a, Brazil) under ambient c
 
 \section{Introduction}
 
-Trees face emerging climate change risk globally \citep{allen2010,anderegg2013b}.
+Trees face emerging risk from climate change globally \citep{allen2010,anderegg2013b}, which may lead to increases in mortality and decreases in the terrestrial carbon sink.
 In addition to stress from soil moisture drought, vegetation is susceptible to increasing atmospheric demand \citep{restaino2016,novick2016b,lemordant2018}.
-Increases in vapor pressure deficit (VPD) are occurring with global warming \citep{ficklin2017,seager2015}, and are associated with impacts on vegetation such as large-scale die-off \citep{williams2013,mcdowell2015}.
+Increases in vapor pressure deficit (VPD) are occurring with global warming \citep{ficklin2017,seager2015}, and are associated with impacts on vegetation, such as large-scale die-off \citep{williams2013,mcdowell2015}.
 Understanding vegetation response is important both for discerning future climate impacts on forests and for modeling feedbacks to the carbon and hydrological cycles \citep{lemordant2018}.
-Significant uncertainty remains in Earth System model predictions of the carbon cycle caused by the response of vegetation to changes in hydroclimate \citep{dekauwe2017,friedlingstein2014,trugman2018}.
+Significant uncertainty remains in Earth System Model (ESM) predictions of the carbon cycle, caused by the response of vegetation to changes in hydroclimate \citep{dekauwe2017,friedlingstein2014,trugman2018}.
 
-Plant water stress parameterizations are used by Earth System Models to determine the regulation of surface fluxes (photosynthesis, transpiration) by vegetation in response to water fluctuations \citep{egea2011,verhoef2014}.
+Soil moisture stress parameterizations are used by ESMs to determine the regulation of surface fluxes (photosynthesis, transpiration) by vegetation in response to water fluctuations \citep{egea2011,verhoef2014}.
 These parameterizations, which relate a metric of soil moisture status to leaf gas exchange, are widely used to define the response of stomatal conductance to vegetation water status, serving to attenuate transpiration, photosynthesis, and root water uptake with drying.
-Because vegetation water use strategies modulate carbon uptake, creating a close coupling between the Earth System's carbon and hydrological cycles \citep{green2017}, the dynamics of the water stress representation in models have broad effects on critical land surface processes \citep{joetzjer2014}, such as photosynthesis rates.
-On daily and weekly time scales, water stress parameterizations influence the partitioning of latent versus sensible heat, modifying the Bowen ratio \citep{gentine2007,gentine2011}. 
+The dynamics of the water stress in models have broad effects on critical land surface processes \citep{joetzjer2014}, such as evapotranspiration.
+Likewise, because vegetation water use strategies modulate carbon uptake, creating a close coupling between the Earth System's carbon and hydrological cycles \citep{green2017}, vegetation water stress regulates the global carbon cycle.
+This occurs on seasonal and interannual timescales, with stress attenuating transpiration \citep{dekauwe2015} and photosynthesis \citep{stocker2018}.
+Furthermore water stress parameterizations influence the diurnal cycle, through the partitioning of latent versus sensible heat, modifying the Bowen ratio \citep{gentine2007,gentine2011}. 
 This in turn feeds back onto surface and air temperature, through land-atmosphere feedbacks \citep{bonan2008,seneviratne2006}.
-On longer timescales vegetation water use strategies regulate the global carbon and water cycles \citep{dekauwe2015}.
+Recent studies have shown that soil moisture stress functions are a major driver of uncertainty in leaf gas exchange in ESMs \citep{trugman2018} and can systematically overestimate the effect of soil moisture drought on evaporative fluxes \citep{ukkola2016,bonan2014}.
 
-Several recent studies have aimed at advancing the representation of water flow through the Soil-Plant-Atmosphere continuum (SPAC) in land-surface and ecosystem models \citep{xu2016,christoffersen2016,sperry2017} by incorporating plant hydraulic theory.  
+More mechanistic representations of stress have been achieved by incorporating plant hydraulic theory and modeling of water flow through the Soil-Plant-Atmosphere continuum (SPAC)\citep{xu2016,christoffersen2016,sperry2017}.
 Explicit modeling of water flow through the vegetation increases model complexity, but is consistent with evidence of dynamic regulation of vegetation water use in response to both soil and atmospheric drying \citep{tardieu1998,sperry1998,sperry2015}.
 Furthermore, because they are based on Darcy's Law, plant hydraulic models have a robust physical basis compared to models that utilize empirical water stress formulations.
-Plant hydraulic models involve new parameters, which presents challenges \citep{drake2017}, but plant hydraulic trait data are available \citep{kattge2011,anderegg2015a}, providing constraints on parameter estimation.   
-Such data have been shown to be informative of species vulnerability to drought \citep{choat2012}.
+Plant hydraulic models involve new parameters, which may prove challenging to constrain \citep{drake2017}, but plant hydraulic trait data are available \citep{kattge2011,anderegg2015a}, providing constraints on parameter estimation.   
+Such data have been shown to improve predictions of species vulnerability to drought \citep{choat2012}.
 Likewise vegetation water status observations are now available from remote sensing platforms, at a scale that is directly comparable to model development \citep{konings2016,grant2016} and therefore can be used to validate model results \citep{momen2017,konings2017b}.
 
-In this study, we develop a new plant water stress parameterization based on hydraulic theory within the recently released Community Land Model, version 5 (CLM5, the land component of the Community Earth System Model version 2). 
+In this study, we develop a new plant water stress parameterization based on hydraulic theory within the recently released Community Land Model, version 5 (CLM5, the land component of the Community Earth System Model, version 2). 
 We refer to this hydraulics-based implementation as the `Plant Hydraulic Stress' (PHS) configuration. 
-Previous versions of the CLM, similar to many Land Surface Models, employed an empirical $\beta$-form soil moisture stress function.
-Such functions lack a strong physical basis and have been shown to systematically overestimate the effect of soil moisture drought on evaporative fluxes \citep{ukkola2016,bonan2014}.
+Previous versions of the CLM employed an empirical $\beta$-form soil moisture stress function, as described above.
 In Amazonia, which is the focus area of our model test runs, studies suggest that the CLM (version 3.5) simultaneously underestimates the effect of experimental drought treatment \citep{powell2013} and overestimates dry-season reductions in GPP \citep{restrepo2017}.
 
 PHS, by explicitly representing plant hydraulics, introduces modeled vegetation water potential (discretized into leaf, stem and root elements) into the CLM, as well as a physical model of water supply, from the soil through the vegetation substrate. 
