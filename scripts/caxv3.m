@@ -91,8 +91,8 @@ if ~exist('s2','var')
         end
         s2(ee,end-28:end)=last_s;    
     end
-    s2(3,:) = zr*max(-255000,smp(41:60,:));
-    s2(4,:) = zr*max(-255000,smp(61:80,:)); 
+    s2(3,:) = zr*smp(41:60,:);
+    s2(4,:) = zr*smp(61:80,:); 
 end
 
 %************************************************************************
@@ -120,7 +120,8 @@ hh(71:75) = [0,0,0,0,0];
 hh(76:80) = [0,0,0,0,0];
 hh(81:85) = [0,0,0,0,0];
 hh(86:90) = [0,0,0,0,0];
-hh(91:95) = [0,0,0,1,0];
+hh(91:95) = [0,0,0,0,0];
+hh(96:100)= [0,1,0,0,0];
 
 
 
@@ -134,6 +135,122 @@ hh(91:95) = [0,0,0,1,0];
 %18 = hr
 %19 = smp full profile time series
 %20 = h2osoi with obs
+
+
+if hh(97)>0
+    addpath('/Users/kennedy/Downloads/jbfill')
+    xdk = figure;
+    g = findgroups(365*year+doy);
+    t = 1800*4e-7*splitapply(@sum,fctr',g');
+    s = splitapply(@mean,s2',g');
+    
+    xdk.Units = 'inches';
+    xdk.Position = [2,2,7,5];
+    xdk.PaperSize = [7,5];
+    xdk.PaperPosition = [0,0,7,5];
+    name_me = 't_err';
+    
+    abins = cell(2,1);
+    abins(2) = {0:-0.2:-4};
+    abins(1) = {0:-0.05:-1};
+    
+    tstr = 'cdab';
+    ee = [1,2,1,2];
+    xx = [1,1,2,2];
+    
+    sx = [0.1,0.55,0.1,0.55];
+    sy = [0.1,0.1,0.55,0.55];
+    
+    for i=1:4
+        ix = p(:,ee(i))>0;
+        subplot('Position',[sx(i),sy(i),0.4,0.4])
+        hold on
+        targ = t(:,i)-p(:,ee(i));
+        bins = abins{xx(i)};
+        nb   = length(bins);
+        out  = nan(nb-1,3);
+        for j = 1:nb-1
+            ix2 = s(:,i)/101972<bins(j)&s(:,i)/101972>=bins(j+1);
+            out(j,1) = median(targ(ix&ix2));
+            np = sum(ix&ix2);            
+        end
+        scc=scatter(s(ix,i)/101972,targ(ix),30,[0.4,0.4,0.6],'Marker','x');
+        scc.MarkerEdgeAlpha = 0.25;
+        
+        
+        
+        plot(bins(1:end-1),out(:,1),'Color',[0.4,0.4,0.6],'LineWidth',2)
+        plot([min(bins),0],[0,0],'Color',[0.3,0.3,0.3],'LineWidth',2,'LineStyle',':')
+        xlim([min(bins),0])
+        ylim([-3,3])
+        if xx(i)==1
+            xlabel('Model Soil Potential (MPa)')
+        end
+        if i==1
+            ylabel({'Transpiration (mm/d)';'PHS-OBS'})
+        elseif i==3
+            ylabel({'Transpiration (mm/d)';'SMS-OBS'})
+            title('AMB')
+        else
+            set(gca,'YTickLabel',[])
+        end
+        if i==4
+            title('TFE')
+        end
+        text(0.965*min(bins),2.5,['(',tstr(i),')'],'FontSize',14,'FontWeight','bold')
+        
+        
+
+    end
+        
+            
+    if hh(97)>0
+        print(xdk,['../figs3/',name_me],'-dpdf')
+    end
+    
+       
+        
+    
+    
+    
+    
+end
+
+
+
+if hh(96)>0
+    
+    aval = 0;
+    for i=1:12
+    aval = aval-1e4;
+    ix = year>2001&vegwp(8,:)<(aval+1e4)&vegwp(8,:)>aval;
+    
+    if sum(ix)>0
+    g = findgroups(mcsec);
+    out = splitapply(@mean,fpsn(2,ix),g(ix));
+    subplot(2,1,1)
+    plot((1:48)+i*36,out,'k')
+    hold on
+    
+    out = splitapply(@mean,fpsn(4,ix),g(ix));
+    subplot(2,1,2)
+    hold on
+    plot((1:48)+i*36,out,'k')
+    end
+    end
+    
+    
+    
+end
+
+
+
+if hh(95)>0
+    ix = fsds>100&fsds<200&fpsn(1,:)>0&fpsn(3,:)>0;
+   qq = quantile(fpsn(1,ix)-fpsn(3,ix),0.1:0.1:0.9)
+    
+end
+
 
 if hh(94)>0
     out = [];

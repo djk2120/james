@@ -107,7 +107,7 @@ assignin('caller','fsds'  ,fsds);
 %assignin('caller','wind'  ,windv);
 %assignin('caller','pbot'  ,pbot);
 %assignin('caller','zbot'  ,zbot);
-%assignin('caller','tbot'  ,tbot);
+assignin('caller','tbot'  ,tbot);
 
 assignin('caller','year'  ,year);
 assignin('caller','month' ,month);
