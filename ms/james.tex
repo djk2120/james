@@ -464,7 +464,7 @@ kmax(1) & Maximum Sun Branch Conductance & $k_{\text{sun},\text{max}}$ &  4e-8 s
 kmax(2) & Maximum Shade Branch Conductance & $k_{\text{shade},\text{max}}$ &  4e-8 s$^{-1}$ \\
 kmax(3) & Maximum Stem Conductivity & $k_{\text{stem},\text{max}}$ &  4e-8 m/s \\
 krmax & Maximum Root Conductivity & $k_{r,\text{max}}$ &  6e-9 m/s \\
-psi50 & Water potential at 50\% loss of conductivity & $\psi_{50}$ &  -1.75 MPa \\
+psi50 & Water potential at 50\% loss of conductivity & $p_{50}$ &  -1.75 MPa \\
 ck & Vulnerability shape parameter & $c_k$ &  2.95 \\
 smpso & Soil potential with stomata fully open & $\psi_o$ & -0.65 MPa \\
 smpsc & Soil potential with stomata fully closed & $\psi_c$ & -2.5 MPa \\
@@ -721,7 +721,7 @@ Utilizing a hydraulic approach (with dynamic vegetation water potential and mech
 This includes the ability to model hydraulic redistribution (next Section) and compensatory RWU.
 Compensatory RWU occurs when soil water extraction switches soil layers to maintain transpiration through precipitation shortfalls.
 For example, as surface soil layers dry, tap roots can be used to harness reserves of soil water at depth \citep{oliveira2005}, partially compensating for reduced RWU near the surface.
-In an SMS-style paradigm, this process is not represented \citep{jarvis2011}.
+In an SMS-style paradigm, this process is not fully represented.
 
 With identical rooting profiles, PHS extracts 29\% of transpiration from beyond 2 meters depth under TFE (during the 2003 dry season) as compared to 13\% with SMS.
 In PHS, as the surface soil layers dry out, conductance decreases rapidly, leading to reduced near-surface RWU.
@@ -733,8 +733,9 @@ This process may be especially important for modeling evapotranspiration in semi
 \subsubsection{Hydraulic redistribution}
 \label{sect:hr}
 PHS simulates substantial HR at our test site, both upwards and downwards (Figure \ref{fig:hr}, Supp Fig \ref{supp:hr}), which conforms with field observations \citep{burgess1998,oliveira2005}.
-    Modeled HR is weighted towards downward transfers, moving near-surface water from rain events deeper into the soil column and thus saving it for when it is most needed such as during the dry season.
-    This would seem to convey an advantage to deep-rooted individuals, banking water for later use out of reach of shallow-rooted competitors.
+    Modeled HR is weighted towards downward transfers, moving near-surface water from rain events deeper into the soil column. 
+    This may serve to save excess water it for when it is most needed, such as during the dry season, 
+    and would seem to convey an advantage to deep-rooted individuals, banking water for later use out of reach of shallow-rooted competitors.
     HR can offer significant water subsidies during dry periods \citep{jackson2000} and has been highlighted as an important missing feature in CLM \citep{lee2005}. 
     However, we should note that observations of HR are extremely difficult and rare, and the degree to which HR actually occurs in real-world systems remains unclear. 
     Unequivocal detection of HR involves the observation of reverse flow along transport roots, typically at rates close to the detection threshold of sap flow monitoring systems. 
@@ -787,7 +788,7 @@ PHS simulates substantial HR at our test site, both upwards and downwards (Figur
     \item Creates an interface to new observational constraints
         \begin{itemize}
         \item Parameters are better represented in trait databases (e.g. $k_{max}$, $p_{50}$).
-        \item New state variables modeling vegetation water potential are introduced, which are measured in situ and are shown to correlate with remote sensing products
+        \item New state variables modeling vegetation water potential are introduced, which are measured in situ and have been shown to correlate with remote sensing products \citep{momen2017}.
         \item And given that vegetation water potential is downstream of soil water potential, this may actually provide an important constraint on root-zone soil moisture.
         \end{itemize}
     \item Enables a platform for testing various hydraulics-oriented hypotheses within the ESM context
@@ -830,9 +831,9 @@ PHS simulates substantial HR at our test site, both upwards and downwards (Figur
 
 \section{Conclusion}
 
-    The PHS configuration of the CLM5 within the Community Earth System Model (CESM2) is, to our knowledge, the first land-surface model within an ESM with a representation of plant water potential running in its default configuration. In this paper, we have described the model implementation, and illustrated a comparison of the model dynamics for a tropical rainforest site subjected to water limitation, given that prediction of rainforest responses to drought is one of the key uncertainties in the ESM predictions \citep{huntingford2013}. Overall, the new model behavior differs from the default configuration in ways that are expected, given its structural properties, and in many cases, provides better correspondence with observations than the default structure. 
+    The PHS configuration of the CLM5 within the Community Earth System Model (CESM2) is, to our knowledge, the first land-surface model within an ESM with a representation of vegetation water potential running in its default configuration. In this paper, we have described the model implementation, and illustrated a comparison of the model dynamics for a tropical rainforest site subjected to water limitation, given that prediction of rainforest responses to drought is one of the key uncertainties in the ESM predictions \citep{huntingford2013}. Overall, the new model behavior differs from the default configuration in ways that are expected, given its structural properties, and in many cases, provides better correspondence with observations than the default structure. 
     
-    In this paper, however, we have not aimed at undertaking a comprehensive assessment of which model structure performs better, given the substantial parametric uncertainty in both models, and the dependence on numerous other features of the CLM external to water stress representation that contribute to model-observation divergences - in this case in particular, the overestimation of unstressed transpiration by both versions of the model compared to the observations. 
+    In this paper, however, we have not aimed at undertaking a comprehensive assessment of which model structure performs better, given the substantial parametric uncertainty in both models, and the dependence on numerous other features of the CLM external to water stress representation that contribute to model-observation divergences, such as, in this case, the overestimation of wet season transpiration under TFE. 
     
     In lieu of this type of assessment, we propose that the new PHS model structure 1) is more closely aligned with known plant hydraulics theory, 2) provides significantly improved connections to real-world observational data streams (of leaf and stem water status, sap flow, percent loss conductance) and 3) represents known features of ecohydrological function that the default model cannot capture, including hydraulic redistribution, changes in the depth of water uptake with drought stress, plant embolism impacts on gas exchange, and responses of water uptake to changes in root abundance. 
       
