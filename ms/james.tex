@@ -241,11 +241,11 @@ This study develops a new parameterization of water stress (Sections \ref{sect:f
     \subsubsection{PHS Water stress factor}
     \label{sect:fwphs}
     
-    PHS introduces a new formulation for $f_w$, which is based on leaf water potential ($\psi_{\text{leaf}}$) instead of soil potential (described further in Section \ref{sect:demand}). The relationship is modeled with a sigmoidal function, subject to two parameters: the water potential at 50\% loss of stomatal conductance ($\psi_{50}$) and a shape-fitting parameter ($c_k$).
+    PHS introduces a new formulation for $f_w$, which is based on leaf water potential ($\psi_{\text{leaf}}$) instead of soil potential (described further in Section \ref{sect:demand}). The relationship is modeled with a sigmoidal function, subject to two parameters: the water potential at 50\% loss of stomatal conductance ($p_{50}$) and a shape-fitting parameter ($c_k$).
     
     \begin{linenomath*}
     \begin{equation}
-    f_{w,\text{PHS}} = 2^{-\left(\dfrac{\psi_{\text{leaf}}}{\psi_{50}}\right)^{c_k}}
+    f_{w,\text{PHS}} = 2^{-\left(\dfrac{\psi_{\text{leaf}}}{p_{50}}\right)^{c_k}}
     \label{eq:fwphs}
     \end{equation}
     \end{linenomath*}
@@ -258,10 +258,10 @@ This study develops a new parameterization of water stress (Sections \ref{sect:f
     \end{linenomath*}
     
     Utilizing leaf water potential, instead of soil water potential, for drought stress introduces a new interpretation of vegetation water stress to the model. 
-    Leaf water potential is modulated by supply of sap to the leaves and by evaporative demand, as regulated by stomatal dynamics \citep{novick2016a}. 
+    Leaf water potential is modulated by supply of sap to the leaves and by evaporative demand, as regulated by stomatal dynamics \citep{sperry2015}. 
     As a result, low soil water (bottom-up stress) induces stress due to limited water supply, but in addition, high atmospheric VPD can induce stress with the associated increases in the gradient in water potential across the plant xylem (top-down stress). 
     This latter mechanism was absent from the previous water stress function (dependent on soil water potential only), by construction.
-    Given the observed increase in VPD with global warming, it appears critical to include such mechanistic dependence of water stress.
+    Given the observed increase in VPD with global warming, it appears critical to include such mechanistic dependence of water stress \citep{novick2016b}.
     While the Medlyn stomatal conductance model does depend on VPD, the model does not (given constant $g_1$) reflect the risk of hydraulic failure \citep{zhou2013}.
     The new stress factor formulation reflects the dual risks of soil moisture deficit and atmospheric demand on hydraulic safety \citep{williams2013}, requiring vegetation to avoid excessive xylem tension associated with risk of cavitation.
 
@@ -369,7 +369,7 @@ This study develops a new parameterization of water stress (Sections \ref{sect:f
      Shaded and sunlit leaf transpiration ($E_{\text{sun}}$, $E_{\text{shade}}$) are calculated by attenuating maximal transpiration ($E_{\text{sun,max}}$,$E_{\text{shade,max}}$) according to $f_w$. 
      $E_{\text{sun,max}}$ and $E_{\text{shade,max}}$ are calculated at the beginning of each timestep by running the stomatal conductance model with $f_w=1$.
      Equations (\ref{eq:d1}) and (\ref{eq:d2}) reflect a simplification used within iterations of the PHS module, 
-     neglecting non-linear components of the relationship between stress and transpiration (described further in Appendix Section B.1).
+     neglecting non-linear components of the relationship between stress and transpiration (which is resolved through iteration, as described in Appendix Section B.1).
      
      \begin{linenomath*}
      \begin{equation}
@@ -428,7 +428,7 @@ This study develops a new parameterization of water stress (Sections \ref{sect:f
     \end{aligned} \end{equation}
     \end{linenomath*}    
     
-    The numerics are tractable because $f$ has continuous, analytical derivatives and $A$ (a 4x4 matrix with six null entries) is easy to invert when well-conditioned. Supply and demand converge, because transpiration demand decreases with more negative leaf water potentials and supply increases with more negative leaf water potentials. The PHS loop is nested within iterations for intercellular CO$_2$ concentration and leaf temperature. The non-linear relationship between $f_w$ and transpiration is resolved through iteration for converging $f_w$ alongside intercellular CO$_2$. Details on the numerical implementation are provided in Appendix Section B.1.
+    The numerics are tractable because $f$ has continuous, analytical derivatives and $A$ (a 4x4 matrix with six null entries) is easy to invert when well-conditioned. Supply and demand converge, because transpiration demand decreases with more negative leaf water potentials and supply increases with more negative leaf water potentials. The PHS loop is nested within iterations for intercellular CO$_2$ concentration and leaf temperature. Details on the numerical implementation are provided in Appendix Section B.1.
 
  
 %====================
@@ -437,7 +437,7 @@ This study develops a new parameterization of water stress (Sections \ref{sect:f
 \section{Experiment Description}
 \label{sect:exp}
 
-We use a set of four simulations to assess the impact of the plant hydrodynamics model (PHS versus SMS) on a tropical rainforest site, under ambient conditions and partial precipitation throughfall exclusion.
+We use a set of four simulations to demonstrate the impact of the plant hydrodynamics model (PHS versus SMS) on a tropical rainforest site, under ambient conditions and partial precipitation throughfall exclusion.
 This site is located in Eastern Amazonia (Caxiuan\~a, Brazil) and part of the Large-Scale Biosphere-Atmosphere Experiment in the Amazon \citep{avissar2002}.
 
 \begin{enumerate}
@@ -482,7 +482,7 @@ bsw & Brooks-Corey parameter & $b$ & 6 \\
 Parameter values concerning vegetation hydrodynamics are presented in Table 1. 
 All other parameters use the default values associated with the r270 version of CLM5. 
 Informed by parameter values reported in \cite{fisher2008}, we tuned soil hydraulic parameters and the throughfall exclusion rate, to improve simulated soil moisture relative to observations (Supp Fig \ref{supp:sm}).
-A 972-member ensemble of simulations was used to tune the parameters for the PHS configuration to reasonably reflect sap flux observations (see Appendix \ref{ens}).
+An ensemble of simulations was used to tune the parameters for the PHS configuration to reasonably reflect sap flux observations (see Appendix \ref{ens}).
 
 
   \begin{figure}[h]
@@ -500,7 +500,7 @@ A 972-member ensemble of simulations was used to tune the parameters for the PHS
 \subsection{Comparison with observations}
 \label{sect:obs}
 
-We tested two configurations of CLM5 with simulations of the Caxiuan\~a throughfall exclusion experiment over 2001-2003. We compare modeled transpiration with observations derived from sap flux velocity and modeled soil moisture with observations using TDR sensors (see above for experiment and observation details).
+We tested two configurations of CLM5 (PHS, SMS) with simulations of the Caxiuan\~a throughfall exclusion experiment over 2001-2003. We compare modeled transpiration with observations derived from sap flux velocity and modeled soil moisture with observations using TDR sensors (see above for experiment and observation details).
 
 \subsubsection{Transpiration, Ambient Conditions}
 Under ambient conditions, PHS reduces error and improves correlation between modeled and observed transpiration (compared to SMS, Figure \ref{fig:t}a,c).
@@ -518,13 +518,13 @@ The difference in modeled transpiration between PHS and SMS derives from diverge
 Both models demonstrate lower correlation and increased error relative to transpiration observations under TFE (Figure \ref{fig:t}b,d).
 PHS performs better than SMS, but yields a more pronounced high bias (Figure \ref{fig:t}b,d).
 The wet season (February-March-April), especially, is prone to high transpiration biases in both models, where, in the observations, transpiration is reduced 32\% by TFE, as compared to modeled reductions of only 1.6 and 4\% for PHS and SMS, respectively.
-This may indicate that the models' sensitivity to soil potential declines are underestimated, or that water drains from the root zone more quickly after precipitation events than we represent in the TFE simulations (Figure \ref{fig:sm2}b,d).
+This may indicate that the models' sensitivity to soil potential declines are underestimated, or that water drains from the root zone more quickly after precipitation events than we represent with the soil hydraulic parameters (Figure \ref{fig:sm2}b,d).
 Difficulty reproducing the effect of TFE (and the influence of soil moisture on leaf gas exchange) at Caxiuan\~a has precedent in the literature \citep{restrepo2017,powell2013}.
 
 \subsubsection{Soil Moisture}
 \label{results:sm}
 The second source of observations for model evaluation is volumetric soil moisture. 
-These data are used to evaluate the parameterization of root water uptake, which is updated with PHS.
+These data are used to evaluate the parameterization of root water uptake.
 Modeled soil moisture values (at a depth of 50 cm) are comparable between model configurations during the wet season (February-March-April) under ambient conditions, both yielding averages of 28\% (Figure \ref{fig:sm2}a,c).
 With excess rainfall, soil moisture is largely determined by the soil field capacity and saturated conductivity, which are the same in both model configurations.
 With water shortfalls, the root water uptake parameterizations drive the soil moisture dynamics, and the models diverge, 
@@ -535,7 +535,7 @@ PHS better comports with observations, reducing RMSE by 57\% relative to SMS (Fi
 We highlight the soil moisture at 50 cm depth, but similar patterns are observed throughout the first meter of the soil column (Supp Fig \ref{supp:sm2}).
 The 50-cm depth emphasizes the effect of modeled root water uptake, because it features higher root fraction than the deeper soil layers (Figure \ref{roots}), 
 but avoids the high frequency dynamics of the top soil layer from soil evaporation and precipitation events that do not relate to differences between PHS and SMS.
-Under TFE, SMS minimum soil moisture is again limited to 10\%, but holds there for a longer duration (Figure \ref{fig:sm2}).
+Under TFE, SMS minimum soil moisture is again 10\%, but holds there for a longer duration (Figure \ref{fig:sm2}).
 Contrastingly, PHS achieves lower dry season soil moisture values under TFE as compared to ambient conditions.
 PHS better comports with observations, reducing RMSE by 42\% relative to SMS (Figure \ref{fig:sm2}a,c),
 however both models seem to feature a high bias in soil moisture in the root-zone (under TFE) during the wet season (Figure \ref{fig:sm2}, Supp Fig \ref{supp:sm2}).
@@ -641,7 +641,7 @@ Likewise, the constraint at $\psi_c$ precludes the representation of hydraulic r
     With PHS, HR totals to 38.9 cm under ambient conditions and 40.0 cm under TFE over the course of 2003, with the majority (28.0, 26.7 cm) of this HR occurring at night (Figure \ref{fig:hr}),
     in line with established theory \citep{jackson2000,lee2005} and observations \citep{oliveira2005,burgess1998}.
     HR occurs in both directions (Supp Fig \ref{supp:hr}), but is predominately downwards (AMB: 30.7cm, TFE: 33.8cm).
-    The amount of HR is difficult to constrain due to scarce observations.
+    The amount of HR is difficult to evaluate due to scarce observations.
     The simplicity of the hydraulic representation may lead to overestimating HR, which is discussed further in Section \ref{sect:hr}.
 
 \subsection{Soil moisture effect on transpiration}
@@ -667,8 +667,8 @@ Likewise, the constraint at $\psi_c$ precludes the representation of hydraulic r
     
     To demonstrate the new model dynamics, we utilized a site-level experiment testing PHS by simulating the Caxiuan\~a throughfall exclusion experiment \citep{fisher2007}.
     We found that PHS improves output for both transpiration and soil moisture relative to observations as compared to the control model (see Section \ref{sect:obs}, Figures \ref{fig:t},\ref{fig:sm2}).
-    While this is encouraging, especially given the nature of the previous bias (see Section \ref{sect:smpt}), the improvement is specific to the site and experiment described herein, and model skill will need to be re-evaluated in a broader context.
-    Instead, the value of opting for a single site (in lieu of global simulations) resides in the opportunity to perform the detailed analyses to elucidate the new model dynamics in order to complement this first description of PHS.
+    While this is encouraging, especially given the soil moisture dependence of the SMS bias (see Section \ref{sect:smpt}), the improvement is specific to the site and experiment described herein, and model skill will need to be re-evaluated in a broader context.
+    Instead, the value of opting for a single site (in lieu of global simulations) resides in the opportunity to perform detailed analyses to elucidate the new model dynamics in order to complement this first description of PHS.
     
 
 \subsection{Stomatal conductance: Soil moisture stress vs. Xylem tension stress}
@@ -681,9 +681,9 @@ Likewise, the constraint at $\psi_c$ precludes the representation of hydraulic r
     The two configurations feature significantly different stress dynamics on both diurnal and seasonal timescales (Figures \ref{fig:stress1},\ref{fig:gpp}).     
         
     Leaf water potential is (in simplified terms) the sum of soil water potential and the gradient of water potential from soil-to-leaf ($\psi_l=\psi_s+\Delta\psi$).
-    Therefore using $\psi_l$ as the driver of water stress preserves a relationship between stress and soil potential, but now also represents the effect of increasing demand for transpiration (reflected by increases in $\Delta\psi$) on water stress, through increased xylem tension.
+    Therefore using $\psi_l$ as the driver of water stress preserves a relationship between stress and soil potential, but now also represents the effect of increasing demand for transpiration (reflected by increases in $\Delta\psi$).
     As such, PHS offers a mechanistic approach to water stress, utilizing a physical justification that interprets water stress as the result of increasing xylem tension, which has previously been used as a primary \citep{sperry2017} or contributing \citep{novick2016a} factor to stomatal regulation.
-    In the model, vegetation will (according to the specific hydraulic parameter values) limit transpiration in order to avoid cavitation and embolism associated with overly negative water potentials.
+    In the model, vegetation will (according to the specific hydraulic parameter values) limit transpiration in order to avoid overly negative leaf water potential values, which are associated with cavitation and embolism \citep{tyree1989}.
     As a result, PHS stress responds to changing soil moisture, but unlike SMS, also responds to VPD and downwelling solar radiation (Figure \ref{fig:stress2}), which modulate transpiration demand.
     This imparts a diurnal pattern to PHS stress, with higher stress around midday, whereas with SMS, stress is relatively constant throughout the day (Figure \ref{fig:stress1}).
    
