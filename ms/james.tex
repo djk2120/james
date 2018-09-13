@@ -100,7 +100,7 @@ In this paper we therefore:
 %  MODEL DESCRIPTION
 %====================
 \section{Model Description}
-This study uses CLM5 to compare two parameterizations of water stress (Sections \ref{sect:fwsms} and \ref{sect:fwphs}) and root water uptake (Sections \ref{sect:smsrwu} and \ref{sect:phsrwu}). The first parameterization, which we refer to as Soil Moisture Stress (SMS), deploys the CLM4.5 default root water uptake and water stress implementations within CLM5. The second is called Plant Hydraulic Stress (PHS); PHS is the default configuration of CLM5. In Sections \ref{sect:gs}-\ref{sect:wsf}, we describe the components that the two configurations share in common. In Sections \ref{sect:sms} and \ref{sect:phs}, we describe their differences.
+This study develops a new parameterization of water stress (Sections \ref{sect:fwsms} and \ref{sect:fwphs}) and root water uptake (Sections \ref{sect:smsrwu} and \ref{sect:phsrwu}) within the CLM. We use two configurations of CLM5 to compare the new parameterization with the corresponding parameterization from CLM4.5. The new parameterization is called Plant Hydraulic Stress (PHS); PHS is the default configuration of CLM5. The alternative configuration, which we refer to as Soil Moisture Stress (SMS), deploys the CLM4.5 default root water uptake and water stress implementations within CLM5.  In Sections \ref{sect:gs}-\ref{sect:wsf}, we describe the components that the two configurations share in common. In Sections \ref{sect:sms} and \ref{sect:phs}, we describe their differences.
     
     
 %Photosynthesis
@@ -121,7 +121,7 @@ This study uses CLM5 to compare two parameterizations of water stress (Sections 
     
     While maximizing assimilation relative to water transpiration costs, the Medlyn model does not 
     resolve concurrent limitations to stomatal conductance associated with declining soil water or excessive xylem tension. 
-    To represent such water stress, and its impact on leaf-gas exchange, land surface models typically include a `water stress factor'. 
+    To represent such water stress, and its impact on leaf-gas exchange, land surface models typically include a `water stress factor' (see Section \ref{sect:wsf}). 
 
 \subsection{Photosynthesis}
 \label{sect:A}
@@ -161,7 +161,7 @@ This study uses CLM5 to compare two parameterizations of water stress (Sections 
     \subsubsection{SMS Water Stress Factor}
     \label{sect:fwsms}
     
-    In SMS, the water stress $f_w$ is calculated as the summation of a soil layer wilting factor ($w_i$) across the $n$ soil layers, weighted by root fraction ($r_i$) \citep{oleson2013}.
+    In SMS, $f_w$ is calculated as the summation of a soil layer wilting factor ($w_i$) across the $n$ soil layers, weighted by root fraction ($r_i$) \citep{oleson2013}.
     The soil wilting factor is a bounded linear function of soil matric potential ($\psi_{\text{soil},i}$).
     The function is defined by two parameters, the soil potential at (and above) which stomates are fully open ($\psi_o$) and the value at which stomates are fully closed ($\psi_c$).  
 
@@ -190,11 +190,11 @@ This study uses CLM5 to compare two parameterizations of water stress (Sections 
     \end{linenomath*} 
     
     In the SMS configuration, a heuristic function (based on $f_{w,\text{SMS}}$) is used to determine $q_i$.
-    Transpiration is partitioned among the soil layers based on the product of the root fraction and the wilting factor, which is then normalized by $f_w$ to satisfy Equation 5.
+    Transpiration is partitioned among the soil layers based on the product of the root fraction and the wilting factor, which is then normalized by $f_{w,\text{SMS}}$ to satisfy Equation 5.
     \begin{linenomath*}
     \begin{equation}
     \label{bt:4}
-    q_i = \dfrac{r_i w_i}{f_w}T
+    q_i = \dfrac{r_i w_i}{f_{w,\text{SMS}}}T
     \end{equation}
     \end{linenomath*}
     
@@ -207,9 +207,9 @@ This study uses CLM5 to compare two parameterizations of water stress (Sections 
     \label{eq:btrwu}
     0    & \text{if } \psi_{\text{soil},i}<\psi_{c}  \\
     \\[1pt]
-        \dfrac{T}{f_w} \dfrac{r_i}{\psi_{o}-\psi_{c}} \left(\psi_{\text{soil},i}-\psi_{c} \right)     & \text{if } \psi_{c} \le \psi_{\text{soil},i} \le \psi_{o} \\
+        \dfrac{T}{f_{w,\text{SMS}}} \dfrac{r_i}{\psi_{o}-\psi_{c}} \left(\psi_{\text{soil},i}-\psi_{c} \right)     & \text{if } \psi_{c} \le \psi_{\text{soil},i} \le \psi_{o} \\
     \\[1pt]
-    \dfrac{T}{f_w} r_i    & \text{if } \psi_{\text{soil},i} > \psi_{o}
+    \dfrac{T}{f_{w,\text{SMS}}} r_i    & \text{if } \psi_{\text{soil},i} > \psi_{o}
     \end{cases}
     \end{equation}
     \end{linenomath*}
@@ -222,7 +222,7 @@ This study uses CLM5 to compare two parameterizations of water stress (Sections 
     \begin{equation} \begin{aligned}
     q_i &= -k_i\Delta\psi \\
     \Delta\psi &=  \psi_{c}-\psi_{\text{soil},i} \\
-    k_i &= \dfrac{T}{f_w} \dfrac{r_i}{\psi_{o}-\psi_{c}} \\
+    k_i &= \dfrac{T}{f_{w,\text{SMS}}} \dfrac{r_i}{\psi_{o}-\psi_{c}} \\
     \mbox{constrained by:} \qquad
     \Delta\psi &=
     \begin{cases}
@@ -241,7 +241,7 @@ This study uses CLM5 to compare two parameterizations of water stress (Sections 
     \subsubsection{PHS Water stress factor}
     \label{sect:fwphs}
     
-    PHS introduces a new formulation of the water stress function, $f_w$, which is based on leaf water potential ($\psi_{\text{leaf}}$) instead of soil potential (described further in Section \ref{sect:demand}). The relationship is modeled with a sigmoidal function, subject to two parameters: the water potential at 50\% loss of stomatal conductance ($\psi_{50}$) and a shape-fitting parameter ($c_k$).
+    PHS introduces a new formulation for $f_w$, which is based on leaf water potential ($\psi_{\text{leaf}}$) instead of soil potential (described further in Section \ref{sect:demand}). The relationship is modeled with a sigmoidal function, subject to two parameters: the water potential at 50\% loss of stomatal conductance ($\psi_{50}$) and a shape-fitting parameter ($c_k$).
     
     \begin{linenomath*}
     \begin{equation}
