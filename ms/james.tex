@@ -367,7 +367,7 @@ This study uses CLM5 to compare two parameterizations of water stress (Sections 
      Shaded and sunlit leaf transpiration ($E_{\text{sun}}$, $E_{\text{shade}}$) are calculated by attenuating maximal transpiration ($E_{\text{sun,max}}$,$E_{\text{shade,max}}$) according to $f_w$. 
      $E_{\text{sun,max}}$ and $E_{\text{shade,max}}$ are calculated at the beginning of each timestep by running the stomatal conductance model with $f_w=1$.
      Equations (\ref{eq:d1}) and (\ref{eq:d2}) reflect a simplification used within iterations of the PHS module, 
-     neglecting non-linear components of the relationship between stress and transpiration (described further in Section zqz).
+     neglecting non-linear components of the relationship between stress and transpiration (described further in Appendix Section B.1).
      
      \begin{linenomath*}
      \begin{equation}
@@ -640,9 +640,10 @@ Likewise, the constraint at $\psi_c$ precludes the representation of hydraulic r
     in line with established theory \citep{jackson2000,lee2005} and observations \citep{oliveira2005,burgess1998}.
     HR occurs in both directions (Supp Fig \ref{supp:hr}), but is predominately downwards (AMB: 30.7cm, TFE: 33.8cm).
     The amount of HR is difficult to constrain due to scarce observations.
-    The simplicity of the hydraulic representation may lead to overestimating HR, which is discussed further in Section zqz.
+    The simplicity of the hydraulic representation may lead to overestimating HR, which is discussed further in Section \ref{sect:hr}.
 
-\subsection{Soil moisture effect on transpiration}    
+\subsection{Soil moisture effect on transpiration}
+\label{sect:smpt}
     Model soil potential shows limited relationship to sap flux observations under ambient conditions (Supp Fig \ref{supp:cool}b,f), which is indicative of limited soil moisture stress.
     However, in the SMS configuration, modeled transpiration decreases strongly with more negative soil potential (Supp Fig \ref{supp:cool}a),
     biasing the model relative to observations (Fig \ref{fig:cool}a).
@@ -664,7 +665,7 @@ Likewise, the constraint at $\psi_c$ precludes the representation of hydraulic r
     
     To demonstrate the new model dynamics, we utilized a site-level experiment testing PHS by simulating the Caxiuan\~a throughfall exclusion experiment \citep{fisher2007}.
     We found that PHS improves output for both transpiration and soil moisture relative to observations as compared to the control model (see Section \ref{sect:obs}, Figures \ref{fig:t},\ref{fig:sm2}).
-    While this is encouraging, especially given the nature of the previous bias (see Section zqz), the improvement is specific to the site and experiment described herein, and model skill will need to be re-evaluated in a broader context.
+    While this is encouraging, especially given the nature of the previous bias (see Section \ref{sect:smpt}), the improvement is specific to the site and experiment described herein, and model skill will need to be re-evaluated in a broader context.
     Instead, the value of opting for a single site (in lieu of global simulations) resides in the opportunity to perform the detailed analyses to elucidate the new model dynamics in order to complement this first description of PHS.
     
 
@@ -673,7 +674,7 @@ Likewise, the constraint at $\psi_c$ precludes the representation of hydraulic r
     
     The first of these analyses is of the response of stomatal conductance stress to environmental factors, namely: soil moisture, vapor pressure deficit, and solar radiation.
     The Medlyn stomatal conductance model, as implemented in the CLM, requires a notion of water stress to attenuate stomatal conductance in order to capture the effects of diminishing water supply,
-    with various relevant implementations described in the literature (see Section zqz).
+    with various relevant implementations described in the literature (see Section \ref{sect:wsf}).
     We tested two such approaches, which alternatively base stress on either soil water potential (SMS) or leaf water potential (PHS).
     The two configurations feature significantly different stress dynamics on both diurnal and seasonal timescales (Figures \ref{fig:stress1},\ref{fig:gpp}).     
         
@@ -728,6 +729,7 @@ As a result, PHS maintains higher levels of transpiration and photosynthesis tha
 This process may be especially important for modeling evapotranspiration in semi-arid ecosystems \citep{jarvis2011}.
 
 \subsubsection{Hydraulic redistribution}
+\label{sect:hr}
 PHS simulates substantial HR at our test site, both upwards and downwards (Figure \ref{fig:hr}, Supp Fig \ref{supp:hr}), which conforms with field observations \citep{burgess1998,oliveira2005}.
     Modeled HR is weighted towards downward transfers, moving near-surface water from rain events deeper into the soil column and thus saving it for when it is most needed such as during the dry season.
     This would seem to convey an advantage to deep-rooted individuals, banking water for later use out of reach of shallow-rooted competitors.
@@ -1067,7 +1069,7 @@ PHS simulates substantial HR at our test site, both upwards and downwards (Figur
      leading to higher sensitivity to soil potential with PHS, see Figure \ref{fig:rwu}.
      
      Only midday (12h-14h, 2002-2003) timesteps are shown to emphasize the relationship with soil potential.
-     With SMS, conductance is not modeled explicitly, but rather calculated as $k$=$q/\Delta\psi$ (see Section zqz). 
+     With SMS, conductance is not modeled explicitly, but rather calculated as $k$=$q/\Delta\psi$ (see Section \ref{sect:smsrwu}). 
      For soil potentials greater than or equal to 2.5MPa, $\Delta\psi$=0, and SMS implied conductance is undefined, but could probably be considered to equal 0.
      PHS conductance captures both root tissue and soil matrix resistances (operating in series).}
      \label{supp:cond}
@@ -1442,7 +1444,9 @@ Rooting depth parameter, $\beta$: 0.95, 0.98, 0.993 (unitless)
 
 
 \acknowledgments
- = enter acknowledgments here =
+Observational data collection is a product of CNPQ grant 457914/2013-0/MCTI/CNPq/FNDCT/LBA/ESECAFLOR and UK NERC grant NE/J011002 to ACLdC. We thank all those involved with data collection and the Museu Paraense Emilio Goeldi in Belem PA, Brazil, for hosting the drought experiment at Caxiuan\~a National Forest, and LBA for underpinning support in Brazil. The experiment was founded, and is led, by P. Meir (University of Edinburgh UK and Australian National University, Australia), with RF also contributing substantial data collection and empirical analysis used in this publication. Observational data and model output are available online at github.com/djk2120/phs.
+
+The National Center for Atmospheric Research is sponsored by the National Science Foundation. Computing resources (doi:10.5065/D6RX99HX) were provided by the Climate Simulation Laboratory at NCAR's Computational and Information Systems Laboratory, sponsored by the National Science Foundation and other agencies. DML was supported in part by the RUBISCO Scientific Focus Area (SFA), which is sponsored by the Regional and Global Climate Modeling (RGCM) Program in the Climate and Environmental Sciences Division (CESD) of the Office of Biological and Environmental Research in the U.S. Department of Energy Office of Science.
 
 %====================
 %   REFERENCES
