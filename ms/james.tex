@@ -45,7 +45,7 @@ Incorporating plant hydraulic theory advances the physical basis of the CLM, whi
 
 \section{Introduction}
 
-Trees face emerging risk from climate change globally \citep{allen2010,anderegg2013b}, which may lead to increases in mortality and decreases in the terrestrial carbon sink.
+Trees face emerging risk from climate change globally \citep{allen2010,anderegg2013b,mcdowell2016}, which may lead to increases in mortality and decreases in the terrestrial carbon sink.
 In addition to stress from soil moisture drought, vegetation is susceptible to increasing atmospheric demand for evapotranspiration \citep{restaino2016,novick2016b,lemordant2018}.
 Increases in vapor pressure deficit (VPD) are occurring with global warming \citep{ficklin2017,seager2015}, and are associated with impacts on vegetation, such as large-scale die-off \citep{williams2013,mcdowell2015}.
 Understanding vegetation response to environmental drivers is important both for discerning future climate impacts on forests and for modeling feedbacks to the carbon and hydrological cycles \citep{lemordant2018}.
@@ -65,13 +65,12 @@ More mechanistic representations of stress and vegetation water use dynamics hav
 Explicit modeling of water flow through the vegetation substrate increases model complexity, but is consistent with evidence of dynamic regulation of vegetation water use in response to both soil and atmospheric drying \citep{tardieu1998,sperry1998,sperry2015}.
 Furthermore, because they are based on Darcy's Law, plant hydraulic models have a robust physical basis compared to models that utilize empirical water stress formulations.
 Plant hydraulic models involve new parameters, which may prove challenging to constrain \citep{drake2017}, but plant hydraulic trait data are available \citep{kattge2011,anderegg2015a}, providing constraints on parameter estimation.   
-Such trait data have been shown to improve predictions of species vulnerability to drought \citep{choat2012}.
+Such trait data have been shown to improve predictions of species vulnerability to drought \citep{choat2012,mackay2015,powell2018,giardina2018}.
 Likewise vegetation water status observations are now available from remote sensing platforms, at a scale that is directly comparable to model development \citep{konings2016,grant2016} and therefore can be used to validate model results \citep{momen2017,konings2017b}.
 
 In this study, we develop a new plant water stress parameterization based on hydraulic theory within the recently released Community Land Model, version 5 (CLM5, the land component of the Community Earth System Model, version 2). 
 We refer to this hydraulics-based implementation as the `Plant Hydraulic Stress' (PHS) configuration. 
 Previous versions of the CLM employed an empirical soil moisture stress function, as described above.
-
 
 PHS, by explicitly representing plant hydraulics, introduces modeled vegetation water potential (discretized into leaf, stem and root elements) into the CLM, as well as a physical model of water supply, from the soil through the vegetation substrate. 
 Transpiration is attenuated in the model according to leaf water status, capturing dynamic vegetation water use regulation in response to both soil moisture and atmospheric evaporative demand. 
@@ -85,7 +84,7 @@ These changes in the parameterization framework have numerous implications, incl
 \item Modeling vegetation water potential allows improved connection to remote sensing observations of vegetation water status (Vegetation Optical Depth) \citep{konings2016}. 
 \end{enumerate}
 
-To assess the new model formulation, we carried out site-level simulations at Caxiuan\~a National Forest in Brazil, which features a critical biome (terra-firme moist tropical evergreen forest) \citep{fisher2006}. Starting in 2001, a plot at this site was subjected to an approximately 50\% percent precipitation throughfall exclusion. Due to the large drop in soil moisture at the precipitation exclusion site, significant vegetation water stress regulation of transpiration and photosynthesis was observed at the site, providing a drought signal to demonstrate model dynamics \citep{fisher2007}.
+To assess the new model formulation, we carried out site-level simulations at Caxiuan\~a National Forest in Brazil, which features a critical biome (terra-firme moist tropical evergreen forest) \citep{fisher2006}. Starting in 2001, a plot at this site was subjected to an approximately 50\% percent precipitation throughfall exclusion. Due to the large drop in soil moisture at the precipitation exclusion site, significant vegetation water stress regulation of transpiration and photosynthesis was observed at the site \citep{dacosta2010,dacosta2013}, providing a drought signal to demonstrate model dynamics \citep{fisher2007}.
 
 In this paper we therefore:
 \begin{enumerate}
@@ -120,7 +119,7 @@ This study develops a new parameterization of water stress (Sections \ref{sect:f
     These parameters are plant functional type dependent.
     
     While maximizing assimilation relative to water transpiration costs, the Medlyn model does not 
-    resolve concurrent limitations to stomatal conductance associated with declining soil water or excessive xylem tension. 
+    resolve concurrent limitations to stomatal conductance associated with declining soil water (such as in \cite{manzoni2013b}) or excessive xylem tension. 
     To represent such water stress, and its impact on leaf-gas exchange, land surface models typically include a `water stress factor' (see Section \ref{sect:wsf}). 
 
 \subsection{Photosynthesis}
@@ -257,7 +256,7 @@ This study develops a new parameterization of water stress (Sections \ref{sect:f
     \end{equation}
     \end{linenomath*}
     
-    Utilizing leaf water potential, instead of soil water potential, for drought stress introduces a new interpretation of vegetation water stress to the model. 
+    Utilizing leaf water potential has been shown to improve stomatal models \citep{anderegg2017} and reflects hydraulic limits on plant transpiration \citep{manzoni2013,sperry1998}.
     Leaf water potential is modulated by supply of sap to the leaves and by evaporative demand, as regulated by stomatal dynamics \citep{sperry2015}. 
     As a result, low soil water (bottom-up stress) induces stress due to limited water supply, but in addition, high atmospheric VPD can induce stress with the associated increases in the gradient in water potential across the plant xylem (top-down stress). 
     This latter mechanism was absent from the previous water stress function (dependent on soil water potential only), by construction.
@@ -340,7 +339,8 @@ This study develops a new parameterization of water stress (Sections \ref{sect:f
      Both $c_k$ and  $p_{50}$ can be estimated from field experiments \citep{sack2002}, and $p_{50}$ is available in the TRY trait database \citep{kattge2011}. 
      Parameterization based on $p_{50}$ aligns with the call for a transition to models that use a wider range of plant functional trait data in their parameterization \citep{anderegg2015a}. 
      The loss of xylem conductivity is based on lower terminal water potential ($\psi_1$) as is typical in other simplified models \citep{xu2016}, but 
-     may underestimate the integrated loss of conductivity \citep{sperry2015}. 
+     may underestimate the integrated loss of conductivity \citep{sperry2015}.
+     Likewise, xylem are assumed to symmetrically regain conductance, which may lead to underestimating persistent drought legacies \citep{anderegg2015b}.
          
      PHS models root, stem, and leaf tissue conductances according to equation \ref{eq:vulnerability}. 
      The parameterization of $k_{\text{max}}$ varies by hydraulic segment (see details in Appendix B1). 
@@ -690,7 +690,8 @@ Likewise, the constraint at $\psi_c$ precludes the representation of hydraulic r
     Soil water potential approaches (as in SMS) lack a straightforward physical basis, but rather empirically relate stomatal conductance and/or photosynthetic parameters with soil potential (or soil moisture).
     However, in the case of SMS, the empirical relationship is very difficult to constrain, due to scarce observations of the stress driver, root-fraction-weighted soil potential.
     As a result, soil moisture stress functions have been shown to contribute significant uncertainty to the carbon cycle in Earth System Models \citep{trugman2018}.
-    Leaf water potential, on the other hand, is more easily measured in situ \citep{boyer1967}, and has been shown to correlate with remote sensing products \citep{momen2017}, offering better observational constraints for PHS.
+    Leaf water potential, on the other hand, is more easily measured in situ \citep{boyer1967} and has been shown to correlate with remote sensing products \citep{momen2017}, offering better observational constraints for PHS.
+    Likewise, incorporating plant hydraulics may allow for improved model representation of tree mortality \citep{mcdowell2018}.
 
     Another key difference is that PHS stress imparts a negative feedback on GPP and transpiration.
     Conditions favoring increased GPP (e.g. more light) also increase transpiration demand, leading to more xylem tension and stress, which opposes increases in GPP.
@@ -707,7 +708,7 @@ PHS introduces dynamic vegetation water potential (Figure \ref{fig:vwp}), for th
 Seasonally and diurnally dynamic leaf water potential are observed in the field \citep{fisher2006}, adjusting to variations in soil water supply and transpiration demand.
 Dynamism in the gradient of water potential from soil-to-leaf, according to Darcy's Law, drives RWU.
 This is especially important for partitioning the transpiration sink among soil layers with varying soil potential states \citep{jarvis2011}.
-A mechanistic representation of RWU with dynamic vegetation water potential allows for modeling a range of water use strategies, and/or testing hypotheses regarding such strategies on the ESM scale, including the effects of iso/anisohydry on leaf gas exchange and drought vulnerability.
+A mechanistic representation of RWU with dynamic vegetation water potential allows for modeling a range of water use strategies, and/or testing hypotheses regarding such strategies on the ESM scale. This includes the effects of iso/anisohydry, which can be diagnosed from remote sensing observations \citep{konings2017a}, on leaf gas exchange and drought vulnerability.
 
 \subsubsection{Mechanistic hydraulic conductance, with response to drying}
 Likewise, PHS implements mechanistic hydraulic conductance through the SPAC, reflecting declines in conductance associated with decreasing water potential in both plant vessels and soil substrate \citep{tyree1989}.
@@ -728,7 +729,7 @@ In PHS, as the surface soil layers dry out, conductance decreases rapidly, leadi
 In response, the vegetation `pulls' harder, as $\psi_{\text{root}}$ becomes more negative, creating a larger gradient to the deeper soil layers, yielding increased RWU in those still-moist layers.
 Due to constant vegetation potential ($\psi_c$) and no drying response to conductance, SMS lacks the flexibility to achieve this type of compensatory RWU.
 As a result, PHS maintains higher levels of transpiration and photosynthesis than SMS during the dry season under both ambient and TFE conditions (Figures \ref{fig:t2},\ref{fig:gpp}).
-This process may be especially important for modeling evapotranspiration in semi-arid ecosystems \citep{jarvis2011}.
+This process may be especially important for modeling evapotranspiration in semi-arid ecosystems \citep{jarvis2011} and in Amazonia, where water contributions of deep roots are often important \citep{nepstad1994}
 
 \subsubsection{Hydraulic redistribution}
 \label{sect:hr}
@@ -736,7 +737,7 @@ PHS simulates substantial HR at our test site, both upwards and downwards (Figur
     Modeled HR is weighted towards downward transfers, moving near-surface water from rain events deeper into the soil column. 
     This may serve to save excess water it for when it is most needed, such as during the dry season, 
     and would seem to convey an advantage to deep-rooted individuals, banking water for later use out of reach of shallow-rooted competitors.
-    HR can offer significant water subsidies during dry periods \citep{jackson2000} and has been highlighted as an important missing feature in CLM \citep{lee2005}. 
+    HR can offer significant water subsidies during dry periods \citep{jackson2000} and has been highlighted as an important missing feature in CLM \citep{lee2005,tang2015}. 
     However, we should note that observations of HR are extremely difficult and rare, and the degree to which HR actually occurs in real-world systems remains unclear. 
     Unequivocal detection of HR involves the observation of reverse flow along transport roots, typically at rates close to the detection threshold of sap flow monitoring systems. 
     
@@ -1454,7 +1455,7 @@ The National Center for Atmospheric Research is sponsored by the National Scienc
 %====================
 %   REFERENCES
 %====================
-\nocite{*} 
+%\nocite{*} 
 \bibliography{refs/all}
 
 
